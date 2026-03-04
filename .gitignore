@@ -92,6 +92,10 @@ Thumbs.db
 *.swp
 *~
 
+# ─── Wordfence / security plugin binary data ──────────────────────────────────
+*.mmdb
+public_html/blog/wp-content/wflogs/
+
 # ─── PHP / web server logs ────────────────────────────────────────────────────
 *.log
 debug.log
