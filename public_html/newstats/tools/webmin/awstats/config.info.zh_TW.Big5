@@ -1,0 +1,8 @@
+awstats=��s AWStats ������ɮ׸��|�M��O<br>(�Ҧp:/usr/local/awstats/wwwroot/cgi-bin/awstats.pl),0
+awstats_cgi=AWStats CGI �� URL ����Ϊ̬O�۹���|<br>(�Ҧp:/awstats/awstats.pl),0
+alt_conf=AWStats �]�w�ɼ˥�,3,/etc/awstats/awstats.model.conf
+plugin_1_geoip=<a href="http://www.maxmind.com/en/city?rId=awstats">Maxmind GeoIP ��a��Ʈw�ɮ�</a> ���|<br><small>(�p�G AWStats geoip �X�R�M��l�Ұʪ����p�U)</small>,3,/usr/local/share/GeoIP/GeoIP.dat
+plugin_2_geoip_region_maxmind=<a href="http://www.maxmind.com/en/city?rId=awstats">Maxmind GeoIP �ϰ��Ʈw�ɮ�</a> ���|<br><small>(�p�G AWStats geoip_region_maxmind �X�R�M��l�Ұʪ����p�U)</small>,3,/usr/local/share/GeoIP/GeoIPRegion.dat
+plugin_3_geoip_city_maxmind=<a href="http://www.maxmind.com/en/city?rId=awstats">Maxmind GeoIP �{����Ʈw�ɮ�</a> ���|<br><small>(�p�G AWStats geoip_city_maxmind �X�R�M��l�Ұʪ����p�U)</small>,3,/usr/local/share/GeoIP/GeoIPCity.dat
+plugin_4_geoip_isp_maxmind=<a href="http://www.maxmind.com/en/city?rId=awstats">Maxmind GeoIP isp ��Ʈw�ɮ�</a> ���|<br><small>(�p�G AWStats geoip_isp_maxmind �X�R�M��l�Ұʪ����p�U)</small>,3,/usr/local/share/GeoIP/GeoIPISP.dat
+plugin_5_geoip_org_maxmind=<a href="http://www.maxmind.com/en/city?rId=awstats">Maxmind GeoIP org ��Ʈw�ɮ�</a> ���|<br><small>(�p�G AWStats geoip_org_maxmind �X�R�M��l�Ұʪ����p�U)</small>,3,/usr/local/share/GeoIP/GeoIPOrg.dat

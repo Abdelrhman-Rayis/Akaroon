@@ -1,0 +1,146 @@
+<?php
+/**
+ * Plugin Name: Library Bookshelves
+ * Description: Create bookshelves that link to your library catalog. Use shortcodes and widgets to display book covers in Slick carousels.
+ * Version:     4.26
+ * Author:      Guilderland Public Library
+ * Author URI:  https://guilderlandlibrary.org
+ * License: GPLv2 or later
+ */
+
+if ( ! defined( 'ABSPATH' ) ) { exit; }
+
+class Library_Bookshelves {
+	private static $instance;
+	public $settings;
+	public $widget;
+	public $version;
+	public $token;
+	public $file;
+	public $dir;
+	public $db_version;
+
+	public function __construct( $file = '', $version = '4.26' ) {
+		$this->version = $version;
+		$this->db_version = 2;
+		$this->token = 'library_bookshelves';
+		$this->option_name = 'library_bookshelves';
+		$this->options = get_option( 'library_bookshelves' );
+		$this->file = $file;
+		$this->dir = dirname( $this->file );
+
+		// Load frontend JS & CSS
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ), 10 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 10 );
+
+		// Load admin JS & CSS
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 10, 1 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_styles' ), 10, 1 );
+
+		// Load required files
+		require_once dirname( __FILE__ ) . '/functions.php';
+		require_once dirname( __FILE__ ) . '/class-bookshelves-post-type.php';
+		require_once dirname( __FILE__ ) . '/class-bookshelves-settings.php';
+		require_once dirname( __FILE__ ) . '/class-bookshelves-widget.php';
+		require_once dirname( __FILE__ ) . '/class-bookshelves-shortcode.php';
+		require_once dirname( __FILE__ ) . '/bookshelves-taxonomy.php';
+
+		// Instantiate settings and widget classes
+		if ( ! $this->settings ) { $this->settings = Bookshelves_Settings::instance( $this ); }
+
+		// Register (de)activation hooks
+		register_activation_hook( $this->file, array( $this, 'activate' ) );
+		register_deactivation_hook( $this->file, array( $this, 'deactivate' ) );
+
+		// Upgrade routine
+		add_action( 'admin_init', array( $this, 'admin_init' ) );
+
+		// Add cron schedule intervals
+		add_filter( 'cron_schedules', 'lbs_add_cron_intervals' );
+	}
+
+	public function enqueue_styles() {
+		wp_register_style( $this->token . '-frontend', plugin_dir_url( __FILE__ ) . 'css/bookshelves.css', array(), $this->version );
+		wp_enqueue_style( $this->token . '-frontend' );
+
+		wp_register_style( $this->token . '-user-custom', plugin_dir_url( __FILE__ ) . 'css/user-custom-css.php', array(), $this->version );
+		wp_enqueue_style( $this->token . '-user-custom' );
+
+		wp_register_style( $this->token . '-slick', plugin_dir_url( __FILE__ ) . 'slick/slick.css', array(), $this->version );
+		wp_enqueue_style( $this->token . '-slick' );
+
+		wp_register_style( $this->token . '-slick-theme', plugin_dir_url( __FILE__ ) . 'slick/slick-theme.css', array(), $this->version );
+		wp_enqueue_style( $this->token . '-slick-theme' );
+	}
+
+	public function enqueue_scripts() {
+		wp_register_script( $this->token . '-slick', plugin_dir_url( __FILE__ ) . 'slick/slick.min.js', array( 'jquery' ), $this->version );
+		wp_enqueue_script( $this->token . '-slick' );
+	}
+
+	public function admin_enqueue_scripts( $hook = '' ) {
+		wp_register_script( $this->token . '-admin', plugin_dir_url( __FILE__ ) . 'js/bookshelves.js', array( 'jquery' ), $this->version );
+		wp_enqueue_script( $this->token . '-admin' );
+
+		wp_register_script( $this->token . '-slick', plugin_dir_url( __FILE__ ) . 'slick/slick.min.js', array( 'jquery' ), $this->version );
+		wp_enqueue_script( $this->token . '-slick' );
+	}
+
+	public function admin_enqueue_styles( $hook = '' ) {
+		wp_register_style( $this->token . '-admin', plugin_dir_url( __FILE__ ) . 'css/bookshelves.css', array(), $this->version );
+		wp_enqueue_style( $this->token . '-admin' );
+		wp_register_style( $this->token . '-user-custom', plugin_dir_url( __FILE__ ) . 'css/user-custom-css.php', array(), $this->version );
+		wp_enqueue_style( $this->token . '-user-custom' );
+		wp_register_style( $this->token . '-slick', plugin_dir_url( __FILE__ ) . 'slick/slick.css', array(), $this->version );
+		wp_enqueue_style( $this->token . '-slick' );
+
+		wp_register_style( $this->token . '-slick-theme', plugin_dir_url( __FILE__ ) . 'slick/slick-theme.css', array(), $this->version );
+		wp_enqueue_style( $this->token . '-slick-theme' );
+	}
+
+	public function activate() {
+		$this->_log_version_number();
+	}
+
+	public function admin_init() {
+		if ( false === $this->options || ! isset( $this->options['db_version'] ) || $this->options['db_version'] < $this->db_version ) {
+			if ( ! is_array( $this->options ) ) {
+				$this->options = array();
+			}
+			$current_db_version = isset( $this->options['db_version'] ) ? $this->options['db_version'] : 0;
+			$this->upgrade( $current_db_version );
+			$this->options['db_version'] = $this->db_version;
+			update_option( $this->option_name, $this->options );
+		}
+	}
+
+	public function upgrade( $current_db_version ) {
+		// Upgrade database options from earlier versions
+		if ( $current_db_version < 2 ) {
+			$posts = new WP_Query( array( 'post_type' => 'Bookshelves' ) );
+			while ( $posts->have_posts() ) {
+				$posts->the_post();
+				$id = get_the_ID();
+				$isbns = get_post_meta( $id, 'isbn_upc', true );
+				add_post_meta( $id, 'isbn', $isbns );
+				delete_post_meta( $id, 'isbn_upc' );
+			}
+		}
+	}
+
+	private function _log_version_number() {
+		update_option( $this->token . '_version', $this->version );
+	}
+
+	public function deactivate() {
+		$this->settings->unregister_settings();
+		flush_rewrite_rules();
+	}
+
+	public static function instance() {
+		null === self::$instance && self::$instance = new self();
+		return self::$instance;
+	}
+}
+
+$library_bookshelves = Library_Bookshelves::instance( __FILE__, '4.26' );

@@ -1,0 +1,527 @@
+
+   <!doctype html>
+<html class="no-js" lang="zxx">
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+* {box-sizing: border-box}
+body {font-family: Verdana, sans-serif; margin:0}
+
+/* Slideshow container */
+.slideshow-container {
+  position: relative;
+  background: #f1f1f1f1;
+}
+
+/* Slides */
+.mySlides {
+  display: none;
+  padding: 100px;
+  text-align: center;
+}
+
+/* Next & previous buttons */
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  margin-top: -30px;
+  padding: 16px;
+  color: #888;
+  font-weight: bold;
+  font-size: 20px;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+  position: absolute;
+  right: 30px;
+  border-radius: 3px 0 0 3px;
+    background-color: rgba(0,0,0,0.9);
+
+}
+.prev {
+  position: absolute;
+  left: : 40px;
+  border-radius: 3px 0 0 3px;
+    background-color: rgba(0,0,0,0.9);
+
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+  background-color: rgba(0,0,0,0.9);
+  color: white;
+}
+
+/* The dot/bullet/indicator container */
+.dot-container {
+    text-align: center;
+    padding: 20px;
+    background: #ddd;
+}
+
+/* The dots/bullets/indicators */
+.dot {
+  cursor: pointer;
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+
+/* Add a background color to the active dot/circle */
+.active, .dot:hover {
+  background-color: #710170;
+}
+ p { 
+ /*Add new line */
+ 
+            color:green; 
+            white-space: pre-line; 
+        } 
+
+/* Add an italic font style to all quotes */
+q {font-style: italic;}
+
+/* Add a blue color to the author */
+.author {color: black;}
+.navbar-brand>img {
+  padding-top: 0px;
+  width: 80px;
+  margin-left: -20px;
+}
+.navbar-brand {
+    height: auto;
+    margin: 0;
+    padding: 0;
+    margin-right: 10px;
+}
+.navbar-default{
+color: #fff;
+background-color: #2F4F4F;
+border-color: #000000;
+}
+.navbar-default .navbar-nav > li > a{
+    color:#fff;
+}
+.navbar-default .navbar-nav > .dropdown > a .caret{
+    border-top-color: #fff;
+    border-bottom-color: #fff;
+}
+.navbar-default .navbar-brand{
+    color:#fff;
+}
+.menu-large {
+  position: static !important;
+}
+.megamenu{
+  padding: 20px 0px;
+  width:100%;
+}
+.megamenu> li > ul {
+  padding: 0;
+  margin: 0;
+}
+.megamenu> li > ul > li {
+  list-style: none;
+}
+.megamenu> li > ul > li > a {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 1.428571429;
+  color: #333333;
+  white-space: normal;
+}
+.megamenu> li ul > li > a:hover,
+.megamenu> li ul > li > a:focus {
+  text-decoration: none;
+  color: #262626;
+  background-color: #f5f5f5;
+}
+.megamenu.disabled > a,
+.megamenu.disabled > a:hover,
+.megamenu.disabled > a:focus {
+  color: #999999;
+}
+.navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>li>a:hover {
+  color: #00A7E8;
+}
+.megamenu.disabled > a:hover,
+.megamenu.disabled > a:focus {
+  text-decoration: none;
+  background-color: transparent;
+  background-image: none;
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+  cursor: not-allowed;
+}
+.megamenu.dropdown-header {
+  color: #428bca;
+  font-size: 38px;
+}
+@media (max-width: 768px) {
+  .megamenu{
+    margin-left: 0 ;
+    margin-right: 0 ;
+  }
+  .megamenu> li {
+    margin-bottom: 30px;
+  }
+  .megamenu> li:last-child {
+    margin-bottom: 0;
+  }
+  .megamenu.dropdown-header {
+    padding: 3px 15px !important;
+  }
+  .navbar-nav .open .dropdown-menu .dropdown-header{
+    color:#fff;
+  }
+}
+
+* {box-sizing: border-box;}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.topnav {
+  overflow: hidden;
+  background-color: #e9e9e9;
+}
+
+.topnav a {
+  float: left;
+  display: block;
+  color: black;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.topnav a.active {
+  background-color: #2196F3;
+  color: white;
+}
+
+.topnav .search-container {
+  float: right;
+}
+
+.topnav input[type=text] {
+  padding: 6px;
+  margin-top: 8px;
+  font-size: 17px;
+  border: none;
+}
+
+.topnav .search-container button {
+  float: right;
+  padding: 6px 10px;
+  margin-top: 8px;
+  margin-right: 16px;
+  background: #ddd;
+  font-size: 17px;
+  border: none;
+  cursor: pointer;
+}
+
+.topnav .search-container button:hover {
+  background: #ccc;
+}
+
+@media screen and (max-width: 600px) {
+  .topnav .search-container {
+    float: none;
+  }
+  .topnav a, .topnav input[type=text], .topnav .search-container button {
+    float: none;
+    display: block;
+    text-align: left;
+    width: 100%;
+    margin: 0;
+    padding: 14px;
+  }
+  .topnav input[type=text] {
+    border: 1px solid #ccc;  
+  }
+}
+img {
+  border: 1px solid #ddd;
+   border-radius: 4px;
+  padding: 0px;
+  width: 150px;
+    box-shadow: 0 0 0px 1px rgba(100, 140, 186, 0.5);
+
+}
+
+img:hover {
+  box-shadow: 0 0 10px 10px rgba(100, 140, 186, 0.5);
+}
+
+</style>
+    <meta charset="utf-8">
+    <meta name="author" content="Abdelrhman">
+    <meta name="description" content="">
+    <meta name="keywords" content="HTML,CSS,XML,JavaScript">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Title -->
+    <title>akaroon </title>
+    <!-- Place favicon.ico in the root directory -->
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="shortcut icon" type="image/ico" href="images/favicon.ico" />
+    <!-- Plugin-CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/linearicons.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+    <link rel="stylesheet" href="css/animate.css">
+    <!-- Main-Stylesheets -->
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+    <!--[if lt IE 9]>
+        <script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+</body>
+
+  
+ <ul>
+  <!--  <li>    <a  href="index.html" class="navbar-brand" style="position: relative;top: -10px;"><img src="images/logo.png" alt="Logo" style="width:20%;height: auto;  padding: 0px 0px;-->
+
+</a></li>
+   <li><a href="../index.html"><< Back to Home Page</a></li>
+ 
+
+</ul>
+
+	
+				<p style="text-align:center;">
+				<img alt="البروفيسور ابراهيم احمد عمر" height="182" src="I.A.O.-page-002.jpg" width="213"><br>
+				</p>
+				<p style="text-align: center;margin-bottom: 0;">
+				<img alt="sudan" src="/images/sudan.png">
+				
+				البروفيسور/ ابراهيم احمد عمر
+				</p>
+				<p style="text-align: center;margin-top: 0;">
+				رئيس المجلس الوطني
+				</p>
+	
+	<table style="margin-left:auto; margin-right:auto;width:100%;border-collapse:separate; border-spacing:3px;border:#00853E 1px solid; direction: rtl;">
+		<tbody>
+			<tr style="outline:#00853E 1px solid;">
+				<td style="background-color: #00853E; vertical-align: middle; text-align: center; width:22%">
+					<span style="font-size: 12pt;color:#fff">
+						<strong style="font-weight: lighter;">
+							المؤهل العلمي
+						</strong>
+					</span>
+				</td>
+				<td>
+					<ul style="padding:0 40px 0 0;">
+						<li style="text-align: right; color:#00853E">
+							<span style="font-size: 8pt; color: #000">
+								بكالريوس العلوم في الرياضيات والفيزياء – جامعة الخرطوم
+							</span>
+						</li>
+						<li style="text-align: right; color:#00853E">
+							<span style="font-size: 8pt; color: #000">
+								بكالريوس الآداب في الفلسفة والعلوم الساسية – جامعة الخرطوم.
+							</span>
+						</li>
+						<li style="text-align: right; color:#00853E">
+							<span style="font-size: 8pt; color: #000">
+								دكتوراه في فلسفة العلوم – جامعة كيمبردج
+							</span>
+						</li>
+					</ul>
+				</td>
+			</tr>
+			<tr style="outline:#00853E 1px solid;">
+				<td style="background-color: #00853E; vertical-align: middle; text-align: center; width:22%">
+					<span style="font-size: 12pt;color:#fff">
+						<strong style="font-weight: lighter;">
+							النشر العلمي
+						</strong>
+					</span>
+				</td>
+				<td>
+					<ul style="padding:0 40px 0 0;">
+						<li style="text-align: right; color:#00853E">
+							<span style="font-size: 8pt; color: #000">
+								أوراق في فلسفة العلوم نشرت في مجلات متخصصة في الولايات المتحدة وألمانيا وبريطانيا.
+							</span>
+						</li>
+						<li style="text-align: right; color:#00853E">
+							<span style="font-size: 8pt; color: #000">
+								كتيبات عن فلسفة التنمية، نظرية المعرفة والبحث العلمي والتنمية (بالإشتراك).
+							</span>
+						</li>
+					</ul>
+				</td>
+			</tr>
+			<tr style="outline:#00853E 1px solid;">
+				<td style="background-color: #00853E; vertical-align: middle; text-align: center; width:22%">
+					<span style="font-size: 12pt;color:#fff">
+						<strong style="font-weight: lighter;">
+							الإدارات الأكاديمية						
+						</strong>
+					</span>
+				</td>
+				<td>
+					<ul style="padding:0 40px 0 0;">
+						<li style="text-align: right; color:#00853E">
+							<span style="font-size: 8pt; color: #000">
+								 رئيس قسم الفلسفة – كلية الآداب – جامعة الخرطوم.
+							</span>
+						</li>
+						<li style="text-align: right; color:#00853E">
+							<span style="font-size: 8pt; color: #000">
+								 رئيس قسم الدراسات الإسلامية – كلية الآداب – جامعة الخرطوم.
+							</span>
+						</li>
+						<li style="text-align: right; color:#00853E">
+							<span style="font-size: 8pt; color: #000">
+								 رئيس المجلس القومي للتعليم العالي والبحث العلمي.
+							</span>
+						</li>
+					</ul>
+				</td>
+			</tr>
+			<tr style="outline:#00853E 1px solid;">
+				<td style="background-color: #00853E; vertical-align: middle; text-align: center; width:22%">
+					<span style="font-size: 12pt;color:#fff">
+						<strong style="font-weight: lighter;">
+							العمل العام					
+						</strong>
+					</span>
+				</td>
+				<td>
+					<p style="font-weight:400; font-size:14px; border-bottom: #00853E 1px solid;text-align:right;display:table-cell">
+						أولاً - عضوية البرلمانات التالية: 
+					</p>
+						<ul style="padding:0 40px 0 0;">
+							<li style="text-align: right; color:#00853E">
+								<span style="font-size: 8pt; color: #000">
+									 عضو الجمعية التأسيسية. 1986- 1989
+								</span>
+							</li>
+							<li style="text-align: right; color:#00853E">
+								<span style="font-size: 8pt; color: #000">
+									 عضو المجلس الوطني الأول 1991- 1995.
+								</span>
+							</li>
+							<li style="text-align: right; color:#00853E">
+								<span style="font-size: 8pt; color: #000">
+									 عضو المجلس الوطني الثاني 1996- 1999
+								</span>
+							</li>
+							<li style="text-align: right; color:#00853E">
+								<span style="font-size: 8pt; color: #000">
+									 عضو المجلس الوطني الثالث 2001- 2005
+								</span>
+							</li>
+							<li style="text-align: right; color:#00853E">
+								<span style="font-size: 8pt; color: #000">
+									 عضو المجلس الوطني الرابع 2005- 2010
+								</span>
+							</li>
+							<li style="text-align: right; color:#00853E">
+								<span style="font-size: 8pt; color: #000">
+									 عضو المجلس الوطني الخامس2010 – 2015 
+								</span>
+							</li>
+							<li style="text-align: right; color:#00853E">
+								<span style="font-size: 8pt; color: #000">
+									 عضو المجلس الوطني السادس 2015م –و حتى الآن.
+								</span>
+							</li>
+						</ul>
+					<p style="font-weight:400; font-size:14px; border-bottom: #00853E 1px solid;text-align:right;display:table-cell">
+					ثانياَ - المناصب التنفيذية :
+					</p>
+						<ul style="padding:0 40px 0 0;">
+							<li style="text-align: right; color:#00853E">
+								<span style="font-size: 8pt; color: #000">
+									 وزير التعليم العالي والبحث العلمي 1990م- 1996م
+								</span>
+							</li>
+							<li style="text-align: right; color:#00853E">
+								<span style="font-size: 8pt; color: #000">
+									 وزير التعليم العالي والبحث العلمي 1997- 2000م
+								</span>
+							</li>
+							<li style="text-align: right; color:#00853E">
+								<span style="font-size: 8pt; color: #000">
+									 مساعد رئيس الجمهورية 2000م - 2005م.
+								</span>
+							</li>
+							<li style="text-align: right; color:#00853E">
+								<span style="font-size: 8pt; color: #000">
+									 وزير العلوم والتقانة 2007م- 2010.م
+								</span>
+							</li>
+							<li style="text-align: right; color:#00853E">
+								<span style="font-size: 8pt; color: #000">
+									 مستشار رئيس الجمهورية م2010- 2011م
+								</span>
+							</li>
+						</ul>	
+					<p style="font-weight:400; font-size:14px; border-bottom: #00853E 1px solid;text-align:right;display:table-cell">
+					ثالثاَ - العمل السياسي :
+					</p>
+						<ul style="padding:0 40px 0 0;">
+							<li style="text-align: right; color:#00853E">
+								<span style="font-size: 8pt; color: #000">
+									 رئيس مجلس الشورى الحركة الإسلامية دورة م2009- 2013م.
+								</span>
+							</li>
+							<li style="text-align: right; color:#00853E">
+								<span style="font-size: 8pt; color: #000">
+									 الأمين العام لحزب المؤتمر الوطني 200م – 2005م.
+								</span>
+							</li>
+							<li style="text-align: right; color:#00853E">
+								<span style="font-size: 8pt; color: #000">
+									 نائب رئيس حزب المؤتمر الوطني2000م – 2010م.
+								</span>
+							</li>
+							<li style="text-align: right; color:#00853E">
+								<span style="font-size: 8pt; color: #000">
+									 رئيس قطاع الفكر والثقافة بحزب المؤتمر الوطني 2000م – 2010م.
+								</span>
+							</li>
+							<li style="text-align: right; color:#00853E">
+								<span style="font-size: 8pt; color: #000">
+									 رئيس مجلس شورى الحركة الإسلامية 2009- 2013م
+								</span>
+							</li>
+						</ul>	
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<p>&nbsp;</p>
+	</div> 
+</body>
+</html>

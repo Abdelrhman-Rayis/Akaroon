@@ -1,0 +1,154 @@
+/*
+Settings styles
+*/
+#library_bookshelves_settings input[type="color"] {
+	width: 54px;
+	height: 24px;
+	padding: 0;
+	vertical-align: middle;
+}
+
+/*
+Post type editor styles
+ */
+#isbnupclist {
+	width: 300px;
+}
+#isbnupclist span {
+	padding-top: 5px;
+}
+.item-inputs {
+	display: inline-block;
+	vertical-align: top;
+	margin: 10px 0;
+}
+.item-inputs span {
+	font-weight: bold;
+}
+#isbn-textarea { 
+	white-space: pre;
+}
+
+#alt-textarea { 
+	resize: horizontal;
+	white-space: pre;
+	overflow-wrap: normal;
+	overflow-x: scroll;
+}
+
+#bookshelf-input label {
+	display: inline-block;
+	text-align: right;
+	float: left;
+	font-weight: bold;
+	width: 90px;
+	margin: 7px 5px 5px 0;
+}
+#serviceNotice {
+	margin-left: 103px;
+}
+#json-div textarea {
+	width: 100%
+}
+.inputdiv {
+	display: block;
+	width: auto;
+	margin: 0 0 0 95px;
+}
+.inputdiv input {
+	width: 100%;
+}
+
+/*
+Initialized slider styles
+ */
+.bookshelf img {
+	max-width: 100%;
+	border: none !important;
+}
+.bookshelf {
+	display: none;
+}
+.bookshelf.slick-slider {
+	background: none;
+}
+.bookshelf.slick-initialized {
+	display: block;
+}
+.bookshelf.slick-initialized .slick-slide {
+    float: none;
+    display: inline-block;
+    vertical-align: middle;
+	padding: 0 10px;
+}
+.bookshelf .slick-slide img {
+    margin: 0 auto;
+	vertical-align: middle;
+	display: inline;
+}
+
+/*
+Widget Tab styles
+ */
+/* <UL> */
+.Bookshelves_Widget .ui-tabs-nav {
+	list-style: none;
+}
+/* <UL><LI> */
+.Bookshelves_Widget .ui-tabs-nav li {
+	border-style: solid;
+	display: inline-block;
+	text-align: center;
+	white-space: nowrap;
+}
+/* <UL><LI><A> */
+.Bookshelves_Widget .ui-tabs-nav li a {
+	font-size: 100%;
+	text-decoration: none;
+	display: inline-block;
+	width: 100%;
+}
+/* Tab button hover */
+.Bookshelves_Widget .ui-tabs-nav li:hover {
+}
+
+/* Tab link hover */
+.Bookshelves_Widget .ui-tabs-nav li a:hover {
+	box-shadow: none;
+}
+/* Active tab */
+.Bookshelves_Widget .ui-tabs-active {
+}
+/* Active tab link */
+.Bookshelves_Widget .ui-tabs-active .ui-tabs-anchor {
+	box-shadow: none;
+}
+
+/*
+Number Text area
+*/
+div.numberedtextarea-wrapper { position: relative; }
+
+div.numberedtextarea-wrapper textarea {
+  display: block;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+div.numberedtextarea-line-numbers {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 50px;
+  border-right: 1px solid rgba(221, 221, 221, 1.0);
+  color: rgba(0, 0, 0, 1.0);
+  overflow: hidden;
+}
+
+div.numberedtextarea-number {
+  padding-right: 6px;
+  text-align: right;
+}

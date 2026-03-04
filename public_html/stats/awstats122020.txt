@@ -1,0 +1,426 @@
+AWSTATS DATA FILE 7.7 (build 20180105)
+# If you remove this file, all statistics for date 202012 will be lost/reset.
+# Last config file used to build this data file was ./awstats.conf.
+
+# Position (offset in bytes) in this file for beginning of each section for
+# direct I/O access. If you made changes somewhere in this file, you should
+# also remove completely the MAP section (AWStats will rewrite it at next
+# update).
+BEGIN_MAP 28
+POS_GENERAL 1971                
+POS_TIME 2651                
+POS_VISITOR 10752               
+POS_DAY 12229               
+POS_DOMAIN 3416                
+POS_LOGIN 3649                
+POS_ROBOT 3804                
+POS_WORMS 4275                
+POS_EMAILSENDER 4406                
+POS_EMAILRECEIVER 4549                
+POS_SESSION 12439               
+POS_SIDER 12645               
+POS_FILETYPES 4684                
+POS_DOWNLOADS 4987                
+POS_OS 5695                
+POS_BROWSER 5847                
+POS_SCREENSIZE 6287                
+POS_UNKNOWNREFERER 6361                
+POS_UNKNOWNREFERERBROWSER 6609                
+POS_ORIGIN 6760                
+POS_SEREFERRALS 6897                
+POS_PAGEREFS 7056                
+POS_SEARCHWORDS 7242                
+POS_KEYWORDS 7394                
+POS_MISC 2315                
+POS_ERRORS 7453                
+POS_CLUSTER 3505                
+POS_SIDER_404 7603                
+END_MAP
+
+# LastLine    = Date of last record processed - Last record line number in last log - Last record offset in last log - Last record signature value
+# FirstTime   = Date of first visit for history file
+# LastTime    = Date of last visit for history file
+# LastUpdate  = Date of last update - Nb of parsed records - Nb of parsed old records - Nb of parsed new records - Nb of parsed corrupted - Nb of parsed dropped
+# TotalVisits = Number of visits
+# TotalUnique = Number of unique visitors
+# MonthHostsKnown   = Number of hosts known
+# MonthHostsUnKnown = Number of hosts unknown
+BEGIN_GENERAL 8
+LastLine 20201206083541 16951 5510730 0
+FirstTime 20201201061654
+LastTime 20201206083540
+LastUpdate 20201206083611 16951 14998 1952 1 0
+TotalVisits 37                  
+TotalUnique 31                  
+MonthHostsKnown 0                   
+MonthHostsUnknown 34                  
+END_GENERAL
+
+# Misc ID - Pages - Hits - Bandwidth
+BEGIN_MISC 10
+QuickTimeSupport 0 0 0
+JavaEnabled 0 0 0
+JavascriptDisabled 0 0 0
+PDFSupport 0 0 0
+WindowsMediaPlayerSupport 0 0 0
+AddToFavourites 0 0 0
+RealPlayerSupport 0 0 0
+TotalMisc 0 0 0
+DirectorSupport 0 0 0
+FlashSupport 0 0 0
+END_MISC
+
+# Hour - Pages - Hits - Bandwidth - Not viewed Pages - Not viewed Hits - Not viewed Bandwidth
+BEGIN_TIME 24
+0 0 0 0 9 13 1081010
+1 0 0 0 5 8 325766
+2 0 0 0 0 2 16028
+3 41 106 4977944 12 34 1070984
+4 7 112 24682345 0 17 3339
+5 3 6 70427 1 9 716361
+6 8 46 4442559 2 7 183954
+7 10 76 78393442 7 30 1970687
+8 9 60 81812676 2 9 9965
+9 3 3 41373 3 4 40693
+10 58 1133 244858391 22 60 634669
+11 76 125 3986719 11 15 572007
+12 0 0 0 15 47 1908089
+13 2 4 51710359 6 28 1011076
+14 1 1 15801 5 13 1158520
+15 10 11 5755868 5 24 2579983
+16 45 164 6304918 16 44 5160843
+17 53 251 14010711 19 53 3746851
+18 6 9 65228098 19 63 4323457
+19 0 0 0 14 57 4091599
+20 0 3 115001992 3 6 477904
+21 4 4 10744 5 16 412303
+22 14 80 4481558 5 10 68681
+23 1 1 171 12 30 877640
+END_TIME
+
+# Domain - Pages - Hits - Bandwidth
+# The 10 first Pages must be first (order not required for others)
+BEGIN_DOMAIN 1
+ip 351 2195 688789638
+END_DOMAIN
+
+# Cluster ID - Pages - Hits - Bandwidth
+BEGIN_CLUSTER 0
+END_CLUSTER
+
+# Login - Pages - Hits - Bandwidth - Last visit
+# The 10 first Pages must be first (order not required for others)
+BEGIN_LOGIN 0
+END_LOGIN
+
+# Robot ID - Hits - Bandwidth - Last visit - Hits on robots.txt
+# The 10 first Hits must be first (order not required for others)
+BEGIN_ROBOT 9
+Googlebot/ 171 10588536 20201206034818 11
+Googlebot\-Image/ 93 19301942 20201205194811 0
+bingbot/ 48 1231891 20201205203351 9
+wordpress 18 0 20201206083540 0
+bingpreview 15 901112 20201201132847 0
+AhrefsBot/ 10 1012 20201206033619 5
+unknown 2 58 20201205230038 2
+[\s_+:,\.\;\/\\-]bot 1 174 20201201164552 0
+netcraft 1 174 20201201131417 0
+END_ROBOT
+
+# Worm ID - Hits - Bandwidth - Last visit
+# The 5 first Hits must be first (order not required for others)
+BEGIN_WORMS 0
+END_WORMS
+
+# EMail - Hits - Bandwidth - Last visit
+# The 20 first Hits must be first (order not required for others)
+BEGIN_EMAILSENDER 0
+END_EMAILSENDER
+
+# EMail - Hits - Bandwidth - Last visit
+# The 20 first hits must be first (order not required for others)
+BEGIN_EMAILRECEIVER 0
+END_EMAILRECEIVER
+
+# Files type - Hits - Bandwidth - Bandwidth without compression - Bandwidth after compression
+BEGIN_FILETYPES 13
+css 167 7593250 0 0
+png 61 2784613 0 0
+pdf 12 366159097 0 0
+cgi 2 18 0 0
+woff2 5 544724 0 0
+pl 3 90507 0 0
+php 341 16678323 0 0
+xml 1 1045 0 0
+jpg 1144 277760286 0 0
+js 429 16745469 0 0
+jpeg 9 69240 0 0
+svg 7 256278 0 0
+gif 14 106788 0 0
+END_FILETYPES
+
+# Downloads - Hits - Bandwidth
+BEGIN_DOWNLOADS 9
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/files/24.pdf 3 0 172502988
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/165.pdf 1 0 1450696
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/445.pdf 1 0 72862877
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/files/77.pdf 1 0 15604388
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/files/20.pdf 1 0 5755284
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/files/10.pdf 1 0 6307923
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/140.pdf 1 0 51990226
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/247.pdf 1 0 5346242
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/files/9.pdf 1 2 34338473
+END_DOWNLOADS
+
+# OS ID - Hits
+BEGIN_OS ID - Hits - Pages 7
+macosx 4 4
+linuxandroid 334 43
+winxp 1 0
+Unknown 4 4
+win10 1847 293
+linux 6 6
+win7 1 1
+END_OS
+
+# Browser ID - Hits - Pages
+BEGIN_BROWSER 19
+firefox50.0 1 1
+chrome87.0.4280.88 3 3
+chrome88.0.4240.193 34 33
+edge12 1 0
+chrome87.0.4280.67 1 1
+firefox83.0 1718 245
+chrome75.0.3770.143 70 6
+chrome87.0.4280.66 89 10
+firefox62.0 4 4
+chrome86.0.4240.198 165 19
+mozilla 1 1
+chrome71.0.3563.0 2 2
+chrome85.0.4183.127 18 3
+chrome57.0.2987.133 4 4
+chrome40.0.2214.85 1 1
+chrome83.0.4103.106 80 14
+firefox79.0 1 1
+Unknown 3 3
+firefox11.0 1 0
+END_BROWSER
+
+# Screen size - Hits
+BEGIN_SCREENSIZE 0
+END_SCREENSIZE
+
+# Unknown referer OS - Last visit date
+BEGIN_UNKNOWNREFERER 3
+Mozilla/5.0_(compatible;_Domains_Project/1.2.7;__https://domainsproject.org) 20201204050421
+Go-http-client/1.1 20201205071943
+JustAnInstaller/0.1 20201205105917
+END_UNKNOWNREFERER
+
+# Unknown referer Browser - Last visit date
+BEGIN_UNKNOWNREFERERBROWSER 2
+Go-http-client/1.1 20201205071943
+JustAnInstaller/0.1 20201205105917
+END_UNKNOWNREFERERBROWSER
+
+# Origin - Pages - Hits 
+BEGIN_ORIGIN 6
+From0 94 96
+From1 1 1
+From2 0 1
+From3 2 2
+From4 254 2097
+From5 0 0
+END_ORIGIN
+
+# Search engine referers ID - Pages - Hits
+BEGIN_SEREFERRALS 1
+google_com 0 1
+END_SEREFERRALS
+
+# External page referers - Pages - Hits
+# The 10 first Pages must be first (order not required for others)
+BEGIN_PAGEREFS 1
+http://cp.softwex.com/install.cgi 2 2
+END_PAGEREFS
+
+# Search keyphrases - Number of search
+# The 10 first number of search must be first (order not required for others)
+BEGIN_SEARCHWORDS 0
+END_SEARCHWORDS
+
+# Search keywords - Number of search
+# The 10 first number of search must be first (order not required for others)
+BEGIN_KEYWORDS 0
+END_KEYWORDS
+
+# Errors - Hits - Bandwidth
+BEGIN_ERRORS 7
+403 1 2
+302 17 2673
+206 4 380256
+400 1 1
+500 6 0
+404 97 25617
+301 65 8961
+END_ERRORS
+
+# URL with 404 errors - Hits - Last URL referrer
+BEGIN_SIDER_404 49
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/600.pdf 2 http://akaroon.com/blog/ibrahimfinalsearch.php
+/blog/wp-includes/js/zxcvbn-async.min.js 2 http://akaroon.com/library/wp-login.php
+/wordpress/ 1 -
+/api/.env 1 -
+/blog/wp-includes/css/dist/block-library/style.min.css 1 http://akaroon.com/library/
+/blog/wp-includes/js/wp-util.min.js 2 http://akaroon.com/library/wp-login.php
+/humans.txt 1 -
+/vendor/.env 1 -
+/blog/wp-includes/css/dashicons.min.css 1 http://akaroon.com/library/wp-login.php
+/blog/wp-admin/js/user-profile.min.js 2 http://akaroon.com/library/wp-login.php
+/blog/wp-admin/js/password-strength-meter.min.js 2 http://akaroon.com/library/wp-login.php
+/laravel/.env 1 -
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/files/21.pdf 2 http://akaroon.com/blog/ibrahimfinalsearch.php
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/image/425.jpg 1 http://akaroon.com/blog/ibrahimfinalsearch.php
+/library/wp-admin/admin-ajax.php 1 http://akaroon.com/library/wp-admin/customize.php
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/image/170.jpg 1 http://akaroon.com/blog/ibrahimfinalsearch.php
+/blog//wp-json/wp/v2/users/ 1 -
+/wp-includes/wlwmanifest.xml 1 -
+/wp-admin/admin-ajax.php 1 -
+/admin/.env 1 -
+/blog/ 2 http://akaroon.com/library/ibrahimfinalsearch.php
+/.env 1 -
+/wp/ 1 -
+/sites/.env 1 -
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/files/19.pdf 4 http://akaroon.com/blog/ibrahimfinalsearch.php
+/xmlrpc.php 4 -
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/image/600.jpg 3 http://akaroon.com/blog/ibrahimfinalsearch.php
+/insert/css/bootstrap.min.css 6 http://akaroon.com/insert/
+/wordpress/xmlrpc.php 1 -
+/blog/wp-admin/css/l10n.min.css 1 http://akaroon.com/library/wp-login.php
+/ads.txt 14 -
+/blog/wp-admin/admin-ajax.php 1 https://akaroon.com/blog/wp-admin/customize.php
+/wp/xmlrpc.php 1 -
+/blog/robots.txt 1 -
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/image/174.jpg 1 http://akaroon.com/blog/ibrahimfinalsearch.php
+/files/%D8%A7%D9%84%D8%AA%D9%88%D8%AD%D9%8A%D8%AF/image/137.jpg 2 http://akaroon.com/library/ibrahimfinalsearch.php
+/blog/wp-includes/css/buttons.min.css 1 http://akaroon.com/library/wp-login.php
+/sitemap_index.xml 3 -
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/image/6001.jpg 3 http://akaroon.com/blog/ibrahimfinalsearch.php
+/blog/.env 1 -
+/blog//wp-json/oembed/1.0/embed 1 -
+/blog/wp-login.php 2 -
+/test/.env 1 -
+/blog/wp-admin/css/forms.min.css 1 http://akaroon.com/library/wp-login.php
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/image/173.jpg 1 http://akaroon.com/library/ibrahimfinalsearch.php
+/sitemap.xml.gz 2 -
+/blog/wp-includes/js/underscore.min.js 2 http://akaroon.com/library/wp-login.php
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/image/600.jpg 8 http://akaroon.com/blog/ibrahimfinalsearch.php
+/blog/wp-admin/css/login.min.css 1 http://akaroon.com/library/wp-login.php
+END_SIDER_404
+
+# Host - Pages - Hits - Bandwidth - Last visit date - [Start date of last visit] - [Last page of last visit]
+# [Start date of last visit] and [Last page of last visit] are saved only if session is not finished
+# The 10 first Hits must be first (order not required for others)
+BEGIN_VISITOR 34
+46.154.191.238 127 1413 260515173 20201205172340
+178.246.226.159 112 266 8635915 20201206081455 20201206081455 /
+129.146.120.47 33 34 13592 20201206033303
+197.252.19.253 14 80 4481558 20201202223152
+154.98.186.193 7 16 414664 20201203063804
+197.252.19.135 6 70 4921967 20201203031617
+46.154.38.225 6 54 2121073 20201206083540 20201206083521 /blog/wp-admin/load-scripts.php
+41.95.92.135 6 105 24471292 20201205063310
+102.123.141.107 5 12 105210099 20201203181839
+154.98.237.112 4 42 4309375 20201201061907
+41.95.17.109 1 1 41025 20201202034121
+156.146.36.100 1 1 171 20201205230039
+167.114.226.133 1 1 174 20201201095806
+221.132.27.148 1 1 1360 20201205031832
+160.153.246.177 1 1 1360 20201204163838
+66.249.89.160 0 1 7668 
+78.163.119.1 4 73 158016577 20201205080023
+78.142.211.53 1 1 1360 20201201111055
+209.99.175.7 1 1 64763 20201201184622
+46.106.160.208 4 4 10744 20201204213228
+197.242.144.229 1 1 1360 20201203185925
+185.220.101.134 2 2 41199 20201203095145
+209.99.168.155 1 1 64763 20201202070744
+209.99.173.197 1 1 174 20201201184616
+79.170.44.5 1 1 9 20201205103513
+102.123.170.171 0 3 115001992 
+102.123.163.20 4 4 3186 20201206080207 20201206070326 /
+138.246.253.24 1 1 0 20201204072344
+91.209.24.77 1 1 0 20201204050421
+192.36.52.37 1 1 174 20201205071943
+102.123.167.95 1 1 15801 20201202144106
+66.249.81.22 0 1 420887 
+79.170.44.6 1 1 9 20201205105917
+191.102.153.165 1 1 174 20201202070740
+END_VISITOR
+
+# Date - Pages - Hits - Bandwidth - Visits
+BEGIN_DAY 6
+20201201 8 46 4375846 5
+20201202 20 89 4673748 6
+20201203 19 97 242517312 7
+20201204 7 8 432991 4
+20201205 253 1862 451648177 11
+20201206 44 93 2138022 4
+END_DAY
+
+# Session range - Number of visits
+BEGIN_SESSION 7
+1h+ 2
+5mn-15mn 1
+30s-2mn 4
+0s-30s 22
+15mn-30mn 1
+2mn-5mn 3
+30mn-1h 1
+END_SESSION
+
+# URL - Pages - Bandwidth - Entry - Exit
+# The 10 first Pages must be first (order not required for others)
+BEGIN_SIDER 41
+/library/wp-admin/admin-ajax.php 51 269230 1 1
+/blog/wp-admin/admin-ajax.php 48 123870 0 0
+/blog/ 47 2790770 10 8
+/blog/xmlrpc.php 30 12034 0 1
+/ 29 4137 16 7
+/blog/wp-admin/load-scripts.php 18 1691695 0 0
+/blog/wp-login.php 17 52272 0 1
+/blog/ibrahimfinalsearch.php 14 1474849 1 8
+/library/wp-admin/load-scripts.php 11 1053949 0 0
+/library/ 8 592984 0 0
+/library/wp-login.php 2 9466 0 0
+/blog/wp-admin/plugin-install.php 2 201596 0 0
+/library/wp-admin/install.php 2 9769 0 0
+/blog/wp-admin/options-general.php 5 379990 0 0
+/blog/wp-admin/load-styles.php 6 1946457 0 0
+/blog/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.woff2 3 243672 0 0
+/insert/insert.php 3 873 0 0
+/library/wp-admin/load-styles.php 5 1571584 0 0
+/blog/wp-admin/customize.php 1 422166 0 0
+/blog/wp-admin/export.php 2 928263 0 0
+/library/wp-admin/theme-install.php 1 42919 0 0
+/stats/ 1 355 0 0
+/stats/awstats.pl 3 90507 0 0
+/library/wp-admin/customize.php 1 386129 0 0
+/library/wp-admin/themes.php 3 152266 0 0
+/library/wp-admin/ 2 129792 0 0
+http://akaroon.com/stats/setup_script.cgi 1 9 1 1
+/library/wp-admin/admin.php 2 52510 0 0
+/library/wp-admin/edit.php 1 82687 0 0
+/insert/add-record-form.php 8 29636 0 1
+/library/wp-admin/import.php 2 61275 0 0
+/library/wp-content/themes/twentytwenty/assets/fonts/inter/Inter-upright-var.woff2 1 223892 0 0
+/blog/wp-admin/plugins.php 2 263339 0 0
+/blog/wp-content/plugins/wpforms-lite/assets/fonts/fontawesome-webfont.woff2 1 77160 0 0
+/blog/wp-admin/edit-comments.php 2 152018 0 0
+/blog/wp-admin/admin.php 1 143449 1 0
+/library/ibrahimfinalsearch.php 1 1434899 0 0
+/blog/wp-admin/ 2 186892 0 0
+/insert/ 7 18763 2 1
+http://akaroon.com/library/setup_script.cgi 1 9 1 1
+/wp-login.php 4 5440 4 4
+END_SIDER

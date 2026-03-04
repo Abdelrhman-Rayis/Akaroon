@@ -1,0 +1,46 @@
+ body 
+{ 
+	background-color: #FFFFFF;
+    font-family: Tahoma;
+    font-size: 11px;
+    color: Black;
+}
+td.td_thumbnail_title
+{
+}
+td.td_thumbnail_image
+{
+}
+img.img_thumbnail_image
+{
+    border: 0px none;
+    	 max-width:1000px;
+ 
+
+}
+.maintablea
+{ 
+	margin-top: 5px; 
+}
+.maintable, .maintableb 
+{ 
+	background-color: #7F7F7F; 
+}
+.navmenu
+{ 
+	background-color : #FFFFFF;
+	border: 0px none;
+}
+.etg_link_text
+{
+	font-size: 11px; 
+	color: #999999; 
+	font-family: Verdana;
+	text-decoration: none;
+}
+a:hover.etg_link_text
+{
+	color: Blue;
+	text-decoration: underline;
+}
+ 

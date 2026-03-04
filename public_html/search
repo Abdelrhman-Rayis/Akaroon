@@ -1,0 +1,70 @@
+ <h1>مرحبا يا  </h1>
+<?php 
+$db = new PDO("mysql:host=localhost;dbname=iaoltest","root",""); 
+
+if (isset($_POST['Search'])) {
+	$valueToSearch =$_POST['valueToSearch'];
+      $query =  "SELECT * FROM `iaoltest` WHERE CONCAT(`ID`, `number`, `Category`, `The Title of Paper/Book`, `The name of the Author`, `Year of issue`, `Place of issue`, `Field of research`, `Key words`) LIKE '%".$valueToSearch."%'";
+ 
+
+ }
+else {
+	$query = "SELECT * FROM `iaoltest`";
+ 
+}
+ 
+ ?>
+<!DOCTYPE html>
+
+ <head>
+    <meta charset="utf-8"/>
+
+ 	<title>test</title>
+ 	<style>
+ 		table,tr,th,td
+ 		{
+ 			border: 1px solid black;
+ 		}
+ 	</style>
+ </head>
+ <body>
+ <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Username</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Website</th>
+                    <th>Category</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $stmt = $db->prepare("SELECT * FROM `iaoltest` WHERE `ID`, `number`, `Category`, `The Title of Paper/Book`, `The name of the Author`, `Year of issue`, `Place of issue`, `Field of research`, `Key words`");
+                $stmt->execute();
+                while($row = $stmt->fetch()){
+                ?>
+                <tr>
+                    <td><?php echo $row['ID'] ?></td>
+                    <td><?php echo $row['number'] ?></td>
+                    <td><?php echo $row['Category'] ?></td>
+                    <td><?php echo $row['The Title of Paper/Book'] ?></td>
+                    <td><?php echo $row['The name of the Author'] ?></td>
+                    <td><?php echo $row['Year of issue'] ?></td>
+                    <td><?php echo $row['Place of issue'] ?></td>
+                    <td><?php echo $row['Field of research'] ?></td>
+                    <td><?php echo $row['Field of research'] ?></td>
+                    <td><?php echo $row['Key words'] ?></td>
+                </tr>
+                <?php
+                }
+                ?>
+            </tbody>
+        </table>
+ </body>
+ </html>
