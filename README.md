@@ -8,6 +8,11 @@ The Akaroon Library contains over 2,000 documents and books organized into seven
 How to Access
 Dear visitor, you can explore all the books and documents using the search feature on the website or by visiting the categories page. We welcome any comments or suggestions. You can also reach out to us through the "Contact Us" page or check out our blog, which features many articles and content related to the site that you can comment on or share on social media platforms.
 
+# Platform architectural diagram 
+
+![paperbanana-1772645956193](https://github.com/user-attachments/assets/16a5fdbb-b0c6-4757-a9ef-49c675030176)
+
 # Live website version:
 https://www.akaroon.com/
+
 
