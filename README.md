@@ -17,6 +17,16 @@ The diagram below shows the full technical architecture of the Akaroon platform,
 
 ![Akaroon System Architecture](architecture_diagram.png)
 
+## Screenshots
+
+| Blog Homepage | Main Search |
+|---|---|
+| ![Blog](docs/screenshots/01_blog_homepage.png) | ![Search](docs/screenshots/02_main_search.png) |
+
+| Search Results | Category Filter (التأصيل) |
+|---|---|
+| ![Results](docs/screenshots/03_search_results.png) | ![Filter](docs/screenshots/04_category_filter.png) |
+
 ## Main Components
 
 | Component | Description |
