@@ -1,0 +1,135 @@
+# <!=Copyright (C) 2020 Blossom Themes
+# This file is distributed under the GNU General Public License v2 or later.=!>
+msgid ""
+msgstr ""
+"Project-Id-Version: Blossom Speaker 1.0.5\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/theme/blossom-speaker\n"
+"POT-Creation-Date: 2020-02-13 06:46:08+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2020-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: grunt-wp-i18n 1.0.3\n"
+
+#: functions.php:43
+msgid "Demo & Documentation"
+msgstr ""
+
+#: functions.php:56
+msgid "Demo Link: %1$sClick here.%2$s"
+msgstr ""
+
+#: functions.php:58
+msgid "Documentation Link: %1$sClick here.%2$s"
+msgstr ""
+
+#: functions.php:87
+msgid "Site Title Font"
+msgstr ""
+
+#: functions.php:88
+msgid "Site title and tagline font."
+msgstr ""
+
+#: functions.php:110
+msgid "Site Title Font Size"
+msgstr ""
+
+#: functions.php:111
+msgid "Change the font size of your site title."
+msgstr ""
+
+#: functions.php:126
+msgid "Typography"
+msgstr ""
+
+#: functions.php:146
+msgid "Primary Font"
+msgstr ""
+
+#: functions.php:147
+msgid "Primary font of the site."
+msgstr ""
+
+#: functions.php:168
+msgid "Secondary Font"
+msgstr ""
+
+#: functions.php:169
+msgid "Secondary font of the site."
+msgstr ""
+
+#: functions.php:452
+msgid " Blossom Speaker | Developed By "
+msgstr ""
+
+#: functions.php:453
+msgid " Blossom Themes"
+msgstr ""
+
+#: functions.php:454
+msgid " Powered by %s"
+msgstr ""
+
+#: functions.php:454
+msgid "https://wordpress.org/"
+msgstr ""
+
+#. Theme Name of the plugin/theme
+msgid "Blossom Speaker"
+msgstr ""
+
+#. Theme URI of the plugin/theme
+msgid "https://blossomthemes.com/downloads/blossom-speaker-free-wordpress-theme/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Blossom Speaker is a free child theme of Blossom Coach free WordPress theme "
+"dedicated to create websites for motivational speakers, life coaches, "
+"health coaches, mentors, influencers, and therapists. You can create a "
+"beautiful feminine website with this theme without any coding knowledge. "
+"This theme comes with an elegant and attractive design to highlight your "
+"services. The effective landing page with strategically placed CTA buttons "
+"and newsletter section will help you generate higher leads for your "
+"business and convert them into customers. It is a fully responsive theme "
+"and mobile-friendly theme that displays your content beautifully on every "
+"screen sizes. The theme is speed optimized to provide your visitors a "
+"smooth browsing experience while visiting your website. Furthermore, it is "
+"ultra SEO optimized along with Schema.org markup ready to help your website "
+"rank higher in search engine results. Some other important features of this "
+"theme are WooCommerce compatible, translation ready, RTL scripts ready, and "
+"option to add custom CSS codes. Check theme details at "
+"https://blossomthemes.com/downloads/blossom-speaker-free-wordpress-theme/, "
+"demo at https://demo.blossomthemes.com/blossom-speaker/, read the "
+"documentation at https://docs.blossomthemes.com/docs/blossom-speaker/, and "
+"get support at https://blossomthemes.com/support-ticket/."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Blossom Themes"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://blossomthemes.com/"
+msgstr ""
+
+#: functions.php:333
+#. Translators: If there are characters in your language that are not supported
+#. by respective fonts, translate this to 'off'. Do not translate into your own
+#. language.
+msgctxt "Primary Font: on or off"
+msgid "on"
+msgstr ""
+
+#: functions.php:334
+msgctxt "Secondary Font: on or off"
+msgid "on"
+msgstr ""
+
+#: functions.php:335
+msgctxt "Site Title Font: on or off"
+msgid "on"
+msgstr ""

@@ -1,0 +1,1453 @@
+AWSTATS DATA FILE 7.7 (build 20180105)
+# If you remove this file, all statistics for date 202208 will be lost/reset.
+# Last config file used to build this data file was ./awstats.conf.
+
+# Position (offset in bytes) in this file for beginning of each section for
+# direct I/O access. If you made changes somewhere in this file, you should
+# also remove completely the MAP section (AWStats will rewrite it at next
+# update).
+BEGIN_MAP 28
+POS_GENERAL 1971                
+POS_TIME 2642                
+POS_VISITOR 39855               
+POS_DAY 55655               
+POS_DOMAIN 3598                
+POS_LOGIN 3832                
+POS_ROBOT 3987                
+POS_WORMS 5135                
+POS_EMAILSENDER 5266                
+POS_EMAILRECEIVER 5409                
+POS_SESSION 56474               
+POS_SIDER 56675               
+POS_FILETYPES 5544                
+POS_DOWNLOADS 5786                
+POS_OS 20094               
+POS_BROWSER 20413               
+POS_SCREENSIZE 23069               
+POS_UNKNOWNREFERER 23143               
+POS_UNKNOWNREFERERBROWSER 23663               
+POS_ORIGIN 23782               
+POS_SEREFERRALS 23923               
+POS_PAGEREFS 24247               
+POS_SEARCHWORDS 24395               
+POS_KEYWORDS 24605               
+POS_MISC 2306                
+POS_ERRORS 24724               
+POS_CLUSTER 3688                
+POS_SIDER_404 24918               
+END_MAP
+
+# LastLine    = Date of last record processed - Last record line number in last log - Last record offset in last log - Last record signature value
+# FirstTime   = Date of first visit for history file
+# LastTime    = Date of last visit for history file
+# LastUpdate  = Date of last update - Nb of parsed records - Nb of parsed old records - Nb of parsed new records - Nb of parsed corrupted - Nb of parsed dropped
+# TotalVisits = Number of visits
+# TotalUnique = Number of unique visitors
+# MonthHostsKnown   = Number of hosts known
+# MonthHostsUnKnown = Number of hosts unknown
+BEGIN_GENERAL 8
+LastLine 20230210055354 1 0 5319097042442
+FirstTime 20220801031041
+LastTime 20220829144435
+LastUpdate 20230403113926 1 0 0 0 0
+TotalVisits 414                 
+TotalUnique 373                 
+MonthHostsKnown 0                   
+MonthHostsUnknown 439                 
+END_GENERAL
+
+# Misc ID - Pages - Hits - Bandwidth
+BEGIN_MISC 10
+RealPlayerSupport 0 0 0
+AddToFavourites 0 0 0
+DirectorSupport 0 0 0
+TotalMisc 0 0 0
+JavascriptDisabled 0 0 0
+FlashSupport 0 0 0
+PDFSupport 0 0 0
+JavaEnabled 0 0 0
+QuickTimeSupport 0 0 0
+WindowsMediaPlayerSupport 0 0 0
+END_MISC
+
+# Hour - Pages - Hits - Bandwidth - Not viewed Pages - Not viewed Hits - Not viewed Bandwidth
+BEGIN_TIME 24
+0 24 29 78876 105 196 93041598
+1 66 137 257825171 104 262 82534421
+2 18 24 237706 127 173 97820647
+3 31 37 217086 127 203 224160601
+4 12 27 1031319 135 623 169908511
+5 135 171 1987606 170 274 205510207
+6 33 71 2066084 61 147 32562044
+7 12 55 2591046 73 125 168674820
+8 33 58 1263149 167 203 36923230
+9 28 308 748097063 376 416 42271937
+10 29 111 4802150 111 247 89802594
+11 29 1596 423807093 108 182 71491127
+12 19 123 21512883 68 119 117691741
+13 26 307 49145289 78 108 36489721
+14 8 70 14663973 43 89 90048877
+15 27 248 322117590 91 166 51596994
+16 13 480 132742596 51 83 18311478
+17 19 32 1300021 102 236 44122906
+18 21 23 422183 100 181 102573573
+19 21 69 3159764 228 330 100843241
+20 35 479 297079380 119 962 242499306
+21 34 50 24037429 100 191 33962892
+22 29 43 92732072 86 144 82177333
+23 10 17 50529576 100 164 148498699
+END_TIME
+
+# Domain - Pages - Hits - Bandwidth
+# The 10 first Pages must be first (order not required for others)
+BEGIN_DOMAIN 1
+ip 712 4565 2028841129
+END_DOMAIN
+
+# Cluster ID - Pages - Hits - Bandwidth
+BEGIN_CLUSTER 0
+END_CLUSTER
+
+# Login - Pages - Hits - Bandwidth - Last visit
+# The 10 first Pages must be first (order not required for others)
+BEGIN_LOGIN 0
+END_LOGIN
+
+# Robot ID - Hits - Bandwidth - Last visit - Hits on robots.txt
+# The 10 first Hits must be first (order not required for others)
+BEGIN_ROBOT 26
+core 1284 320954481 20220829082028 0
+bingbot/ 762 1611849221 20220829115747 36
+wordpress 674 4002908 20220829110107 0
+bot[\s_+:,\.\;\/\\-] 371 154293526 20220829113901 94
+Googlebot/ 366 190048487 20220829131553 55
+MJ12bot/ 161 7064748 20220827142304 27
+YandexBot/ 151 78625412 20220828115404 64
+SemrushBot/ 100 3622824 20220829064101 44
+AhrefsBot/ 58 5658 20220828211307 30
+bingpreview 34 895436 20220827180639 0
+custo 17 2907 20220816163017 0
+Firefox/1\.5 1 171 20220829082712 0
+^Mozilla/6\.0[\x20]\(compatible\)$ 3 318552 20220806014501 0
+python 12 2326 20220824042354 0
+no_user_agent 5 855 20220829114703 0
+crawl 2 342 20220825060115 0
+DotBot/ 2 305567 20220814090037 1
+BLEXBot/ 29 983 20220829042119 28
+(firefox/)([0-9]\.|[0-1][0]\.) 1 171 20220829082708 0
+Dalvik/ 1 4472550 20220816001942 0
+^mozilla\/5\.0$ 2 2720 20220829143701 0
+netcraft 2 342 20220810235424 0
+Googlebot\-Image/ 3 321920 20220828205738 0
+dataprovider\.com 6 1010 20220820230500 1
+unknown 12 348 20220828010448 12
+curl 2 171 20220815172207 0
+END_ROBOT
+
+# Worm ID - Hits - Bandwidth - Last visit
+# The 5 first Hits must be first (order not required for others)
+BEGIN_WORMS 0
+END_WORMS
+
+# EMail - Hits - Bandwidth - Last visit
+# The 20 first Hits must be first (order not required for others)
+BEGIN_EMAILSENDER 0
+END_EMAILSENDER
+
+# EMail - Hits - Bandwidth - Last visit
+# The 20 first hits must be first (order not required for others)
+BEGIN_EMAILRECEIVER 0
+END_EMAILRECEIVER
+
+# Files type - Hits - Bandwidth - Bandwidth without compression - Bandwidth after compression
+BEGIN_FILETYPES 9
+pl 9 292635 0 0
+jpg 3062 798033155 0 0
+gif 12 158784 0 0
+png 173 7007276 0 0
+php 703 16160988 0 0
+css 232 14915979 0 0
+js 306 11471380 0 0
+xml 41 42097 0 0
+pdf 27 1180758806 0 0
+END_FILETYPES
+
+# Downloads - Hits - Bandwidth
+BEGIN_DOWNLOADS 202
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/files/2.pdf 4 0 12943084
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/251.pdf 4 0 2581392
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/files/213.pdf 4 0 9146768
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/files/117.pdf 4 0 28739364
+/blog/wp-content/uploads/2020/05/290.pdf 4 0 125746348
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/files/305.pdf 3 0 13417650
+/files/%D8%A7%D9%84%D9%81%D9%84%D8%B3%D9%81%D8%A9/files/170.pdf 2 0 206852128
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/files/164.pdf 2 0 9087852
+/blog/wp-content/uploads/2020/05/12.pdf 2 0 18787940
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/247.pdf 2 2 16038728
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/445.pdf 2 3 145909207
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/files/77.pdf 2 33 48786066
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/506.pdf 2 0 47153842
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/files/30.pdf 2 0 2861496
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/292.pdf 1 0 6365371
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/149.pdf 1 0 6893253
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/11.pdf 1 0 4187893
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/95.pdf 1 0 16974701
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/172.pdf 1 0 1740975
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/496.pdf 1 0 7180619
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/files/212.pdf 1 0 10026339
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/93.pdf 1 0 2066397
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/423.pdf 1 0 6074468
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/41.pdf 1 0 10149894
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/225.pdf 1 0 19195411
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/487.pdf 1 0 5695390
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/237.pdf 1 16 28420744
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/23.pdf 1 0 2154190
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/252.pdf 1 0 31562455
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/161.pdf 1 2 18584220
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/171.pdf 1 0 4212869
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/134.pdf 1 0 6467395
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/files/178.pdf 1 0 6598510
+/files/%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9/files/140.pdf 1 0 4980976
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/106.pdf 1 0 5690992
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/362.pdf 1 0 8282131
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/395.pdf 1 0 1535419
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/38.pdf 1 0 3507963
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/253.pdf 1 0 1191778
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/360.pdf 1 0 36327202
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/7.pdf 1 0 2139020
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/446.pdf 1 0 2367478
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/55.pdf 1 0 48959708
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/251.pdf 1 0 17497607
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/files/33.pdf 1 0 18417101
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/files/112.pdf 1 0 2467502
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/361.pdf 1 0 6943285
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/32.pdf 1 0 4552554
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/110.pdf 1 0 7892376
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/350.pdf 1 0 7104830
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/306.pdf 1 0 3011059
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/57.pdf 1 0 12547449
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/451.pdf 1 0 1358978
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/files/79.pdf 1 12 110959929
+/files/%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9/files/58.pdf 1 0 4517210
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/459.pdf 1 0 82261
+/files/%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9/files/31.pdf 1 0 4758226
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/486.pdf 1 0 14354842
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/files/401.pdf 1 0 14612332
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/94.pdf 1 0 6084547
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/507.pdf 1 0 26692573
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/files/1.pdf 1 0 2036658
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/302.pdf 1 0 14093005
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/344.pdf 1 0 20239168
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/34.pdf 1 0 1413086
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/477.pdf 1 0 246119
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/80.pdf 1 0 26428312
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/2.pdf 1 0 9424455
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/141.pdf 1 0 8065491
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/files/118.pdf 1 0 3895290
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/112.pdf 1 0 5190560
+/files/%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9/files/18.pdf 1 0 12232749
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/111.pdf 1 0 10220387
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/5.pdf 1 0 1407684
+/files/%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9/files/48.pdf 1 0 2296720
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/242.pdf 1 0 12608254
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/341.pdf 1 0 10813423
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/411.pdf 1 0 1851240
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/298.pdf 1 0 3228501
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/104.pdf 1 0 1134489
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/333.pdf 1 0 48320919
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/90.pdf 1 0 23909712
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/177.pdf 1 0 1810340
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/310.pdf 1 0 4039244
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/374.pdf 1 0 6490003
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/231.pdf 1 0 638077
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/108.pdf 1 0 2625793
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/358.pdf 1 0 8768527
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/245.pdf 1 0 1718847
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/files/10.pdf 1 0 8878750
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/375.pdf 1 0 802714
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/files/288.pdf 1 0 39808941
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/485.pdf 1 0 11364374
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/61.pdf 1 0 9686065
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/161.pdf 1 0 4231351
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/149.pdf 1 0 3466887
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/408.pdf 1 0 1960026
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/311.pdf 1 0 24662003
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/2.pdf 1 0 5777559
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/70.pdf 1 0 17191338
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/89.pdf 1 0 6823693
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/289.pdf 1 0 16505129
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/376.pdf 1 0 6313771
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/137.pdf 1 0 11582048
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/173.pdf 1 0 3542337
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/209.pdf 1 0 1677659
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/44.pdf 1 0 31708658
+/files/%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9/files/95.pdf 1 0 20300961
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/67.pdf 1 0 930425
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/458.pdf 1 0 619637
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/295.pdf 1 0 10890034
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/10.pdf 1 0 13159752
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/41.pdf 1 0 18728456
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/315.pdf 1 0 9166233
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/348.pdf 1 0 11460412
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/272.pdf 1 0 15831709
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/66.pdf 1 0 22494900
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/463.pdf 1 0 216152
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/308.pdf 1 0 9731809
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/399.pdf 1 0 10972411
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/330.pdf 1 0 8385433
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/303.pdf 1 0 40031419
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/333.pdf 1 0 2247093
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/405.pdf 1 0 2427715
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/86.pdf 1 0 1496784
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/312.pdf 1 0 24282225
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/60.pdf 1 0 1554758
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/456.pdf 1 0 3810998
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/170.pdf 1 0 5320820
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/222.pdf 1 0 653445
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/files/2.pdf 1 0 1807935
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/3.pdf 1 0 4927735
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/92.pdf 1 0 1396259
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/466.pdf 1 0 596617
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/264.pdf 1 0 1542874
+/files/%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9/files/150.pdf 1 0 18998771
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/439.pdf 1 0 3330477
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/500.pdf 1 0 5306706
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/42.pdf 1 0 5736883
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/35.pdf 1 0 3597357
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/215.pdf 1 0 6446271
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/394.pdf 1 0 6923572
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/434.pdf 1 0 47955722
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/102.pdf 1 0 57976827
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/63.pdf 1 0 2884172
+/files/%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9/files/84.pdf 1 19 404528539
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/176.pdf 1 0 3414781
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/114.pdf 1 0 7318370
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/488.pdf 1 0 5840193
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/127.pdf 1 0 2156050
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/387.pdf 1 0 4828029
+/files/%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9/files/73.pdf 1 0 13171509
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/471.pdf 1 0 936722
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/52.pdf 1 0 3441825
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/373.pdf 1 0 16453275
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/39.pdf 1 0 6621881
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/329.pdf 1 0 49776132
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/80.pdf 1 0 3559568
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/files/209.pdf 1 0 7310753
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/254.pdf 1 0 5309055
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/165.pdf 1 0 1450696
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/36.pdf 1 0 11201978
+/files/%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9/files/64.pdf 1 0 9077229
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/76.pdf 1 0 25369724
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/258.pdf 1 0 5700504
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/212.pdf 1 0 1011193
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/354.pdf 1 0 23153819
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/576.pdf 1 0 7151380
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/33.pdf 1 0 6614381
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/263.pdf 1 0 1370748
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/475.pdf 1 0 217387
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/296.pdf 1 0 875242
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/480.pdf 1 0 344771
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/372.pdf 1 0 22775211
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/files/147.pdf 1 0 21799676
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/147.pdf 1 0 43908581
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/files/54.pdf 1 14 9978082
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/311.pdf 1 0 7144693
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/files/3.pdf 1 2 6369652
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/72.pdf 1 0 11541648
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/154.pdf 1 0 17108912
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/220.pdf 1 0 6058485
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/368.pdf 1 0 7424298
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/320.pdf 1 0 4645048
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/249.pdf 1 0 12403562
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/files/46.pdf 1 0 6344781
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/299.pdf 1 0 8953240
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/428.pdf 1 0 10452706
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/441.pdf 1 0 12341432
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/153.pdf 1 0 5267343
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/files/54.pdf 1 0 72485691
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/370.pdf 1 0 3392786
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/404.pdf 1 0 3130587
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/63.pdf 1 0 9298498
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/352.pdf 1 0 81679300
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/501.pdf 1 0 1436866
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/448.pdf 1 0 5111620
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/435.pdf 1 0 21051288
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/419.pdf 1 0 11055814
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/226.pdf 1 0 362065
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/199.pdf 1 0 1023298
+/robots.txt 0 1 29
+END_DOWNLOADS
+
+# OS ID - Hits
+BEGIN_OS ID - Hits - Pages 19
+win7 88 59
+macosx11 1 1
+winnt 1 1
+ios_iphone 48 9
+macosx8 6 4
+win8.1 34 24
+macosx9 17 12
+win8 6 1
+winxp 11 6
+Unknown 18 17
+winlong 4 2
+macosx10 25 25
+linuxandroid 2511 78
+macosx7 6 3
+linux 159 149
+win10 1676 291
+linuxubuntu 1 0
+macosx 52 28
+macosx6 5 2
+END_OS
+
+# Browser ID - Hits - Pages
+BEGIN_BROWSER 128
+chrome63.0.3239.132 8 6
+firefox36.37.1 1 1
+chrome65.0.2278.133 1 1
+safari6.1.1 3 1
+firefox28.0 3 1
+netscape5.0 1 1
+safari15.2 1 0
+chrome83.0.4103.44 2 2
+chrome35.0.1916.141 1 0
+firefox102.0 434 7
+chrome99.0.4859.172 1 1
+safari 10 1
+msie10.0 6 2
+chrome45.0.2454.94 2 2
+safari15.3 1 0
+chrome96.0.4664.45 24 10
+chrome90.0.4430.93 2 2
+chrome102.0.5005.61 1 1
+chrome51.0.2704.84 1 1
+chrome102.0.5005.78 1 0
+chrome83.0.4103.97 113 113
+firefox64.0 4 4
+chrome40.0.2214.111 1 1
+chrome100.0.4896.79 1528 19
+iphone 1 0
+chrome78.0.3904.108 45 37
+firefox103.0 1 0
+firefox29.0 2 1
+firefox59.0 2 2
+firefox33.0 6 3
+chrome84.0.4147.89 1 1
+safari11.0 1 1
+chrome90.0.4427.0 2 2
+chrome67.0.3396.99 2 2
+chrome81.0.4044.138 4 4
+chrome96.0.4664.104 1 0
+safari5.1.9 3 2
+chrome104.0.0.0 728 40
+Unknown 1 1
+chrome83.0.4103.61 4 4
+firefox89.0 1 1
+chrome73.0.3683.86 6 5
+firefox97.0 3 3
+opera89.0.4447.51 3 3
+chrome84.0.4147.125 2 2
+safari7.0 1 1
+chrome60.0.3112.107 12 12
+chrome100.0.4896.127 1 1
+safari15.4 1 0
+chrome92.0.4515.159 1 1
+chrome97.0.4692.70 1 0
+safari7.0.1 1 1
+chrome104.0.5112.69 4 0
+firefox31.0 4 1
+chrome26.0.1410.65 1 1
+firefox58.0 1 1
+chrome104.0.5112.97 2 0
+chrome67.0.3396.79 4 4
+chrome76.0.3809.132 3 2
+chrome95.0.4638.69 36 25
+firefox27.3 2 1
+chrome89.0.4389.114 24 19
+firefox21.0 1 1
+firefox81.0 12 12
+chrome35.0.1916.153 4 2
+chrome31.0.1650.57 8 5
+msie11.0 12 7
+safari6.1 1 1
+chrome21.0.1180.82 2 2
+safari14.1.2 1 0
+firefox62.0 8 8
+firefox36.0 5 1
+chrome88.0.4240.193 31 24
+chrome99.0.4844.88 24 2
+chrome83.0.4103.34 2 2
+chrome71.0.3578.98 5 5
+chrome80.0.3987.149 21 16
+edge12 10 0
+firefox84.0 21 2
+android 26 23
+chrome52.0.2743.116 15 15
+chrome79.0.3945.88 5 5
+chrome61.0.3163.100 1 1
+chrome39.0.2171.27 1 1
+safari13.0.3 7 7
+chrome12.0.742.91 3 2
+opera12.16 1 1
+chrome103.0.5060.129 9 0
+chrome90.0.4430.85 2 2
+chrome35.0.1916.47 1 1
+chrome32.0.1700.72 3 1
+safari15.6 47 2
+firefox26.0 19 5
+firefox45.0 1 1
+chrome99.0.4844.84 1 1
+chrome92.0.4515.105 12 0
+firefox96 18 18
+chrome103.0.0.0 860 21
+chrome41.0.2227.1 6 6
+chrome91.0.4472.114 7 7
+msie11 3 1
+safari13.0.1 1 0
+chrome84.0.4147.105 44 4
+edge18 12 12
+chrome99.0.4844.74 2 2
+chrome39.0.2171.95 1 1
+mozilla 17 16
+chrome31.0.1650.63 25 12
+safari15.5 2 0
+chrome101.0.4951.67 1 1
+chrome94.0.4606.85 1 0
+chrome81.0.4044.129 14 14
+chrome62.0.3202.94 2 2
+firefox25.0 13 7
+chrome60.0.3112.90 3 2
+firefox27.0 3 1
+chrome85.0.4183.121 177 2
+chrome60.0.3112.101 1 1
+chrome76.0.3809.100 1 1
+chrome36.0.1985.67 6 6
+chrome69.0.2523.107 1 1
+chrome66.0.3359.181 32 32
+msie9.0 12 11
+safari14.0.3 1 0
+chrome102.0.0.0 2 1
+chrome74.0.3729.169 5 5
+firefox24.0 5 5
+edge17 1 1
+END_BROWSER
+
+# Screen size - Hits
+BEGIN_SCREENSIZE 0
+END_SCREENSIZE
+
+# Unknown referer OS - Last visit date
+BEGIN_UNKNOWNREFERER 6
+Mozilla/5.0_zgrab/0.x_(compatible;_Researchscan/http;__http://researchscan.comsys.rwth-aachen.de) 20220824101651
+Mozilla/5.0_(compatible) 20220806014351
+Mozilla/5.0_(compatible;_bingbot/2.0;__http://www.bing.com/bingbot.htm) 20220824043158
+Mozilla/5.0_(compatible;_CensysInspect/1.1;__https://about.censys.io/) 20220829141633
+Mozilla/5.0_(compatible;_Google-Site-Verification/1.0) 20220823233242
+WhatsApp/2.22.12.80_A 20220827204718
+END_UNKNOWNREFERER
+
+# Unknown referer Browser - Last visit date
+BEGIN_UNKNOWNREFERERBROWSER 1
+WhatsApp/2.22.12.80_A 20220827204718
+END_UNKNOWNREFERERBROWSER
+
+# Origin - Pages - Hits 
+BEGIN_ORIGIN 6
+From0 533 606
+From1 1 1
+From2 19 84
+From3 0 0
+From4 159 3978
+From5 0 0
+END_ORIGIN
+
+# Search engine referers ID - Pages - Hits
+BEGIN_SEREFERRALS 10
+www_google_nl 0 2
+www_google_se 1 2
+www_google_co_uk 0 1
+www_google_ca 0 1
+www_google_ae 0 1
+www_google_com_sg 1 2
+bing 2 2
+google_com 0 11
+www_google_com 15 61
+www_google_de 0 1
+END_SEREFERRALS
+
+# External page referers - Pages - Hits
+# The 10 first Pages must be first (order not required for others)
+BEGIN_PAGEREFS 0
+END_PAGEREFS
+
+# Search keyphrases - Number of search
+# The 10 first number of search must be first (order not required for others)
+BEGIN_SEARCHWORDS 1
+%d8%b3%d9%88%d8%b1%d9%87+%d8%a7%d9%84%d8%ba%d9%84%d9%82 1
+END_SEARCHWORDS
+
+# Search keywords - Number of search
+# The 10 first number of search must be first (order not required for others)
+BEGIN_KEYWORDS 2
+%d8%b3%d9%88%d8%b1%d9%87 1
+%d8%a7%d9%84%d8%ba%d9%84%d9%82 1
+END_KEYWORDS
+
+# Errors - Hits - Bandwidth
+BEGIN_ERRORS 10
+503 12 227382
+404 1332 3027153
+405 1 0
+409 1 2761
+302 1 0
+301 211 19904
+400 2 2
+206 45 3441773
+401 3 381
+403 25 5506
+END_ERRORS
+
+# URL with 404 errors - Hits - Last URL referrer
+BEGIN_SIDER_404 328
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/css/images/ui-icons_555555_256x240.png 1 -
+/plugins/kcfinder/upload.php 1 -
+/ALFA_DATA 5 www.bing.com
+/wp-backup-sql-302.php 5 www.bing.com
+/wp-includes/customize/class-wp-customize-nav-menu.php 2 www.google.com
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/css/images/ui-icons_555555_256x240.png 1 -
+/accesson.php 1 -
+//wp-content/plugins/wp-engine-module/wp-engine.php 1 www.google.com
+/defau1t.php 6 www.bing.com
+/blog/statss 1 -
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/image/144.jpg 4 https://akaroon.com/blog/ibrahimfinalsearch.php
+/brogxwef.php 1 www.google.com
+//wp-content/plugins/fwduvp/content/downloader.php 2 www.google.com
+//wp-admin/admin-ajax.php 7 www.google.com
+/load.php 1 -
+/_profiler/phpinfo 11 -
+/ldasogoo.php 1 www.google.com
+/ennqqnmw.php 1 www.google.com
+/wp-stream.php 1 -
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/css/images/ui-icons_cc0000_256x240.png 1 -
+/ctwfgkzf.php 1 www.google.com
+/cgi-bin/.env 3 -
+/app/etc/local.xml 1 -
+/wp-content/plugins/dzs-zoomsounds/savepng.php 2 -
+/wp-includes/css/css.php 5 www.bing.com
+/aws.yml 4 -
+/wp-admin/ALFA_DATA 4 www.bing.com
+/wp-booking.php 4 www.bing.com
+//wp-content/plugins/dzs-zoomsounds/savepng.php 1 www.google.com
+/upl.php 1 -
+/class-wp-widget-archives.php 1 -
+/public/_ignition/health-check/ 1 -
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/image/406 1 http://akaroon.com/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/search.php
+/magmi-importer/conf/magmi.ini 1 -
+/up.php 5 www.bing.com
+/xmlrpc.php 43 -
+/filemanager/dialog.php 1 -
+/assets/js/kcfinder/upload.php 1 -
+/wp-content/plugins/wpconfig.bak.php 5 www.bing.com
+/media-admin.php 4 www.bing.com
+/defau11.php 5 www.bing.com
+/doc.php 5 www.bing.com
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/css/images/ui-icons_777777_256x240.png 1 -
+/system_log.php 5 www.bing.com
+//wp-content/x.php 1 www.google.com
+/webdata.php 1 -
+/fresh.php 1 -
+//wp-admin/admin-post.php 2 www.google.com
+/z.php 5 www.bing.com
+/.well-known/ 21 binance.com
+/ads.txt 62 -
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/css/images/ui-icons_555555_256x240.png 1 -
+/ups.php 5 www.bing.com
+/wp-content/mu-plugins/db-safe-mode.php 5 www.bing.com
+/fresh1.php 1 -
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/css/images/ui-icons_cc0000_256x240.png 1 -
+/sites/default/files/ALFA_DATA 4 www.bing.com
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/image/416 1 http://akaroon.com/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/search.php
+//wp-content/plugins/divi-contact-extended/includes/upload.php 1 www.google.com
+/wp-includes/cgialfa 4 www.bing.com
+/phpformbuilder/plugins/filemanager/dialog.php 1 -
+/wp-admin/style.php 5 www.bing.com
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/css/images/ui-icons_777620_256x240.png 1 -
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/css/images/ui-icons_444444_256x240.png 1 -
+/storage/.env 2 -
+//wp-content/plugins/cherry-plugin/admin/import-export/a57bze8931.php 1 www.google.com
+/wp-content/uploads/cgialfa 5 www.bing.com
+/IAOL/ibrahimfinalsearch.php 1 -
+/feed/ 11 -
+/wp-admin/cgialfa 4 www.bing.com
+/files/%D8%A7%D9%84%D9%81%D9%84%D8%B3%D9%81%D8%A9/css/images/ui-icons_555555_256x240.png 1 -
+/wp-clearline.php 1 -
+/files/%D8%A7%D9%84%D9%81%D9%84%D8%B3%D9%81%D8%A9/css/images/ui-icons_cc0000_256x240.png 1 -
+/core/.env 1 -
+/files/%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B3%D8%A9/css/images/ui-icons_cc0000_256x240.png 1 -
+/sites/default/files/alfacgiapi 4 www.bing.com
+/.env.bak 4 -
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/image/483.jpg 2 https://akaroon.com/blog/ibrahimfinalsearch.php
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/css/images/ui-icons_777777_256x240.png 1 -
+/blog//wp-json/oembed/1.0/embed 27 -
+//wp-content/king.php 1 www.google.com
+/wp-content/cgialfa 4 www.bing.com
+/config/aws.yml 4 -
+/1.php 5 www.bing.com
+/humans.txt 3 -
+/upload_index.php 1 -
+/kcfinder/upload.php 1 -
+/sitemap.txt 27 -
+/blog/Roboto-Regular.ttf 1 https://akaroon.com/blog/
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/image/6001.jpg 2 https://akaroon.com/blog/ibrahimfinalsearch.php
+/wp-includes/alfacgiapi 4 www.bing.com
+/wp-blockdown.php 1 -
+/windex.php 1 -
+/local.php 1 -
+//wp-content/plugins/ioptimization/IOptimize.php 1 www.google.com
+/wp-signin.php 4 www.bing.com
+//wp-content/uploads/typehub/custom/a57bze8931/.__a57bze8931.php 1 www.google.com
+/th3_alpha.php 1 -
+/d2.php 1 -
+//wp-content/plugins/ioptimizations/IOptimizes.php 1 www.google.com
+/radio.php 5 www.bing.com
+/config.json 1 -
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/image/425.jpg 2 https://akaroon.com/blog/ibrahimfinalsearch.php
+/blog/stats 1 -
+/magmi/web/download_file.php 1 -
+/files/%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B3%D8%A9/css/images/ui-icons_444444_256x240.png 1 -
+/test.php 5 www.bing.com
+/files/%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9/css/images/ui-icons_555555_256x240.png 1 -
+/wp-blockup.php 1 -
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/css/images/ui-icons_444444_256x240.png 1 -
+/files/%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B3%D8%A9/css/images/ui-icons_555555_256x240.png 1 -
+/wp-content/plugins/backup_index.php 5 www.bing.com
+/laravel/.env 4 -
+/files/%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9/css/images/ui-icons_777777_256x240.png 1 -
+/2index.php 1 -
+/files/%D8%A7%D9%84%D9%81%D9%84%D8%B3%D9%81%D8%A9/css/images/ui-icons_ffffff_256x240.png 1 -
+/beence.php 5 www.bing.com
+/error.php 5 www.bing.com
+/web.php 1 -
+/phpmyadmin/ 1 -
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/css/images/ui-icons_777620_256x240.png 1 -
+/wikindex.php 2 -
+/files/%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B3%D8%A9/css/images/ui-icons_777620_256x240.png 1 -
+/infodat.php 1 -
+/.git/config 14 -
+//wp-content/plugins/cherry-plugin/admin/import-export/upload.php 1 www.google.com
+/app/.env 1 -
+/upload.php 6 www.bing.com
+/wp-content/alfacgiapi 4 www.bing.com
+/wp-supports.php 1 -
+/.env/config 2 -
+/export.php 5 www.bing.com
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/image/173.jpg 3 https://akaroon.com/blog/ibrahimfinalsearch.php
+/alfa.php 5 www.bing.com
+//wp-content/plugins/wpcargo/includes/barcode.php 1 www.google.com
+/wp_wrong_datlib.php 4 www.bing.com
+/fonlccfy.php 1 www.google.com
+/files/%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9/css/images/ui-icons_ffffff_256x240.png 1 -
+/olux.php 5 www.bing.com
+//wp-content/plugins/ioptimizations/a57bze8931.php 1 www.google.com
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/image/600.jpg 2 https://akaroon.com/blog/ibrahimfinalsearch.php
+/files/%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B3%D8%A9/css/images/ui-icons_777777_256x240.png 1 -
+/templates/beez3/index.php 5 www.bing.com
+//vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php 1 -
+/.env 57 -
+/local/.env 3 -
+/wpconfig.bak.php 1 -
+/legion.php 5 www.bing.com
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/css/images/ui-icons_ffffff_256x240.png 1 -
+/s_ne.php 6 www.bing.com
+/files/%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9/css/images/ui-icons_777620_256x240.png 1 -
+/s_e.php 6 www.bing.com
+/alfacgiapi 5 www.bing.com
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/image/294.jpg 3 https://akaroon.com/blog/ibrahimfinalsearch.php
+/blog/ 11 https://akaroon.com/blog/
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/css/images/ui-icons_ffffff_256x240.png 1 -
+/wp-includes/wp-class.php 7 www.bing.com
+/.well-known/alfacgiapi 5 www.bing.com
+/wp-option.php 1 -
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/css/images/ui-icons_777620_256x240.png 1 -
+/sites/default/files/ 21 binance.com
+/jx2274/ 1 -
+/assets/plugins/kcfinder/upload.php 1 -
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/css/images/ui-icons_cc0000_256x240.png 1 -
+/files/%D8%A7%D9%84%D8%AA%D9%88%D8%AD%D9%8A%D8%AF/image/137.jpg 6 https://akaroon.com/blog/ibrahimfinalsearch.php
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/css/images/ui-icons_555555_256x240.png 1 -
+/data/.env 1 -
+/var/cache/mage--2/ 1 -
+/admin.php 2 -
+/__media__/js/netsoltrademark.php 1 -
+/cbrtzinv.php 1 www.google.com
+/admin/controller/extension/extension/cgialfa 4 www.bing.com
+//wp-content/plugins/dzs-zoomsounds/a57bze8931.php 1 www.google.com
+/js/kcfinder/upload.php 1 -
+/blog// 57 -
+/backend/.env 3 -
+/3index.php 1 -
+/files/%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9/css/images/ui-icons_cc0000_256x240.png 1 -
+/wp-plugins.php 5 www.bing.com
+/.index.env 2 -
+//wp-content/plugins/instabuilder2/cache/up.php 2 www.google.com
+/wp-22.php 1 -
+/wp-content/db-cache.php 5 www.bing.com
+//wp-content/uploads/kaswara/fonts_icon/a57bze8931/.__a57bze8931.php 1 www.google.com
+/var/resource_config.json 1 -
+/blog/statsss 6 -
+/smtphec.php 1 -
+//wp-content/plugins/formcraft/file-upload/server/php/files/a57bze8931.php 1 www.google.com
+/wp-blog-post.php 1 -
+/assets/kcfinder/upload.php 1 -
+/outcms.php 1 -
+/app-ads.txt 1 -
+/wp-content/uploads/ALFA_DATA 5 www.bing.com
+/config.bak.php 5 www.bing.com
+/blue.php 1 -
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/294.pdf 1 -
+/files/%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B3%D8%A9/css/images/ui-icons_ffffff_256x240.png 1 -
+/wp-content/mu-plugins-old/index.php 1 -
+/magmi-importer/web/download_file.php 1 -
+/1index.php 5 www.bing.com
+/wp/wp-content/plugins/instabuilder2/assets/css/instabuilder2.css 5 www.google.com
+/_ignition/health-check/ 1 -
+/wpecho.php 1 -
+/wp-includes/css/wp-config.php 5 www.bing.com
+//wp-content/plugins/gatewayapi/inc/a57bze8931.php 1 www.google.com
+/config.php 5 www.bing.com
+/wp-includes/ALFA_DATA 5 www.bing.com
+/pma/ 1 -
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/image/417 1 http://akaroon.com/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/search.php
+/wordpress/wp-content/plugins/instabuilder2/assets/css/instabuilder2.css 5 www.google.com
+/.aws/credentials 4 -
+/admin/controller/extension/extension/ALFA_DATA 4 www.bing.com
+/archives.php 4 www.bing.com
+/.git/ 1 -
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/image/600.jpg 15 https://akaroon.com/blog/ibrahimfinalsearch.php
+/phpinfo.php 4 -
+/assets/filemanager/dialog.php 1 -
+/debug/default/view 3 -
+/vkxhrgca.php 1 www.google.com
+/wp-mail.php 1 -
+/env/config 2 -
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/files/600.pdf 4 https://akaroon.com/blog/ibrahimfinalsearch.php
+/wp-content/outcms.php 5 www.bing.com
+/a.php 5 www.bing.com
+/wp-slicemap.php 1 -
+/.DS_Store 2 -
+/templates/beez3/cgialfa 4 www.bing.com
+/images/sudan.png 2 http://akaroon.com/gallary/cv.html
+/moduless.php 5 www.bing.com
+/wp-commentin.php 3 -
+//abruzi.php4 1 www.google.com
+/public/.env 6 -
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/css/images/ui-icons_444444_256x240.png 1 -
+/x.php 5 www.bing.com
+/wp-admin/css/ 21 binance.com
+/.well-known/cgialfa 5 www.bing.com
+/uploads/ 20 binance.com
+//wp-content/plugins/ioptimization/a57bze8931.php 1 www.google.com
+/blog/wp-content/plugins/instabuilder2/assets/css/instabuilder2.css 5 www.google.com
+/old-index.php 2 akaroon.com
+/shell.php 5 www.bing.com
+/wp-includes/wlwmanifest.xml 29 -
+/wp-load.php 6 www.bing.com
+/prod/.env 1 -
+/gpvnjtax.php 1 www.google.com
+/templates/beez3/ALFA_DATA 5 www.bing.com
+/images/ 21 binance.com
+/alfacgiapi/perl.alfa 4 www.google.com
+/asset/kcfinder/upload.php 1 -
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/css/images/ui-icons_cc0000_256x240.png 1 -
+//wp-content/plugins/wp-file-manager/lib/php/connector.minimal.php 1 www.google.com
+/phpMyAdmin/ 1 -
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/css/images/ui-icons_ffffff_256x240.png 1 -
+/wp-content/export.php 5 www.bing.com
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/css/images/ui-icons_777620_256x240.png 1 -
+/dup-installer/main.installer.php 1 -
+/ALFA_DATA/alfacgiapi/perl.alfa 4 www.google.com
+/wp-content/plugins/instabuilder2/assets/css/instabuilder2.css 5 www.google.com
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/css/images/ui-icons_777777_256x240.png 1 -
+/info.php 4 -
+/phpinfo 4 -
+/credentials.php 2 -
+/wp-content/uploads/alfacgiapi 5 www.bing.com
+/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php 9 -
+/application/config/s3.php 3 -
+/files/%D8%A7%D9%84%D9%81%D9%84%D8%B3%D9%81%D8%A9/css/images/ui-icons_444444_256x240.png 1 -
+/about.php 5 www.bing.com
+/protected/.env 3 -
+/templates/beez3/alfacgiapi 4 www.bing.com
+/phpinfo.html 2 -
+/wp-includes/wp-atom.php 5 www.bing.com
+/files/%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9/css/images/ui-icons_444444_256x240.png 1 -
+/slicemap.php 1 -
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/css/images/ui-icons_ffffff_256x240.png 1 -
+/files/%D8%A7%D9%84%D9%81%D9%84%D8%B3%D9%81%D8%A9/css/images/ui-icons_777620_256x240.png 1 -
+/xleet.php 5 www.bing.com
+/amfeed/main/download 1 -
+/un.php 1 -
+//wp-content/plugins/gatewayapi/inc/css_js.php 1 www.google.com
+/files/%D8%A7%D9%84%D9%81%D9%84%D8%B3%D9%81%D8%A9/css/images/ui-icons_777777_256x240.png 1 -
+/assets/tinymce/plugins/filemanager/dialog.php 1 -
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/css/images/ui-icons_444444_256x240.png 1 -
+/admin/controller/extension/extension/alfacgiapi 4 www.bing.com
+/votes.php 1 -
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/image/174.jpg 2 https://akaroon.com/blog/ibrahimfinalsearch.php
+/wp-content/themes/config.bak.php 5 www.bing.com
+/gank.php.PhP 5 www.bing.com
+/vendor/.env 3 -
+/application/config/sms_settings.php 3 -
+/wp-craft-report.php 1 -
+/app/config/.env 3 -
+//wp-content/plugins/apikey/apikey.php 1 www.google.com
+/wp-content/plugins/ubh/up.php 4 www.bing.com
+/style.php 5 www.bing.com
+/wp-admin/alfacgiapi 4 www.bing.com
+/.aws.yml 2 -
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/image/438.jpg 3 https://akaroon.com/blog/ibrahimfinalsearch.php
+/wp-content/ 5 -
+/shells.php 5 www.bing.com
+/wikiindex.php 1 -
+/wp-plain.php 9 www.google.com
+/index.php 5 www.bing.com
+/blog//wp-json/wp/v2/users/ 27 -
+//wp-content/plugins/wp-file-manager-pro/lib/php/connector.minimal.php 1 www.google.com
+/magmi/conf/magmi.ini 1 -
+/config.js 4 -
+/database/.env 4 -
+/blog/wp-content/plugins/ninja-forms/readme.txt 1 -
+//wp-content/plugins/wp-engine-module/a57bze8931.php 1 www.google.com
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/css/images/ui-icons_777777_256x240.png 1 -
+/defaul1.php 1 -
+/sites/default/files/cgialfa 4 www.bing.com
+/cgialfa 5 www.bing.com
+/wp-includes/images/css.php 5 www.bing.com
+/assets/plugins/filemanager/dialog.php 1 -
+/sitemap 27 -
+//wp-content/plugins/formcraft/file-upload/server/php/ 1 www.google.com
+/phpinf.php 2 -
+/admin/controller/extension/extension/ 21 binance.com
+//.env 1 -
+/wp-content/ALFA_DATA 4 www.bing.com
+/BLOG/ 2 -
+/wso.php 5 www.bing.com
+/.well-known/ALFA_DATA 5 www.bing.com
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/image/170.jpg 2 https://akaroon.com/blog/ibrahimfinalsearch.php
+/wp.php 5 www.bing.com
+/wp-includes/ID3/license.txt 9 -
+//wp-content/plugins/apikey/a57bze8931.php 1 www.google.com
+END_SIDER_404
+
+# Host - Pages - Hits - Bandwidth - Last visit date - [Start date of last visit] - [Last page of last visit]
+# [Start date of last visit] and [Last page of last visit] are saved only if session is not finished
+# The 10 first Hits must be first (order not required for others)
+BEGIN_VISITOR 439
+82.80.249.159 59 120 154006800 20220806014428
+102.122.133.231 13 222 38683930 20220819203327
+147.78.47.233 12 12 9186 20220829131721
+52.184.88.125 11 13 5278 20220807020749
+24.133.244.217 11 70 3365206 20220827080117
+125.160.187.96 9 260 454436697 20220815100314
+46.161.11.182 8 8 1368 20220815111754
+185.36.81.23 8 8 1368 20220821151428
+197.252.213.53 7 296 136982143 20220801202414
+193.142.146.230 7 7 9520 20220816061115
+196.189.197.196 2 2 113241 20220806215435
+185.27.99.141 1 1 171 20220803113154
+185.14.233.20 1 1 1360 20220807173823
+54.68.32.247 2 2 22 20220825193115
+192.30.83.132 1 1 71185 20220828083130
+34.217.109.165 1 1 171 20220823064106
+20.163.91.223 3 4 1558 20220812200240
+3.70.112.18 4 4 684 20220814135224
+54.190.77.170 1 1 171 20220823064102
+35.90.2.206 1 1 171 20220827000759
+20.219.59.53 3 4 2747 20220827005906
+5.62.20.54 3 4 2747 20220824161626
+2.147.181.115 0 1 68475 
+166.196.103.89 0 1 68475 
+20.214.230.234 3 4 1558 20220824093321
+20.196.130.14 1 1 171 20220809045453
+54.202.139.48 1 1 171 20220803054146
+20.12.45.138 3 4 1558 20220807104922
+41.95.66.46 0 7 994819 
+34.221.54.111 1 1 171 20220805052348
+66.220.149.9 0 4 15743 
+192.109.205.7 3 4 1558 20220808081359
+185.27.99.129 1 1 171 20220820005936
+35.211.94.153 1 1 1360 20220805171504
+103.252.225.164 1 1 171 20220825071701
+66.249.92.1 0 1 82204 
+5.126.44.237 1 20 1127356 20220829094634
+188.152.4.105 0 1 68475 
+20.193.131.12 3 4 1558 20220815172208
+222.110.159.98 1 1 171 20220806105134
+54.187.152.80 3 3 513 20220808031011
+54.187.107.74 1 1 171 20220828051936
+34.253.209.57 1 1 171 20220808211200
+20.0.13.69 6 8 3116 20220806172231
+192.30.83.42 1 1 71185 20220828082946
+66.78.24.98 1 1 171 20220810131315
+54.200.173.100 1 1 171 20220820051812
+216.145.5.42 1 1 171 20220828010449
+216.16.84.97 1 1 171 20220823173333
+54.213.43.165 1 1 171 20220828051833
+116.68.196.90 1 1 1360 20220819021254
+35.89.65.186 1 1 171 20220818052228
+34.215.137.14 1 1 171 20220804054918
+213.204.102.13 0 1 68475 
+44.234.47.52 1 1 171 20220828083029
+54.201.162.170 1 1 171 20220805052306
+82.80.249.211 1 1 171 20220806014233
+34.222.84.210 1 1 171 20220819052936
+35.90.64.212 1 1 171 20220822050127
+35.92.126.78 2 2 342 20220824051855
+37.209.254.16 0 1 68475 
+34.212.92.220 1 1 171 20220807051939
+104.211.35.73 2 2 342 20220828131239
+66.249.92.207 0 1 19861 
+54.246.148.246 1 1 171 20220805212039
+18.236.110.169 1 1 171 20220808051116
+54.218.252.107 1 1 171 20220826053152
+34.249.88.31 1 1 171 20220822205422
+54.218.53.138 1 1 171 20220821061711
+34.222.84.63 1 1 171 20220810053816
+54.202.71.27 3 3 513 20220829031103
+51.159.37.145 1 1 171 20220815010241
+168.90.199.178 1 1 171 20220827131833
+154.70.95.16 0 1 19156 
+197.252.217.23 6 28 151629756 20220814215903
+18.237.46.39 1 1 171 20220827050732
+154.13.48.48 1 1 15679 20220825124136
+93.55.81.106 3 4 2747 20220823150525
+103.109.103.98 2 2 806 20220823225637
+93.159.230.89 2 2 342 20220820215330
+54.190.156.122 1 1 171 20220823064717
+40.117.85.187 1 1 171 20220822035615
+20.225.182.228 2 3 2576 20220806074136
+174.195.201.69 0 1 68475 
+35.89.157.235 1 1 171 20220816063034
+101.33.33.201 1 1 171 20220815192647
+34.217.214.34 1 1 171 20220819053326
+196.239.93.243 0 1 68475 
+66.220.149.12 0 2 216137 
+20.189.112.171 1 2 1216 20220818112658
+24.41.60.59 1 1 1360 20220817160432
+35.90.28.54 1 1 171 20220818052707
+91.123.18.234 1 1 171 20220814153701
+178.62.69.67 1 1 171 20220826080148
+37.156.57.29 1 2 84154 20220812102030
+188.181.83.21 0 1 68475 
+185.247.68.51 1 1 171 20220805085145
+147.235.208.233 0 3 205425 
+54.188.81.177 1 1 171 20220809060803
+167.248.133.118 2 2 342 20220804151509
+68.148.29.64 0 1 68475 
+150.95.113.161 1 1 1360 20220814084215
+34.222.59.218 1 1 171 20220817053925
+54.244.73.109 1 1 171 20220828051501
+93.159.230.88 1 1 171 20220820185319
+54.213.211.22 1 1 171 20220806052126
+104.248.75.7 1 2 147965 20220816122913
+20.38.47.222 1 1 171 20220815195812
+54.213.197.160 1 1 171 20220811054331
+20.243.120.172 5 6 2397 20220815101547
+52.41.177.110 1 1 171 20220825052351
+5.188.62.26 1 1 171 20220814163718
+185.181.61.24 1 1 171 20220829144435
+54.185.51.61 1 1 171 20220818053249
+185.74.5.84 2 2 342 20220805092434
+37.142.172.156 0 1 68475 
+23.231.13.245 1 1 71185 20220827114424
+213.143.113.118 0 1 68475 
+95.216.1.83 2 2 342 20220824161337
+40.80.91.120 6 8 3116 20220819051542
+66.220.149.118 0 3 358431 
+15.235.168.187 1 1 1360 20220805010728
+35.90.142.42 1 1 171 20220813051020
+41.223.96.238 0 1 68475 
+20.121.65.120 4 5 2918 20220829090440
+35.90.189.19 1 1 171 20220807051726
+18.237.122.150 1 1 171 20220822050146
+37.0.15.252 2 2 342 20220807080630
+102.126.134.164 3 3 213555 20220818185643
+34.217.119.67 1 1 171 20220825052349
+20.110.232.0 2 2 342 20220809042059
+165.227.220.219 2 2 342 20220801171411
+34.214.104.104 1 1 171 20220827052009
+34.221.28.85 1 1 171 20220823064136
+35.91.133.156 1 1 171 20220817053912
+52.10.133.124 1 1 171 20220828051553
+52.33.143.40 1 1 171 20220822050700
+159.89.45.15 1 1 171 20220801175316
+35.90.105.244 1 1 171 20220825051339
+35.164.73.192 1 1 171 20220806050215
+66.249.92.212 0 2 89872 
+35.156.29.12 1 1 171 20220803000643
+34.222.51.9 1 1 171 20220826053104
+84.83.255.146 0 2 136950 
+185.206.200.96 0 1 68475 
+180.75.237.170 0 1 68475 
+82.80.230.228 0 5 103489460 
+35.90.101.206 1 1 171 20220819053310
+138.197.158.8 1 1 1360 20220815194055
+35.160.15.181 1 1 171 20220805052326
+185.197.195.173 1 1 1360 20220810225453
+34.243.193.150 1 1 171 20220801200814
+54.201.150.21 1 1 171 20220803054138
+180.178.189.246 0 1 68475 
+194.53.140.129 2 2 56594 20220805175605
+170.246.54.200 3 3 173963 20220827220745
+66.220.149.14 1 5 239491 20220824043220
+194.36.96.111 1 1 171 20220827114414
+34.220.72.36 1 1 171 20220802053324
+84.60.189.134 0 1 68475 
+54.71.19.158 1 1 171 20220821064029
+66.249.92.216 0 2 27529 
+213.139.193.232 2 2 342 20220819075857
+54.78.106.24 1 1 171 20220825212528
+52.89.68.122 1 1 171 20220820052647
+46.137.239.25 1 1 171 20220808050546
+104.222.43.49 1 1 171 20220828083125
+5.188.62.21 1 1 171 20220810042529
+35.88.199.235 1 1 171 20220808051137
+54.190.12.225 1 1 171 20220809055624
+185.75.227.26 0 1 68475 
+54.216.63.160 1 1 171 20220802215453
+34.212.134.188 1 1 171 20220823052242
+34.217.72.118 1 1 171 20220806051417
+35.88.23.178 1 1 171 20220820051658
+20.38.2.42 1 1 171 20220829014554
+35.88.188.73 1 1 171 20220813051047
+35.91.145.207 3 3 513 20220822031134
+160.168.216.94 0 2 14369682 
+35.89.188.218 1 1 171 20220810055954
+35.90.223.37 1 1 171 20220818052841
+204.14.73.4 3 177 58777086 20220806111523
+114.132.201.19 1 1 1360 20220819205306
+102.184.101.180 0 1 68475 
+159.223.79.85 6 7 2914 20220828115509
+172.58.141.147 0 1 68475 
+203.89.29.189 6 6 6800 20220810180553
+13.66.56.217 4 6 5152 20220804214838
+216.145.11.94 1 1 171 20220806021616
+52.12.136.79 2 2 342 20220828051425
+52.40.146.178 1 1 171 20220827052217
+92.97.96.49 0 1 68475 
+37.143.62.68 1 1 15687 20220826043256
+137.184.6.5 2 3 1387 20220814000559
+192.145.175.178 0 2 136950 
+54.202.105.127 1 1 171 20220804054923
+54.190.14.150 1 1 171 20220818052230
+49.12.1.27 1 1 171 20220825212725
+46.114.3.198 0 1 68475 
+144.217.135.236 1 1 171 20220820230456
+79.137.65.179 1 1 1360 20220821174108
+35.89.180.41 1 1 171 20220818052228
+132.145.108.242 2 2 342 20220820061727
+77.74.177.119 2 2 342 20220820205350
+198.244.220.113 2 2 171 20220808125113
+54.213.170.101 1 1 171 20220808051149
+168.138.31.109 5 6 2364 20220824001818
+185.188.254.80 2 2 56594 20220827064022
+84.255.155.116 0 1 68475 
+192.30.83.20 1 1 171 20220828082940
+35.91.59.222 1 1 171 20220812064325
+20.219.188.11 3 4 1558 20220821194830
+43.142.249.119 1 1 171 20220813000027
+192.241.137.43 0 1 93064 
+35.92.52.12 1 1 171 20220829053408
+51.39.227.133 0 1 68475 
+34.243.82.54 1 1 171 20220826200922
+199.244.88.227 1 1 171 20220813233026
+54.185.216.178 1 1 171 20220807051237
+34.219.107.158 1 1 171 20220806050941
+35.164.139.65 1 1 171 20220805052311
+54.200.126.207 1 1 171 20220817060400
+216.24.213.49 2 2 171 20220826034913
+35.89.224.239 1 1 171 20220801053835
+54.187.61.248 2 2 342 20220828051415
+20.254.114.162 5 6 2364 20220826005738
+59.153.126.145 0 1 68475 
+165.50.111.181 0 1 68475 
+66.249.92.35 0 1 7668 
+199.244.88.226 1 1 0 20220810211354
+20.219.199.5 3 4 1558 20220807102532
+20.219.18.5 1 1 71185 20220826010734
+31.2.254.112 0 1 68475 
+138.197.170.20 0 1 55258 
+18.237.68.76 1 1 171 20220823064121
+185.122.170.242 1 1 71185 20220827131841
+18.236.218.243 1 1 171 20220816063524
+150.249.214.254 1 1 71185 20220813181226
+20.127.186.248 3 4 1558 20220820085022
+3.68.50.38 1 1 71185 20220814160650
+5.188.62.140 1 1 171 20220811174126
+81.88.52.210 1 1 1360 20220823234258
+54.201.66.59 1 1 171 20220808051201
+20.219.39.123 2 3 2576 20220817121309
+154.247.101.6 0 1 215636 
+159.203.176.82 1 1 1360 20220810163058
+64.225.59.44 1 1 171 20220815194534
+195.5.116.247 1 1 1360 20220828162019
+54.185.63.243 1 1 171 20220814052507
+35.91.171.118 1 1 171 20220810053805
+35.92.23.68 1 1 171 20220808050522
+20.235.105.104 2 3 2576 20220827082245
+130.255.166.151 1 1 171 20220811201108
+35.92.18.119 1 1 171 20220817053914
+42.83.147.34 5 5 855 20220823212959
+108.200.92.72 0 1 68475 
+64.235.231.20 1 1 1360 20220825175346
+20.77.92.178 3 4 2747 20220827193743
+77.205.46.208 1 21 1195831 20220814124858
+139.99.62.224 2 2 342 20220819060442
+182.3.37.72 0 1 68475 
+35.91.20.213 1 1 171 20220826053109
+128.199.170.37 5 6 2743 20220826085305
+119.29.156.58 2 2 342 20220814220700
+130.61.143.194 1 1 1360 20220814191430
+63.35.222.110 1 1 171 20220823201712
+158.69.26.40 2 2 2720 20220824080047
+52.214.154.16 1 1 171 20220809201603
+34.216.218.31 1 1 171 20220824052816
+35.185.241.102 1 1 171 20220819175857
+20.118.190.194 2 3 2576 20220815054004
+137.226.113.44 4 4 684 20220824101651
+35.91.13.186 1 1 171 20220811052812
+34.236.33.16 3 3 513 20220824064139
+31.210.66.35 2 2 2720 20220808201127
+45.56.197.154 4 257 230896684 20220811151101
+34.213.34.213 1 1 171 20220815051104
+18.236.62.175 1 1 171 20220811054346
+20.228.241.99 1 1 171 20220805223408
+35.207.253.94 4 44 1405056 20220817090307
+82.80.249.133 0 1 15849 
+103.90.235.91 1 1 1360 20220823021509
+54.170.155.97 1 1 171 20220804213319
+20.14.76.137 2 2 342 20220814131114
+34.214.232.137 1 1 171 20220802053321
+94.225.80.95 2 23 1274827 20220819190204
+34.210.243.218 1 1 171 20220815052829
+194.12.179.148 0 1 68475 
+54.244.18.252 1 1 171 20220814051622
+52.25.92.252 1 1 171 20220804062916
+34.222.82.139 1 1 171 20220824051919
+34.216.194.164 1 1 171 20220823052408
+175.141.172.185 0 1 68475 
+54.149.103.16 1 1 171 20220806051538
+188.165.238.165 1 1 171 20220806230933
+66.249.92.9 0 1 82204 
+185.175.45.32 1 1 1360 20220826220838
+54.200.128.95 1 1 171 20220829052825
+52.13.30.21 1 1 171 20220803054237
+124.223.197.157 1 1 171 20220811062016
+71.235.76.0 0 2 136950 
+150.249.214.251 1 1 171 20220813181213
+46.185.190.171 0 1 68475 
+198.46.132.221 5 5 282970 20220829042241
+35.89.35.144 3 3 513 20220801031123
+35.167.143.193 1 1 171 20220821061600
+20.0.61.145 2 3 1619 20220820212140
+51.210.137.3 1 1 171 20220814113046
+102.122.133.12 2 34 1824634 20220814052858
+35.89.34.248 1 1 171 20220809055905
+35.87.210.73 1 1 171 20220823052225
+34.218.251.84 1 1 171 20220816062946
+35.91.48.57 1 1 171 20220822050615
+159.89.35.226 1 1 171 20220805234205
+66.249.92.32 1 1 71185 20220812231520
+66.249.92.30 2 2 142370 20220821011400
+20.14.86.193 1 1 171 20220805000056
+46.101.157.99 6 6 6800 20220818220933
+160.5.96.35 5 88 1754888 20220824135402
+154.241.196.192 1 14 923792 20220801115929
+162.0.224.206 1 1 1360 20220802181651
+34.220.185.168 1 1 171 20220823053011
+95.216.21.217 2 2 342 20220819034826
+35.88.132.87 1 1 171 20220802054557
+77.222.117.43 1 1 171 20220814041428
+35.87.76.223 1 1 171 20220817053949
+20.125.116.43 1 1 171 20220822031509
+82.80.249.143 0 1 15849 
+178.62.106.28 1 1 171 20220801051558
+34.248.96.64 1 1 171 20220810212800
+54.200.41.245 1 1 171 20220825052425
+34.217.5.173 1 1 171 20220810053806
+220.255.213.138 1 22 1264306 20220816143721
+155.193.221.157 1 1 171 20220809135239
+144.22.245.160 1 1 171 20220812230616
+54.184.22.123 1 1 171 20220821063935
+35.86.146.79 1 1 171 20220822050228
+35.90.181.234 1 1 171 20220827051746
+65.21.129.153 1 1 171 20220803041008
+120.41.45.194 4 4 684 20220825195549
+34.222.0.33 1 1 171 20220816062923
+79.229.14.11 0 1 68475 
+185.142.40.39 0 1 68475 
+35.88.234.203 1 1 171 20220803054143
+20.108.45.142 4 4 684 20220813180443
+195.3.222.14 1 1 171 20220817153859
+188.71.202.185 0 1 68475 
+52.38.69.56 1 1 171 20220814051912
+52.35.155.254 1 1 171 20220805051134
+35.160.90.137 1 1 171 20220813051027
+52.36.252.169 1 1 171 20220809055217
+34.221.138.140 1 1 171 20220812064340
+35.87.203.116 1 1 171 20220819053302
+54.68.135.64 1 1 171 20220828051230
+35.91.119.101 1 1 171 20220801053546
+3.89.47.86 2 2 342 20220816120023
+82.80.249.204 0 1 15849 
+154.97.51.73 2 462 132253050 20220808165211
+35.92.149.132 1 1 171 20220819053303
+167.248.133.47 2 2 342 20220829141633
+177.53.140.226 1 1 1360 20220827210926
+35.85.36.175 1 1 171 20220816062918
+52.32.231.158 1 1 171 20220828051539
+20.90.103.91 3 4 1558 20220822033302
+35.162.65.174 1 1 171 20220813053226
+37.156.167.177 0 1 68475 
+54.213.152.114 1 1 171 20220814051830
+45.55.112.20 1 1 161612 20220816122914
+162.142.125.210 2 2 342 20220829115118
+34.221.77.20 1 1 171 20220823052421
+151.246.203.98 0 1 68475 
+54.202.252.52 1 1 171 20220826210448
+197.252.220.27 3 61 4062170 20220822103115
+185.220.176.233 1 2 1216 20220820033759
+34.219.239.219 1 1 171 20220812065404
+102.158.96.148 0 1 68475 
+35.92.89.219 1 1 171 20220811054345
+191.102.158.250 1 1 171 20220810135458
+54.212.147.241 1 1 171 20220829053411
+185.39.144.147 1 1 171 20220828170429
+35.160.91.84 1 1 171 20220809055859
+193.142.147.68 3 3 4080 20220829103541
+149.56.160.136 3 4 810 20220817185114
+185.222.57.67 4 5 2918 20220812095815
+41.102.50.145 1 22 1636302 20220823133845
+197.252.201.24 2 80 19836080 20220816122915
+34.219.174.40 1 1 171 20220818052542
+82.132.217.27 0 1 68475 
+138.197.175.225 4 5 2918 20220810213524
+20.150.216.72 2 2 342 20220816050039
+54.201.139.125 1 1 171 20220814051828
+34.210.128.145 1 1 171 20220829053442
+54.71.179.179 1 1 171 20220821061524
+35.90.13.200 1 1 171 20220802053358
+52.35.144.114 1 1 171 20220815052527
+181.214.218.38 2 2 171 20220801111802
+35.91.111.16 1 1 171 20220802053348
+120.41.45.199 1 1 171 20220809233525
+124.220.24.137 1 1 171 20220810230119
+66.220.149.18 0 2 59193 
+54.200.230.129 1 1 171 20220810053824
+185.181.60.12 2 2 342 20220821085132
+34.213.51.150 3 3 513 20220815031115
+64.227.187.183 1 1 1360 20220824180058
+196.75.142.207 2 177 45540679 20220801132347
+102.122.154.160 1 13 96160941 20220827204718
+92.204.40.196 1 1 1360 20220816223936
+66.220.149.8 1 1 171 20220824043206
+20.198.90.220 3 4 1558 20220815193521
+104.236.45.171 1 1 1360 20220806204251
+197.252.217.232 5 1397 360100732 20220817115245
+35.165.199.44 1 1 171 20220818052343
+185.181.60.39 1 1 171 20220812224129
+34.222.22.67 1 1 171 20220829053427
+82.199.222.50 0 1 68475 
+34.216.202.86 1 1 171 20220811054318
+121.4.166.245 1 1 171 20220826222900
+193.188.22.35 2 2 342 20220805001921
+185.220.101.53 2 2 171 20220820035750
+3.250.216.200 1 1 171 20220803212419
+195.133.40.157 3 3 342 20220814105733
+34.215.176.89 1 1 171 20220826053138
+20.214.206.132 1 1 171 20220822211913
+20.210.235.233 4 5 2918 20220827122021
+41.95.8.244 2 37 1797917 20220815060254
+66.249.92.4 1 1 71185 20220823233242
+213.64.255.42 1 22 1704777 20220818190526
+213.166.130.87 0 1 68475 
+66.249.92.28 0 1 19861 
+34.216.115.10 1 1 171 20220807051236
+35.92.192.18 1 1 171 20220824051948
+162.142.125.9 2 2 342 20220826153425
+20.77.49.95 2 2 171 20220816092856
+54.190.14.16 1 1 171 20220818053127
+20.0.81.196 6 7 2914 20220827150614
+217.25.40.254 1 1 1360 20220812212815
+35.91.179.5 1 1 171 20220814051921
+35.92.35.80 1 1 171 20220826053141
+66.249.92.134 0 1 19861 
+END_VISITOR
+
+# Date - Pages - Hits - Bandwidth - Visits
+BEGIN_DAY 29
+20220801 29 505 213876446 16
+20220802 9 9 2728 9
+20220803 10 12 138489 10
+20220804 9 12 140723 7
+20220805 18 20 198658 15
+20220806 82 313 320301348 16
+20220807 27 33 150461 11
+20220808 18 483 132421623 12
+20220809 15 23 504129 13
+20220810 27 30 151782 18
+20220811 16 220 234121239 11
+20220812 19 24 299664 12
+20220813 16 17 144603 12
+20220814 36 114 169169810 22
+20220815 42 319 747814950 18
+20220816 20 123 21702546 16
+20220817 23 1458 361580377 13
+20220818 20 46 2201787 13
+20220819 32 264 40180723 14
+20220820 19 30 1069739 14
+20220821 17 20 215483 12
+20220822 18 84 4449413 12
+20220823 23 48 1921579 20
+20220824 30 132 2792132 15
+20220825 13 14 88424 12
+20220826 26 28 95391 16
+20220827 47 111 196189491 20
+20220828 28 30 331214 20
+20220829 23 43 1192153 15
+END_DAY
+
+# Session range - Number of visits
+BEGIN_SESSION 6
+5mn-15mn 8
+30mn-1h 2
+2mn-5mn 3
+0s-30s 392
+15mn-30mn 2
+30s-2mn 7
+END_SESSION
+
+# URL - Pages - Bandwidth - Entry - Exit
+# The 10 first Pages must be first (order not required for others)
+BEGIN_SIDER 19
+/ 445 74556 332 299
+/blog/ 127 6797702 41 40
+/wp-login.php 43 58480 33 35
+/blog/xmlrpc.php 23 9890 1 8
+/blog/ibrahimfinalsearch.php 22 7067455 3 7
+/blog/wp-login.php 20 27200 0 18
+/statsss/awstats.pl 9 292635 0 1
+/files/%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9/fetch_data.php 5 363611 0 1
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/search.php 3 484836 3 1
+/wordpress/wp-login.php 2 2720 0 0
+/files/%D8%A7%D9%84%D9%81%D9%84%D8%B3%D9%81%D8%A9/search.php 1 88851 0 0
+/files/%D8%A7%D9%84%D9%85%D8%AC%D8%AA%D9%85%D8%B9/search.php 2 131760 1 0
+/files/%D9%85%D9%86%D8%B8%D9%85%D8%A7%D8%AA/search.php 1 279658 0 0
+/wp/wp-login.php 2 2720 0 2
+/files/%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B3%D8%A9/search.php 1 108867 0 0
+/files/%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A9/search.php 1 194764 0 0
+/files/%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85/search.php 1 53774 0 0
+/files/%D8%A7%D9%84%D8%AA%D8%A3%D8%B5%D9%8A%D9%84/fetch_data.php 2 413434 0 2
+/statsss/ 2 710 0 0
+END_SIDER

@@ -1,0 +1,117 @@
+body{
+    overflow-x: hidden;
+}
+.owt-btn-right{
+    float: right;
+}
+.owt-text-align{
+    text-align: right;
+}
+.owt-lib-btn{
+    padding: 0px 12px;
+    margin: -2px -12px 0px 0px;
+}
+.owt-col-3{
+    width: 24%;
+    overflow-y: hidden;
+}
+.owt-div-float-left{
+    float: left;
+}
+.owt-jumb-p{
+    font-size: 16px !important;
+}
+.owt-jumbotron-margin{
+    margin: 7px 0px 9px 0 !important;
+    padding:7px;
+}
+.owt-lib-btn-save{
+    float: right;
+    margin-right: 41px !important;
+}
+.owt-image-dash{
+    width: 188px;
+    margin: 3px 22px;
+    padding: 8px 33px 0px 10px;
+    object-fit: cover;
+    height: auto;
+}
+.owt-panel-head{
+    height: 180px;
+}
+.owt-inner-row{
+    width: 94%;
+    margin: 6px 1px 1px 0px;
+}
+.owt-btn-top{
+    margin: -7px -11px 0px 14px;
+}
+.owt-lib-breadcrumb-top{
+    margin-top: 25px;
+    margin-left: -42px;
+    width: 99%;
+}
+.wpowt-lib-cont #wpowt-lib-frm-create-new-student label.error,#wpowt-lib-frm-create-new-staff label.error,#frm-book-category label.error, #wpowt-frm-add-type label.error, #wpowt-frm-book-issue label.error, #wpowt-lib-frm-create-new-book label.error, #wpowt-frm-settings-panel label.error{
+    color:red;
+}
+.owt-lib-label{
+    display: block;
+    font-weight: normal;
+}
+.owt-lib-label span{
+    position: relative;
+    top: 3px;
+}
+.owt-lib-st-by-area{
+    display: block;
+}
+.owt-lib-st-by-area label{
+    font-weight: normal;
+}
+.owt-lib-st-by-area label span{
+    position: relative;
+    top: 2px;
+}
+.wpowt-lib-img-prev{
+    height: 100px;
+    width: 100px;
+    display: block;
+}
+#wpowt-frm-add-frm label.error{
+    color:red;
+}
+.wpowt-lib-bg{
+    color: #fff !important;
+    background-color: #5e5e5e !important;
+    border-color: #5e5e5e !important;
+}
+.wpowt-lib-btn{
+    color: #fff !important;
+    background-color: #292d34 !important;
+    border-color: #292d34 !important;
+}
+.wpowt-label-bold{
+    font-weight: bold;
+}
+ol.breadcrumb {
+    background: #5d5d5d38;
+}
+.breadcrumb>li+li:before {
+    padding: 0 5px;
+    color: #111010;
+    content: "/\00a0";
+}
+.wpowt-p-feature{
+    font-size: 15px;
+}
+.wpowt-pro-message{
+    margin:-14px 0px 11px 0px
+}
+
+.wpowt-add-frm-point{
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+.owt-lms-header-alert{
+    width:94%;
+}

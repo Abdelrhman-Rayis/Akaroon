@@ -1,0 +1,13 @@
+.wpowt-pl-processing:before{
+    background: rgba(0, 0, 0, 0.55) url('loading.gif') no-repeat 50% 50%;
+    top: 0;
+    left: 0;
+    position: fixed;
+    content: "";
+    z-index: 100000000000000;    
+    height: 100%;
+    width: 100%;      
+} 
+.wpowt-pl-processing {    
+    position: relative;    
+}

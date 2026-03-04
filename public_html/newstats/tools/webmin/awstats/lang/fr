@@ -1,0 +1,117 @@
+all_gb=Go
+all_mb=Mo
+all_kb=Ko
+all_b=Octets
+
+index_title=Analyseur de Logs AWStats
+index_version=AWStats version $1
+index_eawstats=La commande du log analyseur $1 n'a pas été trouvée sur le système. Peut-etre AWStats n'est-il pas installé, ou la <a href='$2'>configuration du module</a> est incorrecte.
+index_econfdir=Le répertoire des fichiers de configuration AWStats $1 n'a pas été trouvé sur le système. Peut-etre AWStats n'est-il pas installé, ou la <a href='$2'>configuration du module</a> est incorrecte.
+index_econf=Le fichier de configuration modèle $1 n'a pas été trouvé sur le système. Peut-etre AWStats n'est-il pas installé, ou la <a href='$2'>configuration du module</a> est incorrecte.
+index_cgi=<a href='$1'>CGI path non configuré</a>
+index_add=Ajout d'un nouveau fichier de configuration d'analyse
+index_path=Fichier configuration
+index_type=Type
+index_size=Taille
+index_create=Créé/Modifié
+index_databasesize=Taille des fichiers de la base
+index_noconfig=Aucun fichier de configuration n'a été trouvé ou ajouté pour analyse, dans le ou les répertoires autorisés.
+index_edit=Edition/Suppression
+index_del=Suppression config
+index_scheduled=Programmée
+index_now=Immédiate
+index_sched2=Programme
+index_update=Mise à jour stats 
+index_update2=Mettre à jour
+index_view=Voir les stats
+index_view2=Voir
+index_return=Liste des fichiers de configuration
+index_eversion=La commande AWStats $1 sur votre système est en version $2, mais ce module ne gère que les version $3 ou supérieures.
+index_egetversion=Echec de la récupération de la varsion d'AWStats. La command $1 a retourné : $2.<br>Peut-etre la <a href='$3'>configuration du module</a> est incorrecte.
+index_advanced1=Voir paramètres de la 'OPTIONAL SETUP SECTION'
+index_advanced2=Voir paramètres de la 'OPTIONAL ACCURACY SETUP SECTION'
+index_advanced3=Voir paramètres de la 'OPTIONAL APPEARANCE SETUP SECTION'
+index_advanced4=Voir paramètres de la 'OPTIONAL PLUGINS SETUP SECTION'
+index_advanced5=Voir paramètres de la 'OPTIONAL EXTRA SETUP SECTION'
+index_hideadvanced=Cacher paramètres optionnels
+index_allowed=Votre login $1 est autorisé à voir/editer les fichiers de config dans (ou pointant vers)
+index_nodirallowed=Votre compte $1 n'a aucun répertoire autorisé en lecture/écriture de fichier de configuration AWStats.
+index_changeallowed=Les permissions des répertoires dans lesquels vous pouvez voir/éditer des fichiers de configuration AWStats peuvent vous être accordées par un administrateur Webmin via l'éditeur des ACL utilisateurs Webmin (Menu $1 puis clic sur $2)
+index_viewall=Voir un résumé pour toutes les configurations disponibles
+
+edit_title1=Ajout d'un fichier de config
+edit_title2=Edition d'un fichier de config
+edit_header=Assistant d'édition du fichier de configuration $1
+edit_headernew=Assistant de création de nouveau fichier de configuration
+edit_file=Contenu du fichier
+edit_add=Nom du fichier de config à créer
+edit_create_by_copy=Créer une nouvelle configuration par recopie d'une existante
+edit_create_from_scratch=Créer une nouvelle configuration avec les paramètres suivants
+edit_config_to_copy=Nom de la configuration à recopier
+edit_user=Lancer AWStats sous l'utilisateur
+edit_ecannot=Vous n'êtes pas autorisés à éditer ce fichier de configuration
+edit_efilecannot=Le fichier de configuration '$1' n'est pas dans un répertoire autorisé
+
+save_err=Erreur dans la construction du fichier de configuration
+save_efile=Le nom du fichier de configuration n'a pas été entré
+save_fileexists=Fichier de configuration déjà existant
+save_edir=Le répertoire '$1', choisi pour le fichier de configuration n'est pas autorisé par les permissions Webmin.
+save_ecannot=Vous n'êtes autorisés à voir ou générer des rapports que pour des fichiers de config dans $1
+save_errLogFile=Erreur sur le paramètre LogFile. Le fichier de log $1 n'existe pas ou n'est pas lisible
+save_errLogFormat=Erreur sur le paramètre LogFormat. Paramètre non défini
+save_errSiteDomain=Erreur sur le paramètre SiteDomain. Paramètre non défini
+save_errDirData=Erreur sur le paramètre DirData. Paramètre non défini ou répertoire inexistant
+save_dirnotexists=Répertoire inexistant
+
+update_title=Mise à jour des statistiques
+update_ecannot=Vous n'êtes pas autorisé à mettre à jour les statistiques
+update_run=Lancement de la mise à jour par la commande
+update_finished=Mise a jour terminée
+update_wait=Merci de patienter
+
+schedule_title=Programmation de mise à jour
+schedule_ecannot=Vous n'êtes pas autorisé à mettre à jour ou programmer une mise à jour des statistiques
+
+log_create_log=Fichier de config AWStats $1 créé
+log_modify_log=Fichier de config AWStats $1 modifié
+log_delete_log=Fichier de config AWStats $1 effacé
+log_generate_log=Mise à jour statistiques AWStats pour $1
+
+acl_view=Peut voir les stats pour les fichiers config existant?
+acl_global=Peut editer les fichiers config AWStats?
+acl_add=Peut ajouter/supprimer des fichiers config?
+acl_update=Peut mettre à jour les stats pour les fichiers config existants?
+acl_user=Lancer AWStats sour l'utilisateur Unix
+acl_this=Utilisateur webmin actuel
+acl_any=Tout utilisateur
+acl_dir=Autorise la vue de stats et l'édition de fichier de config pour les fichiers config dans (chemin de répertoires en durs, pas de liens)
+
+help_title=Page d'aide
+help_subtitle=<b>Aide sur le paramètre de configuration $1</b>
+help_subtitleplugin=<b>Aide sur le plugin $1</b>
+help_notfound=Paramètre non trouvé dans votre fichier de configuration modèle $1.<br>Peut-être votre version d'AWStats ne le supporte pas, aussi aucune aide n'est disponible.
+help_help=Aide
+help_starrequired=paramètres obligatoires sans valeurs par défaut. Ils ne peuvent etre vide.
+
+viewall_title=Résumé pour tout fichier de configuration
+viewall_notallowed=Vous n'avez pas les droits pour voir les stats
+viewall_allowed=Cette page présente un résumé de toutes les configurations trouvés dans les répertoires autorisés à l'utilisateur $1
+viewall_period=Période
+viewall_u=Visiteurs uniques
+viewall_v=Visites
+viewall_p=Pages
+viewall_h=Hits
+viewall_k=Bande passante
+
+month01=Janvier
+month02=Février
+month03=Mars
+month04=Avril
+month05=Mai
+month06=Juin
+month07=Juillet
+month08=Aout
+month09=Septembre
+month10=Octobre
+month11=Novembre
+month12=Décembre

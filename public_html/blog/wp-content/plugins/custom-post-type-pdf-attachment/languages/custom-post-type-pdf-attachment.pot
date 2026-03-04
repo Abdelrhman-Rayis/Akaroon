@@ -1,0 +1,108 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Custom Post Type Attachment ( PDF )\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-11-05 11:51+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.3.3; wp-5.5.3"
+
+#: includes/class-attachment-list.php:13
+msgid "Attached Files"
+msgstr ""
+
+#: pdf-attachment-widget.php:76
+msgid ""
+"Attachment 1 has to be present in the post to display it as the latest post"
+msgstr ""
+
+#. Author of the plugin
+msgid "aviplugins.com"
+msgstr ""
+
+#: view/admin/attachment-form.php:24
+msgid "Check to remove"
+msgstr ""
+
+#. Name of the plugin
+msgid "Custom Post Type Attachment ( PDF )"
+msgstr ""
+
+#: includes/class-settings.php:40
+msgid "Data updated successfully"
+msgstr ""
+
+#: pdf-attachment-widget.php:73
+msgid "Display post title"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://wordpress.org/plugins/custom-post-type-pdf-attachment/"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://www.aviplugins.com/"
+msgstr ""
+
+#: view/admin/settings.php:43
+msgid "If enabled then default media library will be used."
+msgstr ""
+
+#: includes/class-latest-attachment.php:39
+msgid "No records found"
+msgstr ""
+
+#: view/admin/settings.php:29
+msgid "PDF Open in"
+msgstr ""
+
+#: pdf-attachment-widget.php:66
+msgid "Post Type"
+msgstr ""
+
+#: view/admin/settings.php:51
+msgid "Save"
+msgstr ""
+
+#: view/admin/settings.php:23
+msgid "Select Number of Attachment Files"
+msgstr ""
+
+#: view/admin/settings.php:17
+msgid "Select Post Types Where You Want Custom PDF Attachments"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"This plugin will allow you to upload pdf files to your post or pages or any "
+"other custom post types. You can either use shortcodes or functions to "
+"display attachments. You can upload at most 10 PDF files as attachments. :)"
+msgstr ""
+
+#: pdf-attachment-widget.php:62
+msgid "Title"
+msgstr ""
+
+#: view/admin/attachment-form.php:6
+msgid "Upload File"
+msgstr ""
+
+#: view/admin/attachment-form.php:2
+msgid "Upload PDF"
+msgstr ""
+
+#: view/admin/settings.php:35
+msgid "Use Media Library"
+msgstr ""
+
+#: pdf-attachment-widget.php:9
+msgid "Widget to display latest PDF attachment files"
+msgstr ""

@@ -1,0 +1,130 @@
+/*
+// variations to styling required for gutenberg native blocks
+// @author Tony Blacker, NHS Leadership Academy
+// @version 1.1 12th October 2019
+*/
+.nhsuk-grid-column-two-thirds.contentright, .nhsuk-grid-column-two-thirds.contentright.archive, .nhsuk-grid-column-two-thirds.contentright.index {
+  float: right;
+  padding: 0 0 0 nhsuk-spacing(3);
+}
+
+.nhsuk-grid-column-full{
+  padding: 0;
+}
+
+.nhsuk-header__search-wrap {
+  input[type="text"] {
+    border: $nhsuk-border-width-form-element solid $color_nhsuk-light-grey;
+  }
+}
+
+
+/* Latest Posts skinning */
+.nightingale-latest-news {
+  .nhsuk-panel {
+    margin-bottom: nhsuk-spacing(3);
+    a {
+      @extend .nhsuk-heading-m;
+      text-decoration: none;
+    }
+
+    .wp-block-latest-posts__post-excerpt {
+      a:last-of-type {
+        @extend .nhsuk-action-link__link;
+        margin-top: nhsuk-spacing(5);
+        margin-bottom: 0;
+        width: 100%;
+      }
+    }
+  }
+}
+.nhsuk-grid-column-width, .nhsuk-grid-column-full {
+  clear: both;
+}
+
+/* login form customisation */
+#login {
+  padding-top: 0 !important;
+  width: 90%;
+  #loginform {
+    margin-top: 0;
+    box-shadow: none;
+    #wp-submit {
+      @extend .nhsuk-button;
+      height: auto;
+    }
+
+    .user-login, .user_pass {
+      @extend .nhsuk-input;
+    }
+
+    label {
+      @extend .nhsuk-label;
+    }
+  }
+}
+
+/* Extra Blog Styles */
+
+.nhsuk-promo img.nhsuk-promo__img {
+    padding: 0;
+}
+
+.nhsuk-promo__link-wrapper:hover {
+    background-color: $color_nhsuk-white;
+    box-shadow: 0 0 0 nhsuk-spacing(1) $nhsuk-link-hover-color;
+    color: $color_nhsuk-blue;
+}
+
+.nhsuk-grid-column-two-thirds.archive,
+.nhsuk-grid-column-two-thirds.index{
+  padding: 0 nhsuk-spacing(3) 0 0;
+}
+
+aside#secondary > section{
+  margin-top: 0;
+}
+
+.nhsuk-icon__arrow-right-circle{
+  vertical-align: middle;
+}
+
+.navigation{
+  position: relative;
+}
+.nhsuk-pagination-item--previous,
+.nhsuk-pagination-item--next{
+  position: relative;
+  z-index: 5;
+}
+
+.nhsuk-pagination-numbers{
+
+  clear: both;
+  text-align: center;
+  border-top: 1px solid $color_nhsuk-grey-3;
+  padding-top: nhsuk-spacing(2);
+
+  @media (min-width: 768px) {
+    border: none;
+    position: absolute;
+    width: 100%;
+    padding-top: 0;
+  }
+
+  a,
+  span{
+    display: inline-block;
+    padding: 0px nhsuk-spacing(1);
+    margin: 0 nhsuk-spacing(1);
+    text-decoration: none;
+  }
+}
+
+.clear{
+  @include clearfix();
+}
+.nhsuk-readmore {
+  text-align: right;
+  padding-bottom: nhsuk-spacing(3);
+}

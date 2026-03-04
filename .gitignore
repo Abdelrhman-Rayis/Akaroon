@@ -1,0 +1,102 @@
+# ─── Large binary / media files ───────────────────────────────────────────────
+# PDFs (36 GB – never commit these)
+*.pdf
+*.PDF
+
+# Cover images stored alongside PDFs
+public_html/files/*/image/
+public_html/files/*/files/
+
+# Scanned page images in root
+public_html/I.A.O.-page-*.jpg
+public_html/*.PNG
+public_html/*.jpg
+public_html/*.jpeg
+public_html/*.gif
+public_html/*.png
+
+# ─── WordPress uploads ─────────────────────────────────────────────────────────
+public_html/blog/wp-content/uploads/
+public_html/library/wp-content/uploads/
+
+# ─── WordPress cache / generated files ────────────────────────────────────────
+public_html/blog/wp-content/cache/
+public_html/library/wp-content/cache/
+public_html/blog/wp-content/litespeed/
+public_html/library/wp-content/litespeed/
+*.cache
+
+# ─── WordPress sensitive config (originals – Docker overrides are kept) ───────
+public_html/blog/wp-config.php
+public_html/library/wp-config.php
+
+# ─── Docker runtime / local data ──────────────────────────────────────────────
+mysql_data/
+docker/mysql-data/
+
+# ─── Server backup archives ───────────────────────────────────────────────────
+backup-*
+*.tar.gz
+*.tar
+*.zip
+
+# ─── Server infrastructure directories (from FTP download) ────────────────────
+etc/
+logs/
+lscache/
+mail/
+ssl/
+tmp/
+soon
+soon.html
+public_html1/
+IAOL/
+
+# ─── Loose image files in project root ────────────────────────────────────────
+*.jpg
+*.jpeg
+*.png
+*.PNG
+*.gif
+
+# ─── Server home-directory files (from FTP download) ─────────────────────────
+.bash_history
+.bash_logout
+.bash_profile
+.bashrc
+.cagefs/
+.caldav/
+.cl.selector/
+.cpanel/
+.cphorde/
+.ftpquota
+.gemrc
+.htaccess
+.imunify_patch_id
+.koality/
+.lastlogin
+.myimunify_id
+.pki/
+.softaculous/
+.spamassassin/
+.spamassassinboxenable
+.subaccounts/
+.wp-toolkit-identifier
+.wp-toolkit-cpanel
+.claude/
+
+# ─── macOS / editor junk ──────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.lnk
+*.swp
+*~
+
+# ─── PHP / web server logs ────────────────────────────────────────────────────
+*.log
+debug.log
+php_errors.log
+error_log
+
+# ─── Node (if ever added) ─────────────────────────────────────────────────────
+node_modules/

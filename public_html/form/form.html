@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Form Wizard with jQuery and PHP</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="style.css" rel="stylesheet"/>
+</head>
+<body>
+    
+    <div class="container">
+        <form action="save.php" method="post">
+            <div class="wizards">
+                <div class="progressbar">
+                    <div class="progress-line" data-now-value="12.11" data-number-of-steps="5" style="width: 12.11%;"></div> <!-- 19.66% -->
+                </div>
+                <div class="form-wizard active">
+                    <div class="wizard-icon"><i class="fa fa-file-text-o"></i></div>
+                    <p>License</p>
+                </div>
+                <div class="form-wizard">
+                    <div class="wizard-icon"><i class="fa fa-user"></i></div>
+                    <p>About</p>
+                </div>
+                <div class="form-wizard">
+                    <div class="wizard-icon"><i class="fa fa-key"></i></div>
+                    <p>Account</p>
+                </div>
+                <div class="form-wizard">
+                    <div class="wizard-icon"><i class="fa fa-globe"></i></div>
+                    <p>Website</p>
+                </div>
+                <div class="form-wizard">
+                    <div class="wizard-icon"><i class="fa fa-check-circle"></i></div>
+                    <p>Finish</p>
+                </div>
+            </div>
+            <fieldset>
+                <iframe src="license.txt"></iframe>
+                <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" value="yes"> I agree with this license
+                </label>
+                <div class="wizard-buttons">
+                    <button type="button" class="btn btn-next">Next</button>
+                </div>
+            </fieldset>
+            <fieldset>
+                <h4>Input personal data</h4>
+                <div class="form-group">
+                    <label>number</label>
+                    <textarea name="number" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <input type="text" name="Category" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label>The Title of Paper/Book</label>
+                    <input type="text" name="The Title of Paper/Book" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label>The name of the Author</label>
+                    <input type="tel" name="The name of the Author" class="form-control"/>
+                </div>
+                
+                <div class="wizard-buttons">
+                    <button type="button" class="btn btn-previous">Previous</button>
+                    <button type="button" class="btn btn-next">Next</button>
+                </div>
+            </fieldset>
+            <fieldset>
+                <h4>Input account info</h4>
+                <div class="form-group">
+                    <label>Year of issue</label>
+                    <input type="text" name="Year of issue" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label>Place of issue</label>
+                    <input type="Place of issue" name="Place of issue" class="form-control"/>
+                </div>
+                <div class="wizard-buttons">
+                    <button type="button" class="btn btn-previous">Previous</button>
+                    <button type="button" class="btn btn-next">Next</button>
+                </div>
+            </fieldset>
+            <fieldset>
+                    <h4>Input website info</h4>
+                    <div class="form-group">
+                        <label> Field of research</label>
+                        <input type="text" name="Field of research" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Key words</label>
+                        <textarea name="Key words" class="form-control"></textarea>
+                    </div>
+                   
+                <div class="wizard-buttons">
+                    <button type="button" class="btn btn-previous">Previous</button>
+                    <button type="button" class="btn btn-next">Next</button>
+                </div>
+            </fieldset>
+            <fieldset>
+                <div class="jumbotron text-center">
+                <h1>Please click submit button to save your data</h1>
+                </div>
+                <div class="wizard-buttons">
+                    <button type="button" class="btn btn-previous">Previous</button>
+                    <button type="submit" name="save" class="btn btn-primary btn-submit">Submit</button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    
+    <script src="js/jquery.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

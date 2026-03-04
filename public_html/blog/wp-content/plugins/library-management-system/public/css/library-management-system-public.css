@@ -1,0 +1,13 @@
+.single-book-item{
+    float: left;
+    width: 200px;
+}
+
+.lib-load-book{
+    margin-top:10px;
+}
+
+#books-listing{
+    height: 400px;
+    overflow-y: scroll;
+}

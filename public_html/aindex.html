@@ -1,0 +1,646 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+  <head>
+     
+    <style>
+* {box-sizing: border-box}
+body {font-family: Verdana, sans-serif; margin:0}
+
+/* Slideshow container */
+.slideshow-container {
+  position: relative;
+  background: #f1f1f1f1;
+}
+
+/* Slides */
+.mySlides {
+  display: none;
+  padding: 10px;
+  text-align: center;
+}
+
+/* Next & previous buttons */
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  margin-top: -30px;
+  padding: 16px;
+  color: #888;
+  font-weight: bold;
+  font-size: 20px;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+  position: absolute;
+  right: 30px;
+  border-radius: 3px 0 0 3px;
+    background-color: rgba(0,0,0,0.9);
+
+}
+.prev {
+  position: absolute;
+  left: : 40px;
+  border-radius: 3px 0 0 3px;
+    background-color: rgba(0,0,0,0.9);
+
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+  background-color: rgba(0,0,0,0.9);
+  color: white;
+}
+
+/* The dot/bullet/indicator container */
+.dot-container {
+    text-align: center;
+    padding: 20px;
+    background: #ddd;
+}
+
+/* The dots/bullets/indicators */
+.dot {
+  cursor: pointer;
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+
+/* Add a background color to the active dot/circle */
+.active, .dot:hover {
+  background-color: #710170;
+}
+ p { 
+ /*Add new line */
+ 
+            color:green; 
+            white-space: pre-line; 
+        } 
+
+/* Add an italic font style to all quotes */
+q {font-style: italic;}
+
+/* Add a blue color to the author */
+.author {color: black;}
+.navbar-brand>img {
+  padding-top: 0px;
+  direction: rtl;
+  width: 80px;
+  margin-left: -20px;
+}
+.navbar-brand {
+    height: auto;
+    margin: 0;
+    padding: 0;
+    margin-right: 10px;
+}
+.navbar-default{
+color: #fff;
+background-color: #2F4F4F;
+border-color: #000000;
+}
+.navbar-default .navbar-nav > li > a{
+    color:#fff;
+}
+.navbar-default .navbar-nav > .dropdown > a .caret{
+    border-top-color: #fff;
+    border-bottom-color: #fff;
+}
+.navbar-default .navbar-brand{
+    color:#fff;
+}
+.menu-large {
+  position: static !important;
+}
+.megamenu{
+  padding: 20px 0px;
+  width:100%;
+}
+.megamenu> li > ul {
+  padding: 0;
+  margin: 0;
+}
+.megamenu> li > ul > li {
+  list-style: none;
+}
+.megamenu> li > ul > li > a {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 1.428571429;
+  color: #333333;
+  white-space: normal;
+}
+.megamenu> li ul > li > a:hover,
+.megamenu> li ul > li > a:focus {
+  text-decoration: none;
+  color: #262626;
+  background-color: #f5f5f5;
+}
+.megamenu.disabled > a,
+.megamenu.disabled > a:hover,
+.megamenu.disabled > a:focus {
+  color: #999999;
+}
+.navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>li>a:hover {
+  color: #00A7E8;
+}
+.megamenu.disabled > a:hover,
+.megamenu.disabled > a:focus {
+  text-decoration: none;
+  background-color: transparent;
+  background-image: none;
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+  cursor: not-allowed;
+}
+.megamenu.dropdown-header {
+  color: #428bca;
+  font-size: 38px;
+}
+@media (max-width: 768px) {
+  .megamenu{
+    margin-left: 0 ;
+    margin-right: 0 ;
+  }
+  .megamenu> li {
+    margin-bottom: 30px;
+  }
+  .megamenu> li:last-child {
+    margin-bottom: 0;
+  }
+  .megamenu.dropdown-header {
+    padding: 3px 15px !important;
+  }
+  .navbar-nav .open .dropdown-menu .dropdown-header{
+    color:#fff;
+  }
+}
+
+* {box-sizing: border-box;}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.topnav {
+  overflow: hidden;
+  background-color: #e9e9e9;
+}
+
+.topnav a {
+  float: left;
+  display: block;
+  color: black;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.topnav a.active {
+  background-color: #2196F3;
+  color: white;
+}
+
+.topnav .search-container {
+  float: right;
+}
+
+.topnav input[type=text] {
+  padding: 6px;
+  margin-top: 8px;
+  font-size: 17px;
+  border: none;
+}
+
+.topnav .search-container button {
+  float: right;
+  padding: 6px 10px;
+  margin-top: 8px;
+  margin-right: 16px;
+  background: #ddd;
+  font-size: 17px;
+  border: none;
+  cursor: pointer;
+}
+
+.topnav .search-container button:hover {
+  background: #ccc;
+}
+
+@media screen and (max-width: 600px) {
+  .topnav .search-container {
+    float: none;
+  }
+  .topnav a, .topnav input[type=text], .topnav .search-container button {
+    float: none;
+    display: block;
+    text-align: left;
+    width: 100%;
+    margin: 0;
+    padding: 14px;
+  }
+  .topnav input[type=text] {
+    border: 1px solid #ccc;  
+  }
+}
+img {
+  border: 1px solid #ddd;
+   border-radius: 4px;
+  padding: 0px;
+  width: 150px;
+    box-shadow: 0 0 0px 1px rgba(100, 140, 186, 0.5);
+
+}
+
+img:hover {
+  box-shadow: 0 0 10px 10px rgba(100, 140, 186, 0.5);
+}
+html,body
+{
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    overflow-x: hidden; 
+}
+
+</style> 
+    <meta charset="utf-8" /> 
+    <meta name="author" content="Abdelrhman" /> 
+    <meta name="description" /> 
+    <meta name="keywords" content="HTML,CSS,XML,JavaScript" /> 
+    <meta http-equiv="x-ua-compatible" content="ie=edge" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!-- Title --> 
+    <title>akaroon </title> <!-- Place favicon.ico in the root directory --> <!-- Plugin-CSS --> <!-- Main-Stylesheets --> <script src="js/vendor/modernizr-2.8.3.min.js"></script> <!--[if lt IE 9]>
+        <script src="/oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="/oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]--> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" /> 
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png" /> 
+    <link rel="shortcut icon" type="image/ico" href="images/favicon.ico" /> 
+    <link rel="stylesheet" href="css/bootstrap.min.css" /> 
+    <link rel="stylesheet" href="css/owl.carousel.min.css" /> 
+    <link rel="stylesheet" href="css/linearicons.css" /> 
+    <link rel="stylesheet" href="css/magnific-popup.css" /> 
+    <link rel="stylesheet" href="css/animate.css" /> 
+    <link rel="stylesheet" href="css/normalize.css" /> 
+    <link rel="stylesheet" href="style.css" /> 
+    <link rel="stylesheet" href="css/responsive.css" /> 
+    
+  </head> 
+  <body data-spy="scroll" data-target=".mainmenu-area"> <!-- Preloader-content --> 
+    <div class="preloader"> <span><i class="lnr lnr-sun"></i></span> </div> <!-- MainMenu-Area --> 
+    <div class="navbar navbar-default navbar-static-top"> 
+      <div class="container"> 
+        <div class="navbar-header"> <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button> <a class="navbar-brand" href="#"><img alt="Logo" src="logo.PNG" /></a> </div> 
+        <div class="navbar-collapse collapse"> 
+          <ul class="nav navbar-nav"> 
+            <li><a href="#">الرئيسية</a></li> 
+            <li class="dropdown menu-large"> <a href="#" class="dropdown-toggle" data-toggle="dropdown"> السيرة الذاتية <b class="caret"></b> </a> 
+              <ul class="dropdown-menu megamenu row"> 
+                <li> 
+                  <div class="col-sm-6 col-md-3"> <a href="gallary/gallary.html" class="thumbnail"> <img src="gallary/I.A.O.-page-002.jpg" /> </a> </div> 
+                  <div class="col-sm-6 col-md-3"> <a href="gallary/cv.html" class="thumbnail">
+السيرة الذاتية
+                        </a> </div>
+                </li> 
+              </ul> 
+            </li> 
+          <li class="dropdown menu-large">
+               <a href="#" class="dropdown-toggle" data-toggle="dropdown">التصنيفات <b class="caret"></b></a>          
+               <ul class="dropdown-menu megamenu row">
+                  <li class="col-sm-3">
+                     <ul style="text-align: center;">
+                        <li style="font-size: 20px;" class="dropdown-header"><a href="files/التعليم/search.php">التعليم  </a></li>
+                        <li><a href="#">التعليم العالي</a></li>
+                        <li class="disabled"><a href="#">التعليم التقني</a></li>
+                        <li><a href="#">التعليم العام</a></li>
+                        <li><a href="#">التعليم عن بعد</a></li>
+                        <li><a href="#">منظمات التعليم</a></li>
+                        <li><a href="#">التعريب</a></li>
+                        <li><a href="#">البحث العلمي</a></li>
+
+
+                        <li class="divider"></li>
+ <li class="dropdown-header" style="font-size: 20px;"><a href="files/منظمات/search.php">المنظمات </a></li>                        <li><a href="#">منظمات الدولية</a></li>
+                        <li><a href="#">منظمات إقليمية </a></li>
+                        <li><a href="#">منظمات قومية</a></li>
+                        <li><a href="#">أحزاب وطنية</a></li>
+                        <li><a href="#">إتحادات</a></li>
+                        <li><a href="#">منظمات دينية إسلامية</a></li>
+                        <li><a href="#">حركات شبابية ، نضالية ،ثورية</a></li>
+
+                     </ul>
+                  </li>
+                  <li class="col-sm-3">
+                     <ul style="text-align: center;">
+                        <li class="dropdown-header" style="font-size: 20px;"><a href="files/الفلسفة/search.php">الفلسفة</a></li>
+                        <li><a href="#">الفلسفة الإسلامية</a></li>
+                        <li><a href="#">مسائل الوجود والمعرفة</a></li>
+                        <li><a href="#">الفلسفة الإجتماعية</a></li>
+                        <li><a href="#">فلسفة العلوم</a></li>
+                         
+                        <li class="divider"></li>
+                         <li class="dropdown-header" style="font-size: 20px;"><a href="files/السياسة/search.php">السياسة</a></li>
+                        <li><a href="#">السياسة فى الدين</a></li>
+                        <li><a href="#">مكانة القيم فى السياسة</a></li>
+                        <li><a href="#">الفكر السياسي</a></li>
+                        <li><a href="#">النظام الأساسي</a></li>
+                        <li><a href="#">الإصلاح السياسي</a></li>
+                        <li><a href="#">التغيير</a></li>
+                        <li><a href="#">الحوار</a></li>
+                        <li><a href="#">الثورة</a></li>
+                        <li><a href="#">السلام</a></li>
+
+
+
+
+
+                     </ul>
+                  </li>
+                  <li class="col-sm-3">
+                     <ul style="text-align: center;">
+ <li class="dropdown-header" style="font-size: 20px;"><a href="files/المجتمع/search.php">المجتمع </a></li>                        <li><a href="#">الدعوة</a></li>
+                        <li><a href="#">العمل الإجتماعي</a></li>
+                        <li><a href="#">العمل الحضاري</a></li>
+                        <li><a href="#">الترويح</a></li>
+
+                        <li class="divider"></li>
+ <li class="dropdown-header" style="font-size: 20px;"><a href="files/التأصيل/search.php">التأصيل</a></li>                        <li><a href="#">تأصيل المعرفة</a></li>
+  <li><a href="#">تأصيل العلوم</a></li>
+                       
+                     </ul>
+                  </li>
+                  <li class="col-sm-3">
+                     <ul style="text-align: center;">
+ <li class="dropdown-header" style="font-size: 20px;"><a href="files/الدولة/search.php">الدولة </a></li>                        <li><a href="#">رئاسة الجمهورية</a></li>
+                        <li><a href="#">الهيئة التشريعية</a></li>
+                        <li><a href="#">السلطة القضائية</a></li>
+                        <li><a href="#">السلطة التنفيذية</a></li>
+                       
+                     </ul>
+                  </li>
+               </ul>
+            </li>
+            <li class="dropdown menu-large">
+               <a href="#" class="dropdown-toggle" data-toggle="dropdown">المقالات <b class="caret"></b></a>          
+               <ul class="dropdown-menu megamenu row">
+                  <li class="col-sm-3">
+                     <ul style="text-align: center;">
+                        <li class="dropdown-header" style="font-size: 20px;text-align: center;">مقالات مختارة</li>
+                        <li><a href="#">إسلامية</a></li>
+                        <li class="disabled"><a href="#">فلسفة</a></li>
+                        <li><a href="#">تأصيل</a></li>
+                         <li>تعليم</li>
+                    
+                     </ul>
+                  </li>
+                  <li class="col-sm-3">
+                     <ul>
+                        <li class="dropdown-header" style="font-size: 20px;text-align: center;">مقالات برفيسير إبراهيم أحمد عمر </li>
+                        
+                     </ul>
+                  </li>
+                  <li class="col-sm-3">
+                     <ul>
+                        <li class="dropdown-header" style="font-size: 20px;text-align:center;">مدونة بروفيسير إبراهيم أحمد عمر</li>
+                         
+                        <li class="divider"></li>
+                                                <li style="text-align: center; font-size: 15px; "><a href="http://localhost/newsportal/">زيارة المدونة</a></li>
+
+                     </ul>
+                  </li>
+                  <li class="col-sm-3">
+                     <ul style="text-align: center;">
+                        <li class="dropdown-header" style="font-size: 20px;">مؤلفات برفيسير إبراهيم أحمد عمر</li>
+                        <li><a href="#">كتب</a></li>
+                        <li><a href="#">مقابات</a></li>
+                        <li><a href="#">مقالات</a></li>
+                        <li><a href="#">أعمال أدبية</a></li>
+                       
+                     </ul>
+                  </li>
+               </ul>
+            </li>
+         </ul>
+      </div>
+   </div>
+</div>
+
+   
+    <!-- MainMenu-Area-End --> <header class="site-header"> 
+      <div class="container"> 
+        <div style="position: relative; right: -100px; top: -180px;display:block;" >
+         <a class="navbar-brand" style="margin: 15px; vertical-align: top;" href="files/التعليم/search.php"><img style="" alt="Logo" src="logo.PNG" />التعليم         </a>
+ <a class="navbar-brand"  style="margin: 15px;vertical-align: top;"href="files/التأصيل/search.php"><img alt="Logo" src="logo.PNG" />التأصيل  </a>
+
+         
+              <a class="navbar-brand" style="margin: 15px;vertical-align: top;" href="files/الدولة/search.php"><img alt="Logo" src="logo.PNG" />الدولة</a>
+          <a class="navbar-brand"  style="margin: 15px; vertical-align: top;
+    display: inline-block;"href="files/منظمات/search.php"><img alt="Logo" src="logo.PNG"/>منظمات                        </a>
+           <a class="navbar-brand" style="margin: 15px;vertical-align: top;" href="files/الفلسفة/search.php"><img alt="Logo" src="logo.PNG"/>الفلسفة  </a>
+            <a class="navbar-brand"  style="margin: 15px;vertical-align: top;"href="files/المجتمع/search.php"><img alt="Logo" src="logo.PNG"/>المجتمع </a>
+             <a class="navbar-brand" style="margin: 15px;vertical-align: top;" href="files/السياسة/search.php"><img alt="Logo" src="logo.PNG"/>السياسة  </a> 
+             </div> 
+        <div class="row" style="text-align: center; position: relative; left: 40px;"> 
+          <div class="col-xs-12 text-center" style="position: relative; left: 40px;"> 
+            <h1 style="position: relative; left: -50px; bottom: 150px;" class="white-color">Akaroon Library </h1>
+             <h1 style="position: relative;left: -50px; bottom: 140px;" class="white-color">مكتبة عكّارون </h1>
+            <h4 style="position: relative;left: -50px; bottom: 250px;">
+                    by Ibrahim Ahmed Omer</h4> 
+            <ul class="breadcrumb"> 
+              <div class="slideshow-container" style="  width:450px;
+   
+    position: relative; bottom: 200px; left: -80px;"> 
+                <div class="widget widget-search"> 
+                  <form action="ibrahimfinalsearch.php" method="get"> 
+                    <div class="form-group"> <input style="text-align: center; position: relative; color: black; direction: rtl;" type="text" name="search" class="form-control" placeholder="هنا يمكنك البحث عن طريق عنوان الورقة أو الكتاب أو المؤلف أو مجال البحث" /> </div> 
+                    <div class="form-group"> <input type="submit" name="search_btn" style="position: relative; top: 50%; font-size: 20px;" class="btn btn-default" value="بحث" /> </div> 
+                  </form> 
+                </div> 
+              </div>
+            </ul> 
+          </div> 
+        </div> 
+      </div> 
+      <div class="mySlides" style="margin: 70px; position: relative; top: -250px; background: white none repeat scroll 0% 0%; display: block;"> 
+        <div> 
+          <p class="author" style="font: italic 18px / 30px Georgia, serif;">بسم الله الرحمن الرحيم</p> 
+          <p class="author" style="font: italic bold 18px / 30px Georgia, serif;">رجاء ودعاء</p> 
+        </div> 
+        <p class="author" style="direction: rtl; font:  calc(1em + 1vw) / 30px Georgia, serif; position: relative; top: -60px; justify-content: center; display: flex;" align="justify">
+
+الأخ الكريم/الأخت الكريمة
+السلام عليكم ورحمة الله
+رجاء ودعاء
+نحن أبناء وبنات الثلثين الأخيرين من القرن العشرين والخمس الأول من القرن الحادي والعشرين عشنا أحداثاً وطنية وأخرى إقليمية وعالمية كثيرة وكبيرة. وعمّرنا ساحات الوطن بأعمالنا في مجالاته المتعددة.
+تطوعنا في منظمات العمل الإجتماعي الوطنية؛ أنشأنا الأحزاب السياسية الوطنية وملأنا دورها حركة ونشاطاً؛ تدربنا وحملنا السلاح وقاتلنا دفاعاً عن الوطن؛ انتظمنا في اتحادات العمل النقابي الفئوي والطلابي توعيةً بالحقوق والواجبات؛ وخدمنا جماهير شعبنا من مواقع الخدمة المدنية.
+قرأنا ودرسنا وحفظنا في خلاوي ومدارس ومعاهد وجامعات الوطن وجامعات خارج الوطن؛ فكرنا وألّفنا ونشرنا في دور النشر النظري والأكاديمي والإعلامي؛ ابتهجنا في صالات العمل الثقافي والفني؛ ولعبنا وشجعنا في ميادين الرياضة.
+
+
+
+كذلك عشنا إقليميا وعالمياً أحداثاً ضخمة. ألم نعش أهم فترة في مسيرة الاتحاد السوفيتي &quot;العظيم&quot; ثم انهياره بتلك الطريقة المذهلة؟ وشهدنا بناء حائط برلين العنيد ثم رأيناه ينهار بضربات الألماني الوحدوي الذي بدأ يبرأ من جرح النازية اللئيم ثم يقوم على ساقيه من جديد. وفي الفترة المذكورة ارتفعت رايات القومية العربية ورايات عدم الإنحياز ثم طوتها السنوات الأخيرة من نفس الفترة. وتأسست وطغت إسرائيل. وخرج الإستعمار الذي كان جاثماً على إفريقيا بفعل الحركات التحررية؛ وقامت منظمة الوحدة الإفريقية ثم الإتحاد الإفريقي. وقام الإتحاد الأوربي وبدا مثالاً في الخروج من ربقة الدولة القطرية الى الكيانات الاتحادية في اتجاه القرية العالمية ولكن ها نحن نرى بريطانيا تخرج منه ونلمح دولاً مثل إيطاليا تسرق النظر الى باب الخروج.
+ثم إن هذه الفترة نطقت بكثير من الكلام: أخبرت وأنبأت، بشرت وأنذرت، همست وصرخت وصدحت، عرّفت وأعلمت، شرحت وبيّنت وفسّرت وأوّلت. بحثت عن كلام يطابق حقائق الوجود.. واجب الوجود الواحد الأحد الخالق، والموجود المخلوق المتعدد.
+لام هو ألفاظ هي أسماء وأفعال وحروف طابقت أعيان وأحداث كانت هي المعنى وفي هذا كلام كثير. وبُنيت من هذه الألفاظ تراكيب كانت جملاً وشبه جمل وبُنى من ذلك جدلٌ وحجاج، ووصف وأمر، وقصص وحكايات، وشعر ونثر، واستراتيجيات وسياسات وبرامج، ومناهج وأدوات للإستدلال، ودستور وقانون ولائحة، وأمثال وأعراف. وكتبت بالكلام العلوم الشرعية والإجتماعية والطبيعية والتقنية ولا غرابة في ذلك فقد علم الله آدم الأسماء كلها.
+ولم تكن الساحات والميادين والمؤسسات أسواق كلام فقط وإنما كانت كذلك مواقع تجارب عملية واختراع وتصميم، فقد أُستحدثت في المؤسسات تقانات أُستغلت فيها الموارد الطبيعة بشكل غير مسبوق. وصنع التدخل العلمي من هذه الموارد الطبيعية مواد جديدة – قديمة أثمرت فتوحات جديدة في عالم الاختراع والإبداع.
+تلك كانت اشارات مختصرة عن المجالات والمؤسسات والدور والهياكل والجماعات والأفراد والنشاط الإنساني في شتى المجالات لا تُغني الدارسين الحاذقين للفترة التي نتكلم عنها فليس القصد هنا دراسة مستقصية وإنما فقط إيقاظ ذاكرة وتنبيه مَنْ طفف أو انصرف عمّا كان في تلك الفترة.
+آمل أن تعينكم كلماتي هذه على استعادة كثير من مخزون المعلومات والتجارب والعلوم والصور والأفكار التي حفلت بها السنوات المذكورة أعلاه. فقد فعلنا أحداثاً طواها الزمن وأنشأنا مؤسسات هدم الزمن بعضها واستعصى بعضها عليه. وكانت بعض أعمالنا تقييداً للعلم بالكتابة لتعم فائدته على مر الزمن وهو ما أنا بصدده في هذا الخطاب. ولكن لابد من الإشارة هنا الى أنه رغم أن الحديث في أكثره يتناول الأعمال في الساحات السودانية المتعددة إلا أن البحوث والأفكار والعلوم والسياسات التي قيدتها الكتابة لا تقف آثار ومجالات فاعليتها على السودان، فقد يهم بعضها الإقليم وقد يهم بعض آخر الساحة الدولية فقد عشنا إقليمياً وعالمياً أحداثاً ضخمة كما قلت، وكانت لنا رموز وشخصيات بارزة ومؤثرة خارج ساحة السودان وأسهم علماؤنا السودانيون بقدرٍ في التقدم العلمي والتقني الذي حققته البشرية في الفترة المذكورة.
+ثم ماذا بعد ؟! ثم إن الربع الأخير من القرن العشرين والخمس الأول من القرن الحادي والعشرين شهدا أن كثيراً من المؤسسات التي تحركنا فيها كما هو في الفقرة الأولى من هذه الكلمة لم تعد موائمة للنشاط المطلوب، وأن كثيراً من الأفكار والمناهج التي ذكرناها في الفقرة الثانية لم تعد مواكبة للمستوى العلمي والتقني الذي يسابق بعضه بعضاً، وأن كثيراً مما ذكرنا يبدو أنه سيكون فاقداً للصلاحية في وقت قريب! والناس الآن بين منبهر ومذهول مما يحدث في مجال الثورة التقنية والثورة الأحيائية وما يترتب من ذلك على المجتمع الانساني بل الوجود كله.
+لكن رغماً عن التقدم العلمي والمعرفي الذي يجعل بعضاً مما ذكرنا في الفقرتين السابقتين أمراً تاريخياً لن يعدم الانسان الحصول على فوائد من ذلك الإنتاج. فلن تستطيع ثورة علمية أن تُسقط أو تَلفُظ كل ما كان قبلها من علوم الا في قول قليل من الفلاسفة والعلماء. أما قول جمهرة الفلاسفة والعلماء هو إن التقدم العلمي يحدث بالتراكم والاستقامة. لذا ربما يجد القارئ فيما أنا بصدده من عمل فوائد بعضها فكري وبعضها اجراءات منهجية أثمرت في الحقب الفكرية والعلمية السابقة. وليس من أغراض هذه الكلمة أن تحصى الأفكار أو المناهج التي طرحها السابقون ويمكن أن يبني عليها قادمون وإنما هي اشارات تنبه أن تلك الأفكار والمناهج وما أثمرته هي اجتهادات انسانية لمجتهدين فكروا وجربوا وكانت لتلك الاجتهادات منفعة في وقتها وربما بقيت عبرة أو بقي منها ما لم يزل ينفع الناس.
+أما بعد
+كثير من أعمالنا لم يعرفها بعضنا لأنها لم توثق، والقليل الذي وثق لم يجد النشر الكافي، وبعضه فات زمن الانتفاع به.
+وبعض هذا العطاء المقيد بالكتابة في الحقبة المذكورة موجود في الكتب ولكن جزء ً منه لا يجده الدارسون والقارئون بين أيديهم لأنه نشر في مجلات ودوريات وكمخرجات مؤتمرات لا سبيل لهم للوصول إليها، بل إن بعضه قد لا يجده مؤلفه.
+لذا فقد رأيت أنه من الواجب على أمثالي وقد أتيحت لهم الفرصة بالحصول على أوراق علمية أو فلسفية أو سياسية أو برامج في المجتمع أو الدولة بسبب مشاركته في مؤتمر أو لعلاقات أكاديمية أو خلافها أن يضعها في مكان يستطيع الدارس أن يجدها، فربما استفاد منها دارس أو قارئ فرد وهو يرتقي بنفسه زيادة في العلم والإيمان، وربما استفادت منها مجموعة من الأشخاص في بناء مؤسسة علمية أو سياسية أو اجتماعية فالناس في كر وفر إلى يوم الدين.
+بعض هذه الدراسات تخص أشخاصاً وبعضها يخص مؤسسات ورجوت أن تكون مفيدة بأكثر مما يستفاد من دراسة واحدة لأي مؤلف. فإن كان لمؤلف معين أكثر من مقالة أو ورقة في فترات معينة من عمله الأكاديمي أو الاجتماعي أو السياسي طمعت في أن يطّلع المتصفح لهذا الموقع على ما كتب هذا المؤلف في فترات مختلفة فيلمح التطور الفكري لذلك المؤلف أو التعديل الذي حصل في اهتماماته إن كانت أكاديمية أو اجتماعية أو سياسية أو غيرها. وأن يكون في ذلك درس يستفيده القارئ الدارس في تجويد مسيرته الشخصية.
+كذلك رجوت أن تكون الوثائق الخاصة بأي منظمة كاملة بصورة تمكن القارئ الدارس أن يلمح أو يتعرف على التجويد أو التطور أو التقدم الذي حققته تلك المنظمة في مبادئها أو استراتيجياتها أو سياساتها أو برامجها أو نظمها الإدارية في مسيرتها حتى يستفاد من تجاربها في المستقبل.
+وهذه الرجاءات يحُول دون تحققها بالصورة المثلى إن المادة المرفوعة في هذا الموقع الآن تحتاج إلى إضافات مهمة يحتاجها القارئ الدارس الحاذق الذي يرمى إلى الإستفادة المثلى لتأهيل شخصي أو بناء مؤسسي. ولكن هذه الرجاءات قابلة لأن تتحقق مستقبلاً إن شاء الله. ذلك أنى أظن أن هذا الموقع بما فيه الآن يصلح أن يكون نواة وأن تكون الشجرة هي ما سيضاف اليه مستقبلاً من جهات آمل أن تكون عديدة وأن يكون عندها ما تثرى به هذا الموقع. فإن تحقق هذا الرجاء فإن الموقع سيقدم لشبابنا بل لأجيالنا القادمة الصورة الحقيقية للبذل الكبير الذي قامت به أجيالنا. وسيوضح لهم أن الإبتلاءات التي قابلها جيلنا وتعامله معها كانت بذلاً وصموداً أو على الأقل تحرفاً وتحيزاً. فنحن العَكّارُون. وآمل أن يجعلهم ذلك أكثر احتراماً لماضيهم وأكثر ثقةً في مستقبلهم. وأعلم أن الإجراءات الإدارية والمالية التي تحتاجها هذه النواة لتصبح شجرة تحتاج إلى تفاكر وإلتزام وأسال الله أن ييسر ذلك. كما أن هناك محذورات أرجو المساعدة في تجنبها قد ذكرتها في آخر هذا الخطاب. ورغماً عن ذلك أظن أن القارئ سيجد في هذا الموقع بصورته الحالية فوائد هي مبرري لإنشائه. نسأل الله القبول.
+وقد صنفت الأوراق على سبع محاور بكل محور محاور فرعية، والمحاور هي: التأصيل، التعليم، الفلسفة، السياسة، المجتمع، المنظمات، الدولة.
+لكل محور جدول ترصد فيه الأوراق. أثبتنا لكل ورقة عنوانها ومؤلفها وتاريخ التأليف.
+أرجو أن تكون مراجعتكم لما في الموقع هذه المرة بقصد مساعدتي في تجنب المحذورات. ثم تكون مراجعاتكم التي تلي في إطار إهتماماتكم الشخصية أو المؤسسية.
+فهذه الدعوة لك أخي/أختي للاطلاع على الأوراق والبحوث التي رفعتها في هذا الموقع خاصةً وأنه ربما تكون لكم أوراق ضمنها، فأرجو منك النصح في ظرف شهر في الآتي: -
+1/ حذف ما ترى أنه مخالف لأسس النشر مثل حق المؤلف.
+2/ أن ما نشر ضار بالأمن القومي السوداني.
+3/ أن ما نشر يضر بالأمن الشخصي لصاحب البحث أو لمن ورد اسمه في البحث.
+4/ أن اسم شخص تعرفه قد ورد وأنه ربما لن يرضى ذلك الشخص بما ورد عنه ويحسن بي الاتصال به قبل النشر حتى أطمئن أنني لم أتغول على خصوصيته أو أدخلته في ما لا يرضاه.
+5/ملاحظات حول المحاور ومحتوياتها وإن كانت تحتاج إلى تعديل أو تجويد.
+6/ ملاحظات أخرى تدفع ضرراً أو تجلب مصلحة (بهذا العموم!)
+وأنبه لنقطتين:
+1/ كتابة اسم المؤلف في خانة بحث قاعدة البيانات ستظهر لكم مؤلفاته في جميع المحاور، وربما يكون لهذا المؤلف مؤلفات باللغة العربية وأخرى باللغة الإنجليزية، لذا على من يريد الاطلاع على كل ما هو متاح في هذه الأوراق من ذلك المؤلف أن يكتب الاسم تارة باللغة العربية وتارة باللغة الإنجليزية. وقد يأتي اسم المؤلف كاملاً وربما ذكر بحروفه الأولى ثم اسم العائلة . مثال ذلك:
+Omer I.A.  ;Ibrahim Ahmed Omerإبراهيم أحمد عمر;
+2/ وكذلك يمكن البحث بكتابة كلمات مفتاحية تدل على محتوى الورقة.
+
+أسأل الله أن يكون في هذا العمل خير وبركة وفوائد تعود على كثير من الناس. وأن يقبل الله منا ومنكم صالح الأعمال. وجزاكم الله خيراً
+
+</p> 
+        <p style="font: italic bold 24px / 30px Georgia, serif; color: black;">
+    أخوكم : إبراهيم أحمد عمر
+h409h344@gmail.com  
+</p> 
+      </div> <!--
+<a class="prev" onclick="if(window.parent &amp;&amp; window.parent.Xinha){return false}plusSlides(1)" style="position: absolute;left: 50px;">❮</a>
+<a class="next" onclick="if(window.parent &amp;&amp; window.parent.Xinha){return false}plusSlides(-1)">❯</a>
+--> <script>
+var slideIndex = 1;
+showSlides(slideIndex);
+
+function plusSlides(n) {
+  showSlides(slideIndex += n);
+}
+
+function currentSlide(n) {
+  showSlides(slideIndex = n);
+}
+
+function showSlides(n) {
+  var i;
+  var slides = document.getElementsByClassName("mySlides");
+  var dots = document.getElementsByClassName("dot");
+  if (n > slides.length) {slideIndex = 1}    
+  if (n < 1) {slideIndex = slides.length}
+  for (i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";  
+  }
+  for (i = 0; i < dots.length; i++) {
+      dots[i].className = dots[i].className.replace(" active", "");
+  }
+  slides[slideIndex-1].style.display = "block";  
+  dots[slideIndex-1].className += " active";
+}
+</script> 
+      <h5 class="title" style="position: relative; left: 50px; font-style: italic;">Featured</h5> </header> 
+    <div style="position: relative; bottom: 130px; left: 60px;"> <a target="_blank" href="http://akaroon.com/IAOL/files/%u0627%u0644%u062A%u0639"> <img src="img/Poster.jpg" alt="Forest" style="width: 150px;" /> </a><a target="_blank" href="http://akaroon.com/IAOL/files/%u0627%u0644%u062A%u0639%u0644%u064A%u0645/search.php"> <img src="img/11.jpg" alt="Forest" style="width: 150px;" /> </a><a target="_blank" href="http://akaroon.com/IAOL/files/%u0645%u0646%u0638%u0645%u0627%u062A/search.php"> <img src="img/1.jpg" alt="Forest" style="width: 150px;" /> </a><a target="_blank" href="http://akaroon.com/files/%u0627%u0644%u062A%u0639%u0644%u064A%u0645/search.php"> <img src="img/7.jpg" alt="Forest" style="width: 150px;" /> </a><a target="_blank" href="http://akaroon.com/IAOL/files/%u0627%u0644%u0645%u062C%u062A%u0645%u0639/search.php"> <img src="img/18.jpg" alt="Forest" style="width: 150px;" /> </a><a target="_blank" href="http://akaroon.com/IAOL/files/%u0627%u0644%u062F%u0648%u0644%u0629/search.php"> <img src="img/Poster.jpg" alt="Forest" style="width: 150px;" /> </a></div><a target="_blank" href="http://akaroon.com/IAOL/files/%u0627%u0644%u062F%u0648%u0644%u0629/search.php"> <!-- Subscribe-Form --> 
+      <div class="subscribe-area section-padding"> 
+        <div class="container"> 
+          <div class="row"> 
+            <div class="col-xs-12 col-sm-8 col-sm-offset-2"> 
+              <div class="subscribe-form text-center"> 
+                <h3 class="blue-color">تسجيل البريد الإلكتروني للحصول على أخر الأخبار</h3> 
+                <div class="space-20"></div> 
+                <form id="mc-form"> <input type="email" class="control" placeholder="Enter your email" required="true" id="mc-email" /> <button class="bttn-white active" type="submit"><span class="lnr lnr-location"></span> Subscribe</button> <label class="mt10" for="mc-email"></label> </form> 
+              </div> 
+            </div> 
+          </div> 
+        </div> 
+      </div> <!-- Subscribe-Form-Area --> <!-- Footer-Area --> </a><footer class="footer-area" id="contact_page"><a target="_blank" href="http://akaroon.com/IAOL/files/%u0627%u0644%u062F%u0648%u0644%u0629/search.php"> 
+        <div class="section-padding"> 
+          <div class="container"> 
+            <div class="row"> 
+              <div class="col-xs-12"> 
+                <div class="page-title text-center"> 
+                  <h5 class="title">Contact US</h5> 
+                  <h3 class="dark-color">Find Us By Bellow Details</h3> 
+                  <div class="space-60"></div> 
+                </div> 
+              </div> 
+            </div> 
+            <div class="row"> 
+              <div class="col-xs-12 col-sm-4"> 
+                <div class="footer-box"> 
+                  <div class="box-icon"> <span class="lnr lnr-map-marker"></span> </div> 
+                  <p>Sudan <br />Khartoum </p> 
+                </div> 
+                <div class="space-30 hidden visible-xs"></div> 
+              </div> 
+              <div class="col-xs-12 col-sm-4"> 
+                <div class="footer-box"> 
+                  <div class="box-icon"> <span class="lnr lnr-phone-handset"></span> </div> 
+                  <p>+249 <br /> +249</p> 
+                </div> 
+                <div class="space-30 hidden visible-xs"></div> 
+              </div> 
+              <div class="col-xs-12 col-sm-4"> 
+                <div class="footer-box"> 
+                  <div class="box-icon"> <span class="lnr lnr-envelope"></span> </div> 
+                  <p>info@akaroon.com <br /> h409h344@gmail.com
+                            </p> 
+                </div> 
+              </div> 
+            </div> 
+          </div> 
+        </div> <!-- Footer-Bootom --> </a>
+      <div class="footer-bottom"><a target="_blank" href="http://akaroon.com/IAOL/files/%u0627%u0644%u062F%u0648%u0644%u0629/search.php"> </a>
+        <div class="container"><a target="_blank" href="http://akaroon.com/IAOL/files/%u0627%u0644%u062F%u0648%u0644%u0629/search.php"> </a>
+          <div class="row"><a target="_blank" href="http://akaroon.com/IAOL/files/%u0627%u0644%u062F%u0648%u0644%u0629/search.php"> 
+              <div class="col-xs-12 col-md-5"> <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --> <span>Copyright &copy;<script>document.write(new Date().getFullYear());</script>2020 All rights reserved | </span> <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --> 
+                <div class="space-30 hidden visible-xs"></div> 
+              </div> </a>
+            <div class="col-xs-12 col-md-7"><a target="_blank" href="http://akaroon.com/IAOL/files/%u0627%u0644%u062F%u0648%u0644%u0629/search.php"> </a>
+              <div class="footer-menu"><a target="_blank" href="http://akaroon.com/IAOL/files/%u0627%u0644%u062F%u0648%u0644%u0629/search.php"> </a>
+                <ul><a target="_blank" href="http://akaroon.com/IAOL/files/%u0627%u0644%u062F%u0648%u0644%u0629/search.php"> </a>
+                  <li class="active"><a target="_blank" href="http://akaroon.com/IAOL/files/%u0627%u0644%u062F%u0648%u0644%u0629/search.php"><a href="index.html#home_page">akaaron.com</a></a></li><a target="_blank" href="http://akaroon.com/IAOL/files/%u0627%u0644%u062F%u0648%u0644%u0629/search.php"> </a>
+                  <li><a target="_blank" href="http://akaroon.com/IAOL/files/%u0627%u0644%u062F%u0648%u0644%u0629/search.php"></a><a href="index.html#about_page">About</a></li> 
+                  <li><a href="blog.html">Blog</a></li> 
+                </ul> 
+              </div> 
+            </div> 
+          </div> 
+        </div> 
+      </div> <!-- Footer-Bootom-End --> </footer> <!-- Footer-Area-End --> <!--Vendor-JS--> <script src="js/vendor/jquery-1.12.4.min.js"></script> <script src="js/vendor/jquery-ui.js"></script> <script src="js/vendor/bootstrap.min.js"></script> <!--Plugin-JS--> <script src="js/owl.carousel.min.js"></script> <script src="js/contact-form.js"></script> <script src="js/ajaxchimp.js"></script> <script src="js/scrollUp.min.js"></script> <script src="js/magnific-popup.min.js"></script> <script src="js/wow.min.js"></script> <!--Main-active-JS--> <script src="js/main.js"></script> <script type="text/javascript">
+$(document).ready(function() {
+jQuery(document).ready(function(){
+    $(".dropdown").hover(
+        function() { $('.dropdown-menu', this).stop().fadeIn("fast");
+        },
+        function() { $('.dropdown-menu', this).stop().fadeOut("fast");
+    });
+});
+}
+</script> 
+  </body>
+</html>

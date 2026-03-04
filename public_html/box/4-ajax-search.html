@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      AJAX Search Example
+    </title>
+    <script>
+      function fetch() {
+        // GET SEARCH TERM
+        var data = new FormData();
+        data.append('search', document.getElementById("search").value);
+        data.append('ajax', 1);
+
+        // AJAX
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', "3-search.php", true);
+        xhr.onload = function () {
+          if (xhr.status==403 || xhr.status==404) {
+            alert("ERROR LOADING FILE!");
+          } else {
+            var results = JSON.parse(this.response),
+                wrapper = document.getElementById("results");
+             if (results.length > 0) {
+              for(var res of results) {
+                var line = document.createElement("tr");
+                line.innerHTML ="<tr>"+"<td>" + res['The Title of Paper/Book'] + "</td>" +"<td>"+ res['The name of the Author']+"</td>"+"</tr>";
+ 
+                wrapper.appendChild(line);
+              }
+            } else {
+              wrapper.innerHTML = "No results found";
+            }
+          }
+        };
+        xhr.send(data);
+        return false;
+      }
+    </script>
+    <style>
+    table,tr,th,td
+    {
+      border: 1px solid black;
+    }
+  </style>
+  </head>
+  <body>
+    <!-- [SEARCH FORM] -->
+    <form onsubmit="return fetch();">
+      <h1>
+        SEARCH FOR USERS
+      </h1>
+      <input type="text" id="search" required/>
+      <input type="submit" value="Search"/>
+    </form>
+
+    <!-- [SEARCH RESULTS] -->
+    <table >
+     
+       <th scope="col">The Title of Paper/Book</th>
+      <th scope="col">The name of the Author</th>
+
+   
+    <tr>
+              <th scope="row" id="results"></th>
+ 
+ </tr>
+     
+
+     </table>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+msgid "Data updated successfully"
+msgstr "Data, opdateret successfullyc"
+
+msgid "Select Post Types Where You Want Custom PDF Attachments"
+msgstr "Vælg Indlæg Typer hvor du ønsker Brugerdefineret vedhæftede PDF-filer"
+
+msgid "Select Number of Attachment Files"
+msgstr "Vælg Antal Attachment filer"
+
+msgid "Save"
+msgstr "Spare"
+
+msgid "Upload your PDF"
+msgstr "Upload din PDF"
+
+msgid "Download"
+msgstr "Hent"
+
+msgid "Check to remove"
+msgstr "Tjek at fjerne"
