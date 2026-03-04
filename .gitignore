@@ -58,6 +58,8 @@ IAOL/
 *.png
 *.PNG
 *.gif
+# Exception: architecture diagram for README
+!architecture_diagram.png
 
 # ─── Server home-directory files (from FTP download) ─────────────────────────
 .bash_history
