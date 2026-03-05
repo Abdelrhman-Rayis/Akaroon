@@ -1,205 +1,167 @@
-<?php 
-
-//index.php
-
+<?php
 include('database_connection.php');
-
 ?>
-
 <!DOCTYPE html>
-<html lang="en">
-
+<html dir="rtl" lang="ar">
 <head>
-    <style type="text/css">
-        .flex {
-    display: flex;
-}
-    </style>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>عكارون</title>
-
-    <script src="js/jquery-1.10.2.min.js"></script>
-    <script src="js/jquery-ui.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link href = "css/jquery-ui.css" rel = "stylesheet">
-    <!-- Custom CSS -->
-    <link href="css/style.css" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>التأصيل — مكتبة عكارون</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="../../css/akaroon-theme.css">
 </head>
-
 <body>
-    <!-- Page Content -->
-    <div class="container">
-        <div class="row">
-            <br />
-            <h2 align="center">التأصيل</h2>
-            <br />
-            <div class="col-md-3">                              
-                <div class="list-group">
 
-                    <h3>Search</h3>
+<nav class="ak-navbar">
+  <a href="../../" class="ak-logo">عكارون</a>
+  <ul class="ak-nav-links">
+    <li><a href="../التأصيل/search.php">التأصيل</a></li>
+    <li><a href="../التعليم/search.php">التعليم</a></li>
+    <li><a href="../الدولة/search.php">الدولة</a></li>
+    <li><a href="../السياسة/search.php">السياسة</a></li>
+    <li><a href="../الفلسفة/search.php">الفلسفة</a></li>
+    <li><a href="../المجتمع/search.php">المجتمع</a></li>
+    <li><a href="../منظمات/search.php">منظمات</a></li>
+    <li><a href="../../blog/ibrahimfinalsearch.php">🔍 بحث شامل</a></li>
+  </ul>
+</nav>
 
-                     <form action="" method="get">
-    <div class="flex">
-            <input type="text" name="search" class="form-control" placeholder="Search Here..."/>
+<div class="ak-page-header">
+  <h2>التأصيل</h2>
+  <p>التأصيل الإسلامي والفقه</p>
+</div>
 
-       
-            <input type="submit" name="search_btn" class="btn btn-default" value="Search"  />
+<div class="container mt-4">
+  <div class="row">
+
+    <!-- Sidebar filters -->
+    <div class="col-md-3">
+      <div class="ak-sidebar">
+
+        <!-- Text search -->
+        <h5>🔍 بحث نصي</h5>
+        <input type="text" id="search_text" class="ak-sidebar-search" placeholder="ابحث هنا...">
+        <button class="ak-sidebar-btn" id="search_go">بحث</button>
+
+        <!-- Author filter -->
+        <?php
+        $q = $connect->prepare("SELECT DISTINCT(The_number_of_the_Author) FROM tas ORDER BY The_number_of_the_Author");
+        $q->execute();
+        $authors = $q->fetchAll();
+        if (!empty($authors)):
+        ?>
+        <h5 class="mt-3">✍️ المؤلف</h5>
+        <div class="ak-filter-scroll">
+          <?php foreach ($authors as $row):
+            $val = htmlspecialchars($row['The_number_of_the_Author'], ENT_QUOTES, 'UTF-8');
+          ?>
+          <label class="ak-filter-item">
+            <input type="checkbox" class="common_selector brand" value="<?= $val ?>">
+            <span><?= $val ?></span>
+          </label>
+          <?php endforeach; ?>
         </div>
-      </form>
-                </div>              
-                <div class="list-group">
-                    <h3>Author</h3>
-                    <div style="height: 180px; overflow-y: auto; overflow-x: hidden;">
-                    <?php
+        <?php endif; ?>
 
-                    $query = "SELECT DISTINCT(The_number_of_the_Author) FROM tas ORDER BY The_number_of_the_Author";
-                    $tasment = $connect->prepare($query);
-                    $tasment->execute();
-                    $result = $tasment->fetchAll();
-                    foreach($result as $row)
-                    {
-                    ?>
-                    <div class="list-group-item checkbox">
-                        <label><input type="checkbox" class="common_selector brand" value="<?php echo $row['The_number_of_the_Author']; ?>"  > <?php echo $row['The_number_of_the_Author']; ?></label>
-                    </div>
-                    <?php
-                    }
-
-                    ?>
-                    </div>
-                </div>
-
-                <div class="list-group">
-                    <h3>Field of research</h3>
-                    <div style="height: 180px; overflow-y: auto; overflow-x: hidden;">
-
-                    <?php
-
-                    $query = "
-                    SELECT DISTINCT(Field_of_research) FROM tas  ORDER BY Field_of_research
-                    ";
-                    $tasment = $connect->prepare($query);
-                    $tasment->execute();
-                    $result = $tasment->fetchAll();
-                    foreach($result as $row)
-                    {
-                    ?>
-                    <div class="list-group-item checkbox">
-                        <label><input type="checkbox" class="common_selector ram" value="<?php echo $row['Field_of_research']; ?>" > <?php echo $row['Field_of_research']; ?></label>
-                    </div>
-                    <?php    
-                    }
-
-                    ?>
-                </div>
-                </div>
-
-                
-                <div class="list-group">
-                    <h3>Place of issue</h3>
-                    <div style="height: 180px; overflow-y: auto; overflow-x: hidden;">
-
-                    <?php
-                    $query = "
-                    SELECT DISTINCT(Place_of_issue) FROM tas ORDER BY Place_of_issue
-                    ";
-                    $tasment = $connect->prepare($query);
-                    $tasment->execute();
-                    $result = $tasment->fetchAll();
-                    foreach($result as $row)
-                    {
-                    ?>
-                    <div class="list-group-item checkbox">
-                        <label><input type="checkbox" class="common_selector storage" value="<?php echo $row['Place_of_issue']; ?>"  > <?php echo $row['Place_of_issue']; ?> </label>
-                    </div>
-                    <?php
-                    }
-                    ?>
-                                        </div>
-    
-                </div>
-            </div>
-
-            <div class="col-md-9">
-                <br />
-                <div class="row filter_data">
-
-                </div>
-            </div>
+        <!-- Field of research filter -->
+        <?php
+        $q = $connect->prepare("SELECT DISTINCT(Field_of_research) FROM tas ORDER BY Field_of_research");
+        $q->execute();
+        $fields = $q->fetchAll();
+        if (!empty($fields)):
+        ?>
+        <h5 class="mt-3">🔬 مجال البحث</h5>
+        <div class="ak-filter-scroll">
+          <?php foreach ($fields as $row):
+            $val = htmlspecialchars($row['Field_of_research'], ENT_QUOTES, 'UTF-8');
+          ?>
+          <label class="ak-filter-item">
+            <input type="checkbox" class="common_selector ram" value="<?= $val ?>">
+            <span><?= $val ?></span>
+          </label>
+          <?php endforeach; ?>
         </div>
+        <?php endif; ?>
 
+        <!-- Place of issue filter -->
+        <?php
+        $q = $connect->prepare("SELECT DISTINCT(Place_of_issue) FROM tas ORDER BY Place_of_issue");
+        $q->execute();
+        $places = $q->fetchAll();
+        if (!empty($places)):
+        ?>
+        <h5 class="mt-3">📍 مكان الإصدار</h5>
+        <div class="ak-filter-scroll">
+          <?php foreach ($places as $row):
+            $val = htmlspecialchars($row['Place_of_issue'], ENT_QUOTES, 'UTF-8');
+          ?>
+          <label class="ak-filter-item">
+            <input type="checkbox" class="common_selector storage" value="<?= $val ?>">
+            <span><?= $val ?></span>
+          </label>
+          <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
+      </div><!-- /ak-sidebar -->
     </div>
-<style>
-#loading
-{
-    text-align:center; 
-    background: url('loader.gif') no-repeat center; 
-    height: 150px;
-}
-</style>
 
+    <!-- Results area -->
+    <div class="col-md-9">
+      <div class="filter_data">
+        <div class="ak-loading">
+          <div class="ak-loading-spinner"></div>
+          <p>جارٍ التحميل...</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="ak-footer">
+  <p>© عكارون — جميع الحقوق محفوظة | <a href="../../">الصفحة الرئيسية</a></p>
+</footer>
+
+<script src="js/jquery-1.10.2.min.js"></script>
 <script>
 $(document).ready(function(){
 
-    filter_data();
+  filter_data();
 
-    function filter_data()
-    {
-        $('.filter_data').html('<div id="loading" style="" ></div>');
-        var action = 'fetch_data';
-        var minimum_price = $('#hidden_minimum_price').val();
-        var maximum_price = $('#hidden_maximum_price').val();
-        var brand = get_filter('brand');
-        var ram = get_filter('ram');
-        var storage = get_filter('storage');
-        $.ajax({
-            url:"fetch_data.php",
-            method:"POST",
-            data:{action:action, minimum_price:minimum_price, maximum_price:maximum_price, brand:brand, ram:ram, storage:storage},
-            success:function(data){
-                $('.filter_data').html(data);
-            }
-        });
-    }
-
-    function get_filter(class_name)
-    {
-        var filter = [];
-        $('.'+class_name+':checked').each(function(){
-            filter.push($(this).val());
-        });
-        return filter;
-    }
-
-    $('.common_selector').click(function(){
-        filter_data();
+  function filter_data() {
+    $('.filter_data').html('<div class="ak-loading"><div class="ak-loading-spinner"></div><p>جارٍ التحميل...</p></div>');
+    var action       = 'fetch_data';
+    var brand        = get_filter('brand');
+    var ram          = get_filter('ram');
+    var storage      = get_filter('storage');
+    var search_text  = $('#search_text').val();
+    $.ajax({
+      url: 'fetch_data.php',
+      method: 'POST',
+      data: { action: action, brand: brand, ram: ram, storage: storage, search_text: search_text },
+      success: function(data) {
+        $('.filter_data').html(data);
+      }
     });
+  }
 
-    $('#price_range').slider({
-        range:true,
-        min:1000,
-        max:65000,
-        values:[1000, 65000],
-        step:500,
-        stop:function(event, ui)
-        {
-            $('#price_show').html(ui.values[0] + ' - ' + ui.values[1]);
-            $('#hidden_minimum_price').val(ui.values[0]);
-            $('#hidden_maximum_price').val(ui.values[1]);
-            filter_data();
-        }
+  function get_filter(class_name) {
+    var filter = [];
+    $('.' + class_name + ':checked').each(function(){
+      filter.push($(this).val());
     });
+    return filter;
+  }
+
+  $('.common_selector').click(function(){ filter_data(); });
+  $('#search_go').click(function(){ filter_data(); });
+  $('#search_text').keypress(function(e){
+    if (e.which === 13) filter_data();
+  });
 
 });
 </script>
 
 </body>
-
 </html>
