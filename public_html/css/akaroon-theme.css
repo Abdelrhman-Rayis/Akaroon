@@ -460,6 +460,112 @@ body {
 @keyframes spin { to { transform: rotate(360deg); } }
 .ak-empty-icon { font-size: 3rem; margin-bottom: 0.8rem; display: block; }
 
+/* ── Professor's Letter section ─────────────────────────── */
+.ak-letter-section {
+  padding: 2.5rem 0;
+  background: var(--teal-pale);
+}
+.ak-letter-card {
+  background: #fff;
+  border: 1px solid var(--warm-border);
+  border-right: 4px solid var(--teal);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.ak-letter-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.2rem 1.5rem;
+}
+.ak-letter-avatar {
+  width: 54px;
+  height: 54px;
+  background: var(--teal-pale);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  border: 2px solid var(--teal-light);
+}
+.ak-letter-info { flex: 1; }
+.ak-letter-from {
+  color: var(--muted);
+  font-size: 0.78rem;
+  margin-bottom: 0.15rem;
+}
+.ak-letter-name {
+  color: var(--teal-dark);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+.ak-letter-toggle {
+  background: var(--teal);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.55rem 1.3rem;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: background 0.2s;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.ak-letter-toggle:hover { background: var(--teal-mid); }
+.ak-letter-arrow {
+  display: inline-block;
+  transition: transform 0.25s;
+  font-style: normal;
+}
+.ak-letter-toggle[aria-expanded="true"] .ak-letter-arrow {
+  transform: rotate(180deg);
+}
+.ak-letter-body {
+  padding: 1.2rem 1.5rem 1.8rem;
+  border-top: 1px solid var(--teal-pale);
+  direction: rtl;
+  line-height: 1.95;
+  color: var(--text);
+}
+.ak-letter-body p { margin-bottom: 1rem; font-size: 0.98rem; }
+.ak-letter-bismillah {
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--teal-dark);
+  margin-bottom: 0.3rem;
+}
+.ak-letter-subtitle {
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--teal);
+  margin-bottom: 1.2rem;
+}
+.ak-letter-readmore {
+  display: inline-block;
+  margin-top: 0.8rem;
+  color: var(--teal);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px dashed var(--teal-light);
+  padding-bottom: 1px;
+}
+.ak-letter-readmore:hover {
+  color: var(--teal-dark);
+  border-bottom-style: solid;
+  text-decoration: none;
+}
+
 /* ── Footer ──────────────────────────────────────────────── */
 .ak-footer {
   background: var(--teal-dark);
