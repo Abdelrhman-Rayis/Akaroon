@@ -86,8 +86,8 @@ if($link->connect_error){
     <div class="container">
         <?php
         if (isset($_GET['search_btn'])) {
-            $search_var = $_GET['search'];
-            $find = arquery($search_var); // Using your function to prepare the regex
+            $search_var = substr(trim($_GET['search']), 0, 200); // limit input length
+            $find = $link->real_escape_string(arquery($search_var)); // escape after Arabic normalisation
 
             // Updated SQL Query to search across multiple fields
             $sql = "
@@ -188,14 +188,20 @@ if($link->connect_error){
 
                 if ($res->num_rows > 0) {
                     while ($row = $res->fetch_assoc()) {
+                        $cat  = htmlspecialchars($row['Category'],              ENT_QUOTES, 'UTF-8');
+                        $id   = htmlspecialchars($row['id'],                    ENT_QUOTES, 'UTF-8');
+                        $title  = htmlspecialchars($row['The_Title_of_Paper_Book'],  ENT_QUOTES, 'UTF-8');
+                        $author = htmlspecialchars($row['The_number_of_the_Author'], ENT_QUOTES, 'UTF-8');
+                        $year   = htmlspecialchars($row['Year_of_issue'],            ENT_QUOTES, 'UTF-8');
+                        $field  = htmlspecialchars($row['Field_of_research'],        ENT_QUOTES, 'UTF-8');
                         echo '<tr>';
-                        echo '<td><a href="../files/' . $row['Category'] . '/files/' . $row['id'] . '.pdf"><img src="../files/' . $row['Category'] . '/image/' . $row['id'] . '.jpg" height="150" width="100" class="img-responsive"></a></td>';
-                        echo '<td><a href="../files/' . $row['Category'] . '/files/' . $row['id'] . '.pdf">' . $row['The_Title_of_Paper_Book'] . '</a></td>'; // Title as link
-                        echo '<td><a href="../files/' . $row['Category'] . '/files/' . $row['id'] . '.pdf">' . $row['The_number_of_the_Author'] . '</a></td>'; // Author name as link
-                        echo '<td>' . $row['Year_of_issue'] . '</td>';
-                        echo '<td>' . $row['Field_of_research'] . '</td>';
-                        echo '<td>' . $row['Category'] . '</td>';
-                        echo '<td>' . $row['id'] . '</td>';
+                        echo '<td><a href="../files/' . $cat . '/files/' . $id . '.pdf"><img src="../files/' . $cat . '/image/' . $id . '.jpg" height="150" width="100" class="img-responsive"></a></td>';
+                        echo '<td><a href="../files/' . $cat . '/files/' . $id . '.pdf">' . $title . '</a></td>';
+                        echo '<td><a href="../files/' . $cat . '/files/' . $id . '.pdf">' . $author . '</a></td>';
+                        echo '<td>' . $year . '</td>';
+                        echo '<td>' . $field . '</td>';
+                        echo '<td>' . $cat . '</td>';
+                        echo '<td>' . $id . '</td>';
                         echo '</tr>';
                     }
                 } else {

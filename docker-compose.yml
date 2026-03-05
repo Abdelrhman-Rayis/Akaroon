@@ -23,9 +23,10 @@ services:
     image: mysql:8.0
     container_name: akaroon_mysql
     ports:
-      - "3306:3306"      # also accessible from host via TablePlus / MySQL Workbench
+      - "127.0.0.1:3306:3306"   # localhost only — not exposed to LAN/internet
+    env_file: .env
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_ROOT_HOST: '%'   # allow root connections from any host (needed by phpMyAdmin)
     command: --default-authentication-plugin=mysql_native_password
     volumes:
@@ -35,7 +36,7 @@ services:
       - ./public_html/form/form-wizard.sql:/docker-entrypoint-initdb.d/02-form-wizard.sql
       - ./public_html/Live-Search/live_search.sql:/docker-entrypoint-initdb.d/03-live-search.sql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -46,11 +47,12 @@ services:
     image: phpmyadmin:latest
     container_name: akaroon_phpmyadmin
     ports:
-      - "8081:80"
+      - "127.0.0.1:8081:80"   # localhost only — not exposed to LAN/internet
+    env_file: .env
     environment:
       PMA_HOST: mysql
       PMA_USER: root
-      PMA_PASSWORD: root
+      PMA_PASSWORD: ${PMA_PASSWORD}
       UPLOAD_LIMIT: 512M    # large enough for WordPress DB exports
     depends_on:
       - mysql

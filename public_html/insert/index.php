@@ -84,8 +84,11 @@
             if (isset($_POST['login']) && !empty($_POST['username']) 
                && !empty($_POST['password'])) {
         
-               if ($_POST['username'] == 'admin' && 
-                  $_POST['password'] == 'akaroon1234') {
+               // Password hash — set INSERT_ADMIN_PASSWORD_HASH env var in production
+               // Generate: php -r "echo password_hash('yourpassword', PASSWORD_BCRYPT);"
+               $stored_hash = getenv('INSERT_ADMIN_PASSWORD_HASH') ?: '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi';
+               if ($_POST['username'] === 'admin' &&
+                  password_verify($_POST['password'], $stored_hash)) {
                   $_SESSION['valid'] = true;
                   $_SESSION['timeout'] = time();
                   $_SESSION['username'] = 'tutorialspoint';
