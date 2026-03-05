@@ -13,17 +13,17 @@
 <!-- ── WordPress blog navigation bar ────────────────────── -->
 <div class="ak-blog-bar">
   <span class="ak-blog-bar-label">🌐 الموقع:</span>
-  <a href="https://www.akaroon.com/blog">الرئيسية</a>
+  <a href="/blog">الرئيسية</a>
   <span class="ak-blog-bar-sep">|</span>
-  <a href="https://akaroon.com/blog/?page_id=9">المدونة</a>
+  <a href="/blog/?page_id=9">المدونة</a>
   <span class="ak-blog-bar-sep">|</span>
-  <a href="https://akaroon.com/blog/?page_id=103">التصنيفات</a>
+  <a href="/blog/?page_id=103">التصنيفات</a>
   <span class="ak-blog-bar-sep">|</span>
-  <a href="https://akaroon.com/blog/?page_id=7">عن الموقع</a>
+  <a href="/blog/?page_id=7">عن الموقع</a>
   <span class="ak-blog-bar-sep">|</span>
-  <a href="https://akaroon.com/blog/?page_id=207">معرض الصور</a>
+  <a href="/blog/?page_id=207">معرض الصور</a>
   <span class="ak-blog-bar-sep">|</span>
-  <a href="https://akaroon.com/blog/?page_id=8">تواصل معنا</a>
+  <a href="/blog/?page_id=8">تواصل معنا</a>
 </div>
 
 <nav class="ak-navbar">
