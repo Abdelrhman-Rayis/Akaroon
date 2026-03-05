@@ -1,15 +1,31 @@
 <?php
 $link = new mysqli('mysql','root','root','akaroon_akaroondb');
-$link->set_charset("utf8");
+$link->set_charset("utf8mb4");
 
 if($link->connect_error){
     die("Connection Failed: " . $link->connect_error);
 }
 
-function arquery($text) {
-    $replace = array("أ", "ا", "إ", "آ", "ي", "ى", "ه", "ة");
-    $with    = array("(أ|ا|آ|إ)", "(أ|ا|آ|إ)", "(أ|ا|آ|إ)", "(أ|ا|آ|إ)", "(ي|ى)", "(ي|ى)", "(ه|ة)", "(ه|ة)");
-    return str_replace($replace, $with, $text);
+/* ── Arabic-aware search normalization ─────────────────── */
+function normalizeAr($text) {
+    $text = trim($text);
+    $text = preg_replace('/[\x{064B}-\x{065F}\x{0670}]/u', '', $text); // strip diacritics
+    $text = str_replace(['أ','إ','آ','ٱ'], 'ا', $text);  // unify alef forms
+    $text = str_replace('ة', 'ه', $text);                 // taa marbuta → haa
+    $text = str_replace('ى', 'ي', $text);                 // alef maqsura → yaa
+    $text = str_replace('ؤ', 'و', $text);                 // hamza on waw
+    $text = str_replace('ئ', 'ي', $text);                 // hamza on yaa
+    return $text;
+}
+function sqlNorm($f) {
+    foreach (['ة'=>'ه','أ'=>'ا','إ'=>'ا','آ'=>'ا','ٱ'=>'ا','ى'=>'ي','ؤ'=>'و','ئ'=>'ي'] as $from=>$to)
+        $f = "REPLACE($f, '$from', '$to')";
+    return $f;
+}
+function normConcat() {
+    $cols = ['Category','The_Title_of_Paper_Book','The_number_of_the_Author',
+             'Year_of_issue','Place_of_issue','Field_of_research','Key_words'];
+    return "CONCAT_WS(' ', " . implode(', ', array_map('sqlNorm', $cols)) . ")";
 }
 
 $results     = [];
@@ -18,23 +34,13 @@ $search_term = '';
 
 if (isset($_GET['search_btn'])) {
     $search_term = substr(trim($_GET['search'] ?? ''), 0, 200);
-    $find        = $link->real_escape_string(arquery($search_term));
+    $norm        = normalizeAr($search_term);
+    $find        = '%' . $link->real_escape_string($norm) . '%';
+    $nc          = normConcat();
 
-    $sql = "
-        (SELECT * FROM `edu`   WHERE `id` REGEXP '$find' OR `Category` REGEXP '$find' OR `The_Title_of_Paper_Book` REGEXP '$find' OR `The_number_of_the_Author` REGEXP '$find' OR `Year_of_issue` REGEXP '$find' OR `Place_of_issue` REGEXP '$find' OR `Field_of_research` REGEXP '$find' OR `Key_words` REGEXP '$find')
-        UNION
-        (SELECT * FROM `soc`   WHERE `id` REGEXP '$find' OR `Category` REGEXP '$find' OR `The_Title_of_Paper_Book` REGEXP '$find' OR `The_number_of_the_Author` REGEXP '$find' OR `Year_of_issue` REGEXP '$find' OR `Place_of_issue` REGEXP '$find' OR `Field_of_research` REGEXP '$find' OR `Key_words` REGEXP '$find')
-        UNION
-        (SELECT * FROM `tas`   WHERE `id` REGEXP '$find' OR `Category` REGEXP '$find' OR `The_Title_of_Paper_Book` REGEXP '$find' OR `The_number_of_the_Author` REGEXP '$find' OR `Year_of_issue` REGEXP '$find' OR `Place_of_issue` REGEXP '$find' OR `Field_of_research` REGEXP '$find' OR `Key_words` REGEXP '$find')
-        UNION
-        (SELECT * FROM `pol`   WHERE `id` REGEXP '$find' OR `Category` REGEXP '$find' OR `The_Title_of_Paper_Book` REGEXP '$find' OR `The_number_of_the_Author` REGEXP '$find' OR `Year_of_issue` REGEXP '$find' OR `Place_of_issue` REGEXP '$find' OR `Field_of_research` REGEXP '$find' OR `Key_words` REGEXP '$find')
-        UNION
-        (SELECT * FROM `org`   WHERE `id` REGEXP '$find' OR `Category` REGEXP '$find' OR `The_Title_of_Paper_Book` REGEXP '$find' OR `The_number_of_the_Author` REGEXP '$find' OR `Year_of_issue` REGEXP '$find' OR `Place_of_issue` REGEXP '$find' OR `Field_of_research` REGEXP '$find' OR `Key_words` REGEXP '$find')
-        UNION
-        (SELECT * FROM `state` WHERE `id` REGEXP '$find' OR `Category` REGEXP '$find' OR `The_Title_of_Paper_Book` REGEXP '$find' OR `The_number_of_the_Author` REGEXP '$find' OR `Year_of_issue` REGEXP '$find' OR `Place_of_issue` REGEXP '$find' OR `Field_of_research` REGEXP '$find' OR `Key_words` REGEXP '$find')
-        UNION
-        (SELECT * FROM `philo` WHERE `id` REGEXP '$find' OR `Category` REGEXP '$find' OR `The_Title_of_Paper_Book` REGEXP '$find' OR `The_number_of_the_Author` REGEXP '$find' OR `Year_of_issue` REGEXP '$find' OR `Place_of_issue` REGEXP '$find' OR `Field_of_research` REGEXP '$find' OR `Key_words` REGEXP '$find')
-    ";
+    $tables = ['edu','soc','tas','pol','org','state','philo'];
+    $parts  = array_map(fn($t) => "(SELECT * FROM `$t` WHERE $nc LIKE '$find')", $tables);
+    $sql    = implode(" UNION ", $parts);
 
     if ($res = $link->query($sql)) {
         $results    = $res->fetch_all(MYSQLI_ASSOC);

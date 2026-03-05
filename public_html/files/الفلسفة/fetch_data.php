@@ -4,6 +4,23 @@
 
 include('database_connection.php');
 
+/* ── Arabic-aware search normalization ─────────────────── */
+function normalizeAr($text) {
+	$text = trim($text);
+	$text = preg_replace('/[\x{064B}-\x{065F}\x{0670}]/u', '', $text); // strip diacritics
+	$text = str_replace(['أ','إ','آ','ٱ'], 'ا', $text);  // unify alef
+	$text = str_replace('ة', 'ه', $text);                 // taa marbuta → haa
+	$text = str_replace('ى', 'ي', $text);                 // alef maqsura → yaa
+	$text = str_replace('ؤ', 'و', $text);                 // hamza on waw
+	$text = str_replace('ئ', 'ي', $text);                 // hamza on yaa
+	return $text;
+}
+function sqlNorm($f) {
+	foreach (['ة'=>'ه','أ'=>'ا','إ'=>'ا','آ'=>'ا','ٱ'=>'ا','ى'=>'ي','ؤ'=>'و','ئ'=>'ي'] as $from=>$to)
+		$f = "REPLACE($f, '$from', '$to')";
+	return $f;
+}
+
 if(isset($_POST["action"]))
 {
 	$query = "
@@ -32,9 +49,10 @@ if(isset($_POST["action"]))
 	}
 	if(!empty($_POST["search_text"]))
 	{
-		$search_text = $connect->quote('%' . strip_tags(substr($_POST["search_text"], 0, 200)) . '%');
+		$norm = normalizeAr(strip_tags(substr($_POST["search_text"], 0, 200)));
+		$search_text = $connect->quote('%' . $norm . '%');
 		$query .= "
-		 AND CONCAT_WS(' ', Category, The_Title_of_Paper_Book, The_number_of_the_Author, Year_of_issue, Place_of_issue, Field_of_research, Key_words) LIKE ".$search_text."
+		 AND CONCAT_WS(' ', " . sqlNorm("Category") . ", " . sqlNorm("The_Title_of_Paper_Book") . ", " . sqlNorm("The_number_of_the_Author") . ", " . sqlNorm("Year_of_issue") . ", " . sqlNorm("Place_of_issue") . ", " . sqlNorm("Field_of_research") . ", " . sqlNorm("Key_words") . ") LIKE ".$search_text."
 		";
 	}
 
