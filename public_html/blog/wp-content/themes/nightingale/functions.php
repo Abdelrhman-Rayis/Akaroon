@@ -256,6 +256,20 @@ function nightingale_scripts() {
 add_action( 'wp_enqueue_scripts', 'nightingale_scripts' );
 
 /**
+ * Akaroon custom theme override — loads after all nightingale styles
+ * so the teal/warm-white palette takes full effect.
+ */
+function akaroon_custom_styles() {
+	wp_enqueue_style(
+		'akaroon-theme',
+		get_template_directory_uri() . '/akaroon-theme.css',
+		array( 'nightingale-style', 'nightingale-page-colours' ),
+		'1.0.0'
+	);
+}
+add_action( 'wp_enqueue_scripts', 'akaroon_custom_styles', 99 );
+
+/**
  * Force download of dependancy plugins
  */
 require_once get_template_directory() . '/inc/class-tgm-plugin-activation.php';
