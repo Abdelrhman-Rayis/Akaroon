@@ -1,0 +1,33 @@
+steps:
+  # 1. Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/akaroon:$COMMIT_SHA'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/akaroon:latest'
+      - '.'
+
+  # 2. Push to Google Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/akaroon:$COMMIT_SHA']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/akaroon:latest']
+
+  # 3. Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'akaroon-git'
+      - '--image=gcr.io/$PROJECT_ID/akaroon:$COMMIT_SHA'
+      - '--region=europe-west1'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+
+images:
+  - 'gcr.io/$PROJECT_ID/akaroon:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/akaroon:latest'

@@ -1,0 +1,13 @@
+.git
+.env
+*.sql
+docker/wp-config-blog.php
+docker/wp-config-library.php
+public_html/files/*/PDFs/
+public_html/blog/wp-content/cache/
+public_html/blog/wp-content/uploads/cache/
+public_html/library/wp-content/cache/
+node_modules
+akaroonproject/
+TEST_REPORT.md
+SECURITY_REPORT.md

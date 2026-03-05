@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# Install system dependencies and PHP extensions required by WordPress + the custom PHP scripts
+# Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg62-turbo-dev \
@@ -30,10 +30,26 @@ RUN apt-get update && apt-get install -y \
     && a2enmod rewrite headers \
     && rm -rf /var/lib/apt/lists/*
 
-# PHP settings for local dev
+# PHP settings
 COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # Apache vhost with AllowOverride All (needed for WordPress .htaccess)
 COPY docker/apache.conf /etc/apache2/sites-available/000-default.conf
 
+# Startup script — configures Apache PORT for Cloud Run
+COPY docker/start.sh /start.sh
+RUN chmod +x /start.sh
+
 WORKDIR /var/www/html
+
+# Bake app files into image (Cloud Run uses these; docker-compose mounts override locally)
+COPY public_html/ .
+
+# Override wp-config with Cloud Run / env-var-driven versions
+COPY docker/wp-config-cloud.php      blog/wp-config.php
+COPY docker/wp-config-library-cloud.php library/wp-config.php
+
+# Cloud Run expects the container to listen on $PORT (default 8080)
+EXPOSE 8080
+
+CMD ["/start.sh"]

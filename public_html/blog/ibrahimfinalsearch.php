@@ -1,5 +1,18 @@
 <?php
-$link = new mysqli('mysql','root','root','akaroon_akaroondb');
+$_db_socket = getenv('DB_SOCKET');
+$_db_host   = getenv('DB_HOST')     ?: 'mysql';
+$_db_name   = getenv('DB_NAME')     ?: 'akaroon_akaroondb';
+$_db_user   = getenv('DB_USER')     ?: 'root';
+$_db_pass   = getenv('DB_PASSWORD') ?: 'root';
+
+if ($_db_socket) {
+    $link = new mysqli();
+    $link->init();
+    $link->real_connect(null, $_db_user, $_db_pass, $_db_name, null, $_db_socket);
+} else {
+    $link = new mysqli($_db_host, $_db_user, $_db_pass, $_db_name);
+}
+unset($_db_socket, $_db_host, $_db_name, $_db_user, $_db_pass);
 $link->set_charset("utf8mb4");
 
 if($link->connect_error){
