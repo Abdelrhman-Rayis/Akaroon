@@ -141,7 +141,7 @@ $(document).ready(function(){
       method: 'POST',
       data: { action: action, brand: brand, ram: ram, storage: storage, search_text: search_text },
       success: function(data) {
-        $('.filter_data').html(data);
+        $('.filter_data').html('<div class="row g-4">' + data + '</div>');
       }
     });
   }
