@@ -256,6 +256,32 @@ function nightingale_scripts() {
 add_action( 'wp_enqueue_scripts', 'nightingale_scripts' );
 
 /**
+ * Akaroon custom theme override — loads after all nightingale styles
+ * so the teal/warm-white palette takes full effect.
+ */
+function akaroon_custom_styles() {
+	wp_enqueue_style(
+		'akaroon-theme',
+		get_template_directory_uri() . '/akaroon-theme.css',
+		array( 'nightingale-style', 'nightingale-page-colours' ),
+		'1.0.0'
+	);
+}
+add_action( 'wp_enqueue_scripts', 'akaroon_custom_styles', 99 );
+
+/**
+ * Inject a floating "back to library" button on every blog page.
+ * Links back to the Akaroon research library at the site root.
+ */
+function akaroon_back_to_library_button() {
+	echo '<a href="/" class="ak-back-btn" title="العودة إلى مكتبة عكارون">';
+	echo '<span class="ak-back-btn-icon">📚</span>';
+	echo 'مكتبة عكارون';
+	echo '</a>';
+}
+add_action( 'wp_footer', 'akaroon_back_to_library_button' );
+
+/**
  * Force download of dependancy plugins
  */
 require_once get_template_directory() . '/inc/class-tgm-plugin-activation.php';

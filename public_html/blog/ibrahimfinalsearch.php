@@ -1,228 +1,175 @@
-<?php 
+<?php
 $link = new mysqli('mysql','root','root','akaroon_akaroondb');
-$link->set_charset("utf8");
+$link->set_charset("utf8mb4");
 
 if($link->connect_error){
     die("Connection Failed: " . $link->connect_error);
 }
+
+/* ── Arabic-aware search normalization ─────────────────── */
+function normalizeAr($text) {
+    $text = trim($text);
+    $text = preg_replace('/[\x{064B}-\x{065F}\x{0670}]/u', '', $text); // strip diacritics
+    $text = str_replace(['أ','إ','آ','ٱ'], 'ا', $text);  // unify alef forms
+    $text = str_replace('ة', 'ه', $text);                 // taa marbuta → haa
+    $text = str_replace('ى', 'ي', $text);                 // alef maqsura → yaa
+    $text = str_replace('ؤ', 'و', $text);                 // hamza on waw
+    $text = str_replace('ئ', 'ي', $text);                 // hamza on yaa
+    return $text;
+}
+function sqlNorm($f) {
+    foreach (['ة'=>'ه','أ'=>'ا','إ'=>'ا','آ'=>'ا','ٱ'=>'ا','ى'=>'ي','ؤ'=>'و','ئ'=>'ي'] as $from=>$to)
+        $f = "REPLACE($f, '$from', '$to')";
+    return $f;
+}
+function normConcat() {
+    $cols = ['Category','The_Title_of_Paper_Book','The_number_of_the_Author',
+             'Year_of_issue','Place_of_issue','Field_of_research','Key_words'];
+    return "CONCAT_WS(' ', " . implode(', ', array_map('sqlNorm', $cols)) . ")";
+}
+
+$results     = [];
+$total_rows  = 0;
+$search_term = '';
+
+if (isset($_GET['search_btn'])) {
+    $search_term = substr(trim($_GET['search'] ?? ''), 0, 200);
+    $norm        = normalizeAr($search_term);
+    $find        = '%' . $link->real_escape_string($norm) . '%';
+    $nc          = normConcat();
+
+    $tables = ['edu','soc','tas','pol','org','state','philo'];
+    $parts  = array_map(fn($t) => "(SELECT * FROM `$t` WHERE $nc LIKE '$find')", $tables);
+    $sql    = implode(" UNION ", $parts);
+
+    if ($res = $link->query($sql)) {
+        $results    = $res->fetch_all(MYSQLI_ASSOC);
+        $total_rows = count($results);
+    }
+}
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html dir="rtl" lang="ar">
 <head>
-    <title>Search</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: Arial, sans-serif;
-        }
-        
-        .search-container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .table-responsive {
-            margin-top: 20px;
-        }
-        th, td {
-            text-align: left;
-        }
-        img {
-            max-width: 100%;
-            height: auto;
-        }
-        /* New styles for row highlighting */
-        .table-striped tbody tr:nth-of-type(odd) {
-            background-color: #f2f2f2; /* Light grey for odd rows */
-        }
-        .table-striped tbody tr:nth-of-type(even) {
-            background-color: #ffffff; /* White for even rows */
-        }
-        .table-striped tbody tr:hover {
-            background-color: #d1e7dd; /* Light green when hovered */
-        }
-
-        @media (max-width: 768px) {
-            .search-container {
-                margin: 20px;
-                padding: 15px;
-            }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>البحث — مكتبة عكارون</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="../css/akaroon-theme.css">
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="https://akaroon.com/blog/">Akaroon || By Ibrahim Ahmed Omer</a> <!-- Change this to your site name -->
+
+<!-- ── WordPress blog navigation bar ────────────────────── -->
+<div class="ak-blog-bar">
+  <span class="ak-blog-bar-label">🌐 الموقع:</span>
+  <a href="/">الرئيسية</a>
+  <span class="ak-blog-bar-sep">|</span>
+  <a href="/blog/">المدونة</a>
+  <span class="ak-blog-bar-sep">|</span>
+  <a href="/blog/?page_id=103">التصنيفات</a>
+  <span class="ak-blog-bar-sep">|</span>
+  <a href="/blog/?page_id=7">عن الموقع</a>
+  <span class="ak-blog-bar-sep">|</span>
+  <a href="/blog/?page_id=207">معرض الصور</a>
+  <span class="ak-blog-bar-sep">|</span>
+  <a href="/blog/?page_id=8">تواصل معنا</a>
+</div>
+
+<nav class="ak-navbar">
+  <a href="../" class="ak-logo"><span class="ak-logo-name">Akaroon || عكارون</span><span class="ak-logo-desc">by Ibrahim Ahmed Omer</span></a>
+  <ul class="ak-nav-links">
+    <li><a href="../files/التأصيل/search.php">التأصيل</a></li>
+    <li><a href="../files/التعليم/search.php">التعليم</a></li>
+    <li><a href="../files/الدولة/search.php">الدولة</a></li>
+    <li><a href="../files/السياسة/search.php">السياسة</a></li>
+    <li><a href="../files/الفلسفة/search.php">الفلسفة</a></li>
+    <li><a href="../files/المجتمع/search.php">المجتمع</a></li>
+    <li><a href="../files/منظمات/search.php">منظمات</a></li>
+  </ul>
+</nav>
+
+<?php if (!isset($_GET['search_btn'])): ?>
+
+<section class="ak-hero">
+  <h1>مكتبة عكارون البحثية</h1>
+  <p>ابحث في آلاف الأوراق البحثية والكتب عبر جميع التصنيفات</p>
+  <form action="" method="get">
+    <div class="ak-search-box">
+      <button type="submit" name="search_btn">بحث</button>
+      <input type="text" name="search" placeholder="ابحث بالعنوان أو المؤلف أو الكلمات المفتاحية..." autocomplete="off" required>
+    </div>
+  </form>
+</section>
+
+<div class="container py-5 text-center" style="color:var(--muted);">
+  <span style="font-size:3.5rem;">📚</span>
+  <p class="mt-3" style="font-size:1.05rem;">اكتب كلمة البحث أعلاه للعثور على الأوراق والكتب</p>
+  <a href="../" class="mt-2 d-inline-block" style="color:var(--gold);">أو تصفح التصنيفات ←</a>
+</div>
+
+<?php else: ?>
+
+<div class="ak-results-header">
+  <form action="" method="get">
+    <button type="submit" name="search_btn">بحث</button>
+    <input type="text" name="search" value="<?= htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8') ?>" autocomplete="off">
+  </form>
+  <div class="ak-result-count">
+    تم العثور على <strong><?= $total_rows ?></strong> نتيجة
+    <?php if ($search_term): ?>لـ "<strong><?= htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8') ?></strong>"<?php endif; ?>
+  </div>
+</div>
+
+<section class="ak-results-section">
+  <div class="container">
+    <?php if ($total_rows > 0): ?>
+    <div class="row g-4">
+      <?php foreach ($results as $row):
+        $cat     = htmlspecialchars($row['Category'],                 ENT_QUOTES, 'UTF-8');
+        $id      = htmlspecialchars($row['id'],                       ENT_QUOTES, 'UTF-8');
+        $title   = htmlspecialchars($row['The_Title_of_Paper_Book'],  ENT_QUOTES, 'UTF-8');
+        $author  = htmlspecialchars($row['The_number_of_the_Author'], ENT_QUOTES, 'UTF-8');
+        $year    = htmlspecialchars($row['Year_of_issue'],            ENT_QUOTES, 'UTF-8');
+        $field   = htmlspecialchars($row['Field_of_research'],        ENT_QUOTES, 'UTF-8');
+        $pdfHref = "../files/{$cat}/files/{$id}.pdf";
+        $imgSrc  = "../files/{$cat}/image/{$id}.jpg";
+      ?>
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="ak-card">
+          <div class="ak-card-img-wrap">
+            <img src="<?= $imgSrc ?>" class="ak-card-img" alt="<?= $title ?>"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+            <div class="ak-card-img-placeholder" style="display:none;">📄</div>
+          </div>
+          <div class="ak-card-body">
+            <a href="<?= $pdfHref ?>" class="ak-card-title"><?= $title ?></a>
+            <span class="ak-badge"><?= $cat ?></span>
+            <div class="ak-card-meta">
+              <div>✍️ <?= $author ?></div>
+              <div>📅 <?= $year ?></div>
+              <?php if ($field): ?><div>🔬 <?= $field ?></div><?php endif; ?>
             </div>
-            <div class="navbar-right">
-                <a href="https://akaroon.com/blog/" class="btn btn-default navbar-btn">Back to Main Page</a> <!-- Link to your home page -->
-            </div>
+          </div>
         </div>
-    </nav>
-
-    <div class="search-container">
-        <form action="" method="get">
-            <div class="form-group">
-                <input type="text" name="search" class="form-control" 
-                    placeholder="هنا يمكنك البحث عن طريق عنوان الورقة أو الكتاب أو المؤلف أو مجال البحث" 
-                    required autocomplete="off" 
-                    style="text-align: center; direction: rtl;" />
-            </div>
-            <div class="form-group">
-                <input type="submit" name="search_btn" class="btn btn-primary btn-block" value="بحث" />
-            </div>
-        </form>
+      </div>
+      <?php endforeach; ?>
     </div>
-
-    <div class="container">
-        <?php
-        if (isset($_GET['search_btn'])) {
-            $search_var = substr(trim($_GET['search']), 0, 200); // limit input length
-            $find = $link->real_escape_string(arquery($search_var)); // escape after Arabic normalisation
-
-            // Updated SQL Query to search across multiple fields
-            $sql = "
-                (SELECT * FROM `edu` WHERE 
-                    `id` REGEXP '$find' OR 
-                    `image` REGEXP '$find' OR 
-                    `Category` REGEXP '$find' OR 
-                    `The_Title_of_Paper_Book` REGEXP '$find' OR 
-                    `The_number_of_the_Author` REGEXP '$find' OR 
-                    `Year_of_issue` REGEXP '$find' OR 
-                    `Place_of_issue` REGEXP '$find' OR 
-                    `Field_of_research` REGEXP '$find' OR 
-                    `Key_words` REGEXP '$find')
-                UNION
-                (SELECT * FROM `soc` WHERE 
-                    `id` REGEXP '$find' OR 
-                    `image` REGEXP '$find' OR 
-                    `Category` REGEXP '$find' OR 
-                    `The_Title_of_Paper_Book` REGEXP '$find' OR 
-                    `The_number_of_the_Author` REGEXP '$find' OR 
-                    `Year_of_issue` REGEXP '$find' OR 
-                    `Place_of_issue` REGEXP '$find' OR 
-                    `Field_of_research` REGEXP '$find' OR 
-                    `Key_words` REGEXP '$find')
-                UNION
-                (SELECT * FROM `tas` WHERE 
-                    `id` REGEXP '$find' OR 
-                    `image` REGEXP '$find' OR 
-                    `Category` REGEXP '$find' OR 
-                    `The_Title_of_Paper_Book` REGEXP '$find' OR 
-                    `The_number_of_the_Author` REGEXP '$find' OR 
-                    `Year_of_issue` REGEXP '$find' OR 
-                    `Place_of_issue` REGEXP '$find' OR 
-                    `Field_of_research` REGEXP '$find' OR 
-                    `Key_words` REGEXP '$find')
-                UNION
-                (SELECT * FROM `pol` WHERE 
-                    `id` REGEXP '$find' OR 
-                    `image` REGEXP '$find' OR 
-                    `Category` REGEXP '$find' OR 
-                    `The_Title_of_Paper_Book` REGEXP '$find' OR 
-                    `The_number_of_the_Author` REGEXP '$find' OR 
-                    `Year_of_issue` REGEXP '$find' OR 
-                    `Place_of_issue` REGEXP '$find' OR 
-                    `Field_of_research` REGEXP '$find' OR 
-                    `Key_words` REGEXP '$find')
-                UNION
-                (SELECT * FROM `org` WHERE 
-                    `id` REGEXP '$find' OR 
-                    `image` REGEXP '$find' OR 
-                    `Category` REGEXP '$find' OR 
-                    `The_Title_of_Paper_Book` REGEXP '$find' OR 
-                    `The_number_of_the_Author` REGEXP '$find' OR 
-                    `Year_of_issue` REGEXP '$find' OR 
-                    `Place_of_issue` REGEXP '$find' OR 
-                    `Field_of_research` REGEXP '$find' OR 
-                    `Key_words` REGEXP '$find')
-                UNION
-                (SELECT * FROM `state` WHERE 
-                    `id` REGEXP '$find' OR 
-                    `image` REGEXP '$find' OR 
-                    `Category` REGEXP '$find' OR 
-                    `The_Title_of_Paper_Book` REGEXP '$find' OR 
-                    `The_number_of_the_Author` REGEXP '$find' OR 
-                    `Year_of_issue` REGEXP '$find' OR 
-                    `Place_of_issue` REGEXP '$find' OR 
-                    `Field_of_research` REGEXP '$find' OR 
-                    `Key_words` REGEXP '$find')
-                UNION
-                (SELECT * FROM `philo` WHERE 
-                    `id` REGEXP '$find' OR 
-                    `image` REGEXP '$find' OR 
-                    `Category` REGEXP '$find' OR 
-                    `The_Title_of_Paper_Book` REGEXP '$find' OR 
-                    `The_number_of_the_Author` REGEXP '$find' OR 
-                    `Year_of_issue` REGEXP '$find' OR 
-                    `Place_of_issue` REGEXP '$find' OR 
-                    `Field_of_research` REGEXP '$find' OR 
-                    `Key_words` REGEXP '$find')
-            ";
-
-            if ($res = $link->query($sql)) {
-                echo '<div class="table-responsive">';
-                echo '<table class="table table-striped">';
-                echo '<thead><tr>';
-                echo '<th>زيارة المحتوى</th>';
-                echo '<th>عنوان الورقة/الكتاب</th>';
-                echo '<th>إسم الكاتب</th>';
-                echo '<th>سنة الإصدار</th>';
-                echo '<th>التصنيف</th>';
-                echo '<th>مجال البحث</th>';
-                echo '<th>الرقم التسلسلي</th>';
-                
-                
-                
-                
-                echo '</tr></thead><tbody>';
-
-                if ($res->num_rows > 0) {
-                    while ($row = $res->fetch_assoc()) {
-                        $cat  = htmlspecialchars($row['Category'],              ENT_QUOTES, 'UTF-8');
-                        $id   = htmlspecialchars($row['id'],                    ENT_QUOTES, 'UTF-8');
-                        $title  = htmlspecialchars($row['The_Title_of_Paper_Book'],  ENT_QUOTES, 'UTF-8');
-                        $author = htmlspecialchars($row['The_number_of_the_Author'], ENT_QUOTES, 'UTF-8');
-                        $year   = htmlspecialchars($row['Year_of_issue'],            ENT_QUOTES, 'UTF-8');
-                        $field  = htmlspecialchars($row['Field_of_research'],        ENT_QUOTES, 'UTF-8');
-                        echo '<tr>';
-                        echo '<td><a href="../files/' . $cat . '/files/' . $id . '.pdf"><img src="../files/' . $cat . '/image/' . $id . '.jpg" height="150" width="100" class="img-responsive"></a></td>';
-                        echo '<td><a href="../files/' . $cat . '/files/' . $id . '.pdf">' . $title . '</a></td>';
-                        echo '<td><a href="../files/' . $cat . '/files/' . $id . '.pdf">' . $author . '</a></td>';
-                        echo '<td>' . $year . '</td>';
-                        echo '<td>' . $field . '</td>';
-                        echo '<td>' . $cat . '</td>';
-                        echo '<td>' . $id . '</td>';
-                        echo '</tr>';
-                    }
-                } else {
-                    echo '<tr><td colspan="7">لا يوجد نتائج</td></tr>'; // Updated message to Arabic
-                }
-                echo '</tbody></table>';
-                echo '</div>';
-            } else {
-                echo "Failed: " . $link->error;
-            }
-        }
-
-        function arquery($text) {
-            $replace = array("أ", "ا", "إ", "آ", "ي", "ى", "ه", "ة");
-            $with = array("(أ|ا|آ|إ)", "(أ|ا|آ|إ)", "(أ|ا|آ|إ)", "(أ|ا|آ|إ)", "(ي|ى)", "(ي|ى)", "(ه|ة)", "(ه|ة)");
-            return str_replace($replace, $with, $text);
-        }
-        ?>
+    <?php else: ?>
+    <div class="ak-empty">
+      <span class="ak-empty-icon">🔍</span>
+      <p>لا توجد نتائج لـ "<?= htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8') ?>"</p>
+      <p style="font-size:0.9rem; color:var(--muted);">جرب كلمات مختلفة أو <a href="../" style="color:var(--gold);">تصفح التصنيفات</a></p>
     </div>
+    <?php endif; ?>
+  </div>
+</section>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<?php endif; ?>
+
+<footer class="ak-footer">
+  <p>© عكارون — جميع الحقوق محفوظة | <a href="../">الصفحة الرئيسية</a></p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

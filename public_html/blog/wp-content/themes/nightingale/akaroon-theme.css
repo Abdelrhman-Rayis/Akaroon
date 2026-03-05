@@ -1,0 +1,451 @@
+/* =====================================================
+   Akaroon Blog — Custom Theme Override
+   Matches the Akaroon Research Library teal/warm-white design
+   Apply via: WordPress Admin → Appearance → Customize → Additional CSS
+   ===================================================== */
+
+/* ── Google Font: Tajawal ──────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
+
+/* ── Color variables ───────────────────────────────── */
+:root {
+  --ak-teal-dark:   #0B3D38;
+  --ak-teal:        #1A6B63;
+  --ak-teal-mid:    #2D8C82;
+  --ak-teal-light:  #3BB5A6;
+  --ak-teal-pale:   #E6F4F2;
+  --ak-warm-white:  #F5EFE6;
+  --ak-warm-border: #E8DDD0;
+  --ak-text:        #1A1A1A;
+  --ak-text-mid:    #3D3D3D;
+  --ak-muted:       #6B7280;
+}
+
+/* ── Base / Body ───────────────────────────────────── */
+body {
+  font-family: 'Tajawal', Arial, sans-serif !important;
+  background-color: var(--ak-warm-white) !important;
+  color: var(--ak-text) !important;
+}
+
+/* ── Header ────────────────────────────────────────── */
+header.nhsuk-header,
+.nhsuk-header {
+  background-color: var(--ak-teal-dark) !important;
+  border-bottom: none !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+}
+
+.nhsuk-header__logo a,
+.nhsuk-header__logo-link,
+.nhsuk-header__logo .nhsuk-org-name,
+.nhsuk-header__logo .nhsuk-org-descriptor,
+.site-title,
+.site-title a,
+.nhsuk-header__title,
+.nhsuk-header__title a {
+  font-family: 'Tajawal', Arial, sans-serif !important;
+  color: #fff !important;
+  font-weight: 800 !important;
+}
+
+/* ── Header search bar ─────────────────────────────── */
+.nhsuk-search__input,
+.nhsuk-header__search-wrap input[type="search"],
+input[type="search"] {
+  background-color: #fff !important;
+  border: none !important;
+  font-family: 'Tajawal', Arial, sans-serif !important;
+  color: var(--ak-text) !important;
+}
+
+.nhsuk-search__submit,
+.nhsuk-header__search button[type="submit"],
+.nhsuk-header__search-wrap button {
+  background-color: var(--ak-teal) !important;
+  border-color: var(--ak-teal) !important;
+  color: #fff !important;
+}
+
+.nhsuk-search__submit:hover {
+  background-color: var(--ak-teal-mid) !important;
+}
+
+/* ── Mobile menu toggle ────────────────────────────── */
+.nhsuk-header__menu-toggle,
+.menu-toggle {
+  background-color: transparent !important;
+  border: 1.5px solid rgba(255,255,255,0.55) !important;
+  color: #fff !important;
+  font-family: 'Tajawal', Arial, sans-serif !important;
+  border-radius: 4px !important;
+}
+
+.nhsuk-header__menu-toggle:hover {
+  background-color: rgba(255,255,255,0.12) !important;
+}
+
+/* ── Navigation bar ────────────────────────────────── */
+.nhsuk-header__navigation,
+.nhsuk-navigation,
+.main-navigation,
+#site-navigation {
+  background-color: #fff !important;
+  border-bottom: 3px solid var(--ak-teal-dark) !important;
+}
+
+.nhsuk-navigation__item a,
+.nhsuk-navigation a,
+.nhsuk-header__navigation a,
+.main-navigation a {
+  color: var(--ak-text-mid) !important;
+  font-family: 'Tajawal', Arial, sans-serif !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  transition: color 0.2s, background 0.2s !important;
+}
+
+.nhsuk-navigation__item a:hover,
+.nhsuk-navigation a:hover,
+.nhsuk-header__navigation a:hover,
+.main-navigation a:hover {
+  color: var(--ak-teal-dark) !important;
+  background-color: var(--ak-teal-pale) !important;
+}
+
+.nhsuk-navigation__item--current > a,
+.current-menu-item > a {
+  color: var(--ak-teal-dark) !important;
+  font-weight: 700 !important;
+  border-bottom: 2px solid var(--ak-teal) !important;
+}
+
+/* ── Main content area ─────────────────────────────── */
+.nhsuk-main-wrapper,
+.nhsuk-main-wrapper--no-padding,
+#content,
+.site-content,
+main {
+  background-color: var(--ak-warm-white) !important;
+}
+
+/* ── Typography ────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6,
+.entry-title,
+.entry-title a,
+.page-title,
+.nhsuk-heading-xl,
+.nhsuk-heading-l,
+.nhsuk-heading-m,
+.nhsuk-heading-s {
+  font-family: 'Tajawal', Arial, sans-serif !important;
+  color: var(--ak-teal-dark) !important;
+  font-weight: 700 !important;
+}
+
+.entry-title a:hover {
+  color: var(--ak-teal) !important;
+}
+
+p, li, td, th, label, span, div {
+  font-family: 'Tajawal', Arial, sans-serif !important;
+}
+
+p, li {
+  line-height: 1.85 !important;
+}
+
+/* ── Links ─────────────────────────────────────────── */
+a {
+  color: var(--ak-teal) !important;
+}
+
+a:hover {
+  color: var(--ak-teal-dark) !important;
+  text-decoration: underline !important;
+}
+
+/* ── Blockquotes ───────────────────────────────────── */
+blockquote,
+.nhsuk-inset-text {
+  border-right: 4px solid var(--ak-teal) !important;
+  border-left: none !important;
+  background: var(--ak-teal-pale) !important;
+  padding: 1rem 1.3rem 1rem 1rem !important;
+  border-radius: 0 6px 6px 0 !important;
+  color: var(--ak-teal-dark) !important;
+}
+
+/* ── Article / Post cards ──────────────────────────── */
+article.post,
+.nhsuk-card,
+.nhsuk-panel,
+.nhsuk-panel--grey {
+  background-color: #fff !important;
+  border: 1px solid var(--ak-warm-border) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
+  padding: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.nhsuk-card__heading a,
+.nhsuk-panel__heading a {
+  color: var(--ak-teal-dark) !important;
+}
+
+/* ── Sidebar / Widgets ─────────────────────────────── */
+.widget {
+  background-color: #fff !important;
+  border: 1px solid var(--ak-warm-border) !important;
+  border-radius: 10px !important;
+  padding: 1.2rem !important;
+  margin-bottom: 1.2rem !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+
+.widget-title,
+.widget h2,
+.widget .nhsuk-heading-s,
+.widgettitle {
+  font-family: 'Tajawal', Arial, sans-serif !important;
+  color: var(--ak-teal-dark) !important;
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  border-bottom: 2px solid var(--ak-teal-pale) !important;
+  padding-bottom: 0.4rem !important;
+  margin-bottom: 0.8rem !important;
+  margin-top: 0 !important;
+}
+
+.widget ul li a {
+  color: var(--ak-text-mid) !important;
+}
+
+.widget ul li a:hover {
+  color: var(--ak-teal) !important;
+}
+
+/* Recent posts dates */
+.widget .post-date,
+.widget time {
+  color: var(--ak-muted) !important;
+  font-size: 0.82rem !important;
+}
+
+/* ── Category / tag badges ─────────────────────────── */
+.cat-links a,
+.tags-links a,
+.post-categories a,
+.nhsuk-tag {
+  background: var(--ak-teal-pale) !important;
+  color: var(--ak-teal) !important;
+  border: 1px solid rgba(45,140,130,0.25) !important;
+  border-radius: 20px !important;
+  font-size: 0.76rem !important;
+  padding: 0.15rem 0.65rem !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+}
+
+/* ── Buttons ───────────────────────────────────────── */
+.nhsuk-button,
+.wp-block-button__link,
+input[type="submit"],
+button[type="submit"] {
+  background-color: var(--ak-teal) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 6px !important;
+  font-family: 'Tajawal', Arial, sans-serif !important;
+  font-weight: 600 !important;
+  transition: background 0.2s !important;
+}
+
+.nhsuk-button:hover,
+.wp-block-button__link:hover,
+input[type="submit"]:hover,
+button[type="submit"]:hover {
+  background-color: var(--ak-teal-mid) !important;
+}
+
+/* ── Forms ─────────────────────────────────────────── */
+input[type="text"],
+input[type="email"],
+input[type="url"],
+textarea,
+select {
+  border: 1.5px solid var(--ak-warm-border) !important;
+  border-radius: 6px !important;
+  font-family: 'Tajawal', Arial, sans-serif !important;
+  background: #fff !important;
+  color: var(--ak-text) !important;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--ak-teal) !important;
+  box-shadow: 0 0 0 3px rgba(26,107,99,0.1) !important;
+  outline: none !important;
+}
+
+/* ── Dividers ──────────────────────────────────────── */
+hr,
+.nhsuk-section-break,
+.nhsuk-section-break--l,
+.nhsuk-section-break--m {
+  border-color: var(--ak-warm-border) !important;
+}
+
+/* ── Pagination ────────────────────────────────────── */
+.nhsuk-pagination__link,
+.page-numbers,
+.pagination a {
+  color: var(--ak-teal) !important;
+  border-color: var(--ak-warm-border) !important;
+  font-family: 'Tajawal', Arial, sans-serif !important;
+}
+
+.nhsuk-pagination__link:hover,
+.page-numbers:hover,
+.pagination a:hover {
+  background-color: var(--ak-teal-pale) !important;
+}
+
+.page-numbers.current {
+  background-color: var(--ak-teal-dark) !important;
+  color: #fff !important;
+}
+
+/* ── Post meta (date, author) ──────────────────────── */
+.entry-meta,
+.posted-on,
+.byline,
+.post-meta {
+  color: var(--ak-muted) !important;
+  font-size: 0.85rem !important;
+}
+
+/* ── Footer ────────────────────────────────────────── */
+.nhsuk-footer,
+#colophon,
+.site-footer {
+  background-color: var(--ak-teal-dark) !important;
+  border-top: none !important;
+  margin-top: 3rem !important;
+}
+
+.nhsuk-footer,
+.nhsuk-footer p,
+.nhsuk-footer__copyright,
+.site-footer,
+.site-info {
+  color: rgba(255,255,255,0.65) !important;
+  font-family: 'Tajawal', Arial, sans-serif !important;
+  font-size: 0.87rem !important;
+}
+
+.nhsuk-footer a,
+.nhsuk-footer__list-item-link,
+.site-footer a {
+  color: var(--ak-teal-light) !important;
+}
+
+.nhsuk-footer a:hover,
+.site-footer a:hover {
+  color: #fff !important;
+  text-decoration: none !important;
+}
+
+/* ── Elementor compatibility ───────────────────────── */
+.elementor-widget-container,
+.elementor-section,
+.elementor-element {
+  font-family: 'Tajawal', Arial, sans-serif !important;
+}
+
+.elementor-heading-title {
+  font-family: 'Tajawal', Arial, sans-serif !important;
+  color: var(--ak-teal-dark) !important;
+}
+
+/* ── Back-to-library floating button ────────────────────── */
+.ak-back-btn {
+  position: fixed;
+  bottom: 1.8rem;
+  left: 1.8rem;
+  background: var(--ak-teal-dark);
+  color: #fff !important;
+  text-decoration: none !important;
+  padding: 0.65rem 1.3rem 0.65rem 1rem;
+  border-radius: 30px;
+  font-family: 'Tajawal', Arial, sans-serif !important;
+  font-size: 0.88rem;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(11,61,56,0.35);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  border: 1.5px solid rgba(59,181,166,0.3);
+}
+.ak-back-btn:hover {
+  background: var(--ak-teal) !important;
+  color: #fff !important;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(11,61,56,0.4);
+  text-decoration: none !important;
+}
+.ak-back-btn-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+@media (max-width: 576px) {
+  .ak-back-btn {
+    bottom: 1rem;
+    left: 1rem;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.82rem;
+  }
+}
+
+/* ── Post / Page body text (Arabic readability) ─────── */
+.entry-content {
+  font-family: 'Tajawal', Arial, sans-serif !important;
+  direction: rtl;
+  color: var(--ak-text);
+}
+.entry-content p {
+  font-family: 'Tajawal', Arial, sans-serif !important;
+  font-size: 1.22rem !important;
+  line-height: 2.1 !important;
+  color: #1e1e1e !important;
+  margin-bottom: 1.4rem !important;
+  /* override any leftover bad inline positioning */
+  position: static !important;
+  top: auto !important;
+  display: block !important;
+}
+.entry-content p strong {
+  font-weight: 700;
+  color: var(--ak-teal-dark);
+}
+.entry-title {
+  font-family: 'Tajawal', Arial, sans-serif !important;
+  font-size: 1.8rem !important;
+  font-weight: 800 !important;
+  color: var(--ak-teal-dark) !important;
+  direction: rtl;
+  margin-bottom: 1.5rem !important;
+}
+/* Bismillah / subtitle centred headings */
+.entry-content p[style*="text-align: center"] {
+  font-size: 1.3rem !important;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.5rem !important;
+}

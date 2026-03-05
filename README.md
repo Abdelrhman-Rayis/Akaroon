@@ -27,6 +27,31 @@ The diagram below shows the full technical architecture of the Akaroon platform,
 |---|---|
 | ![Results](docs/screenshots/03_search_results.png) | ![Filter](docs/screenshots/04_category_filter.png) |
 
+## Known Issues & Notes
+
+### ⚠️ Elementor Plugin — Do Not Update / Not Required (March 2026)
+
+**Status:** Elementor is **permanently disabled** (`wp-content/plugins/elementor.disabled/`).
+
+**What happened:** Updating Elementor to its latest version caused a PHP 8 fatal crash on the entire WordPress blog:
+```
+PHP Fatal error: Uncaught TypeError:
+Elementor\Modules\EditorOne\Components\Sidebar_Navigation_Handler::add_body_class()
+Argument #1 ($classes) must be of type string, null given
+```
+WordPress was passing `null` to a method that now enforces a strict `string` type — a PHP 8.x incompatibility introduced in the update.
+
+**Fix applied:** Renamed the plugin folder to `elementor.disabled` to deactivate it from the filesystem without needing wp-admin access.
+
+**Why Elementor is not needed:** The blog pages are already published and rendering correctly using the Nightingale theme alone. Elementor was only used during initial page setup and is not required for the site to function.
+
+**If you ever need to re-enable Elementor:**
+1. Check that the Elementor version is compatible with PHP 8.2 before enabling
+2. Rename `elementor.disabled` back to `elementor`
+3. Test at `localhost:8082/blog/` before deploying to production
+
+---
+
 ## Main Components
 
 | Component | Description |
