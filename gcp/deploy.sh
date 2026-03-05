@@ -13,7 +13,7 @@ set -e
 
 # ── Configuration — edit these ───────────────────────────────────────────────
 PROJECT_ID=$(gcloud config get-value project)
-REGION="us-central1"
+REGION="europe-west1"
 SERVICE_NAME="akaroon"
 SQL_INSTANCE="akaroon-mysql"
 DB_USER="akaroon_user"

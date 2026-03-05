@@ -24,7 +24,7 @@ steps:
       - 'deploy'
       - 'akaroon'
       - '--image=gcr.io/$PROJECT_ID/akaroon:$COMMIT_SHA'
-      - '--region=us-central1'
+      - '--region=europe-west1'
       - '--platform=managed'
       - '--allow-unauthenticated'
 
