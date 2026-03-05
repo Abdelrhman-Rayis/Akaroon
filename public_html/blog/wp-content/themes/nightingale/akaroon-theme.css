@@ -372,3 +372,44 @@ hr,
   font-family: 'Tajawal', Arial, sans-serif !important;
   color: var(--ak-teal-dark) !important;
 }
+
+/* ── Back-to-library floating button ────────────────────── */
+.ak-back-btn {
+  position: fixed;
+  bottom: 1.8rem;
+  left: 1.8rem;
+  background: var(--ak-teal-dark);
+  color: #fff !important;
+  text-decoration: none !important;
+  padding: 0.65rem 1.3rem 0.65rem 1rem;
+  border-radius: 30px;
+  font-family: 'Tajawal', Arial, sans-serif !important;
+  font-size: 0.88rem;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(11,61,56,0.35);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  border: 1.5px solid rgba(59,181,166,0.3);
+}
+.ak-back-btn:hover {
+  background: var(--ak-teal) !important;
+  color: #fff !important;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(11,61,56,0.4);
+  text-decoration: none !important;
+}
+.ak-back-btn-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+@media (max-width: 576px) {
+  .ak-back-btn {
+    bottom: 1rem;
+    left: 1rem;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.82rem;
+  }
+}
