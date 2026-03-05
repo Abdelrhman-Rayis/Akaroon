@@ -13,9 +13,9 @@
 <!-- ── WordPress blog navigation bar ────────────────────── -->
 <div class="ak-blog-bar">
   <span class="ak-blog-bar-label">🌐 الموقع:</span>
-  <a href="/blog">الرئيسية</a>
+  <a href="/">الرئيسية</a>
   <span class="ak-blog-bar-sep">|</span>
-  <a href="/blog/?page_id=9">المدونة</a>
+  <a href="/blog/">المدونة</a>
   <span class="ak-blog-bar-sep">|</span>
   <a href="/blog/?page_id=103">التصنيفات</a>
   <span class="ak-blog-bar-sep">|</span>
@@ -27,7 +27,10 @@
 </div>
 
 <nav class="ak-navbar">
-  <a href="/" class="ak-logo">عكارون</a>
+  <a href="/" class="ak-logo">
+    <span class="ak-logo-name">Akaroon || عكارون</span>
+    <span class="ak-logo-desc">by Ibrahim Ahmed Omer</span>
+  </a>
   <ul class="ak-nav-links">
     <li><a href="files/التأصيل/search.php">التأصيل</a></li>
     <li><a href="files/التعليم/search.php">التعليم</a></li>
@@ -59,7 +62,9 @@
       <!-- Author sidebar (right in RTL) -->
       <div class="col-md-3">
         <div class="ak-letter-author">
-          <div class="ak-letter-monogram">إ.أ</div>
+          <div class="ak-letter-monogram">
+            <img src="img/professor.jpg" alt="بروفسير إبراهيم أحمد عمر">
+          </div>
           <div>
             <div class="ak-letter-author-from">رسالة من أخوكم</div>
             <div class="ak-letter-author-name">بروفسير<br>إبراهيم أحمد عمر</div>
@@ -78,6 +83,7 @@
 
           <!-- Always-visible preview -->
           <p class="ak-letter-preview">الأخ الكريم / الأخت الكريمة السلام عليكم ورحمة الله</p>
+          <p class="ak-letter-preview">نحن أبناء وبنات الثلثين الأخيرين من القرن العشرين والخمس الأول من القرن الحادي والعشرين عشنا أحداثاً وطنية وأخرى إقليمية وعالمية كثيرة وكبيرة...</p>
 
           <!-- Collapsible body -->
           <div class="collapse" id="professorLetter">

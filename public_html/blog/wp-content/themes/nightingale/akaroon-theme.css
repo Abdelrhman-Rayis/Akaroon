@@ -413,3 +413,39 @@ hr,
     font-size: 0.82rem;
   }
 }
+
+/* ── Post / Page body text (Arabic readability) ─────── */
+.entry-content {
+  font-family: 'Tajawal', Arial, sans-serif !important;
+  direction: rtl;
+  color: var(--ak-text);
+}
+.entry-content p {
+  font-family: 'Tajawal', Arial, sans-serif !important;
+  font-size: 1.22rem !important;
+  line-height: 2.1 !important;
+  color: #1e1e1e !important;
+  margin-bottom: 1.4rem !important;
+  /* override any leftover bad inline positioning */
+  position: static !important;
+  top: auto !important;
+  display: block !important;
+}
+.entry-content p strong {
+  font-weight: 700;
+  color: var(--ak-teal-dark);
+}
+.entry-title {
+  font-family: 'Tajawal', Arial, sans-serif !important;
+  font-size: 1.8rem !important;
+  font-weight: 800 !important;
+  color: var(--ak-teal-dark) !important;
+  direction: rtl;
+  margin-bottom: 1.5rem !important;
+}
+/* Bismillah / subtitle centred headings */
+.entry-content p[style*="text-align: center"] {
+  font-size: 1.3rem !important;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.5rem !important;
+}

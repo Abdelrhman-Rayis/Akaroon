@@ -62,9 +62,9 @@ if (isset($_GET['search_btn'])) {
 <!-- ── WordPress blog navigation bar ────────────────────── -->
 <div class="ak-blog-bar">
   <span class="ak-blog-bar-label">🌐 الموقع:</span>
-  <a href="/blog">الرئيسية</a>
+  <a href="/">الرئيسية</a>
   <span class="ak-blog-bar-sep">|</span>
-  <a href="/blog/?page_id=9">المدونة</a>
+  <a href="/blog/">المدونة</a>
   <span class="ak-blog-bar-sep">|</span>
   <a href="/blog/?page_id=103">التصنيفات</a>
   <span class="ak-blog-bar-sep">|</span>
@@ -76,7 +76,7 @@ if (isset($_GET['search_btn'])) {
 </div>
 
 <nav class="ak-navbar">
-  <a href="../" class="ak-logo">عكارون</a>
+  <a href="../" class="ak-logo"><span class="ak-logo-name">Akaroon || عكارون</span><span class="ak-logo-desc">by Ibrahim Ahmed Omer</span></a>
   <ul class="ak-nav-links">
     <li><a href="../files/التأصيل/search.php">التأصيل</a></li>
     <li><a href="../files/التعليم/search.php">التعليم</a></li>
