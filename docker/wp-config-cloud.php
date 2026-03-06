@@ -4,6 +4,13 @@
  * All credentials come from environment variables set in Cloud Run.
  */
 
+// ── Cloud Run HTTPS proxy fix ─────────────────────────────────────────────
+// Cloud Run terminates SSL and forwards as HTTP internally.
+// Without this, WordPress sees HTTP and redirects to HTTPS infinitely.
+if ( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' ) {
+    $_SERVER['HTTPS'] = 'on';
+}
+
 // ── Database ───────────────────────────────────────────────────────────────
 define( 'DB_NAME',    getenv('WP_BLOG_DB_NAME') ?: 'akaroon_wpblog' );
 define( 'DB_USER',    getenv('DB_USER')         ?: '' );
@@ -11,12 +18,12 @@ define( 'DB_PASSWORD',getenv('DB_PASSWORD')     ?: '' );
 define( 'DB_CHARSET', 'utf8mb4' );
 define( 'DB_COLLATE', '' );
 
-// Cloud SQL uses a Unix socket: /cloudsql/PROJECT:REGION:INSTANCE
-// Set DB_SOCKET env var in Cloud Run; leave unset for local Docker (uses DB_HOST).
-$_socket = getenv('DB_SOCKET');
-if ( $_socket ) {
-    // WordPress socket format: "127.0.0.1:/path/to/socket"
-    define( 'DB_HOST', '127.0.0.1:' . $_socket );
+// WordPress's DB_HOST parser breaks on socket paths that contain colons
+// (Cloud SQL socket paths like /cloudsql/PROJECT:REGION:INSTANCE have colons).
+// Use WP_DB_HOST for a direct TCP/IP connection to Cloud SQL public IP instead.
+$_wp_host = getenv('WP_DB_HOST');
+if ( $_wp_host ) {
+    define( 'DB_HOST', $_wp_host );
 } else {
     define( 'DB_HOST', getenv('DB_HOST') ?: 'mysql' );
 }

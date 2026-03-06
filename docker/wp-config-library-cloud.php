@@ -4,6 +4,11 @@
  * All credentials come from environment variables set in Cloud Run.
  */
 
+// ── Cloud Run HTTPS proxy fix ─────────────────────────────────────────────
+if ( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' ) {
+    $_SERVER['HTTPS'] = 'on';
+}
+
 // ── Database ───────────────────────────────────────────────────────────────
 define( 'DB_NAME',    getenv('WP_LIBRARY_DB_NAME') ?: 'akaroon_wplibrary' );
 define( 'DB_USER',    getenv('DB_USER')            ?: '' );
@@ -11,9 +16,9 @@ define( 'DB_PASSWORD',getenv('DB_PASSWORD')        ?: '' );
 define( 'DB_CHARSET', 'utf8mb4' );
 define( 'DB_COLLATE', '' );
 
-$_socket = getenv('DB_SOCKET');
-if ( $_socket ) {
-    define( 'DB_HOST', '127.0.0.1:' . $_socket );
+$_wp_host = getenv('WP_DB_HOST');
+if ( $_wp_host ) {
+    define( 'DB_HOST', $_wp_host );
 } else {
     define( 'DB_HOST', getenv('DB_HOST') ?: 'mysql' );
 }
