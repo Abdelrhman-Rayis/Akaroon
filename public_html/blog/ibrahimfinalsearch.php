@@ -144,8 +144,13 @@ if (isset($_GET['search_btn'])) {
         $author  = htmlspecialchars($row['The_number_of_the_Author'], ENT_QUOTES, 'UTF-8');
         $year    = htmlspecialchars($row['Year_of_issue'],            ENT_QUOTES, 'UTF-8');
         $field   = htmlspecialchars($row['Field_of_research'],        ENT_QUOTES, 'UTF-8');
-        $pdfHref = "../files/{$cat}/files/{$id}.pdf";
-        $imgSrc  = "../files/{$cat}/image/{$id}.jpg";
+        $_media_base = rtrim(getenv('MEDIA_BASE_URL') ?: '', '/');
+        $pdfHref = $_media_base
+            ? "{$_media_base}/files/{$cat}/files/{$id}.pdf"
+            : "../files/{$cat}/files/{$id}.pdf";
+        $imgSrc  = $_media_base
+            ? "{$_media_base}/files/{$cat}/image/{$id}.jpg"
+            : "../files/{$cat}/image/{$id}.jpg";
       ?>
       <div class="col-lg-3 col-md-4 col-sm-6">
         <div class="ak-card">

@@ -4,6 +4,13 @@
 
 include('database_connection.php');
 
+// ── GCS media URLs (env-aware: uses GCS in Cloud Run, relative paths locally) ──
+$_media_base = rtrim(getenv('MEDIA_BASE_URL') ?: '', '/');
+$_category   = basename(__DIR__);  // e.g. 'التأصيل'
+$_img_base   = $_media_base ? "{$_media_base}/files/{$_category}/image" : 'image';
+$_pdf_base   = $_media_base ? "{$_media_base}/files/{$_category}/files" : 'files';
+
+
 /* ── Arabic-aware search normalization ─────────────────── */
 function normalizeAr($text) {
 	$text = trim($text);
@@ -69,12 +76,12 @@ if(isset($_POST["action"]))
 			<div class="col-lg-4 col-md-6 col-sm-12 mb-4">
 				<div class="ak-card">
 					<div class="ak-card-img-wrap">
-						<img src="image/'. htmlspecialchars($row['image'], ENT_QUOTES, 'UTF-8') .'" class="ak-card-img" alt=""
+						<img src="'. htmlspecialchars($_img_base, ENT_QUOTES, 'UTF-8') .'/'. htmlspecialchars($row['image'], ENT_QUOTES, 'UTF-8') .'" class="ak-card-img" alt=""
 						     onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';">
 						<div class="ak-card-img-placeholder" style="display:none;align-items:center;justify-content:center;height:165px;width:100%;font-size:3rem;">📄</div>
 					</div>
 					<div class="ak-card-body">
-						<a href="files/'. htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8') .'.pdf" class="ak-card-title">'. htmlspecialchars($row['The_Title_of_Paper_Book'], ENT_QUOTES, 'UTF-8') .'</a>
+						<a href="'. htmlspecialchars($_pdf_base, ENT_QUOTES, 'UTF-8') .'/'. htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8') .'.pdf" class="ak-card-title">'. htmlspecialchars($row['The_Title_of_Paper_Book'], ENT_QUOTES, 'UTF-8') .'</a>
 						<span class="ak-badge">'. htmlspecialchars($row['Category'], ENT_QUOTES, 'UTF-8') .'</span>
 						<div class="ak-card-meta">
 							<div>✍️ '. htmlspecialchars($row['The_number_of_the_Author'], ENT_QUOTES, 'UTF-8') .'</div>

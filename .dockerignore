@@ -3,9 +3,14 @@
 *.sql
 docker/wp-config-blog.php
 docker/wp-config-library.php
-public_html/files/*/PDFs/
+# PDFs and cover images are served from Google Cloud Storage (akaroon-media bucket).
+# Excluding them keeps the Docker image small (saves ~36 GB).
+public_html/files/*/files/
+public_html/files/*/image/
+# WordPress uploads also served from GCS
+public_html/blog/wp-content/uploads/
+public_html/library/wp-content/uploads/
 public_html/blog/wp-content/cache/
-public_html/blog/wp-content/uploads/cache/
 public_html/library/wp-content/cache/
 node_modules
 akaroonproject/
