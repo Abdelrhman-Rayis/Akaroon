@@ -38,6 +38,8 @@ COPY docker/apache.conf /etc/apache2/sites-available/000-default.conf
 
 # Startup script — configures Apache PORT for Cloud Run
 COPY docker/start.sh /start.sh
+# DB fix script — run once at startup to update stale menu URLs
+COPY docker/fix-menu.php /docker/fix-menu.php
 RUN chmod +x /start.sh
 
 WORKDIR /var/www/html
@@ -48,6 +50,12 @@ COPY public_html/ .
 # Override wp-config with Cloud Run / env-var-driven versions
 COPY docker/wp-config-cloud.php      blog/wp-config.php
 COPY docker/wp-config-library-cloud.php library/wp-config.php
+
+# Give Apache (www-data) write access so WordPress can create uploads/cache dirs
+RUN chown -R www-data:www-data /var/www/html \
+    && find /var/www/html -type d -exec chmod 755 {} \; \
+    && find /var/www/html -type f -exec chmod 644 {} \; \
+    && chmod +x /start.sh
 
 # Cloud Run expects the container to listen on $PORT (default 8080)
 EXPOSE 8080
