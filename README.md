@@ -22,7 +22,19 @@ Akaroon runs on **Google Cloud Run** (serverless, auto-scaling) backed by **Goog
 
 ---
 
-## Architecture Diagram
+### Domain Routing
+
+![Akaroon Domain Routing](docs/architecture-domains.png)
+
+---
+
+### Full System Architecture
+
+![Akaroon System Architecture](docs/architecture-full.png)
+
+---
+
+## Architecture Diagram (text)
 
 ```
  ┌──────────────────────────────────┐       ┌──────────────────────────────────┐

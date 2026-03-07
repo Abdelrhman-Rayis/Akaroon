@@ -62,6 +62,9 @@ IAOL/
 !architecture_diagram.png
 !docs/screenshots/*.png
 !docs/screenshots/*.jpg
+!docs/*.png
+!docs/*.jpg
+!docs/*.jpeg
 # Exceptions: site UI images (professor portrait, homepage photos, etc.)
 !public_html/img/
 
