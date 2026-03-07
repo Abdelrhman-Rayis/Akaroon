@@ -22,7 +22,24 @@ try {
         PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4",
     ]);
 
-    // Fix menu items pointing to old akaroon.com or localhost (non-blog links)
+    // Debug: log current الرئيسية menu item values
+    $debug = $pdo->query("SELECT post_id, meta_value FROM wp_postmeta WHERE meta_key = '_menu_item_url' AND meta_value != '' LIMIT 20");
+    foreach ($debug->fetchAll() as $row) {
+        fwrite(STDERR, "[fix-menu] post_id={$row['post_id']} url={$row['meta_value']}\n");
+    }
+
+    // Force الرئيسية (post IDs 15 and 97) to the site root URL
+    $stmt_home_ids = $pdo->prepare(
+        "UPDATE wp_postmeta
+         SET    meta_value = :url
+         WHERE  meta_key   = '_menu_item_url'
+           AND  post_id IN (15, 97)
+           AND  meta_value != :url"
+    );
+    $stmt_home_ids->execute([':url' => $site_url . '/']);
+    $fixed_home_ids = $stmt_home_ids->rowCount();
+
+    // Also fix any menu items pointing to old akaroon.com or localhost (non-blog links)
     $stmt = $pdo->prepare(
         "UPDATE wp_postmeta
          SET    meta_value = :url
@@ -48,7 +65,7 @@ try {
     $stmt2->execute([':url' => $site_url . '/blog/']);
     $fixed_blog = $stmt2->rowCount();
 
-    fwrite(STDERR, "[fix-menu] Updated {$fixed_home} home + {$fixed_blog} blog menu items → {$site_url}\n");
+    fwrite(STDERR, "[fix-menu] IDs(15,97)={$fixed_home_ids} home={$fixed_home} blog={$fixed_blog} → {$site_url}\n");
 
 } catch (Exception $e) {
     fwrite(STDERR, "[fix-menu] WARNING: Could not fix menu URLs: " . $e->getMessage() . "\n");

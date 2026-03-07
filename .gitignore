@@ -62,6 +62,8 @@ IAOL/
 !architecture_diagram.png
 !docs/screenshots/*.png
 !docs/screenshots/*.jpg
+# Exceptions: site UI images (professor portrait, homepage photos, etc.)
+!public_html/img/
 
 # ─── Server home-directory files (from FTP download) ─────────────────────────
 .bash_history
