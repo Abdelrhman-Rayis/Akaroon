@@ -69,7 +69,8 @@ The live production site (`www.akaroon.com`) runs on **Softwex shared hosting** 
 
 ### Cloud Run Architecture
 
-![Akaroon Cloud Run Architecture](docs/architecture-cloud-run.png)
+<img width="2816" height="1536" alt="Gemini_Generated_Image_i0epapi0epapi0ep (1)" src="https://github.com/user-attachments/assets/e658ef1c-1ac2-421c-9a03-1e7fdee8da75" />
+
 
 **Key design decisions shown in this diagram:**
 
