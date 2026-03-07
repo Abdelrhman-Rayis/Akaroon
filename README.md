@@ -5,6 +5,9 @@ This repository is created to better manage the future development of the servic
 # Live Website
 https://www.akaroon.com/
 
+# Development Version
+https://development.akaroon.com/
+
 # Library Resources
 The Akaroon Library contains over 2,000 documents and books organized into seven main themes: education, philosophy, politics, society, the state, organizations, and foundational studies.
 
