@@ -6,7 +6,7 @@
 
 ## 1. What Is Akaroon?
 
-Akaroon is an online **Sudanese heritage digital library** led by **Prof. Ibrahim Ahmed Omar**. It preserves Arabic academic documents — books, papers, and articles — across 7 thematic categories. The library contains ~2,094 records, 2,351 PDFs, and 2,273 cover images (~38 GB total).
+Akaroon is an online **Sudanese heritage digital library** led by **Ibrahim Ahmed Omer**. It preserves Arabic academic documents — books, papers, and articles — across 7 thematic categories. The library contains ~2,094 records, 2,351 PDFs, and 2,273 cover images (~38 GB total).
 
 - **Live site:** https://www.akaroon.com/ (Softwex hosting — separate system, do not touch)
 - **Dev/staging:** https://development.akaroon.com/ (→ 301 → Cloud Run)
