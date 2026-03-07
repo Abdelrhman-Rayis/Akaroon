@@ -14,17 +14,76 @@ The Akaroon Library contains over 2,000 documents and books organized into seven
 ## How to Access
 Dear visitor, you can explore all the books and documents using the search feature on the website or by visiting the categories page. We welcome any comments or suggestions. You can also reach out to us through the "Contact Us" page or check out our blog, which features many articles and content related to the site that you can comment on or share on social media platforms.
 
+# The Evolution of Akaroon
+
+Akaroon did not start as a cloud platform. It started as a single shared server, a phpMyAdmin window, and a hand-built Arabic search. What follows is the full story of how it grew into what it is today.
+
+## Platform Evolution Diagram
+
+![The Evolution of Akaroon](docs/evolution-diagram.png)
+
+### Chapter-by-Chapter Breakdown
+
+| Era | Years | What Changed |
+|---|---|---|
+| **The Beginning** | 2020 | Single shared server, phpMyAdmin for DB management, basic Arabic text matching, manual FTP file uploads |
+| **Growing Pains** | 2021–2023 | 7 database tables across categories, WordPress Blog + WP Library added, media files piling up, server overloaded |
+| **The Big Shift** | 2024–2025 | Docker containerisation — entire app packaged into a portable box. Git version control introduced. Developer can run an exact replica locally with `docker compose up` |
+| **Moving to the Cloud** | 2025–2026 | Google Cloud Run (serverless), Cloud SQL (managed DB), Cloud Storage (38 GB media lifted off the server). Auto-scaling replaces fixed hosting |
+| **Automation** | 2026 | Full CI/CD pipeline — `git push` triggers Cloud Build → Docker image → zero-downtime deploy to Cloud Run. No manual steps |
+
+**Then vs. Now summary:**
+
+| Aspect | 2020 (Then) | 2026 (Now) |
+|---|---|---|
+| Hosting | Shared server | Google Cloud Run (serverless) |
+| Database | Manual phpMyAdmin | Managed Cloud SQL |
+| Search | Basic text matching | UNION REGEXP across 7 tables + Arabic normalisation |
+| Media | Manual FTP uploads | 38 GB on Cloud Storage, served globally |
+| Deployment | FTP file-by-file | Automated CI/CD pipeline |
+| Environments | Single, fragile | Local dev · Cloud Run staging · Live production |
+| Reliability | High risk | High availability, zero-downtime updates |
+| Documents | Scattered files | 2,351 PDFs + 2,273 cover images, centralised & managed |
+
+---
+
 # System Architecture
 
 ## Overview
 
 Akaroon runs on **Google Cloud Run** (serverless, auto-scaling) backed by **Google Cloud SQL** for databases and **Google Cloud Storage** for all media. A GitHub push to `main` automatically triggers **Cloud Build**, which builds the Docker image and deploys it — zero manual steps required.
 
+The live production site (`www.akaroon.com`) runs on **Softwex shared hosting** and is a completely separate system — the GitHub repository and Cloud Run environment serve as the development and staging platform, accessible at `development.akaroon.com`.
+
 ---
 
 ### Domain Routing
 
 ![Akaroon Domain Routing](docs/architecture-domains.png)
+
+**How the two environments connect:**
+- `www.akaroon.com` → resolves directly to **Softwex LiteSpeed hosting** (`91.204.209.26`). This is the live public-facing site. It has no connection to Cloud Run.
+- `development.akaroon.com` → resolves to Softwex, which issues a **301 redirect** to the Cloud Run service URL. This is the staging/development environment where all new changes are tested before going live.
+
+---
+
+### Cloud Run Architecture
+
+![Akaroon Cloud Run Architecture](docs/architecture-cloud-run.png)
+
+**Key design decisions shown in this diagram:**
+
+1. **Two separate hosting systems** — `www.akaroon.com` (Softwex) and `development.akaroon.com` (Cloud Run) are completely independent. Changes deployed to Cloud Run do not affect the live site.
+
+2. **Apache handles all internal routing** inside the container — every URL path (`/`, `/blog/`, `/library/`, `/files/{category}/`) is served by the same Apache instance, which routes to the correct PHP application.
+
+3. **Three separate databases** — `akaroon_akaroondb` (library content), WordPress Blog DB, and WordPress Library DB are kept separate so content data and WordPress data never interfere with each other.
+
+4. **GCS media decoupling** — the container outputs GCS URLs in HTML; the browser fetches media directly from Cloud Storage. The container never proxies media files, which keeps compute costs low and page load fast.
+
+5. **Zero-downtime deploys** — Cloud Run creates a new revision on every deploy and shifts traffic only after the new container passes health checks. The old revision stays alive until traffic is fully migrated.
+
+6. **`MEDIA_BASE_URL` as the environment switch** — when set, all PHP code and the WordPress MU plugin route media to GCS. When absent (local dev), all paths fall back to local relative URLs. The same codebase runs correctly in all three environments without code changes.
 
 ---
 
