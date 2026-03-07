@@ -25,52 +25,55 @@ Akaroon runs on **Google Cloud Run** (serverless, auto-scaling) backed by **Goog
 ## Architecture Diagram
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                            USERS (Browser)                                  │
-└───────────────────────────────────┬─────────────────────────────────────────┘
-                                    │ HTTPS
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
+                        www.akaroon.com / development.akaroon.com
+                                         │
+                                    HTTPS (custom domain)
+                                         │
+┌────────────────────────────────────────▼────────────────────────────────────┐
 │                    Google Cloud Run  (europe-west1)                         │
 │              akaroon-git-844063198632.europe-west1.run.app                  │
 │  ┌──────────────────────────────────────────────────────────────────────┐   │
 │  │                   Docker Container (PHP 8.2 + Apache)                │   │
 │  │                                                                      │   │
-│  │  /                   → public_html/index.php  (homepage)             │   │
-│  │  /blog/              → WordPress Blog         (Nightingale theme)    │   │
-│  │  /library/           → WordPress Library      (catalog front-end)    │   │
-│  │  /blog/ibrahimfinalsearch.php → Global Search (UNION REGEXP + arquery) │ │
-│  │  /files/{category}/  → Category Filter Pages  (×7, AJAX card grids) │   │
-│  │  /img/               → Site UI images         (static assets)        │   │
+│  │  /                        → public_html/index.php  (homepage)        │   │
+│  │  /blog/                   → WordPress Blog  (Nightingale theme)      │   │
+│  │  /library/                → WordPress Library  (catalog front-end)   │   │
+│  │  /blog/ibrahimfinalsearch.php → Global Search (UNION REGEXP+arquery) │   │
+│  │  /files/{category}/       → Category Filter Pages (×7, AJAX grids)  │   │
+│  │  /img/                    → Site UI images  (static assets)          │   │
 │  │                                                                      │   │
 │  │  Startup: docker/start.sh                                            │   │
 │  │    ├── Configures Apache to listen on $PORT                          │   │
 │  │    └── Runs fix-menu.php  (fixes WordPress nav menu URLs in DB)      │   │
+│  │                                                                      │   │
+│  │  Internal files:                                                     │   │
+│  │    wp-config-cloud.php  · fix-menu.php  · gcs-media.php (MU plugin) │   │
+│  │                                                                      │   │
+│  │  ENV Vars: DB_HOST · WP_DB_HOST · DB_USER · DB_PASSWORD             │   │
+│  │            WP_URL  · MEDIA_BASE_URL · PORT                           │   │
 │  └──────────────────────────────────────────────────────────────────────┘   │
-└────────────┬──────────────────────────────────┬────────────────────────────┘
-             │ PDO / mysqli (TCP)                │ HTTP (media requests)
-             ▼                                  ▼
-┌────────────────────────┐        ┌─────────────────────────────────────────┐
-│   Google Cloud SQL     │        │      Google Cloud Storage               │
-│   MySQL 8.0            │        │      gs://akaroon-media (public)        │
-│   europe-west1         │        │      europe-west1                       │
-│                        │        │                                         │
-│  ┌──────────────────┐  │        │  /files/{category}/files/  → PDFs       │
-│  │ akaroon_akaroondb│  │        │  /files/{category}/image/  → Covers     │
-│  │  7 category tables│  │        │  /wp-uploads/              → WP media   │
-│  │  ~2,094 records  │  │        │                                         │
-│  └──────────────────┘  │        │  Served via:                            │
-│  ┌──────────────────┐  │        │  storage.googleapis.com/akaroon-media/  │
-│  │ akaroon_a-wordp  │  │        │  Controlled by: MEDIA_BASE_URL env var  │
-│  │ (WordPress Blog  │  │        └─────────────────────────────────────────┘
-│  │  DB)             │  │
-│  └──────────────────┘  │
-│  ┌──────────────────┐  │
-│  │ akaroon_library  │  │
-│  │ (WordPress Lib.  │  │
-│  │  DB)             │  │
-│  └──────────────────┘  │
-└────────────────────────┘
+│           │ PDO / mysqli (TCP)          │ outputs GCS URLs in HTML          │
+└───────────┼─────────────────────────────┼───────────────────────────────────┘
+            ▼                             │
+┌────────────────────────┐               │  Browser fetches media directly
+│   Google Cloud SQL     │               ▼
+│   MySQL 8.0            │  ┌─────────────────────────────────────────────┐
+│   europe-west1         │  │      Google Cloud Storage                   │
+│                        │  │      gs://akaroon-media  (public)           │
+│  akaroon_akaroondb     │  │      europe-west1                           │
+│  (7 tables, ~2,094     │  │                                             │
+│   Arabic records)      │  │  /files/{category}/files/  → PDFs           │
+│                        │  │  /files/{category}/image/  → Cover images   │
+│  akaroon_a-wordp-*     │  │  /wp-uploads/              → WP media       │
+│  (WordPress Blog DB)   │  │                                             │
+│                        │  │  URL: storage.googleapis.com/akaroon-media/ │
+│  akaroon_library       │  │  Controlled by: MEDIA_BASE_URL env var      │
+│  (WordPress Lib. DB)   │  └─────────────────────────────────────────────┘
+└────────────────────────┘              ▲
+                                        │ HTTPS (direct media requests)
+                              ┌─────────┴──────────┐
+                              │   Users (Browser)   │
+                              └────────────────────┘
 ```
 
 ---
