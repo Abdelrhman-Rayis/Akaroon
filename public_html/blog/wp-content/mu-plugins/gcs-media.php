@@ -67,13 +67,10 @@ add_filter( 'the_content', function( $content ) {
         $content
     );
 
-    // 2. Rewrite any remaining localhost:8082 origin → relative path
-    //    e.g. http://localhost:8082/files/التأصيل/search.php → /files/التأصيل/search.php
-    $content = str_replace(
-        [ 'http://localhost:8082', 'http://localhost' ],
-        '',
-        $content
-    );
+    // 2. Rewrite any absolute origin on /files/ links → relative path
+    //    Covers: localhost:8082, akaroon.com, www.akaroon.com, or any other host
+    //    e.g. http://akaroon.com/files/التأصيل/search.php → /files/التأصيل/search.php
+    $content = preg_replace( '|https?://[a-z0-9.:-]+(/files/)|i', '$1', $content );
 
     return $content;
 }, 99 );
