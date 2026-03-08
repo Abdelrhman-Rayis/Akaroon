@@ -3,6 +3,7 @@
 //fetch_data.php
 
 include('database_connection.php');
+require_once __DIR__ . '/../../lib/search_expand.php';
 
 // ── GCS media URLs (env-aware: uses GCS in Cloud Run, relative paths locally) ──
 $_media_base = rtrim(getenv('MEDIA_BASE_URL') ?: '', '/');
@@ -56,11 +57,10 @@ if(isset($_POST["action"]))
 	}
 	if(!empty($_POST["search_text"]))
 	{
-		$norm = normalizeAr(strip_tags(substr($_POST["search_text"], 0, 200)));
-		$search_text = $connect->quote('%' . $norm . '%');
-		$query .= "
-		 AND CONCAT_WS(' ', " . sqlNorm("Category") . ", " . sqlNorm("The_Title_of_Paper_Book") . ", " . sqlNorm("The_number_of_the_Author") . ", " . sqlNorm("Year_of_issue") . ", " . sqlNorm("Place_of_issue") . ", " . sqlNorm("Field_of_research") . ", " . sqlNorm("Key_words") . ") LIKE ".$search_text."
-		";
+		$norm  = normalizeAr(strip_tags(substr($_POST["search_text"], 0, 200)));
+		$terms = expandQuery($norm);
+		$nc    = "CONCAT_WS(' ', " . sqlNorm("Category") . ", " . sqlNorm("The_Title_of_Paper_Book") . ", " . sqlNorm("The_number_of_the_Author") . ", " . sqlNorm("Year_of_issue") . ", " . sqlNorm("Place_of_issue") . ", " . sqlNorm("Field_of_research") . ", " . sqlNorm("Key_words") . ")";
+		$query .= " AND (" . buildLikeClause($nc, $terms, $connect, 'pdo') . ")";
 	}
 
 	$statement = $connect->prepare($query);

@@ -19,6 +19,8 @@ if($link->connect_error){
     die("Connection Failed: " . $link->connect_error);
 }
 
+require_once __DIR__ . '/../lib/search_expand.php';
+
 /* ── Arabic-aware search normalization ─────────────────── */
 function normalizeAr($text) {
     $text = trim($text);
@@ -45,14 +47,17 @@ $results     = [];
 $total_rows  = 0;
 $search_term = '';
 
+$expanded_terms = [];   // exposed to template for UI hint
+
 if (isset($_GET['search_btn'])) {
-    $search_term = substr(trim($_GET['search'] ?? ''), 0, 200);
-    $norm        = normalizeAr($search_term);
-    $find        = '%' . $link->real_escape_string($norm) . '%';
-    $nc          = normConcat();
+    $search_term    = substr(trim($_GET['search'] ?? ''), 0, 200);
+    $norm           = normalizeAr($search_term);
+    $expanded_terms = expandQuery($norm);          // synonym expansion
+    $nc             = normConcat();
+    $where          = buildLikeClause($nc, $expanded_terms, $link, 'mysqli');
 
     $tables = ['edu','soc','tas','pol','org','state','philo'];
-    $parts  = array_map(fn($t) => "(SELECT * FROM `$t` WHERE $nc LIKE '$find')", $tables);
+    $parts  = array_map(fn($t) => "(SELECT * FROM `$t` WHERE $where)", $tables);
     $sql    = implode(" UNION ", $parts);
 
     if ($res = $link->query($sql)) {
@@ -130,6 +135,14 @@ if (isset($_GET['search_btn'])) {
   <div class="ak-result-count">
     تم العثور على <strong><?= $total_rows ?></strong> نتيجة
     <?php if ($search_term): ?>لـ "<strong><?= htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8') ?></strong>"<?php endif; ?>
+    <?php if (count($expanded_terms) > 1): ?>
+      <div class="ak-synonyms-hint">
+        🔗 بحث موسّع يشمل المترادفات:
+        <?php foreach (array_slice($expanded_terms, 1) as $syn): ?>
+          <span class="ak-syn-tag"><?= htmlspecialchars($syn, ENT_QUOTES, 'UTF-8') ?></span>
+        <?php endforeach; ?>
+      </div>
+    <?php endif; ?>
   </div>
 </div>
 

@@ -254,6 +254,23 @@ body {
 }
 .ak-result-count strong { color: var(--teal-dark); }
 
+.ak-synonyms-hint {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 0.35rem;
+  white-space: normal;
+}
+.ak-syn-tag {
+  display: inline-block;
+  background: #e4f4f1;
+  color: var(--teal-dark);
+  border-radius: 4px;
+  padding: 1px 7px;
+  margin: 2px 2px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
 /* ── Results section ───────────────────────────────────── */
 .ak-results-section {
   background: var(--warm-white);

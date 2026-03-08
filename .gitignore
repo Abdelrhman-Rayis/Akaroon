@@ -34,6 +34,10 @@ public_html/library/wp-config.php
 mysql_data/
 docker/mysql-data/
 
+# ─── Arabic Ontology data (Birzeit University copyright — do not distribute) ──
+ArabicOntology*/
+public_html/lib/ontology_lookup.php
+
 # ─── Server backup archives ───────────────────────────────────────────────────
 backup-*
 *.tar.gz
