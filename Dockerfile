@@ -47,6 +47,16 @@ WORKDIR /var/www/html
 # Bake app files into image (Cloud Run uses these; docker-compose mounts override locally)
 COPY public_html/ .
 
+# Build Qabas root lookup at image-build time.
+# The generated file (a CC-BY-ND derivative) is intentionally NOT committed to git;
+# it lives only inside the container image.
+COPY Qabas/Qabas-dataset.csv /tmp/Qabas-dataset.csv
+COPY tools/build_qabas_lookup.php /tmp/build_qabas_lookup.php
+RUN php /tmp/build_qabas_lookup.php \
+      /tmp/Qabas-dataset.csv \
+      /var/www/html/lib/qabas_lookup.php \
+    && rm /tmp/Qabas-dataset.csv /tmp/build_qabas_lookup.php
+
 # Override wp-config with Cloud Run / env-var-driven versions
 COPY docker/wp-config-cloud.php      blog/wp-config.php
 COPY docker/wp-config-library-cloud.php library/wp-config.php

@@ -38,6 +38,10 @@ docker/mysql-data/
 ArabicOntology*/
 public_html/lib/ontology_lookup.php
 
+# ─── Qabas data (CC-BY-ND-4.0 — raw CSVs OK to commit; generated lookup is a
+#     derivative and must NOT be distributed per the NoDerivatives clause) ────
+public_html/lib/qabas_lookup.php
+
 # ─── Server backup archives ───────────────────────────────────────────────────
 backup-*
 *.tar.gz
