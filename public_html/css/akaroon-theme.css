@@ -480,75 +480,95 @@ body {
 .ak-switch {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 9px;
   cursor: pointer;
   user-select: none;
   vertical-align: middle;
   white-space: nowrap;
 }
-.ak-switch-input {          /* visually hidden, still functional */
+
+/* Visually hidden but keyboard/screen-reader accessible */
+.ak-switch-input {
   position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-  pointer-events: none;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  -webkit-appearance: none;
+  appearance: none;
 }
+
+/* Track pill — display:inline-block is required for width/height on a <span> */
 .ak-switch-track {
   position: relative;
-  width: 42px;
-  height: 24px;
-  background: #c0c0c0;
-  border-radius: 12px;
-  transition: background 0.22s;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+  background: #b0bec5;
+  border-radius: 14px;
+  transition: background 0.24s ease;
   flex-shrink: 0;
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.20);
+  vertical-align: middle;
 }
+
+/* Sliding thumb */
 .ak-switch-thumb {
   position: absolute;
   top: 3px;
   left: 3px;
-  width: 18px;
-  height: 18px;
-  background: #fff;
+  width: 22px;
+  height: 22px;
+  background: #ffffff;
   border-radius: 50%;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.28);
-  transition: left 0.22s;
-}
-.ak-switch-input:checked + .ak-switch-track              { background: var(--teal-dark); }
-.ak-switch-input:checked + .ak-switch-track .ak-switch-thumb { left: 21px; }
-.ak-switch-label {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--teal-dark);
-  font-family: 'Tajawal', Arial, sans-serif;
-  min-width: 4rem;
-  transition: color 0.2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  transition: left 0.24s ease;
 }
 
-/* search box row: keep switch aligned right of input */
+/* ON state */
+.ak-switch-input:checked + .ak-switch-track              { background: var(--teal); }
+.ak-switch-input:checked + .ak-switch-track .ak-switch-thumb { left: 25px; }
+
+/* Keyboard focus ring */
+.ak-switch-input:focus-visible + .ak-switch-track {
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.20), 0 0 0 3px rgba(26,107,99,0.30);
+}
+
+/* Label */
+.ak-switch-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-mid);
+  font-family: 'Tajawal', Arial, sans-serif;
+  min-width: 4.5rem;
+  transition: color 0.2s;
+}
+.ak-switch:hover .ak-switch-label { color: var(--teal-dark); }
+
+/* Search box toggle row — sits below the input+button row */
 .ak-search-box       { flex-wrap: wrap; gap: 0; }
-.ak-search-box-row   { display: flex; flex: 1; min-width: 0; }
+.ak-search-box-row   { display: flex; flex-basis: 100%; min-width: 0; }
 .ak-search-toggle-row {
   display: flex;
   align-items: center;
-  padding: 0.45rem 0.9rem;
-  border-top: 1px solid var(--warm-border);
+  justify-content: center;
+  padding: 0.55rem 1rem;
+  border-top: 1px solid rgba(0,0,0,0.08);
   width: 100%;
-  background: rgba(255,255,255,0.6);
+  background: rgba(248,249,250,0.97);
   border-radius: 0 0 8px 8px;
-  gap: 0.5rem;
-}
-.ak-search-toggle-row::before {
-  content: 'بحث دلالي:';
-  font-size: 0.78rem;
-  color: var(--muted);
-  font-family: 'Tajawal', Arial, sans-serif;
-  margin-left: auto; /* pushes label to start in RTL */
+  gap: 0.75rem;
 }
 
-/* sidebar: button + switch side by side */
+/* Sidebar: search button + switch side by side */
 .ak-sidebar-search-row { display: flex; gap: 0.5rem; margin-top: 0.5rem; align-items: center; }
 .ak-sidebar-search-row .ak-sidebar-btn { flex: 1; margin-top: 0; width: auto; }
 .ak-sidebar-search-row .ak-switch      { flex-shrink: 0; }
+.ak-sidebar-search-row .ak-switch-label { font-size: 0.85rem; min-width: 3.8rem; }
 
 /* ── Loading / empty states ──────────────────────────────── */
 .ak-loading, .ak-empty {
