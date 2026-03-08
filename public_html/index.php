@@ -63,11 +63,11 @@
       <div class="col-md-3">
         <div class="ak-letter-author">
           <div class="ak-letter-monogram">
-            <img src="img/professor.jpg" alt="بروفسير إبراهيم أحمد عمر">
+            <img src="img/professor.jpg" alt="إبراهيم أحمد عمر">
           </div>
           <div>
             <div class="ak-letter-author-from">رسالة من أخوكم</div>
-            <div class="ak-letter-author-name">بروفسير<br>إبراهيم أحمد عمر</div>
+            <div class="ak-letter-author-name">إبراهيم أحمد عمر</div>
             <div class="ak-letter-author-role">مؤسس مكتبة عكارون</div>
           </div>
         </div>
