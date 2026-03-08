@@ -43,16 +43,21 @@ function normConcat() {
     return "CONCAT_WS(' ', " . implode(', ', array_map('sqlNorm', $cols)) . ")";
 }
 
-$results     = [];
-$total_rows  = 0;
-$search_term = '';
+$results        = [];
+$total_rows     = 0;
+$search_term    = '';
+$expanded_terms = [];
 
-$expanded_terms = [];   // exposed to template for UI hint
+// Semantic toggle: default ON; pass ?semantic=0 to disable
+$semantic_on  = ($_GET['semantic'] ?? '1') !== '0';
+$toggle_class = $semantic_on ? 'ak-mode-on'  : 'ak-mode-off';
+$toggle_label = $semantic_on ? '🧠 دلالي' : '🔤 عادي';
+$toggle_val   = $semantic_on ? '1'          : '0';
 
 if (isset($_GET['search_btn'])) {
     $search_term    = substr(trim($_GET['search'] ?? ''), 0, 200);
     $norm           = normalizeAr($search_term);
-    $expanded_terms = expandQuery($norm);          // synonym expansion
+    $expanded_terms = $semantic_on ? expandQuery($norm) : [$norm];
     $nc             = normConcat();
     $where          = buildLikeClause($nc, $expanded_terms, $link, 'mysqli');
 
@@ -113,8 +118,14 @@ if (isset($_GET['search_btn'])) {
   <p>ابحث في آلاف الأوراق البحثية والكتب عبر جميع التصنيفات</p>
   <form action="" method="get">
     <div class="ak-search-box">
-      <button type="submit" name="search_btn">بحث</button>
-      <input type="text" name="search" placeholder="ابحث بالعنوان أو المؤلف أو الكلمات المفتاحية..." autocomplete="off" required>
+      <div class="ak-search-box-row">
+        <button type="submit" name="search_btn">بحث</button>
+        <input type="text" name="search" placeholder="ابحث بالعنوان أو المؤلف أو الكلمات المفتاحية..." autocomplete="off" required>
+      </div>
+      <div class="ak-search-toggle-row">
+        <button type="button" id="semantic_toggle" class="ak-mode-btn <?= $toggle_class ?>"><?= $toggle_label ?></button>
+        <input type="hidden" name="semantic" id="semantic_val" value="<?= $toggle_val ?>">
+      </div>
     </div>
   </form>
 </section>
@@ -128,9 +139,11 @@ if (isset($_GET['search_btn'])) {
 <?php else: ?>
 
 <div class="ak-results-header">
-  <form action="" method="get">
+  <form action="" method="get" style="display:flex;align-items:center;gap:0.5rem;flex:1;">
     <button type="submit" name="search_btn">بحث</button>
-    <input type="text" name="search" value="<?= htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8') ?>" autocomplete="off">
+    <input type="text" name="search" value="<?= htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8') ?>" autocomplete="off" style="flex:1;">
+    <button type="button" id="semantic_toggle" class="ak-mode-btn <?= $toggle_class ?>"><?= $toggle_label ?></button>
+    <input type="hidden" name="semantic" id="semantic_val" value="<?= $toggle_val ?>">
   </form>
   <div class="ak-result-count">
     تم العثور على <strong><?= $total_rows ?></strong> نتيجة
@@ -202,5 +215,22 @@ if (isset($_GET['search_btn'])) {
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.querySelectorAll('#semantic_toggle').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var isOn = this.classList.contains('ak-mode-on');
+    var valInput = document.getElementById('semantic_val');
+    if (isOn) {
+      this.classList.replace('ak-mode-on', 'ak-mode-off');
+      this.textContent = '🔤 عادي';
+      if (valInput) valInput.value = '0';
+    } else {
+      this.classList.replace('ak-mode-off', 'ak-mode-on');
+      this.textContent = '🧠 دلالي';
+      if (valInput) valInput.value = '1';
+    }
+  });
+});
+</script>
 </body>
 </html>

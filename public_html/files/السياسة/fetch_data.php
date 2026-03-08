@@ -57,9 +57,10 @@ if(isset($_POST["action"]))
 	}
 	if(!empty($_POST["search_text"]))
 	{
-		$norm  = normalizeAr(strip_tags(substr($_POST["search_text"], 0, 200)));
-		$terms = expandQuery($norm);
-		$nc    = "CONCAT_WS(' ', " . sqlNorm("Category") . ", " . sqlNorm("The_Title_of_Paper_Book") . ", " . sqlNorm("The_number_of_the_Author") . ", " . sqlNorm("Year_of_issue") . ", " . sqlNorm("Place_of_issue") . ", " . sqlNorm("Field_of_research") . ", " . sqlNorm("Key_words") . ")";
+		$norm        = normalizeAr(strip_tags(substr($_POST["search_text"], 0, 200)));
+		$semantic_on = ($_POST['semantic'] ?? '1') !== '0';
+		$terms       = $semantic_on ? expandQuery($norm) : [$norm];
+		$nc          = "CONCAT_WS(' ', " . sqlNorm("Category") . ", " . sqlNorm("The_Title_of_Paper_Book") . ", " . sqlNorm("The_number_of_the_Author") . ", " . sqlNorm("Year_of_issue") . ", " . sqlNorm("Place_of_issue") . ", " . sqlNorm("Field_of_research") . ", " . sqlNorm("Key_words") . ")";
 		$query .= " AND (" . buildLikeClause($nc, $terms, $connect, 'pdo') . ")";
 	}
 

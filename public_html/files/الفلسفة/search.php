@@ -57,7 +57,10 @@ include('database_connection.php');
         <!-- Text search -->
         <h5>🔍 بحث نصي</h5>
         <input type="text" id="search_text" class="ak-sidebar-search" placeholder="ابحث هنا...">
-        <button class="ak-sidebar-btn" id="search_go">بحث</button>
+        <div class="ak-sidebar-search-row">
+          <button class="ak-sidebar-btn" id="search_go">بحث</button>
+          <button type="button" id="semantic_toggle" class="ak-mode-btn ak-mode-on" title="تبديل بين البحث الدلالي والعادي">🧠 دلالي</button>
+        </div>
 
         <!-- Author filter -->
         <?php
@@ -155,7 +158,7 @@ $(document).ready(function(){
     $.ajax({
       url: 'fetch_data.php',
       method: 'POST',
-      data: { action: action, brand: brand, ram: ram, storage: storage, search_text: search_text },
+      data: { action: action, brand: brand, ram: ram, storage: storage, search_text: search_text, semantic: document.getElementById('semantic_toggle').classList.contains('ak-mode-on') ? 1 : 0 },
       success: function(data) {
         $('.filter_data').html('<div class="row g-4">' + data + '</div>');
       }
@@ -179,5 +182,17 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+document.getElementById('semantic_toggle').addEventListener('click', function() {
+  var isOn = this.classList.contains('ak-mode-on');
+  if (isOn) {
+    this.classList.replace('ak-mode-on', 'ak-mode-off');
+    this.textContent = '🔤 عادي';
+  } else {
+    this.classList.replace('ak-mode-off', 'ak-mode-on');
+    this.textContent = '🧠 دلالي';
+  }
+});
+</script>
 </body>
 </html>

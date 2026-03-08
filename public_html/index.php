@@ -48,8 +48,14 @@
   <p>منصة بحثية شاملة في العلوم الإنسانية والاجتماعية والإسلامية</p>
   <form action="blog/ibrahimfinalsearch.php" method="get">
     <div class="ak-search-box">
-      <button type="submit" name="search_btn">بحث</button>
-      <input type="text" name="search" placeholder="ابحث بالعنوان أو المؤلف أو الكلمات المفتاحية..." autocomplete="off" required>
+      <div class="ak-search-box-row">
+        <button type="submit" name="search_btn">بحث</button>
+        <input type="text" name="search" placeholder="ابحث بالعنوان أو المؤلف أو الكلمات المفتاحية..." autocomplete="off" required>
+      </div>
+      <div class="ak-search-toggle-row">
+        <button type="button" id="semantic_toggle" class="ak-mode-btn ak-mode-on">🧠 دلالي</button>
+        <input type="hidden" name="semantic" id="semantic_val" value="1">
+      </div>
     </div>
   </form>
 </section>
@@ -191,5 +197,20 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.getElementById('semantic_toggle').addEventListener('click', function() {
+  var isOn = this.classList.contains('ak-mode-on');
+  var valInput = document.getElementById('semantic_val');
+  if (isOn) {
+    this.classList.replace('ak-mode-on', 'ak-mode-off');
+    this.textContent = '🔤 عادي';
+    valInput.value = '0';
+  } else {
+    this.classList.replace('ak-mode-off', 'ak-mode-on');
+    this.textContent = '🧠 دلالي';
+    valInput.value = '1';
+  }
+});
+</script>
 </body>
 </html>
