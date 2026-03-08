@@ -123,7 +123,11 @@ if (isset($_GET['search_btn'])) {
         <input type="text" name="search" placeholder="ابحث بالعنوان أو المؤلف أو الكلمات المفتاحية..." autocomplete="off" required>
       </div>
       <div class="ak-search-toggle-row">
-        <button type="button" id="semantic_toggle" class="ak-mode-btn <?= $toggle_class ?>"><?= $toggle_label ?></button>
+        <label class="ak-switch" for="semantic_toggle_cb">
+          <input type="checkbox" class="ak-switch-input" id="semantic_toggle_cb" <?= $semantic_on ? 'checked' : '' ?>>
+          <span class="ak-switch-track"><span class="ak-switch-thumb"></span></span>
+          <span class="ak-switch-label"><?= $toggle_label ?></span>
+        </label>
         <input type="hidden" name="semantic" id="semantic_val" value="<?= $toggle_val ?>">
       </div>
     </div>
@@ -139,10 +143,14 @@ if (isset($_GET['search_btn'])) {
 <?php else: ?>
 
 <div class="ak-results-header">
-  <form action="" method="get" style="display:flex;align-items:center;gap:0.5rem;flex:1;">
+  <form action="" method="get" style="display:flex;align-items:center;gap:0.5rem;flex:1;flex-wrap:wrap;">
     <button type="submit" name="search_btn">بحث</button>
-    <input type="text" name="search" value="<?= htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8') ?>" autocomplete="off" style="flex:1;">
-    <button type="button" id="semantic_toggle" class="ak-mode-btn <?= $toggle_class ?>"><?= $toggle_label ?></button>
+    <input type="text" name="search" value="<?= htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8') ?>" autocomplete="off" style="flex:1;min-width:120px;">
+    <label class="ak-switch" for="semantic_toggle_cb" style="margin:0 0.3rem;">
+      <input type="checkbox" class="ak-switch-input" id="semantic_toggle_cb" <?= $semantic_on ? 'checked' : '' ?>>
+      <span class="ak-switch-track"><span class="ak-switch-thumb"></span></span>
+      <span class="ak-switch-label"><?= $toggle_label ?></span>
+    </label>
     <input type="hidden" name="semantic" id="semantic_val" value="<?= $toggle_val ?>">
   </form>
   <div class="ak-result-count">
@@ -216,21 +224,17 @@ if (isset($_GET['search_btn'])) {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-document.querySelectorAll('#semantic_toggle').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    var isOn = this.classList.contains('ak-mode-on');
-    var valInput = document.getElementById('semantic_val');
-    if (isOn) {
-      this.classList.replace('ak-mode-on', 'ak-mode-off');
-      this.textContent = '🔤 عادي';
-      if (valInput) valInput.value = '0';
-    } else {
-      this.classList.replace('ak-mode-off', 'ak-mode-on');
-      this.textContent = '🧠 دلالي';
-      if (valInput) valInput.value = '1';
-    }
+(function() {
+  var cb  = document.getElementById('semantic_toggle_cb');
+  var val = document.getElementById('semantic_val');
+  var lbl = document.querySelector('.ak-switch-label');
+  if (!cb) return;
+  cb.addEventListener('change', function() {
+    var on = this.checked;
+    if (val) val.value = on ? '1' : '0';
+    if (lbl) lbl.textContent = on ? '🧠 دلالي' : '🔤 عادي';
   });
-});
+})();
 </script>
 </body>
 </html>

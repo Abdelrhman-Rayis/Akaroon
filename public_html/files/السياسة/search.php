@@ -59,7 +59,12 @@ include('database_connection.php');
         <input type="text" id="search_text" class="ak-sidebar-search" placeholder="ابحث هنا...">
         <div class="ak-sidebar-search-row">
           <button class="ak-sidebar-btn" id="search_go">بحث</button>
-          <button type="button" id="semantic_toggle" class="ak-mode-btn ak-mode-on" title="تبديل بين البحث الدلالي والعادي">🧠 دلالي</button>
+          <label class="ak-switch" for="semantic_toggle_cb" title="تبديل بين البحث الدلالي والعادي">
+            <input type="checkbox" class="ak-switch-input" id="semantic_toggle_cb" checked>
+            <span class="ak-switch-track"><span class="ak-switch-thumb"></span></span>
+            <span class="ak-switch-label">🧠 دلالي</span>
+          </label>
+          <input type="hidden" id="semantic_val" value="1">
         </div>
 
         <!-- Author filter -->
@@ -158,7 +163,7 @@ $(document).ready(function(){
     $.ajax({
       url: 'fetch_data.php',
       method: 'POST',
-      data: { action: action, brand: brand, ram: ram, storage: storage, search_text: search_text, semantic: document.getElementById('semantic_toggle').classList.contains('ak-mode-on') ? 1 : 0 },
+      data: { action: action, brand: brand, ram: ram, storage: storage, search_text: search_text, semantic: ($('#semantic_toggle_cb').is(':checked') ? 1 : 0) },
       success: function(data) {
         $('.filter_data').html('<div class="row g-4">' + data + '</div>');
       }
@@ -178,21 +183,13 @@ $(document).ready(function(){
   $('#search_text').keypress(function(e){
     if (e.which === 13) filter_data();
   });
+  $('#semantic_toggle_cb').on('change', function() {
+    $('.ak-switch-label').text(this.checked ? '🧠 دلالي' : '🔤 عادي');
+    filter_data();
+  });
 
 });
 </script>
 
-<script>
-document.getElementById('semantic_toggle').addEventListener('click', function() {
-  var isOn = this.classList.contains('ak-mode-on');
-  if (isOn) {
-    this.classList.replace('ak-mode-on', 'ak-mode-off');
-    this.textContent = '🔤 عادي';
-  } else {
-    this.classList.replace('ak-mode-off', 'ak-mode-on');
-    this.textContent = '🧠 دلالي';
-  }
-});
-</script>
 </body>
 </html>

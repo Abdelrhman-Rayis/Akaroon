@@ -53,7 +53,11 @@
         <input type="text" name="search" placeholder="ابحث بالعنوان أو المؤلف أو الكلمات المفتاحية..." autocomplete="off" required>
       </div>
       <div class="ak-search-toggle-row">
-        <button type="button" id="semantic_toggle" class="ak-mode-btn ak-mode-on">🧠 دلالي</button>
+        <label class="ak-switch" for="semantic_toggle_cb">
+          <input type="checkbox" class="ak-switch-input" id="semantic_toggle_cb" checked>
+          <span class="ak-switch-track"><span class="ak-switch-thumb"></span></span>
+          <span class="ak-switch-label">🧠 دلالي</span>
+        </label>
         <input type="hidden" name="semantic" id="semantic_val" value="1">
       </div>
     </div>
@@ -198,18 +202,10 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-document.getElementById('semantic_toggle').addEventListener('click', function() {
-  var isOn = this.classList.contains('ak-mode-on');
-  var valInput = document.getElementById('semantic_val');
-  if (isOn) {
-    this.classList.replace('ak-mode-on', 'ak-mode-off');
-    this.textContent = '🔤 عادي';
-    valInput.value = '0';
-  } else {
-    this.classList.replace('ak-mode-off', 'ak-mode-on');
-    this.textContent = '🧠 دلالي';
-    valInput.value = '1';
-  }
+document.getElementById('semantic_toggle_cb').addEventListener('change', function() {
+  var on = this.checked;
+  document.getElementById('semantic_val').value = on ? '1' : '0';
+  document.querySelector('.ak-switch-label').textContent = on ? '🧠 دلالي' : '🔤 عادي';
 });
 </script>
 </body>

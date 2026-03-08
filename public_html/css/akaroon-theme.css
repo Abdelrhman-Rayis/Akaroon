@@ -476,38 +476,79 @@ body {
 }
 .ak-sidebar-btn:hover { background: var(--teal); }
 
-/* ── Search-mode toggle button ───────────────────────────── */
-.ak-mode-btn {
+/* ── Semantic search on/off switch ──────────────────────── */
+.ak-switch {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 5px 11px;
-  border-radius: 20px;
-  font-size: 0.78rem;
-  font-weight: 700;
+  gap: 7px;
   cursor: pointer;
-  border: 2px solid var(--teal-dark);
-  transition: background 0.2s, color 0.2s;
-  white-space: nowrap;
   user-select: none;
-  font-family: 'Tajawal', Arial, sans-serif;
-  line-height: 1.3;
+  vertical-align: middle;
+  white-space: nowrap;
 }
-.ak-mode-btn.ak-mode-on  { background: var(--teal-dark); color: #fff; }
-.ak-mode-btn.ak-mode-off { background: transparent;      color: var(--teal-dark); }
-.ak-mode-btn.ak-mode-on:hover  { background: var(--teal); border-color: var(--teal); }
-.ak-mode-btn.ak-mode-off:hover { background: #e4f4f1; }
+.ak-switch-input {          /* visually hidden, still functional */
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.ak-switch-track {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  background: #c0c0c0;
+  border-radius: 12px;
+  transition: background 0.22s;
+  flex-shrink: 0;
+}
+.ak-switch-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.28);
+  transition: left 0.22s;
+}
+.ak-switch-input:checked + .ak-switch-track              { background: var(--teal-dark); }
+.ak-switch-input:checked + .ak-switch-track .ak-switch-thumb { left: 21px; }
+.ak-switch-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--teal-dark);
+  font-family: 'Tajawal', Arial, sans-serif;
+  min-width: 4rem;
+  transition: color 0.2s;
+}
 
-/* search box: keep toggle aligned with input row */
+/* search box row: keep switch aligned right of input */
 .ak-search-box       { flex-wrap: wrap; gap: 0; }
 .ak-search-box-row   { display: flex; flex: 1; min-width: 0; }
-.ak-search-toggle-row { display: flex; align-items: center;
-                        padding: 0 0.6rem 0 0; gap: 0.4rem; }
+.ak-search-toggle-row {
+  display: flex;
+  align-items: center;
+  padding: 0.45rem 0.9rem;
+  border-top: 1px solid var(--warm-border);
+  width: 100%;
+  background: rgba(255,255,255,0.6);
+  border-radius: 0 0 8px 8px;
+  gap: 0.5rem;
+}
+.ak-search-toggle-row::before {
+  content: 'بحث دلالي:';
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-family: 'Tajawal', Arial, sans-serif;
+  margin-left: auto; /* pushes label to start in RTL */
+}
 
-/* sidebar: button + toggle side by side */
-.ak-sidebar-search-row { display: flex; gap: 0.4rem; margin-top: 0.5rem; align-items: stretch; }
+/* sidebar: button + switch side by side */
+.ak-sidebar-search-row { display: flex; gap: 0.5rem; margin-top: 0.5rem; align-items: center; }
 .ak-sidebar-search-row .ak-sidebar-btn { flex: 1; margin-top: 0; width: auto; }
-.ak-sidebar-search-row .ak-mode-btn    { flex-shrink: 0; padding: 6px 10px; }
+.ak-sidebar-search-row .ak-switch      { flex-shrink: 0; }
 
 /* ── Loading / empty states ──────────────────────────────── */
 .ak-loading, .ak-empty {
