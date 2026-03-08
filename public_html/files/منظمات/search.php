@@ -1,6 +1,7 @@
 <?php
 include('database_connection.php');
 ?>
+<?php $cssV = @filemtime(__DIR__ . '/../../css/akaroon-theme.css') ?: 1; ?>
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
@@ -8,7 +9,7 @@ include('database_connection.php');
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>منظمات — مكتبة عكارون</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
-  <link rel="stylesheet" href="../../css/akaroon-theme.css">
+  <link rel="stylesheet" href="../../css/akaroon-theme.css?v=<?= $cssV ?>">
 </head>
 <body>
 
