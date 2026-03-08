@@ -42,6 +42,10 @@ public_html/lib/ontology_lookup.php
 #     derivative and must NOT be distributed per the NoDerivatives clause) ────
 public_html/lib/qabas_lookup.php
 
+# ─── Lisan Sudanese data (CC-BY-4.0 — raw CSV OK to commit; generated lookup
+#     is auto-generated at Docker build time — gitignore to keep repo clean) ──
+public_html/lib/lisan_sudanese_lookup.php
+
 # ─── Server backup archives ───────────────────────────────────────────────────
 backup-*
 *.tar.gz

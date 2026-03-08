@@ -57,6 +57,15 @@ RUN php /tmp/build_qabas_lookup.php \
       /var/www/html/lib/qabas_lookup.php \
     && rm /tmp/Qabas-dataset.csv /tmp/build_qabas_lookup.php
 
+# Build Lisan Sudanese dialect→MSA lookup at image-build time.
+# CC-BY-4.0: raw CSV is committed to git; generated lookup kept out of repo.
+COPY sudanese/Lisan-Sudanese-dataset.csv /tmp/Lisan-Sudanese-dataset.csv
+COPY tools/build_lisan_sudanese_lookup.php /tmp/build_lisan_sudanese_lookup.php
+RUN php /tmp/build_lisan_sudanese_lookup.php \
+      /tmp/Lisan-Sudanese-dataset.csv \
+      /var/www/html/lib/lisan_sudanese_lookup.php \
+    && rm /tmp/Lisan-Sudanese-dataset.csv /tmp/build_lisan_sudanese_lookup.php
+
 # Override wp-config with Cloud Run / env-var-driven versions
 COPY docker/wp-config-cloud.php      blog/wp-config.php
 COPY docker/wp-config-library-cloud.php library/wp-config.php
