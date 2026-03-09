@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     libcurl4-openssl-dev \
     libonig-dev \
     libmagickwand-dev \
+    ghostscript \
     unzip \
     && docker-php-ext-configure gd \
         --with-freetype \
