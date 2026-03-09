@@ -399,10 +399,75 @@ gcloud logging read 'resource.type="cloud_run_revision" AND textPayload:"fix-men
 
 ---
 
+### Session: March 2026 (Semantic Search + Admin Upload + WP Plugin Repo)
+
+**Search UI fixes:**
+- `public_html/css/akaroon-theme.css` — Fixed iOS-style semantic toggle switch (3 bugs):
+  - `.ak-switch-track` needed `display: inline-block` (span ignores width/height when inline)
+  - `.ak-switch-input` replaced `opacity:0; width:0; height:0` with proper visually-hidden pattern (`clip:rect(0,0,0,0); appearance:none; width:1px; height:1px; margin:-1px`)
+  - `.ak-search-box-row` changed `flex:1` (collapses to 0px when toggle takes space) → `flex-basis:100%`
+- Added PHP `filemtime()` CSS cache-busting to all 9 pages (`index.php`, `ibrahimfinalsearch.php`, 7× `search.php`)
+
+**Qabas integration (CC-BY-ND-4.0, Layer 3 — root siblings):**
+- `tools/build_qabas_lookup.php` — NEW: converts Qabas-dataset.csv → `lib/qabas_lookup.php`
+  - 58,465 rows → 14,784 roots, 49,004 lemmas
+  - Normalises Arabic, removes spaces from roots, indexes multiple spellings
+- `Dockerfile` — added Qabas build step (copy CSV + script → run → delete)
+- `.gitignore` — added `lib/qabas_lookup.php` (CC-BY-ND: derivative not distributable)
+
+**Lisan Sudanese Corpus integration (CC-BY-4.0, Layer 1 — dialect bridging):**
+- `sudanese/` folder — NEW: committed Lisan Sudanese Dialect Corpus CSV (CC-BY-4.0 allows this)
+  - `Lisan-Sudanese-dataset.csv` (6.3MB, 52,616 rows)
+  - `Lisan-Sudanese RowText_sentences.csv`
+  - `ReadMe.pdf`, `license.pdf`, `tagset_translation.xlsx`
+- `tools/build_lisan_sudanese_lookup.php` — NEW: converts CSV → `lib/lisan_sudanese_lookup.php`
+  - 15,036 dialect→MSA entries + 9,697 English→MSA gloss entries
+  - Vote-based deduplication (most frequent MSA lemma wins per token)
+  - Skips identity mappings (dialect = MSA)
+- `Dockerfile` — added Lisan build step
+- `.gitignore` — added `lib/lisan_sudanese_lookup.php`
+
+**search_expand.php rewrite (all 3 layers):**
+- `public_html/lib/search_expand.php` — REWRITTEN with 3-layer expansion:
+  - Layer 1 (Lisan Sudanese, runs FIRST): dialect→MSA + English gloss→MSA
+  - Layer 2 (Arabic Ontology): synonym expansion (cap 10 terms)
+  - Layer 3 (Qabas root siblings): root-sibling expansion (cap 16 terms)
+  - MSA from Layer 1 is added to `$words[]` so Layers 2+3 expand it further
+  - All loaders use `static $data = null` OPcache-friendly lazy pattern
+
+**Admin upload portal:**
+- `public_html/admin/upload.php` — COMPLETE REWRITE:
+  - WordPress auth: `require_once wp-load.php` + `auth_redirect()` for non-admins
+  - Reads DB credentials from env vars (`DB_HOST`, `DB_USER`, `DB_PASSWORD`)
+  - Category map with 7 real table names: `['tas'=>'التأصيل', ...]`
+  - `nextId()` via `SELECT COALESCE(MAX(id), 0) + 1`
+  - GCS upload via Cloud Run metadata server token (no key files)
+  - Ghostscript cover auto-generation from PDF page 1
+  - Production mode: uploads PDF + JPG to GCS `files/{catFolder}/files/`
+  - Local dev mode: saves to `public_html/files/{catFolder}/files/`
+  - INSERT uses real column names from DB schema
+  - Bootstrap 5 RTL, earthy palette, bilingual Arabic/English UI
+  - Live next-ID badge via JS on category change
+  - Double-submit prevention
+
+**Ontology fact-check:**
+- Arabic Ontology actual size: 637 words, 2,285 synonym pairs (NOT ~50,000 as previously stated)
+
+**WordPress-based open-source version:**
+- New repo created: https://github.com/Abdelrhman-Rayis/akaroon-wp
+- Scaffolded with: CPT `akaroon_document`, taxonomy `akaroon_category`, ported 3-layer engine,
+  admin upload page, GCS adapter, [akaroon_search] + [akaroon_browse] shortcodes, build tools,
+  complete CLAUDE.md for new session context
+
+---
+
 ## 14. What To Work On Next (Backlog)
 
-- [ ] Replace professor avatar photo — user wants to update `public_html/img/professor.jpg` with a new photo (they kept trying to upload it via chat but the file wasn't accessible from the filesystem — ask them to save it to a local path first)
+- [ ] Replace professor avatar photo — user wants to update `public_html/img/professor.jpg` with a new photo (ask them to save it to a local path first)
 - [ ] Verify `development.akaroon.com` → 301 → Cloud Run flow works end-to-end in browser
 - [ ] Consider syncing Cloud Run DB with Softwex live DB so content stays in sync
 - [ ] The WordPress Library (`/library/`) has never been fully tested on Cloud Run
 - [ ] `akaroonproject/.DS_Store` keeps showing as modified — should probably add to `.gitignore`
+- [ ] Add Qabas + Lisan attribution text on the Akaroon site (CC-BY license requirement)
+- [ ] Commit and deploy everything from this session to Cloud Run (semantic search + upload portal)
+- [ ] **akaroon-wp repo**: WP-CLI migration command to import 2,094 records from original 7 MySQL tables
