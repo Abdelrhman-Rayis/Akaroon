@@ -141,6 +141,13 @@
           <span class="ak-cat-icon">📖</span>
           <div class="ak-cat-name">التأصيل</div>
           <div class="ak-cat-desc">التأصيل الإسلامي والفقه</div>
+          <div class="ak-cat-hover-info">
+            <div class="ak-cat-en">Islamic Foundations &amp; Jurisprudence</div>
+            <div class="ak-cat-tags">
+              <span>الفقه</span><span>الشريعة</span><span>العقيدة</span><span>التفسير</span><span>الحديث</span>
+            </div>
+            <div class="ak-cat-cta">تصفح الوثائق ←</div>
+          </div>
         </a>
       </div>
 
@@ -149,6 +156,13 @@
           <span class="ak-cat-icon">🎓</span>
           <div class="ak-cat-name">التعليم</div>
           <div class="ak-cat-desc">علوم التعليم والتربية</div>
+          <div class="ak-cat-hover-info">
+            <div class="ak-cat-en">Education &amp; Pedagogy</div>
+            <div class="ak-cat-tags">
+              <span>التربية</span><span>المناهج</span><span>الجامعات</span><span>التعليم العالي</span>
+            </div>
+            <div class="ak-cat-cta">تصفح الوثائق ←</div>
+          </div>
         </a>
       </div>
 
@@ -157,6 +171,13 @@
           <span class="ak-cat-icon">🏛️</span>
           <div class="ak-cat-name">الدولة</div>
           <div class="ak-cat-desc">الدولة والحكم والإدارة</div>
+          <div class="ak-cat-hover-info">
+            <div class="ak-cat-en">The State, Governance &amp; Administration</div>
+            <div class="ak-cat-tags">
+              <span>الحكم</span><span>السيادة</span><span>الإدارة</span><span>المؤسسات</span>
+            </div>
+            <div class="ak-cat-cta">تصفح الوثائق ←</div>
+          </div>
         </a>
       </div>
 
@@ -165,6 +186,13 @@
           <span class="ak-cat-icon">🌐</span>
           <div class="ak-cat-name">السياسة</div>
           <div class="ak-cat-desc">العلوم السياسية والعلاقات الدولية</div>
+          <div class="ak-cat-hover-info">
+            <div class="ak-cat-en">Political Science &amp; International Relations</div>
+            <div class="ak-cat-tags">
+              <span>الديمقراطية</span><span>الانتخابات</span><span>الأحزاب</span><span>الدبلوماسية</span>
+            </div>
+            <div class="ak-cat-cta">تصفح الوثائق ←</div>
+          </div>
         </a>
       </div>
 
@@ -173,6 +201,13 @@
           <span class="ak-cat-icon">💡</span>
           <div class="ak-cat-name">الفلسفة</div>
           <div class="ak-cat-desc">الفلسفة والفكر والمنطق</div>
+          <div class="ak-cat-hover-info">
+            <div class="ak-cat-en">Philosophy, Thought &amp; Logic</div>
+            <div class="ak-cat-tags">
+              <span>المنطق</span><span>الوجود</span><span>الأخلاق</span><span>الفكر العربي</span>
+            </div>
+            <div class="ak-cat-cta">تصفح الوثائق ←</div>
+          </div>
         </a>
       </div>
 
@@ -181,6 +216,13 @@
           <span class="ak-cat-icon">🏘️</span>
           <div class="ak-cat-name">المجتمع</div>
           <div class="ak-cat-desc">الاجتماع والثقافة والتراث</div>
+          <div class="ak-cat-hover-info">
+            <div class="ak-cat-en">Society, Culture &amp; Heritage</div>
+            <div class="ak-cat-tags">
+              <span>الثقافة</span><span>التراث</span><span>الأسرة</span><span>التنمية</span>
+            </div>
+            <div class="ak-cat-cta">تصفح الوثائق ←</div>
+          </div>
         </a>
       </div>
 
@@ -189,6 +231,13 @@
           <span class="ak-cat-icon">🏢</span>
           <div class="ak-cat-name">منظمات</div>
           <div class="ak-cat-desc">المنظمات والهيئات الدولية</div>
+          <div class="ak-cat-hover-info">
+            <div class="ak-cat-en">Organisations &amp; International Bodies</div>
+            <div class="ak-cat-tags">
+              <span>الاتحاد الأفريقي</span><span>الجامعة العربية</span><span>الأمم المتحدة</span>
+            </div>
+            <div class="ak-cat-cta">تصفح الوثائق ←</div>
+          </div>
         </a>
       </div>
 

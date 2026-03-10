@@ -353,22 +353,29 @@ body {
 .ak-cat-card {
   background: var(--white);
   border-radius: 12px;
-  padding: 2rem 1.5rem;
+  padding: 2rem 1.5rem 1.5rem;
   text-align: center;
   box-shadow: 0 1px 3px rgba(0,0,0,0.07);
   border: 1px solid var(--warm-border);
-  transition: all 0.22s;
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
   text-decoration: none;
   display: block;
   height: 100%;
+  overflow: hidden;
 }
 .ak-cat-card:hover {
   border-color: var(--teal);
-  transform: translateY(-5px);
-  box-shadow: 0 12px 32px rgba(11,61,56,0.14);
+  transform: translateY(-4px);
+  box-shadow: 0 14px 36px rgba(11,61,56,0.16);
   text-decoration: none;
 }
-.ak-cat-icon { font-size: 2.6rem; margin-bottom: 0.8rem; display: block; }
+.ak-cat-icon {
+  font-size: 2.6rem;
+  margin-bottom: 0.8rem;
+  display: block;
+  transition: transform 0.25s;
+}
+.ak-cat-card:hover .ak-cat-icon { transform: scale(1.15); }
 .ak-cat-name {
   font-size: 1.2rem;
   font-weight: 700;
@@ -376,6 +383,50 @@ body {
   margin-bottom: 0.35rem;
 }
 .ak-cat-desc { font-size: 0.84rem; color: var(--muted); }
+
+/* ── Hover-reveal info panel ─────────────────────────────── */
+.ak-cat-hover-info {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.28s ease, margin-top 0.28s ease;
+  margin-top: 0;
+}
+.ak-cat-card:hover .ak-cat-hover-info {
+  max-height: 160px;
+  opacity: 1;
+  margin-top: 1rem;
+}
+.ak-cat-en {
+  font-size: 0.78rem;
+  color: var(--teal);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.65rem;
+  text-transform: uppercase;
+}
+.ak-cat-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+}
+.ak-cat-tags span {
+  background: rgba(11,61,56,0.07);
+  color: var(--teal-dark);
+  border-radius: 20px;
+  padding: 0.18rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid rgba(11,61,56,0.12);
+}
+.ak-cat-cta {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--teal);
+  letter-spacing: 0.03em;
+}
 
 /* ── Category page header ───────────────────────────────── */
 .ak-page-header {
