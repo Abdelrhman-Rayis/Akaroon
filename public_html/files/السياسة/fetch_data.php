@@ -108,7 +108,7 @@ if(isset($_POST["action"]))
 	}
 	else
 	{
-		$output = (\$_POST['mode'] ?? '') === 'deep' ? '<div class="ak-empty col-12"><span class="ak-empty-icon">🔬</span><p>لا توجد نتائج في نص الوثائق — قد لا تكون بعض الوثائق مفهرسة بعد</p></div>' : '<div class="ak-empty col-12"><span class="ak-empty-icon">🔍</span><p>لا توجد نتائج</p></div>';
+		$output = ($_POST['mode'] ?? '') === 'deep' ? '<div class="ak-empty col-12"><span class="ak-empty-icon">🔬</span><p>لا توجد نتائج في نص الوثائق — قد لا تكون بعض الوثائق مفهرسة بعد</p></div>' : '<div class="ak-empty col-12"><span class="ak-empty-icon">🔍</span><p>لا توجد نتائج</p></div>';
 	}
 	echo $output;
 }
