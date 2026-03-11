@@ -491,6 +491,42 @@ gcloud logging read 'resource.type="cloud_run_revision" AND textPayload:"fix-men
 
 ---
 
+### Session: March 2026 (OCR Snippets + Pipeline Fix)
+
+**OCR snippet feature (عميق mode):**
+- `public_html/css/akaroon-theme.css` — added `.ak-ocr-snippet` (small RTL text, top border) and `.ak-ocr-snippet mark` (yellow highlight, bold) CSS classes
+- All 7 `public_html/files/*/fetch_data.php` — added `makeSnippet()` function:
+  - Strips YAML frontmatter via regex, collapses whitespace
+  - Finds keyword with `mb_stripos` (Arabic-safe), extracts ±160-char window
+  - `htmlspecialchars` then wraps keyword in `<mark>` tags
+  - Returns "…" ellipsis at clip boundaries
+  - Added `$snippet_term = isset($norm) ? $norm : ''` before card loop
+  - Injected `<div class="ak-ocr-snippet">` conditionally after `ak-card-meta` (only in deep mode, only if `ocr_text` non-empty)
+- Committed as `dff9263`, Cloud Build SUCCESS
+- Verified: curl test → 85 snippet divs for `search_text=تعليم&mode=deep` on Cloud Run; keyword highlighted in OCR text
+
+**Bugs fixed (from prior session deployment):**
+- All 7 `fetch_data.php` — `\$_POST` backslash escape bug on empty-state message (PHP parse error → stuck spinner); fixed with sed + committed `d8c46af`
+- `public_html/lib/search_expand.php` — `buildRelevanceScore()` function was added locally but never committed; caused `Call to undefined function` on Cloud Run; fixed by committing `582aa1a`
+
+**OCR pipeline — منظمات fix:**
+- Root cause: `CATEGORIES` dict in `tools/ocr_pipeline.py` had `'org': 'المنظمات'` but GCS/local folder is `منظمات` (no "ال" prefix)
+- All 511 منظمات docs failed with "File could not be fetched" (wrong GCS URL constructed)
+- Fix: `tools/ocr_pipeline.py` `'org': 'منظمات'` — one character change
+- Re-ran pipeline: `nohup tools/.venv/bin/python3 tools/ocr_pipeline.py --category org --skip-embedding >> ocr_pipeline.log 2>&1 &`
+- Pipeline confirmed working (org#1 HTTP 200, GCS OK at `gs://akaroon-media/ocr/منظمات/1.md`, DB OK)
+
+**OCR pipeline — overall status (6 of 7 categories complete):**
+- التأصيل: 307/315 OCR files on GCS (8 failed: IDs 173, 276 × 2 runs)
+- التعليم: 402/480 OCR files on GCS (7 failed: IDs 19, 21, 204, 206, 261, 600, 6001 — likely corrupt/missing PDFs)
+- الفلسفة: 173/196 OCR files on GCS (0 failures)
+- السياسة: 180/186 OCR files on GCS (1 failed: ID 34)
+- المجتمع: 166/183 OCR files on GCS (0 failures)
+- الدولة: 346/358 OCR files on GCS (0 failures)
+- منظمات: 0/511 → **re-running now** (pipeline PID 31721, `--skip-embedding`)
+
+---
+
 ## 14. What To Work On Next (Backlog)
 
 - [ ] Replace professor avatar photo — user wants to update `public_html/img/professor.jpg` with a new photo (ask them to save it to a local path first)
@@ -500,6 +536,10 @@ gcloud logging read 'resource.type="cloud_run_revision" AND textPayload:"fix-men
 - [ ] `akaroonproject/.DS_Store` keeps showing as modified — should probably add to `.gitignore`
 - [ ] Add Qabas + Lisan attribution text on the Akaroon site (CC-BY license requirement)
 - [x] Commit and deploy everything from this session to Cloud Run (semantic search + upload portal)
-- [ ] Complete OCR pipeline run (at 10% when last committed — `tools/.venv/bin/python3 tools/ocr_pipeline.py --progress` to check)
-- [ ] Re-run pipeline for any failed/skipped docs: `tools/.venv/bin/python3 tools/ocr_pipeline.py --ids <id1,id2,...>`
+- [x] OCR snippet highlighting in عميق mode — deployed, verified on Cloud Run
+- [ ] **منظمات pipeline**: Wait for completion (~511 docs, running as PID 31721); verify with `tail -f ocr_pipeline.log`
+- [ ] Re-run failed OCR docs after منظمات completes:
+  - `tools/.venv/bin/python3 tools/ocr_pipeline.py --category tas --ids 173,276`
+  - `tools/.venv/bin/python3 tools/ocr_pipeline.py --category edu --ids 19,21,204,206,261,600,6001`
+  - `tools/.venv/bin/python3 tools/ocr_pipeline.py --category pol --ids 34`
 - [ ] **akaroon-wp repo**: WP-CLI migration command to import 2,094 records from original 7 MySQL tables

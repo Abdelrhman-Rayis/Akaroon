@@ -102,7 +102,7 @@ CATEGORIES: dict[str, str] = {
     'pol':   'السياسة',
     'soc':   'المجتمع',
     'state': 'الدولة',
-    'org':   'المنظمات',
+    'org':   'منظمات',
 }
 
 GCS_BUCKET      = 'akaroon-media'
