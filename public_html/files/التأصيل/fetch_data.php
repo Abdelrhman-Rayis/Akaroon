@@ -10,6 +10,7 @@ $_media_base = rtrim(getenv('MEDIA_BASE_URL') ?: '', '/');
 $_category   = basename(__DIR__);  // e.g. 'التأصيل'
 $_img_base   = $_media_base ? "{$_media_base}/files/{$_category}/image" : 'image';
 $_pdf_base   = $_media_base ? "{$_media_base}/files/{$_category}/files" : 'files';
+$_ocr_base   = $_media_base ? "{$_media_base}/ocr/{$_category}"        : null;
 
 
 /* ── Arabic-aware search normalization ─────────────────── */
@@ -135,7 +136,13 @@ if(isset($_POST["action"]))
 						</div>
 					</div>
 				'. ($mode === 'deep' && !empty($row['ocr_text'])
-					? '<div class="ak-ocr-snippet"><span class="ak-ocr-label">🔬 من نص الوثيقة</span>' . makeSnippet($row['ocr_text'], $snippet_term) . '</div>'
+					? '<div class="ak-ocr-snippet">'
+				  . '<div class="ak-ocr-header">'
+				  . '<span class="ak-ocr-label">🔬 من نص الوثيقة</span>'
+				  . ($_ocr_base ? '<a href="' . htmlspecialchars("{$_ocr_base}/{$row['id']}.md", ENT_QUOTES, 'UTF-8') . '" target="_blank" class="ak-ocr-dl" title="تحميل ملف النص">⬇ النص الكامل</a>' : '')
+				  . '</div>'
+				  . makeSnippet($row['ocr_text'], $snippet_term)
+				  . '</div>'
 					: '') .'
 				</div>
 			</div>

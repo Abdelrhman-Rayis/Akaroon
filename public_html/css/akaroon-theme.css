@@ -364,13 +364,34 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+.ak-ocr-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  direction: rtl;
+  margin-bottom: 6px;
+}
 .ak-ocr-label {
-  display: block;
   font-size: 0.68rem;
   font-weight: 700;
   color: var(--teal-mid);
   letter-spacing: 0.04em;
-  margin-bottom: 5px;
+}
+.ak-ocr-dl {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--teal);
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 2px 7px;
+  border: 1px solid var(--teal-light);
+  border-radius: 10px;
+  transition: background 0.15s, color 0.15s;
+}
+.ak-ocr-dl:hover {
+  background: var(--teal);
+  color: var(--white);
+  border-color: var(--teal);
 }
 .ak-ocr-snippet mark {
   background: #FFE082;
