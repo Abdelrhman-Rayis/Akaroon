@@ -704,9 +704,9 @@ body {
   align-items: center;
   justify-content: center;
   padding: 0.6rem 1.2rem;
-  border-top: 1px solid rgba(11,61,56,0.08);
+  border-top: 1px solid rgba(201,132,26,0.15);
   width: 100%;
-  background: rgba(241,248,247,0.98);
+  background: rgba(253,246,236,0.98);
   border-radius: 0 0 10px 10px;
   gap: 0.65rem;
 }
@@ -722,27 +722,27 @@ body {
   display: inline-flex;
   border-radius: 7px;
   overflow: hidden;
-  border: 1.5px solid var(--teal);
+  border: 1.5px solid #C9841A;
   flex-shrink: 0;
 }
 .ak-mode-btn {
   background: transparent;
   border: none;
-  border-right: 1px solid var(--teal);
+  border-right: 1px solid rgba(201,132,26,0.4);
   padding: 5px 12px;
   font-size: 0.82rem;
   font-family: 'Tajawal', Arial, sans-serif;
   font-weight: 700;
-  color: var(--teal-dark);
+  color: #4A2C0A;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
   white-space: nowrap;
   line-height: 1.5;
 }
 .ak-mode-btn:last-child  { border-right: none; }
-.ak-mode-btn:hover       { background: rgba(26,107,99,0.09); }
+.ak-mode-btn:hover       { background: rgba(201,132,26,0.1); }
 .ak-mode-btn.ak-mode-active {
-  background: var(--teal);
+  background: #C9841A;
   color: #fff;
 }
 
@@ -757,7 +757,7 @@ body {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: var(--teal);
+  background: #C9841A;
   color: #fff;
   font-size: 11px;
   font-weight: 700;
@@ -771,7 +771,7 @@ body {
   outline: none;
 }
 .ak-info-icon:hover,
-.ak-info-icon:focus { background: var(--teal-dark); }
+.ak-info-icon:focus { background: #A96E14; }
 
 /* Tooltip popup — appended to <body> by JS so it escapes overflow */
 .ak-tooltip-popup {
