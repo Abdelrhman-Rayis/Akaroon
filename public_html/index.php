@@ -132,9 +132,10 @@
 </section>
 
 <!-- ── Categories grid ──────────────────────────────── -->
-<section style="padding: 3rem 0; background: var(--cream);">
+<section style="padding: 4rem 0 4.5rem; background: var(--warm-white);">
   <div class="container">
-    <h3 class="text-center mb-4" style="color:var(--brown); font-weight:700;">تصفح حسب التصنيف</h3>
+    <h3 class="ak-section-title">تصفح حسب التصنيف</h3>
+    <p class="ak-section-subtitle">استكشف أكثر من ألفَي وثيقة بحثية وكتاب عبر التصنيفات الأكاديمية السبعة</p>
     <div class="row g-4">
 
       <div class="col-md-4 col-sm-6">
