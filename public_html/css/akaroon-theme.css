@@ -277,11 +277,44 @@ body {
 .ak-count-loading { color: var(--muted); }
 .ak-cat-progress-text { opacity: 0.6; font-size: 0.85em; }
 
+/* ── Skeleton shimmer cards ─────────────────────────────── */
+@keyframes ak-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.ak-skeleton-card {
+  border-radius: 10px;
+  height: 260px;
+  background: linear-gradient(90deg, #ede8df 25%, #e4ddd2 38%, #ede8df 63%);
+  background-size: 200% 100%;
+  animation: ak-shimmer 1.6s ease-in-out infinite;
+}
+.ak-skeleton-label {
+  display: inline-block;
+  width: 80px;
+  height: 18px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #ede8df 25%, #e4ddd2 38%, #ede8df 63%);
+  background-size: 200% 100%;
+  animation: ak-shimmer 1.6s ease-in-out infinite;
+}
+.ak-skeleton-badge {
+  display: inline-block;
+  width: 56px;
+  height: 18px;
+  border-radius: 20px;
+  background: linear-gradient(90deg, #e4f4f1 25%, #d1ebe6 38%, #e4f4f1 63%);
+  background-size: 200% 100%;
+  animation: ak-shimmer 1.6s ease-in-out infinite;
+}
+.ak-cat-results-section.ak-cat-hidden { display: none; }
+
 /* ── Progressive category result sections ───────────────── */
 .ak-cat-results-section {
   margin-bottom: 3rem;
   padding-bottom: 2.5rem;
   border-bottom: 1px solid var(--warm-border);
+  transition: opacity 0.35s ease;
 }
 .ak-cat-results-section:last-child { border-bottom: none; margin-bottom: 0; }
 

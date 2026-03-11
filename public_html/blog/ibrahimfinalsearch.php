@@ -227,19 +227,48 @@ $term_safe   = htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8');
     countTextEl.parentNode.appendChild(hint);
   }
 
-  function appendCategorySection(cat, data) {
+  // ── Step 1: Create skeleton sections immediately ──────────
+  var sectionMap = {};  // key → DOM node
+  CATEGORIES.forEach(function (cat) {
+    var el = document.createElement('div');
+    el.className = 'ak-cat-results-section';
+    el.setAttribute('data-cat', cat.key);
+    el.setAttribute('data-rel', '0');
+    el.innerHTML =
+      '<div class="ak-cat-results-header">' +
+        '<span class="ak-skeleton-label"></span> ' +
+        '<span class="ak-skeleton-badge"></span>' +
+      '</div>' +
+      '<div class="row g-4">' +
+        '<div class="col-lg-3 col-md-4 col-sm-6"><div class="ak-skeleton-card"></div></div>' +
+        '<div class="col-lg-3 col-md-4 col-sm-6"><div class="ak-skeleton-card"></div></div>' +
+        '<div class="col-lg-3 col-md-4 col-sm-6"><div class="ak-skeleton-card"></div></div>' +
+        '<div class="col-lg-3 col-md-4 col-sm-6"><div class="ak-skeleton-card"></div></div>' +
+      '</div>';
+    streamEl.appendChild(el);
+    sectionMap[cat.key] = el;
+  });
+
+  // ── Step 2: Replace skeleton with real cards as each AJAX returns ──
+  function fillSection(cat, data) {
+    var el = sectionMap[cat.key];
+    if (data.count === 0) {
+      el.classList.add('ak-cat-hidden');
+      return;
+    }
     var searchUrl = '/files/' + encodeURIComponent(cat.folder) + '/search.php' +
                     '?search=' + encodeURIComponent(SEARCH_TERM) +
                     '&search_btn=1&mode=' + encodeURIComponent(SEARCH_MODE);
     var showAllLink = (data.total_in_cat > 12)
       ? '<a href="' + searchUrl + '" class="ak-cat-more-link">' +
-          'عرض الكل (' + data.total_in_cat + ') ←' +
-        '</a>'
+          'عرض الكل (' + data.total_in_cat + ') ←</a>'
       : '';
 
-    var section = document.createElement('div');
-    section.className = 'ak-cat-results-section';
-    section.innerHTML =
+    // Combined relevance: max_rel weighs quality, total_in_cat weighs quantity
+    var relScore = (data.max_rel || 0) * 1000 + (data.total_in_cat || 0);
+    el.setAttribute('data-rel', String(relScore));
+    el.style.opacity = '0.4';
+    el.innerHTML =
       '<div class="ak-cat-results-header">' +
         '<h5>' + escHtml(cat.label) + '</h5>' +
         '<span class="ak-cat-count-badge">' + data.count + ' نتيجة</span>' +
@@ -247,18 +276,24 @@ $term_safe   = htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8');
       '</div>' +
       '<div class="row g-4">' + data.html + '</div>';
 
-    // Fade-in on insert
-    section.style.opacity = '0';
-    section.style.transform = 'translateY(8px)';
-    streamEl.appendChild(section);
     requestAnimationFrame(function () {
-      section.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
-      section.style.opacity    = '1';
-      section.style.transform  = 'translateY(0)';
+      el.style.opacity = '1';
     });
   }
 
-  // Fire all 7 requests in parallel
+  // ── Step 3: Re-sort all sections by relevance once all 7 are done ──
+  function sortByRelevance() {
+    var sections = Array.from(streamEl.querySelectorAll('.ak-cat-results-section:not(.ak-cat-hidden)'));
+    sections.sort(function (a, b) {
+      return parseInt(b.getAttribute('data-rel') || '0') - parseInt(a.getAttribute('data-rel') || '0');
+    });
+    // Remove hidden (0-result) skeletons entirely
+    streamEl.querySelectorAll('.ak-cat-hidden').forEach(function (el) { el.remove(); });
+    // Re-append visible sections in relevance order
+    sections.forEach(function (s) { streamEl.appendChild(s); });
+  }
+
+  // ── Step 4: Fire all 7 requests in parallel ─────────────────
   CATEGORIES.forEach(function (cat) {
     var body = new URLSearchParams({
       search:   SEARCH_TERM,
@@ -276,14 +311,17 @@ $term_safe   = htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8');
       doneCount++;
       if (data.count > 0) {
         totalFound += data.count;
-        appendCategorySection(cat, data);
         appendSynonyms(data.expanded);
       }
+      fillSection(cat, data);
       updateCounter();
+      if (doneCount === CATEGORIES.length) sortByRelevance();
     })
     .catch(function () {
       doneCount++;
+      sectionMap[cat.key].classList.add('ak-cat-hidden');
       updateCounter();
+      if (doneCount === CATEGORIES.length) sortByRelevance();
     });
   });
 

@@ -191,9 +191,13 @@ foreach ($results as $row) {
 }
 $html = ob_get_clean();
 
+// Top relevance score (first row, since ORDER BY _rel DESC)
+$max_rel = (!empty($results) && isset($results[0]['_rel'])) ? (float)$results[0]['_rel'] : 0;
+
 echo json_encode([
     'count'       => count($results),
     'total_in_cat'=> $total_in_cat,
+    'max_rel'     => $max_rel,
     'html'        => $html,
     'expanded'    => $expanded_terms,
     'cat_label'   => $cat['label'],
