@@ -238,6 +238,38 @@ if (isset($_GET['search_btn'])) {
     if (lbl) lbl.textContent = on ? '🧠 دلالي' : '🔤 عادي';
   });
 })();
+(function() {
+  var TIP_ON  = '🧠 البحث الدلالي: يوسّع بحثك تلقائياً ليشمل الجذور اللغوية والمرادفات واللهجة السودانية';
+  var TIP_OFF = '🔤 البحث العادي: بحث مباشر بالنص المُدخَل فقط دون توسيع';
+  var popup = null;
+  var icons = document.querySelectorAll('.ak-info-icon');
+  var cb    = document.getElementById('semantic_toggle_cb');
+  function updateTips() {
+    var tip = cb && cb.checked ? TIP_ON : TIP_OFF;
+    icons.forEach(function(i) { i.setAttribute('data-tip', tip); });
+  }
+  function showTip(icon) {
+    hideTip();
+    popup = document.createElement('div');
+    popup.className = 'ak-tooltip-popup';
+    popup.textContent = icon.getAttribute('data-tip');
+    document.body.appendChild(popup);
+    var r    = icon.getBoundingClientRect();
+    var top  = r.bottom + window.scrollY + 8;
+    var left = r.left + window.scrollX + r.width / 2 - popup.offsetWidth / 2;
+    left = Math.max(8, Math.min(left, window.innerWidth - popup.offsetWidth - 8));
+    popup.style.top  = top + 'px';
+    popup.style.left = left + 'px';
+  }
+  function hideTip() { if (popup) { popup.remove(); popup = null; } }
+  icons.forEach(function(icon) {
+    icon.addEventListener('mouseenter', function() { showTip(icon); });
+    icon.addEventListener('mouseleave', hideTip);
+    icon.addEventListener('focus',      function() { showTip(icon); });
+    icon.addEventListener('blur',       hideTip);
+  });
+  if (cb) { updateTips(); cb.addEventListener('change', updateTips); }
+})();
 </script>
 </body>
 </html>
