@@ -48,6 +48,32 @@ $total_rows     = 0;
 $search_term    = '';
 $expanded_terms = [];
 
+/* ── OCR snippet extractor for عميق mode ─────────────────── */
+function makeSnippet(string $ocr, string $term, int $radius = 160): string {
+    if (empty($ocr) || empty($term)) return '';
+    $sepPos = mb_strpos($ocr, "\n---\n", 0, 'UTF-8');
+    $text   = ($sepPos !== false)
+            ? trim(mb_substr($ocr, $sepPos + 5, null, 'UTF-8'))
+            : $ocr;
+    if (empty($text)) $text = $ocr;
+    $text = trim(preg_replace('/\s+/u', ' ', $text));
+    $pos = mb_stripos($text, $term, 0, 'UTF-8');
+    if ($pos === false) {
+        return mb_substr($text, 0, $radius * 2, 'UTF-8') . '…';
+    }
+    $termLen = mb_strlen($term, 'UTF-8');
+    $total   = mb_strlen($text, 'UTF-8');
+    $start   = max(0, $pos - $radius);
+    $end     = min($total, $pos + $termLen + $radius);
+    $snippet = ($start > 0 ? '…' : '')
+             . mb_substr($text, $start, $end - $start, 'UTF-8')
+             . ($end < $total ? '…' : '');
+    $snippet = htmlspecialchars($snippet, ENT_QUOTES, 'UTF-8');
+    $pat     = '/' . preg_quote(htmlspecialchars($term, ENT_QUOTES, 'UTF-8'), '/') . '/ui';
+    $snippet = preg_replace($pat, '<mark>$0</mark>', $snippet);
+    return $snippet;
+}
+
 // Search mode: normal | semantic (default) | deep
 $mode = $_GET['mode'] ?? 'semantic';
 
@@ -213,6 +239,18 @@ if (isset($_GET['search_btn'])) {
               <div>📅 <?= $year ?></div>
               <?php if ($field): ?><div>🔬 <?= $field ?></div><?php endif; ?>
             </div>
+            <?php if ($mode === 'deep' && !empty($row['ocr_text'])): ?>
+              <?php $_ocr_dl = $_media_base ? "{$_media_base}/ocr/{$row['Category']}/{$id}.md" : ''; ?>
+              <div class="ak-ocr-snippet">
+                <div class="ak-ocr-header">
+                  <span class="ak-ocr-label">🔬 من نص الوثيقة</span>
+                  <?php if ($_ocr_dl): ?>
+                    <a href="<?= htmlspecialchars($_ocr_dl, ENT_QUOTES, 'UTF-8') ?>" target="_blank" class="ak-ocr-dl" title="تحميل ملف النص">⬇ النص الكامل</a>
+                  <?php endif; ?>
+                </div>
+                <?= makeSnippet($row['ocr_text'], $norm) ?>
+              </div>
+            <?php endif; ?>
           </div>
         </div>
       </div>
