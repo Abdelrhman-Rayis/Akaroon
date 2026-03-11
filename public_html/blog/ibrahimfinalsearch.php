@@ -180,16 +180,22 @@ if (isset($_GET['search_btn'])) {
 <?php else: ?>
 
 <div class="ak-results-header">
-  <form action="" method="get" style="display:flex;align-items:center;gap:0.5rem;flex:1;flex-wrap:wrap;">
-    <button type="submit" name="search_btn">بحث</button>
-    <input type="text" name="search" value="<?= htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8') ?>" autocomplete="off" style="flex:1;min-width:120px;">
-    <div class="ak-mode-seg" style="margin:0 0.3rem;">
-      <button type="button" class="ak-mode-btn <?= $mode === 'normal'   ? 'ak-mode-active' : '' ?>" data-mode="normal">🔤 عادي</button>
-      <button type="button" class="ak-mode-btn <?= $mode === 'semantic' ? 'ak-mode-active' : '' ?>" data-mode="semantic">🧠 دلالي</button>
-      <button type="button" class="ak-mode-btn <?= $mode === 'deep'     ? 'ak-mode-active' : '' ?>" data-mode="deep">🔬 عميق</button>
+  <form action="" method="get">
+    <div class="ak-search-box">
+      <div class="ak-search-box-row">
+        <button type="submit" name="search_btn">بحث</button>
+        <input type="text" name="search" value="<?= htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8') ?>" autocomplete="off">
+      </div>
+      <div class="ak-search-toggle-row">
+        <div class="ak-mode-seg">
+          <button type="button" class="ak-mode-btn <?= $mode === 'normal'   ? 'ak-mode-active' : '' ?>" data-mode="normal">🔤 عادي</button>
+          <button type="button" class="ak-mode-btn <?= $mode === 'semantic' ? 'ak-mode-active' : '' ?>" data-mode="semantic">🧠 دلالي</button>
+          <button type="button" class="ak-mode-btn <?= $mode === 'deep'     ? 'ak-mode-active' : '' ?>" data-mode="deep">🔬 عميق</button>
+        </div>
+        <input type="hidden" name="mode" id="mode_val" value="<?= htmlspecialchars($mode, ENT_QUOTES, 'UTF-8') ?>">
+        <span class="ak-info-icon" tabindex="0" data-tip="🔤 عادي: بحث مباشر • 🧠 دلالي: يوسّع بالجذور والمرادفات • 🔬 عميق: يبحث داخل نص الوثيقة كاملاً">i</span>
+      </div>
     </div>
-    <span class="ak-info-icon" tabindex="0" data-tip="🔤 عادي: بحث مباشر • 🧠 دلالي: يوسّع بالجذور والمرادفات • 🔬 عميق: يبحث داخل نص الوثيقة كاملاً">i</span>
-    <input type="hidden" name="mode" id="mode_val" value="<?= htmlspecialchars($mode, ENT_QUOTES, 'UTF-8') ?>">
   </form>
   <div class="ak-result-count">
     تم العثور على <strong><?= $total_rows ?></strong> نتيجة

@@ -208,7 +208,7 @@ body {
   border-bottom: 3px solid var(--teal-dark);
   padding: 0.9rem 1.5rem;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1.2rem;
   flex-wrap: wrap;
   position: sticky;
@@ -217,35 +217,25 @@ body {
   box-shadow: 0 2px 6px rgba(0,0,0,0.06);
 }
 .ak-results-header form {
-  display: flex;
   flex: 1;
   min-width: 200px;
   max-width: 480px;
-  border-radius: 6px;
-  overflow: hidden;
-  border: 1.5px solid var(--warm-border);
 }
-.ak-results-header input[type="text"] {
-  flex: 1;
+/* Compact search box inside results header */
+.ak-results-header .ak-search-box {
+  margin: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 0 0 1px var(--warm-border);
+}
+.ak-results-header .ak-search-box-row input[type="text"] {
   padding: 0.5rem 0.9rem;
-  font-family: 'Tajawal', Arial, sans-serif;
   font-size: 0.95rem;
-  border: none;
-  direction: rtl;
-  outline: none;
-  background: var(--white);
 }
-.ak-results-header button {
+.ak-results-header .ak-search-box-row button {
   background: var(--teal-dark);
-  color: #fff;
-  border: none;
   padding: 0.5rem 1rem;
-  font-family: 'Tajawal', Arial, sans-serif;
   font-size: 0.9rem;
-  cursor: pointer;
-  transition: background 0.2s;
 }
-.ak-results-header button:hover { background: var(--teal); }
+.ak-results-header .ak-search-box-row button:hover { background: var(--teal); }
 
 .ak-result-count {
   font-size: 0.95rem;
