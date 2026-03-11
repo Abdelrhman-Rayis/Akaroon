@@ -33,21 +33,26 @@ function sqlNorm($f) {
 /* ── OCR snippet extractor for عميق mode ─────────────────── */
 function makeSnippet(string $ocr, string $term, int $radius = 160): string {
 	if (empty($ocr) || empty($term)) return '';
-	// Strip YAML frontmatter
-	$ocr = preg_replace('/^---[\s\S]*?---\n/m', '', $ocr);
+	// Split metadata header from OCR body at '\n---\n' separator
+	// Always show OCR body — metadata is already visible in the card above
+	$sepPos = mb_strpos($ocr, "\n---\n", 0, 'UTF-8');
+	$text   = ($sepPos !== false)
+	        ? trim(mb_substr($ocr, $sepPos + 5, null, 'UTF-8'))
+	        : $ocr;
+	if (empty($text)) $text = $ocr;
 	// Collapse whitespace
-	$ocr = trim(preg_replace('/\s+/u', ' ', $ocr));
-	// Find keyword position
-	$pos = mb_stripos($ocr, $term, 0, 'UTF-8');
+	$text = trim(preg_replace('/\s+/u', ' ', $text));
+	// Find keyword in OCR body; if absent show opening of body
+	$pos = mb_stripos($text, $term, 0, 'UTF-8');
 	if ($pos === false) {
-		return mb_substr($ocr, 0, $radius * 2, 'UTF-8') . '…';
+		return mb_substr($text, 0, $radius * 2, 'UTF-8') . '…';
 	}
 	$termLen = mb_strlen($term, 'UTF-8');
-	$total   = mb_strlen($ocr, 'UTF-8');
+	$total   = mb_strlen($text, 'UTF-8');
 	$start   = max(0, $pos - $radius);
 	$end     = min($total, $pos + $termLen + $radius);
 	$snippet = ($start > 0 ? '…' : '')
-	         . mb_substr($ocr, $start, $end - $start, 'UTF-8')
+	         . mb_substr($text, $start, $end - $start, 'UTF-8')
 	         . ($end < $total ? '…' : '');
 	// Escape HTML, then wrap keyword in <mark>
 	$snippet = htmlspecialchars($snippet, ENT_QUOTES, 'UTF-8');
