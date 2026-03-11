@@ -130,7 +130,7 @@ if(isset($_POST["action"]))
 						</div>
 					</div>
 				'. ($mode === 'deep' && !empty($row['ocr_text'])
-					? '<div class="ak-ocr-snippet">' . makeSnippet($row['ocr_text'], $snippet_term) . '</div>'
+					? '<div class="ak-ocr-snippet"><span class="ak-ocr-label">🔬 من نص الوثيقة</span>' . makeSnippet($row['ocr_text'], $snippet_term) . '</div>'
 					: '') .'
 				</div>
 			</div>

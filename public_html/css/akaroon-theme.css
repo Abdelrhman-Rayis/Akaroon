@@ -351,21 +351,33 @@ body {
 
 /* ── OCR snippet (عميق mode) ────────────────────────────── */
 .ak-ocr-snippet {
-  font-size: 0.8rem;
-  color: var(--text-mid);
-  line-height: 1.7;
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid var(--warm-border);
+  background: var(--teal-pale);
+  border-top: 2px solid var(--teal-light);
+  padding: 10px 14px 13px;
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 2;
   direction: rtl;
   text-align: right;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ak-ocr-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--teal-mid);
+  letter-spacing: 0.04em;
+  margin-bottom: 5px;
 }
 .ak-ocr-snippet mark {
-  background: #fff176;
-  color: inherit;
-  border-radius: 2px;
-  padding: 0 2px;
-  font-weight: 600;
+  background: #FFE082;
+  color: #3E2000;
+  border-radius: 3px;
+  padding: 1px 4px;
+  font-weight: 700;
 }
 
 /* ── Category landing cards ─────────────────────────────── */
