@@ -171,3 +171,53 @@ function buildLikeClause(string $nc, array $terms, $db, string $dbType = 'mysqli
     }
     return implode(' OR ', $clauses);
 }
+
+/**
+ * Build a SQL relevance score expression for ORDER BY.
+ *
+ * Scoring weights (terms[0] = original query, highest relevance):
+ *   Original in title   = 10 pts
+ *   Original in keywords = 5 pts
+ *   Original in any field = 3 pts
+ *   Expanded term in title = 2 pts each
+ *   Expanded term in any field = 1 pt each
+ *
+ * @param  string[]     $terms      Array from expandQuery() — terms[0] is original
+ * @param  object       $db         mysqli or PDO instance
+ * @param  string       $dbType     'mysqli' or 'pdo'
+ * @param  string       $nc         Normalised CONCAT of all fields
+ * @param  string|null  $normTitle  Normalised title SQL expression (optional, adds weight)
+ * @param  string|null  $normKw     Normalised keywords SQL expression (optional, adds weight)
+ * @return string                   SQL expression returning an integer score
+ */
+function buildRelevanceScore(array $terms, $db, string $dbType, string $nc,
+                             ?string $normTitle = null, ?string $normKw = null): string
+{
+    if (empty($terms)) return '0';
+
+    // Helper: build a LIKE expression for a given SQL column expr and search term
+    $like = function(string $expr, string $term) use ($db, $dbType): string {
+        if ($dbType === 'mysqli') {
+            $e = $db->real_escape_string($term);
+            return "$expr LIKE '%{$e}%'";
+        }
+        $q = $db->quote('%' . $term . '%');
+        return "$expr LIKE {$q}";
+    };
+
+    $parts = [];
+
+    // terms[0] = original query: title=10, keywords=5, any-field=3
+    $t0 = $terms[0];
+    if ($normTitle !== null) $parts[] = "IF({$like($normTitle, $t0)}, 10, 0)";
+    if ($normKw    !== null) $parts[] = "IF({$like($normKw,    $t0)},  5, 0)";
+    $parts[] = "IF({$like($nc, $t0)}, 3, 0)";
+
+    // Expanded terms (layers 1-3): title=2, any-field=1
+    foreach (array_slice($terms, 1) as $term) {
+        if ($normTitle !== null) $parts[] = "IF({$like($normTitle, $term)}, 2, 0)";
+        $parts[] = "IF({$like($nc, $term)}, 1, 0)";
+    }
+
+    return '(' . implode(' + ', $parts) . ')';
+}
