@@ -129,6 +129,7 @@ if (isset($_GET['search_btn'])) {
           <span class="ak-switch-track"><span class="ak-switch-thumb"></span></span>
           <span class="ak-switch-label"><?= $toggle_label ?></span>
         </label>
+        <span class="ak-info-icon" tabindex="0" data-tip="🧠 دلالي: يوسّع البحث تلقائياً ليشمل الجذور اللغوية والمرادفات واللهجة السودانية • 🔤 عادي: بحث نصي مباشر بالكلمة المُدخَلة فقط">i</span>
         <input type="hidden" name="semantic" id="semantic_val" value="<?= $toggle_val ?>">
       </div>
     </div>
@@ -152,7 +153,8 @@ if (isset($_GET['search_btn'])) {
       <span class="ak-switch-track"><span class="ak-switch-thumb"></span></span>
       <span class="ak-switch-label"><?= $toggle_label ?></span>
     </label>
-    <input type="hidden" name="semantic" id="semantic_val" value="<?= $toggle_val ?>">
+    <span class="ak-info-icon" tabindex="0" data-tip="🧠 دلالي: يوسّع البحث تلقائياً ليشمل الجذور اللغوية والمرادفات واللهجة السودانية • 🔤 عادي: بحث نصي مباشر بالكلمة المُدخَلة فقط">i</span>
+        <input type="hidden" name="semantic" id="semantic_val" value="<?= $toggle_val ?>">
   </form>
   <div class="ak-result-count">
     تم العثور على <strong><?= $total_rows ?></strong> نتيجة

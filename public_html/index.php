@@ -59,6 +59,7 @@
           <span class="ak-switch-track"><span class="ak-switch-thumb"></span></span>
           <span class="ak-switch-label">🧠 دلالي</span>
         </label>
+        <span class="ak-info-icon" tabindex="0" data-tip="🧠 دلالي: يوسّع البحث تلقائياً ليشمل الجذور اللغوية والمرادفات واللهجة السودانية • 🔤 عادي: بحث نصي مباشر بالكلمة المُدخَلة فقط">i</span>
         <input type="hidden" name="semantic" id="semantic_val" value="1">
       </div>
     </div>
