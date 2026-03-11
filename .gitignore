@@ -126,5 +126,11 @@ error_log
 # ─── Node (if ever added) ─────────────────────────────────────────────────────
 node_modules/
 
+# ─── Python virtualenv ────────────────────────────────────────────────────────
+tools/.venv/
+tools/__pycache__/
+ocr_pipeline.log
+
 # ─── Environment / secrets ────────────────────────────────────────────────────
 .env
+tools/.env

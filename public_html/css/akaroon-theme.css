@@ -621,7 +621,39 @@ body {
 .ak-sidebar-search-row .ak-switch      { flex-shrink: 0; }
 .ak-sidebar-search-row .ak-switch-label { font-size: 0.85rem; min-width: 3.8rem; }
 
-/* ── Info icon + tooltip ─────────────────────────────────── */
+/* ── 3-way search mode segmented control ────────────────── */
+.ak-mode-seg {
+  display: inline-flex;
+  border-radius: 7px;
+  overflow: hidden;
+  border: 1.5px solid var(--teal);
+  flex-shrink: 0;
+}
+.ak-mode-btn {
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--teal);
+  padding: 4px 9px;
+  font-size: 0.78rem;
+  font-family: 'Tajawal', Arial, sans-serif;
+  font-weight: 700;
+  color: var(--teal-dark);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+  line-height: 1.5;
+}
+.ak-mode-btn:last-child  { border-right: none; }
+.ak-mode-btn:hover       { background: rgba(26,107,99,0.09); }
+.ak-mode-btn.ak-mode-active {
+  background: var(--teal);
+  color: #fff;
+}
+
+/* Sidebar: button + segmented control side by side */
+.ak-sidebar-search-row .ak-mode-seg { flex-shrink: 0; }
+
+/* ── Info icon ───────────────────────────────────────────── */
 .ak-info-icon {
   display: inline-flex;
   align-items: center;
@@ -638,55 +670,36 @@ body {
   line-height: 1;
   cursor: pointer;
   flex-shrink: 0;
-  position: relative;
   transition: background 0.18s;
   user-select: none;
+  outline: none;
 }
-.ak-info-icon:hover { background: var(--teal-dark); }
+.ak-info-icon:hover,
+.ak-info-icon:focus { background: var(--teal-dark); }
 
-/* Tooltip bubble */
-.ak-info-icon::after {
-  content: attr(data-tip);
+/* Tooltip popup — appended to <body> by JS so it escapes overflow */
+.ak-tooltip-popup {
   position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: 240px;
-  background: var(--teal-dark);
+  z-index: 9999;
+  background: #0b3d38;
   color: #fff;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-family: 'Tajawal', Arial, sans-serif;
   font-weight: 400;
-  line-height: 1.6;
-  border-radius: 8px;
-  padding: 0.55rem 0.75rem;
-  text-align: right;
   direction: rtl;
-  white-space: normal;
+  text-align: right;
+  max-width: 230px;
+  border-radius: 8px;
+  padding: 0.55rem 0.8rem;
+  line-height: 1.65;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.18s;
-  z-index: 999;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.28);
+  animation: ak-tip-in 0.15s ease;
 }
-/* Arrow */
-.ak-info-icon::before {
-  content: '';
-  position: absolute;
-  bottom: calc(100% + 2px);
-  left: 50%;
-  transform: translateX(-50%);
-  border: 5px solid transparent;
-  border-top-color: var(--teal-dark);
-  opacity: 0;
-  transition: opacity 0.18s;
-  pointer-events: none;
-  z-index: 999;
+@keyframes ak-tip-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-.ak-info-icon:hover::after,
-.ak-info-icon:focus::after,
-.ak-info-icon:hover::before,
-.ak-info-icon:focus::before { opacity: 1; }
 
 /* ── Loading / empty states ──────────────────────────────── */
 .ak-loading, .ak-empty {

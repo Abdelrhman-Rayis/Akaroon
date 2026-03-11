@@ -48,22 +48,31 @@ $total_rows     = 0;
 $search_term    = '';
 $expanded_terms = [];
 
-// Semantic toggle: default ON; pass ?semantic=0 to disable
-$semantic_on  = ($_GET['semantic'] ?? '1') !== '0';
-$toggle_class = $semantic_on ? 'ak-mode-on'  : 'ak-mode-off';
-$toggle_label = $semantic_on ? '🧠 دلالي' : '🔤 عادي';
-$toggle_val   = $semantic_on ? '1'          : '0';
+// Search mode: normal | semantic (default) | deep
+$mode = $_GET['mode'] ?? 'semantic';
 
 if (isset($_GET['search_btn'])) {
     $search_term    = substr(trim($_GET['search'] ?? ''), 0, 200);
     $norm           = normalizeAr($search_term);
-    $expanded_terms = $semantic_on ? expandQuery($norm) : [$norm];
-    $nc             = normConcat();
-    $where          = buildLikeClause($nc, $expanded_terms, $link, 'mysqli');
+    $expanded_terms = [];
+
+    if ($mode === 'deep') {
+        // Full-text search inside OCR text (metadata header + full document body)
+        $ft    = $link->real_escape_string($norm);
+        $where = "ocr_text IS NOT NULL AND MATCH(ocr_text) AGAINST ('$ft' IN BOOLEAN MODE)";
+        $score = "MATCH(ocr_text) AGAINST ('$ft' IN BOOLEAN MODE)";
+    } else {
+        $expanded_terms = ($mode === 'semantic') ? expandQuery($norm) : [$norm];
+        $nc             = normConcat();
+        $normTitle      = sqlNorm('The_Title_of_Paper_Book');
+        $normKw         = sqlNorm('Key_words');
+        $where          = buildLikeClause($nc, $expanded_terms, $link, 'mysqli');
+        $score          = buildRelevanceScore($expanded_terms, $link, 'mysqli', $nc, $normTitle, $normKw);
+    }
 
     $tables = ['edu','soc','tas','pol','org','state','philo'];
-    $parts  = array_map(fn($t) => "(SELECT * FROM `$t` WHERE $where)", $tables);
-    $sql    = implode(" UNION ", $parts);
+    $parts  = array_map(fn($t) => "(SELECT *, {$score} AS _rel FROM `$t` WHERE $where)", $tables);
+    $sql    = "SELECT * FROM (" . implode(" UNION ALL ", $parts) . ") AS _u ORDER BY _rel DESC";
 
     if ($res = $link->query($sql)) {
         $results    = $res->fetch_all(MYSQLI_ASSOC);
@@ -124,13 +133,13 @@ if (isset($_GET['search_btn'])) {
         <input type="text" name="search" placeholder="ابحث بالعنوان أو المؤلف أو الكلمات المفتاحية..." autocomplete="off" required>
       </div>
       <div class="ak-search-toggle-row">
-        <label class="ak-switch" for="semantic_toggle_cb">
-          <input type="checkbox" class="ak-switch-input" id="semantic_toggle_cb" <?= $semantic_on ? 'checked' : '' ?>>
-          <span class="ak-switch-track"><span class="ak-switch-thumb"></span></span>
-          <span class="ak-switch-label"><?= $toggle_label ?></span>
-        </label>
-        <span class="ak-info-icon" tabindex="0" data-tip="🧠 دلالي: يوسّع البحث تلقائياً ليشمل الجذور اللغوية والمرادفات واللهجة السودانية • 🔤 عادي: بحث نصي مباشر بالكلمة المُدخَلة فقط">i</span>
-        <input type="hidden" name="semantic" id="semantic_val" value="<?= $toggle_val ?>">
+        <div class="ak-mode-seg">
+          <button type="button" class="ak-mode-btn <?= $mode === 'normal'   ? 'ak-mode-active' : '' ?>" data-mode="normal">🔤 عادي</button>
+          <button type="button" class="ak-mode-btn <?= $mode === 'semantic' ? 'ak-mode-active' : '' ?>" data-mode="semantic">🧠 دلالي</button>
+          <button type="button" class="ak-mode-btn <?= $mode === 'deep'     ? 'ak-mode-active' : '' ?>" data-mode="deep">🔬 عميق</button>
+        </div>
+        <input type="hidden" name="mode" id="mode_val" value="<?= htmlspecialchars($mode, ENT_QUOTES, 'UTF-8') ?>">
+        <span class="ak-info-icon" tabindex="0" data-tip="🔤 عادي: بحث مباشر بالنص • 🧠 دلالي: يوسّع بالجذور والمرادفات واللهجة السودانية • 🔬 عميق: يبحث داخل نص الوثيقة كاملاً عبر OCR">i</span>
       </div>
     </div>
   </form>
@@ -148,13 +157,13 @@ if (isset($_GET['search_btn'])) {
   <form action="" method="get" style="display:flex;align-items:center;gap:0.5rem;flex:1;flex-wrap:wrap;">
     <button type="submit" name="search_btn">بحث</button>
     <input type="text" name="search" value="<?= htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8') ?>" autocomplete="off" style="flex:1;min-width:120px;">
-    <label class="ak-switch" for="semantic_toggle_cb" style="margin:0 0.3rem;">
-      <input type="checkbox" class="ak-switch-input" id="semantic_toggle_cb" <?= $semantic_on ? 'checked' : '' ?>>
-      <span class="ak-switch-track"><span class="ak-switch-thumb"></span></span>
-      <span class="ak-switch-label"><?= $toggle_label ?></span>
-    </label>
-    <span class="ak-info-icon" tabindex="0" data-tip="🧠 دلالي: يوسّع البحث تلقائياً ليشمل الجذور اللغوية والمرادفات واللهجة السودانية • 🔤 عادي: بحث نصي مباشر بالكلمة المُدخَلة فقط">i</span>
-        <input type="hidden" name="semantic" id="semantic_val" value="<?= $toggle_val ?>">
+    <div class="ak-mode-seg" style="margin:0 0.3rem;">
+      <button type="button" class="ak-mode-btn <?= $mode === 'normal'   ? 'ak-mode-active' : '' ?>" data-mode="normal">🔤 عادي</button>
+      <button type="button" class="ak-mode-btn <?= $mode === 'semantic' ? 'ak-mode-active' : '' ?>" data-mode="semantic">🧠 دلالي</button>
+      <button type="button" class="ak-mode-btn <?= $mode === 'deep'     ? 'ak-mode-active' : '' ?>" data-mode="deep">🔬 عميق</button>
+    </div>
+    <span class="ak-info-icon" tabindex="0" data-tip="🔤 عادي: بحث مباشر • 🧠 دلالي: يوسّع بالجذور والمرادفات • 🔬 عميق: يبحث داخل نص الوثيقة كاملاً">i</span>
+    <input type="hidden" name="mode" id="mode_val" value="<?= htmlspecialchars($mode, ENT_QUOTES, 'UTF-8') ?>">
   </form>
   <div class="ak-result-count">
     تم العثور على <strong><?= $total_rows ?></strong> نتيجة
@@ -228,26 +237,19 @@ if (isset($_GET['search_btn'])) {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 (function() {
-  var cb  = document.getElementById('semantic_toggle_cb');
-  var val = document.getElementById('semantic_val');
-  var lbl = document.querySelector('.ak-switch-label');
-  if (!cb) return;
-  cb.addEventListener('change', function() {
-    var on = this.checked;
-    if (val) val.value = on ? '1' : '0';
-    if (lbl) lbl.textContent = on ? '🧠 دلالي' : '🔤 عادي';
+  // 3-way mode segmented control — updates hidden input before form submit
+  var modeVal = document.getElementById('mode_val');
+  document.querySelectorAll('.ak-mode-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.ak-mode-btn').forEach(function(b) { b.classList.remove('ak-mode-active'); });
+      this.classList.add('ak-mode-active');
+      if (modeVal) modeVal.value = this.getAttribute('data-mode');
+    });
   });
 })();
 (function() {
-  var TIP_ON  = '🧠 البحث الدلالي: يوسّع بحثك تلقائياً ليشمل الجذور اللغوية والمرادفات واللهجة السودانية';
-  var TIP_OFF = '🔤 البحث العادي: بحث مباشر بالنص المُدخَل فقط دون توسيع';
   var popup = null;
   var icons = document.querySelectorAll('.ak-info-icon');
-  var cb    = document.getElementById('semantic_toggle_cb');
-  function updateTips() {
-    var tip = cb && cb.checked ? TIP_ON : TIP_OFF;
-    icons.forEach(function(i) { i.setAttribute('data-tip', tip); });
-  }
   function showTip(icon) {
     hideTip();
     popup = document.createElement('div');
@@ -268,7 +270,6 @@ if (isset($_GET['search_btn'])) {
     icon.addEventListener('focus',      function() { showTip(icon); });
     icon.addEventListener('blur',       hideTip);
   });
-  if (cb) { updateTips(); cb.addEventListener('change', updateTips); }
 })();
 </script>
 </body>

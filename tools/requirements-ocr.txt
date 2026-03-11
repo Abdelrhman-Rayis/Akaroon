@@ -1,0 +1,9 @@
+# Akaroon OCR Pipeline — Python dependencies
+# Install: pip install -r tools/requirements-ocr.txt
+#
+# Requires Python 3.10+
+
+mistralai>=1.0,<2.0       # Mistral OCR + Embeddings API (v2 changed package structure)
+google-cloud-storage>=2.0.0  # GCS upload of enriched .md files
+pymysql>=1.0.0            # MySQL connection to Cloud SQL
+python-dotenv>=1.0.0      # reads tools/.env for credentials

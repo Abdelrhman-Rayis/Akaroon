@@ -58,11 +58,22 @@ if(isset($_POST["action"]))
 	if(!empty($_POST["search_text"]))
 	{
 		$norm        = normalizeAr(strip_tags(substr($_POST["search_text"], 0, 200)));
-		$semantic_on = ($_POST['semantic'] ?? '1') !== '0';
-		$terms       = $semantic_on ? expandQuery($norm) : [$norm];
-		$nc          = "CONCAT_WS(' ', " . sqlNorm("Category") . ", " . sqlNorm("The_Title_of_Paper_Book") . ", " . sqlNorm("The_number_of_the_Author") . ", " . sqlNorm("Year_of_issue") . ", " . sqlNorm("Place_of_issue") . ", " . sqlNorm("Field_of_research") . ", " . sqlNorm("Key_words") . ")";
-		$query .= " AND (" . buildLikeClause($nc, $terms, $connect, 'pdo') . ")";
+		$mode = $_POST['mode'] ?? 'semantic';
+		if ($mode === 'deep') {
+			// Full-text search inside OCR body (metadata header + full document text)
+			$ft    = $connect->quote($norm);
+			$query .= " AND ocr_text IS NOT NULL AND MATCH(ocr_text) AGAINST ($ft IN BOOLEAN MODE)";
+			$score  = "MATCH(ocr_text) AGAINST ($ft IN BOOLEAN MODE)";
+		} else {
+			$terms     = ($mode === 'semantic') ? expandQuery($norm) : [$norm];
+			$nc        = "CONCAT_WS(' ', " . sqlNorm("Category") . ", " . sqlNorm("The_Title_of_Paper_Book") . ", " . sqlNorm("The_number_of_the_Author") . ", " . sqlNorm("Year_of_issue") . ", " . sqlNorm("Place_of_issue") . ", " . sqlNorm("Field_of_research") . ", " . sqlNorm("Key_words") . ")";
+			$normTitle = sqlNorm("The_Title_of_Paper_Book");
+			$normKw    = sqlNorm("Key_words");
+			$query    .= " AND (" . buildLikeClause($nc, $terms, $connect, 'pdo') . ")";
+			$score     = buildRelevanceScore($terms, $connect, 'pdo', $nc, $normTitle, $normKw);
+		}
 	}
+	$query .= isset($score) ? " ORDER BY {$score} DESC" : " ORDER BY id ASC";
 
 	$statement = $connect->prepare($query);
 	$statement->execute();
@@ -97,7 +108,7 @@ if(isset($_POST["action"]))
 	}
 	else
 	{
-		$output = '<div class="ak-empty col-12"><span class="ak-empty-icon">🔍</span><p>لا توجد نتائج</p></div>';
+		$output = (\$_POST['mode'] ?? '') === 'deep' ? '<div class="ak-empty col-12"><span class="ak-empty-icon">🔬</span><p>لا توجد نتائج في نص الوثائق — قد لا تكون بعض الوثائق مفهرسة بعد</p></div>' : '<div class="ak-empty col-12"><span class="ak-empty-icon">🔍</span><p>لا توجد نتائج</p></div>';
 	}
 	echo $output;
 }

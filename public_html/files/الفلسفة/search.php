@@ -60,13 +60,13 @@ include('database_connection.php');
         <input type="text" id="search_text" class="ak-sidebar-search" placeholder="ابحث هنا...">
         <div class="ak-sidebar-search-row">
           <button class="ak-sidebar-btn" id="search_go">بحث</button>
-          <label class="ak-switch" for="semantic_toggle_cb" title="تبديل بين البحث الدلالي والعادي">
-            <input type="checkbox" class="ak-switch-input" id="semantic_toggle_cb" checked>
-            <span class="ak-switch-track"><span class="ak-switch-thumb"></span></span>
-            <span class="ak-switch-label">🧠 دلالي</span>
-          </label>
-          <span class="ak-info-icon" tabindex="0" data-tip="🧠 دلالي: يوسّع البحث تلقائياً ليشمل الجذور اللغوية والمرادفات واللهجة السودانية • 🔤 عادي: بحث نصي مباشر بالكلمة المُدخَلة فقط">i</span>
-          <input type="hidden" id="semantic_val" value="1">
+          <div class="ak-mode-seg">
+            <button type="button" class="ak-mode-btn" data-mode="normal">🔤 عادي</button>
+            <button type="button" class="ak-mode-btn ak-mode-active" data-mode="semantic">🧠 دلالي</button>
+            <button type="button" class="ak-mode-btn" data-mode="deep">🔬 عميق</button>
+          </div>
+          <input type="hidden" id="search_mode" value="semantic">
+          <span class="ak-info-icon" tabindex="0" data-tip="🔤 عادي: بحث مباشر بالنص • 🧠 دلالي: يوسّع بالجذور والمرادفات واللهجة السودانية • 🔬 عميق: يبحث داخل نص الوثيقة كاملاً عبر تقنية OCR">i</span>
         </div>
 
         <!-- Author filter -->
@@ -165,7 +165,7 @@ $(document).ready(function(){
     $.ajax({
       url: 'fetch_data.php',
       method: 'POST',
-      data: { action: action, brand: brand, ram: ram, storage: storage, search_text: search_text, semantic: ($('#semantic_toggle_cb').is(':checked') ? 1 : 0) },
+      data: { action: action, brand: brand, ram: ram, storage: storage, search_text: search_text, mode: $('#search_mode').val() },
       success: function(data) {
         $('.filter_data').html('<div class="row g-4">' + data + '</div>');
       }
@@ -185,8 +185,10 @@ $(document).ready(function(){
   $('#search_text').keypress(function(e){
     if (e.which === 13) filter_data();
   });
-  $('#semantic_toggle_cb').on('change', function() {
-    $('.ak-switch-label').text(this.checked ? '🧠 دلالي' : '🔤 عادي');
+  $('.ak-mode-btn').on('click', function() {
+    $('.ak-mode-btn').removeClass('ak-mode-active');
+    $(this).addClass('ak-mode-active');
+    $('#search_mode').val($(this).data('mode'));
     filter_data();
   });
 
@@ -194,15 +196,8 @@ $(document).ready(function(){
 </script>
 <script>
 (function() {
-  var TIP_ON  = '🧠 البحث الدلالي: يوسّع بحثك تلقائياً ليشمل الجذور اللغوية والمرادفات واللهجة السودانية';
-  var TIP_OFF = '🔤 البحث العادي: بحث مباشر بالنص المُدخَل فقط دون توسيع';
   var popup = null;
   var icons = document.querySelectorAll('.ak-info-icon');
-  var cb    = document.getElementById('semantic_toggle_cb');
-  function updateTips() {
-    var tip = cb && cb.checked ? TIP_ON : TIP_OFF;
-    icons.forEach(function(i) { i.setAttribute('data-tip', tip); });
-  }
   function showTip(icon) {
     hideTip();
     popup = document.createElement('div');
@@ -223,7 +218,6 @@ $(document).ready(function(){
     icon.addEventListener('focus',      function() { showTip(icon); });
     icon.addEventListener('blur',       hideTip);
   });
-  if (cb) { updateTips(); cb.addEventListener('change', updateTips); }
 })();
 </script>
 

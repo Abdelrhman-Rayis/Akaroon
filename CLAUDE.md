@@ -147,7 +147,7 @@ Set these in Cloud Run service configuration. **Never hardcode them.**
 |---|---|---|
 | `WP_DB_HOST` | `34.76.91.107` | WordPress Blog & Library DB host |
 | `DB_HOST` | `34.76.91.107` | PHP category filter pages DB host |
-| `DB_USER` | `akaroon` | All DB connections |
+| `DB_USER` | `akaroon_user` | All DB connections (note: gcloud sql users list confirms `akaroon_user`, not `akaroon`) |
 | `DB_PASSWORD` | *(secret — check Cloud Run console)* | All DB connections |
 | `WP_BLOG_DB_NAME` | `akaroon_a-wordp-1gu` | WordPress Blog DB name |
 | `WP_URL` | `https://akaroon-git-844063198632.europe-west1.run.app` | Used by fix-menu.php |
@@ -461,6 +461,36 @@ gcloud logging read 'resource.type="cloud_run_revision" AND textPayload:"fix-men
 
 ---
 
+### Session: March 2026 (OCR Pipeline + 3-Way Search Toggle)
+
+**OCR pipeline (Mistral Document AI):**
+- `tools/ocr_migration.sql` — NEW: adds 5 columns to all 7 tables (`ocr_text LONGTEXT`, `ocr_page_count`, `ocr_quality_score`, `ocr_processed_at`, `embedding JSON`) + FULLTEXT INDEX per table; run successfully on Cloud SQL
+- `tools/ocr_pipeline.py` — NEW: full Mistral OCR pipeline script
+  - Fetches each PDF from public GCS URL, sends to `mistral-ocr-latest`, gets Markdown per page
+  - Injects DB metadata header (title, author, keywords, field, year, place) into every document
+  - Computes quality score (fraction of DB keywords found in OCR text; flags <0.30)
+  - Uploads enriched `.md` files to `gs://akaroon-media/ocr/{category}/{id}.md` (YAML frontmatter)
+  - Generates `mistral-embed` 1024-dim embeddings stored as JSON in DB
+  - Idempotent: `WHERE ocr_processed_at IS NULL` — safe to restart
+  - CLI flags: `--category`, `--limit`, `--ids`, `--dry-run`, `--skip-embedding`, `--progress`
+- `tools/requirements-ocr.txt` — NEW: `mistralai>=1.0,<2.0` (v2 removed `Mistral` class), `google-cloud-storage`, `pymysql`, `python-dotenv`
+- `tools/.env.example` — NEW: credential template
+- `tools/.env` — created locally (gitignored) with real API key + DB credentials
+- `.gitignore` — added `tools/.venv/`, `tools/__pycache__/`, `ocr_pipeline.log`, `tools/.env`
+- **Bug fixes during setup:**
+  - `DB_USER` was `akaroon` in CLAUDE.md — actual user is `akaroon_user` (confirmed via `gcloud sql users list`); fixed in both CLAUDE.md and tools/.env
+  - `mistralai` v2 broke import — pinned to `>=1.0,<2.0` (v1.12.4 has `Mistral` at top level)
+- **Pipeline status:** running in background via `nohup`; at commit time: 219/2094 (10%) complete, avg_quality=0.92 for `tas` table
+
+**3-way search mode toggle (عادي | دلالي | عميق):**
+- `public_html/css/akaroon-theme.css` — added `.ak-mode-seg`, `.ak-mode-btn`, `.ak-mode-active` segmented control CSS (teal border, active=filled teal, hover=teal-tinted)
+- All 7 `public_html/files/*/search.php` — replaced binary semantic checkbox with 3-button segmented control (`🔤 عادي` | `🧠 دلالي` | `🔬 عميق`), hidden `#search_mode` input, updated JS click handler
+- All 7 `public_html/files/*/fetch_data.php` — added `$mode` POST param; `deep` mode uses `MATCH(ocr_text) AGAINST (... IN BOOLEAN MODE)` FULLTEXT; `semantic` uses expandQuery(); `normal` uses direct LIKE
+- `public_html/blog/ibrahimfinalsearch.php` — same 3-way toggle applied to both forms (initial search + results header); PHP uses `$_GET['mode']`; UNION ALL query for deep mode across all 7 tables
+- Info tooltip (ⓘ) updated on all 9 pages with mode descriptions (body-appended JS popup)
+
+---
+
 ## 14. What To Work On Next (Backlog)
 
 - [ ] Replace professor avatar photo — user wants to update `public_html/img/professor.jpg` with a new photo (ask them to save it to a local path first)
@@ -469,5 +499,7 @@ gcloud logging read 'resource.type="cloud_run_revision" AND textPayload:"fix-men
 - [ ] The WordPress Library (`/library/`) has never been fully tested on Cloud Run
 - [ ] `akaroonproject/.DS_Store` keeps showing as modified — should probably add to `.gitignore`
 - [ ] Add Qabas + Lisan attribution text on the Akaroon site (CC-BY license requirement)
-- [ ] Commit and deploy everything from this session to Cloud Run (semantic search + upload portal)
+- [x] Commit and deploy everything from this session to Cloud Run (semantic search + upload portal)
+- [ ] Complete OCR pipeline run (at 10% when last committed — `tools/.venv/bin/python3 tools/ocr_pipeline.py --progress` to check)
+- [ ] Re-run pipeline for any failed/skipped docs: `tools/.venv/bin/python3 tools/ocr_pipeline.py --ids <id1,id2,...>`
 - [ ] **akaroon-wp repo**: WP-CLI migration command to import 2,094 records from original 7 MySQL tables
