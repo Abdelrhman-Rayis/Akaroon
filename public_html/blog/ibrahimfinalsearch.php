@@ -1,112 +1,16 @@
 <?php
-$_db_socket = getenv('DB_SOCKET');
-$_db_host   = getenv('DB_HOST')     ?: 'mysql';
-$_db_name   = getenv('DB_NAME')     ?: 'akaroon_akaroondb';
-$_db_user   = getenv('DB_USER')     ?: 'root';
-$_db_pass   = getenv('DB_PASSWORD') ?: 'root';
-
-if ($_db_socket) {
-    $link = new mysqli();
-    $link->init();
-    $link->real_connect(null, $_db_user, $_db_pass, $_db_name, null, $_db_socket);
-} else {
-    $link = new mysqli($_db_host, $_db_user, $_db_pass, $_db_name);
-}
-unset($_db_socket, $_db_host, $_db_name, $_db_user, $_db_pass);
-$link->set_charset("utf8mb4");
-
-if($link->connect_error){
-    die("Connection Failed: " . $link->connect_error);
-}
-
-require_once __DIR__ . '/../lib/search_expand.php';
-
-/* ── Arabic-aware search normalization ─────────────────── */
-function normalizeAr($text) {
-    $text = trim($text);
-    $text = preg_replace('/[\x{064B}-\x{065F}\x{0670}]/u', '', $text); // strip diacritics
-    $text = str_replace(['أ','إ','آ','ٱ'], 'ا', $text);  // unify alef forms
-    $text = str_replace('ة', 'ه', $text);                 // taa marbuta → haa
-    $text = str_replace('ى', 'ي', $text);                 // alef maqsura → yaa
-    $text = str_replace('ؤ', 'و', $text);                 // hamza on waw
-    $text = str_replace('ئ', 'ي', $text);                 // hamza on yaa
-    return $text;
-}
-function sqlNorm($f) {
-    foreach (['ة'=>'ه','أ'=>'ا','إ'=>'ا','آ'=>'ا','ٱ'=>'ا','ى'=>'ي','ؤ'=>'و','ئ'=>'ي'] as $from=>$to)
-        $f = "REPLACE($f, '$from', '$to')";
-    return $f;
-}
-function normConcat() {
-    $cols = ['Category','The_Title_of_Paper_Book','The_number_of_the_Author',
-             'Year_of_issue','Place_of_issue','Field_of_research','Key_words'];
-    return "CONCAT_WS(' ', " . implode(', ', array_map('sqlNorm', $cols)) . ")";
-}
-
-$results        = [];
-$total_rows     = 0;
-$search_term    = '';
-$expanded_terms = [];
-
-/* ── OCR snippet extractor for عميق mode ─────────────────── */
-function makeSnippet(string $ocr, string $term, int $radius = 160): string {
-    if (empty($ocr) || empty($term)) return '';
-    $sepPos = mb_strpos($ocr, "\n---\n", 0, 'UTF-8');
-    $text   = ($sepPos !== false)
-            ? trim(mb_substr($ocr, $sepPos + 5, null, 'UTF-8'))
-            : $ocr;
-    if (empty($text)) $text = $ocr;
-    $text = trim(preg_replace('/\s+/u', ' ', $text));
-    $pos = mb_stripos($text, $term, 0, 'UTF-8');
-    if ($pos === false) {
-        return mb_substr($text, 0, $radius * 2, 'UTF-8') . '…';
-    }
-    $termLen = mb_strlen($term, 'UTF-8');
-    $total   = mb_strlen($text, 'UTF-8');
-    $start   = max(0, $pos - $radius);
-    $end     = min($total, $pos + $termLen + $radius);
-    $snippet = ($start > 0 ? '…' : '')
-             . mb_substr($text, $start, $end - $start, 'UTF-8')
-             . ($end < $total ? '…' : '');
-    $snippet = htmlspecialchars($snippet, ENT_QUOTES, 'UTF-8');
-    $pat     = '/' . preg_quote(htmlspecialchars($term, ENT_QUOTES, 'UTF-8'), '/') . '/ui';
-    $snippet = preg_replace($pat, '<mark>$0</mark>', $snippet);
-    return $snippet;
-}
-
-// Search mode: normal | semantic (default) | deep
-$mode = $_GET['mode'] ?? 'semantic';
-
-if (isset($_GET['search_btn'])) {
-    $search_term    = substr(trim($_GET['search'] ?? ''), 0, 200);
-    $norm           = normalizeAr($search_term);
-    $expanded_terms = [];
-
-    if ($mode === 'deep') {
-        // Full-text search inside OCR text (metadata header + full document body)
-        $ft    = $link->real_escape_string($norm);
-        $where = "ocr_text IS NOT NULL AND MATCH(ocr_text) AGAINST ('$ft' IN BOOLEAN MODE)";
-        $score = "MATCH(ocr_text) AGAINST ('$ft' IN BOOLEAN MODE)";
-    } else {
-        $expanded_terms = ($mode === 'semantic') ? expandQuery($norm) : [$norm];
-        $nc             = normConcat();
-        $normTitle      = sqlNorm('The_Title_of_Paper_Book');
-        $normKw         = sqlNorm('Key_words');
-        $where          = buildLikeClause($nc, $expanded_terms, $link, 'mysqli');
-        $score          = buildRelevanceScore($expanded_terms, $link, 'mysqli', $nc, $normTitle, $normKw);
-    }
-
-    $tables = ['edu','soc','tas','pol','org','state','philo'];
-    $parts  = array_map(fn($t) => "(SELECT *, {$score} AS _rel FROM `$t` WHERE $where)", $tables);
-    $sql    = "SELECT * FROM (" . implode(" UNION ALL ", $parts) . ") AS _u ORDER BY _rel DESC";
-
-    if ($res = $link->query($sql)) {
-        $results    = $res->fetch_all(MYSQLI_ASSOC);
-        $total_rows = count($results);
-    }
-}
+// Read GET params only — no DB query needed here.
+// All searching is done via parallel AJAX to search_fetch.php.
+$mode        = $_GET['mode']   ?? 'semantic';
+$search_term = substr(trim($_GET['search'] ?? ''), 0, 200);
+$has_search  = isset($_GET['search_btn']);
+$cssV        = @filemtime(__DIR__ . '/../css/akaroon-theme.css') ?: 1;
+// Sanitised values for HTML output
+$mode_safe   = htmlspecialchars($mode,        ENT_QUOTES, 'UTF-8');
+$term_safe   = htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8');
 ?>
-<?php $cssV = @filemtime(__DIR__ . '/../css/akaroon-theme.css') ?: 1; ?>
+<?php /* JS needs the raw search params — expose as JSON-safe strings */ ?>
+<?php $js_term = json_encode($search_term); $js_mode = json_encode($mode); ?>
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
@@ -118,7 +22,7 @@ if (isset($_GET['search_btn'])) {
 </head>
 <body>
 
-<!-- ── WordPress blog navigation bar ────────────────────── -->
+<!-- ── Navigation ─────────────────────────────────────────── -->
 <div class="ak-blog-bar">
   <span class="ak-blog-bar-label">🌐 الموقع:</span>
   <a href="/">الرئيسية</a>
@@ -147,8 +51,8 @@ if (isset($_GET['search_btn'])) {
   </ul>
 </nav>
 
-<?php if (!isset($_GET['search_btn'])): ?>
-
+<!-- ── Hero (shown when no active search) ─────────────────── -->
+<?php if (!$has_search): ?>
 <section class="ak-hero">
   <h1>مكتبة عكارون البحثية</h1>
   <p>ابحث في آلاف الأوراق البحثية والكتب عبر جميع التصنيفات</p>
@@ -164,7 +68,7 @@ if (isset($_GET['search_btn'])) {
           <button type="button" class="ak-mode-btn <?= $mode === 'semantic' ? 'ak-mode-active' : '' ?>" data-mode="semantic">🧠 دلالي</button>
           <button type="button" class="ak-mode-btn <?= $mode === 'deep'     ? 'ak-mode-active' : '' ?>" data-mode="deep">🔬 عميق</button>
         </div>
-        <input type="hidden" name="mode" id="mode_val" value="<?= htmlspecialchars($mode, ENT_QUOTES, 'UTF-8') ?>">
+        <input type="hidden" name="mode" id="mode_val" value="<?= $mode_safe ?>">
         <span class="ak-info-icon" tabindex="0" data-tip="🔤 عادي: بحث مباشر بالنص • 🧠 دلالي: يوسّع بالجذور والمرادفات واللهجة السودانية • 🔬 عميق: يبحث داخل نص الوثيقة كاملاً عبر OCR">i</span>
       </div>
     </div>
@@ -179,12 +83,13 @@ if (isset($_GET['search_btn'])) {
 
 <?php else: ?>
 
+<!-- ── Results header ─────────────────────────────────────── -->
 <div class="ak-results-header">
   <form action="" method="get">
     <div class="ak-search-box">
       <div class="ak-search-box-row">
         <button type="submit" name="search_btn">بحث</button>
-        <input type="text" name="search" value="<?= htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8') ?>" autocomplete="off">
+        <input type="text" name="search" value="<?= $term_safe ?>" autocomplete="off">
       </div>
       <div class="ak-search-toggle-row">
         <div class="ak-mode-seg">
@@ -192,83 +97,27 @@ if (isset($_GET['search_btn'])) {
           <button type="button" class="ak-mode-btn <?= $mode === 'semantic' ? 'ak-mode-active' : '' ?>" data-mode="semantic">🧠 دلالي</button>
           <button type="button" class="ak-mode-btn <?= $mode === 'deep'     ? 'ak-mode-active' : '' ?>" data-mode="deep">🔬 عميق</button>
         </div>
-        <input type="hidden" name="mode" id="mode_val" value="<?= htmlspecialchars($mode, ENT_QUOTES, 'UTF-8') ?>">
+        <input type="hidden" name="mode" id="mode_val" value="<?= $mode_safe ?>">
         <span class="ak-info-icon" tabindex="0" data-tip="🔤 عادي: بحث مباشر • 🧠 دلالي: يوسّع بالجذور والمرادفات • 🔬 عميق: يبحث داخل نص الوثيقة كاملاً">i</span>
       </div>
     </div>
   </form>
-  <div class="ak-result-count">
-    تم العثور على <strong><?= $total_rows ?></strong> نتيجة
-    <?php if ($search_term): ?>لـ "<strong><?= htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8') ?></strong>"<?php endif; ?>
-    <?php if (count($expanded_terms) > 1): ?>
-      <div class="ak-synonyms-hint">
-        🔗 بحث موسّع يشمل المترادفات:
-        <?php foreach (array_slice($expanded_terms, 1) as $syn): ?>
-          <span class="ak-syn-tag"><?= htmlspecialchars($syn, ENT_QUOTES, 'UTF-8') ?></span>
-        <?php endforeach; ?>
-      </div>
-    <?php endif; ?>
+  <div id="ak-result-count" class="ak-result-count">
+    <span id="ak-count-text" class="ak-count-loading">
+      <span class="ak-spinner-inline"></span> جارٍ البحث…
+    </span>
   </div>
 </div>
 
+<!-- ── Results stream (populated by JS) ───────────────────── -->
 <section class="ak-results-section">
   <div class="container">
-    <?php if ($total_rows > 0): ?>
-    <div class="row g-4">
-      <?php foreach ($results as $row):
-        $cat     = htmlspecialchars($row['Category'],                 ENT_QUOTES, 'UTF-8');
-        $id      = htmlspecialchars($row['id'],                       ENT_QUOTES, 'UTF-8');
-        $title   = htmlspecialchars($row['The_Title_of_Paper_Book'],  ENT_QUOTES, 'UTF-8');
-        $author  = htmlspecialchars($row['The_number_of_the_Author'], ENT_QUOTES, 'UTF-8');
-        $year    = htmlspecialchars($row['Year_of_issue'],            ENT_QUOTES, 'UTF-8');
-        $field   = htmlspecialchars($row['Field_of_research'],        ENT_QUOTES, 'UTF-8');
-        $_media_base = rtrim(getenv('MEDIA_BASE_URL') ?: '', '/');
-        $pdfHref = $_media_base
-            ? "{$_media_base}/files/{$cat}/files/{$id}.pdf"
-            : "../files/{$cat}/files/{$id}.pdf";
-        $imgSrc  = $_media_base
-            ? "{$_media_base}/files/{$cat}/image/{$id}.jpg"
-            : "../files/{$cat}/image/{$id}.jpg";
-      ?>
-      <div class="col-lg-3 col-md-4 col-sm-6">
-        <div class="ak-card">
-          <div class="ak-card-img-wrap">
-            <img src="<?= $imgSrc ?>" class="ak-card-img" alt="<?= $title ?>"
-                 onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-            <div class="ak-card-img-placeholder" style="display:none;">📄</div>
-          </div>
-          <div class="ak-card-body">
-            <a href="<?= $pdfHref ?>" class="ak-card-title"><?= $title ?></a>
-            <span class="ak-badge"><?= $cat ?></span>
-            <div class="ak-card-meta">
-              <div>✍️ <?= $author ?></div>
-              <div>📅 <?= $year ?></div>
-              <?php if ($field): ?><div>🔬 <?= $field ?></div><?php endif; ?>
-            </div>
-            <?php if ($mode === 'deep' && !empty($row['ocr_text'])): ?>
-              <?php $_ocr_dl = $_media_base ? "{$_media_base}/ocr/{$row['Category']}/{$id}.md" : ''; ?>
-              <div class="ak-ocr-snippet">
-                <div class="ak-ocr-header">
-                  <span class="ak-ocr-label">🔬 من نص الوثيقة</span>
-                  <?php if ($_ocr_dl): ?>
-                    <a href="<?= htmlspecialchars($_ocr_dl, ENT_QUOTES, 'UTF-8') ?>" target="_blank" class="ak-ocr-dl" title="تحميل ملف النص">⬇ النص الكامل</a>
-                  <?php endif; ?>
-                </div>
-                <?= makeSnippet($row['ocr_text'], $norm) ?>
-              </div>
-            <?php endif; ?>
-          </div>
-        </div>
-      </div>
-      <?php endforeach; ?>
-    </div>
-    <?php else: ?>
-    <div class="ak-empty">
+    <div id="ak-results-stream"></div>
+    <div id="ak-all-empty" class="ak-empty" style="display:none;">
       <span class="ak-empty-icon">🔍</span>
-      <p>لا توجد نتائج لـ "<?= htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8') ?>"</p>
-      <p style="font-size:0.9rem; color:var(--muted);">جرب كلمات مختلفة أو <a href="../" style="color:var(--gold);">تصفح التصنيفات</a></p>
+      <p id="ak-empty-msg">لا توجد نتائج</p>
+      <p style="font-size:0.9rem;color:var(--muted);">جرب كلمات مختلفة أو <a href="../" style="color:var(--gold);">تصفح التصنيفات</a></p>
     </div>
-    <?php endif; ?>
   </div>
 </section>
 
@@ -280,20 +129,21 @@ if (isset($_GET['search_btn'])) {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-(function() {
-  // 3-way mode segmented control — updates hidden input before form submit
+// ── Mode segmented control ────────────────────────────────────
+(function () {
   var modeVal = document.getElementById('mode_val');
-  document.querySelectorAll('.ak-mode-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      document.querySelectorAll('.ak-mode-btn').forEach(function(b) { b.classList.remove('ak-mode-active'); });
+  document.querySelectorAll('.ak-mode-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.ak-mode-btn').forEach(function (b) { b.classList.remove('ak-mode-active'); });
       this.classList.add('ak-mode-active');
       if (modeVal) modeVal.value = this.getAttribute('data-mode');
     });
   });
 })();
-(function() {
+
+// ── Info tooltip ──────────────────────────────────────────────
+(function () {
   var popup = null;
-  var icons = document.querySelectorAll('.ak-info-icon');
   function showTip(icon) {
     hideTip();
     popup = document.createElement('div');
@@ -308,13 +158,139 @@ if (isset($_GET['search_btn'])) {
     popup.style.left = left + 'px';
   }
   function hideTip() { if (popup) { popup.remove(); popup = null; } }
-  icons.forEach(function(icon) {
-    icon.addEventListener('mouseenter', function() { showTip(icon); });
+  document.querySelectorAll('.ak-info-icon').forEach(function (icon) {
+    icon.addEventListener('mouseenter', function () { showTip(icon); });
     icon.addEventListener('mouseleave', hideTip);
-    icon.addEventListener('focus',      function() { showTip(icon); });
+    icon.addEventListener('focus',      function () { showTip(icon); });
     icon.addEventListener('blur',       hideTip);
   });
 })();
+
+// ── Parallel AJAX search ──────────────────────────────────────
+<?php if ($has_search): ?>
+(function () {
+  var SEARCH_TERM  = <?= $js_term ?>;
+  var SEARCH_MODE  = <?= $js_mode ?>;
+
+  var CATEGORIES   = [
+    { key: 'edu',   label: 'التعليم',  folder: 'التعليم'  },
+    { key: 'soc',   label: 'المجتمع',  folder: 'المجتمع'  },
+    { key: 'tas',   label: 'التأصيل',  folder: 'التأصيل'  },
+    { key: 'pol',   label: 'السياسة',  folder: 'السياسة'  },
+    { key: 'org',   label: 'منظمات',   folder: 'منظمات'   },
+    { key: 'state', label: 'الدولة',   folder: 'الدولة'   },
+    { key: 'philo', label: 'الفلسفة',  folder: 'الفلسفة'  },
+  ];
+
+  var totalFound    = 0;
+  var doneCount     = 0;
+  var synonymsShown = false;
+  var countTextEl   = document.getElementById('ak-count-text');
+  var streamEl      = document.getElementById('ak-results-stream');
+  var emptyEl       = document.getElementById('ak-all-empty');
+  var emptyMsgEl    = document.getElementById('ak-empty-msg');
+
+  function escHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function updateCounter() {
+    if (doneCount < CATEGORIES.length) {
+      countTextEl.innerHTML =
+        '<span class="ak-spinner-inline"></span> جارٍ البحث… <span class="ak-cat-progress-text">(' + doneCount + '/' + CATEGORIES.length + ')</span>';
+    } else {
+      if (totalFound > 0) {
+        countTextEl.className = '';
+        countTextEl.innerHTML =
+          'تم العثور على <strong>' + totalFound + '</strong> نتيجة' +
+          (SEARCH_TERM ? ' لـ "<strong>' + escHtml(SEARCH_TERM) + '</strong>"' : '');
+      } else {
+        countTextEl.className = '';
+        countTextEl.innerHTML = 'لا توجد نتائج لـ "<strong>' + escHtml(SEARCH_TERM) + '</strong>"';
+        emptyEl.style.display = '';
+        emptyMsgEl.textContent = 'لا توجد نتائج لـ "' + SEARCH_TERM + '"';
+      }
+    }
+  }
+
+  function appendSynonyms(expanded) {
+    if (synonymsShown || !expanded || expanded.length <= 1) return;
+    synonymsShown = true;
+    var hint = document.createElement('div');
+    hint.className = 'ak-synonyms-hint';
+    hint.innerHTML = '🔗 بحث موسّع يشمل المترادفات: ' +
+      expanded.slice(1).map(function(s) {
+        return '<span class="ak-syn-tag">' + escHtml(s) + '</span>';
+      }).join(' ');
+    countTextEl.parentNode.appendChild(hint);
+  }
+
+  function appendCategorySection(cat, data) {
+    var searchUrl = '/files/' + encodeURIComponent(cat.folder) + '/search.php' +
+                    '?search=' + encodeURIComponent(SEARCH_TERM) +
+                    '&search_btn=1&mode=' + encodeURIComponent(SEARCH_MODE);
+    var showAllLink = (data.total_in_cat > 12)
+      ? '<a href="' + searchUrl + '" class="ak-cat-more-link">' +
+          'عرض الكل (' + data.total_in_cat + ') ←' +
+        '</a>'
+      : '';
+
+    var section = document.createElement('div');
+    section.className = 'ak-cat-results-section';
+    section.innerHTML =
+      '<div class="ak-cat-results-header">' +
+        '<h5>' + escHtml(cat.label) + '</h5>' +
+        '<span class="ak-cat-count-badge">' + data.count + ' نتيجة</span>' +
+        showAllLink +
+      '</div>' +
+      '<div class="row g-4">' + data.html + '</div>';
+
+    // Fade-in on insert
+    section.style.opacity = '0';
+    section.style.transform = 'translateY(8px)';
+    streamEl.appendChild(section);
+    requestAnimationFrame(function () {
+      section.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+      section.style.opacity    = '1';
+      section.style.transform  = 'translateY(0)';
+    });
+  }
+
+  // Fire all 7 requests in parallel
+  CATEGORIES.forEach(function (cat) {
+    var body = new URLSearchParams({
+      search:   SEARCH_TERM,
+      mode:     SEARCH_MODE,
+      category: cat.key,
+    });
+
+    fetch('search_fetch.php', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body:    body.toString(),
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      doneCount++;
+      if (data.count > 0) {
+        totalFound += data.count;
+        appendCategorySection(cat, data);
+        appendSynonyms(data.expanded);
+      }
+      updateCounter();
+    })
+    .catch(function () {
+      doneCount++;
+      updateCounter();
+    });
+  });
+
+  // Show initial "searching" state
+  updateCounter();
+})();
+<?php endif; ?>
 </script>
 </body>
 </html>

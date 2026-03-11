@@ -261,6 +261,61 @@ body {
   font-weight: 500;
 }
 
+/* ── Inline spinner (for progressive loading counter) ───── */
+.ak-spinner-inline {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(11,61,56,0.15);
+  border-top-color: var(--teal-dark);
+  border-radius: 50%;
+  animation: ak-spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+@keyframes ak-spin { to { transform: rotate(360deg); } }
+.ak-count-loading { color: var(--muted); }
+.ak-cat-progress-text { opacity: 0.6; font-size: 0.85em; }
+
+/* ── Progressive category result sections ───────────────── */
+.ak-cat-results-section {
+  margin-bottom: 3rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--warm-border);
+}
+.ak-cat-results-section:last-child { border-bottom: none; margin-bottom: 0; }
+
+.ak-cat-results-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+}
+.ak-cat-results-header h5 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--teal-dark);
+}
+.ak-cat-count-badge {
+  background: #e4f4f1;
+  color: var(--teal-dark);
+  border-radius: 20px;
+  padding: 2px 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.ak-cat-more-link {
+  margin-right: auto;
+  font-size: 0.85rem;
+  color: var(--gold);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+.ak-cat-more-link:hover { color: #A96E14; text-decoration: underline; }
+
 /* ── Results section ───────────────────────────────────── */
 .ak-results-section {
   background: var(--warm-white);
