@@ -54,13 +54,13 @@
         <input type="text" name="search" placeholder="ابحث بالعنوان أو المؤلف أو الكلمات المفتاحية..." autocomplete="off" required>
       </div>
       <div class="ak-search-toggle-row">
-        <label class="ak-switch" for="semantic_toggle_cb">
-          <input type="checkbox" class="ak-switch-input" id="semantic_toggle_cb" checked>
-          <span class="ak-switch-track"><span class="ak-switch-thumb"></span></span>
-          <span class="ak-switch-label">🧠 دلالي</span>
-        </label>
-        <span class="ak-info-icon" tabindex="0" data-tip="🧠 دلالي: يوسّع البحث تلقائياً ليشمل الجذور اللغوية والمرادفات واللهجة السودانية • 🔤 عادي: بحث نصي مباشر بالكلمة المُدخَلة فقط">i</span>
-        <input type="hidden" name="semantic" id="semantic_val" value="1">
+        <div class="ak-mode-seg">
+          <button type="button" class="ak-mode-btn" data-mode="normal">🔤 عادي</button>
+          <button type="button" class="ak-mode-btn ak-mode-active" data-mode="semantic">🧠 دلالي</button>
+          <button type="button" class="ak-mode-btn" data-mode="deep">🔬 عميق</button>
+        </div>
+        <input type="hidden" name="mode" id="mode_val" value="semantic">
+        <span class="ak-info-icon" tabindex="0" data-tip="🧠 البحث الدلالي: يوسّع بحثك تلقائياً ليشمل الجذور اللغوية والمرادفات واللهجة السودانية">i</span>
       </div>
     </div>
   </form>
@@ -253,21 +253,27 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-document.getElementById('semantic_toggle_cb').addEventListener('change', function() {
-  var on = this.checked;
-  document.getElementById('semantic_val').value = on ? '1' : '0';
-  document.querySelector('.ak-switch-label').textContent = on ? '🧠 دلالي' : '🔤 عادي';
-});
 (function() {
-  var TIP_ON  = '🧠 البحث الدلالي: يوسّع بحثك تلقائياً ليشمل الجذور اللغوية والمرادفات واللهجة السودانية';
-  var TIP_OFF = '🔤 البحث العادي: بحث مباشر بالنص المُدخَل فقط دون توسيع';
-  var popup = null;
-  var icons = document.querySelectorAll('.ak-info-icon');
-  var cb    = document.getElementById('semantic_toggle_cb');
-  function updateTips() {
-    var tip = cb && cb.checked ? TIP_ON : TIP_OFF;
-    icons.forEach(function(i) { i.setAttribute('data-tip', tip); });
-  }
+  var modeVal = document.getElementById('mode_val');
+  document.querySelectorAll('.ak-mode-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.ak-mode-btn').forEach(function(b) { b.classList.remove('ak-mode-active'); });
+      this.classList.add('ak-mode-active');
+      if (modeVal) modeVal.value = this.getAttribute('data-mode');
+    });
+  });
+})();
+(function() {
+  var TIPS = {
+    normal:   '🔤 البحث العادي: بحث مباشر بالنص المُدخَل فقط دون توسيع',
+    semantic: '🧠 البحث الدلالي: يوسّع بحثك تلقائياً ليشمل الجذور اللغوية والمرادفات واللهجة السودانية',
+    deep:     '🔬 البحث العميق: يبحث داخل نص الوثيقة كاملاً باستخدام تقنية OCR للمستندات'
+  };
+  var popup  = null;
+  var icons  = document.querySelectorAll('.ak-info-icon');
+  var modeEl = document.getElementById('mode_val');
+  function currentTip() { return TIPS[(modeEl && modeEl.value) || 'semantic'] || TIPS.semantic; }
+  function updateTips() { icons.forEach(function(i) { i.setAttribute('data-tip', currentTip()); }); }
   function showTip(icon) {
     hideTip();
     popup = document.createElement('div');
@@ -288,7 +294,10 @@ document.getElementById('semantic_toggle_cb').addEventListener('change', functio
     icon.addEventListener('focus',      function() { showTip(icon); });
     icon.addEventListener('blur',       hideTip);
   });
-  if (cb) { updateTips(); cb.addEventListener('change', updateTips); }
+  document.querySelectorAll('.ak-mode-btn').forEach(function(btn) {
+    btn.addEventListener('click', updateTips);
+  });
+  updateTips();
 })();
 </script>
 </body>
