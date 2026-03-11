@@ -349,6 +349,25 @@ body {
   line-height: 1.8;
 }
 
+/* ── OCR snippet (عميق mode) ────────────────────────────── */
+.ak-ocr-snippet {
+  font-size: 0.8rem;
+  color: var(--text-mid);
+  line-height: 1.7;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--warm-border);
+  direction: rtl;
+  text-align: right;
+}
+.ak-ocr-snippet mark {
+  background: #fff176;
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 2px;
+  font-weight: 600;
+}
+
 /* ── Category landing cards ─────────────────────────────── */
 .ak-cat-card {
   background: var(--white);

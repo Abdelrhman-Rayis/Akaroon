@@ -29,6 +29,33 @@ function sqlNorm($f) {
 	return $f;
 }
 
+
+/* ── OCR snippet extractor for عميق mode ─────────────────── */
+function makeSnippet(string $ocr, string $term, int $radius = 160): string {
+	if (empty($ocr) || empty($term)) return '';
+	// Strip YAML frontmatter
+	$ocr = preg_replace('/^---[\s\S]*?---\n/m', '', $ocr);
+	// Collapse whitespace
+	$ocr = trim(preg_replace('/\s+/u', ' ', $ocr));
+	// Find keyword position
+	$pos = mb_stripos($ocr, $term, 0, 'UTF-8');
+	if ($pos === false) {
+		return mb_substr($ocr, 0, $radius * 2, 'UTF-8') . '…';
+	}
+	$termLen = mb_strlen($term, 'UTF-8');
+	$total   = mb_strlen($ocr, 'UTF-8');
+	$start   = max(0, $pos - $radius);
+	$end     = min($total, $pos + $termLen + $radius);
+	$snippet = ($start > 0 ? '…' : '')
+	         . mb_substr($ocr, $start, $end - $start, 'UTF-8')
+	         . ($end < $total ? '…' : '');
+	// Escape HTML, then wrap keyword in <mark>
+	$snippet = htmlspecialchars($snippet, ENT_QUOTES, 'UTF-8');
+	$pat     = '/' . preg_quote(htmlspecialchars($term, ENT_QUOTES, 'UTF-8'), '/') . '/ui';
+	$snippet = preg_replace($pat, '<mark>$0</mark>', $snippet);
+	return $snippet;
+}
+
 if(isset($_POST["action"]))
 {
 	$query = "
@@ -79,6 +106,7 @@ if(isset($_POST["action"]))
 	$statement->execute();
 	$result = $statement->fetchAll();
 	$total_row = $statement->rowCount();
+	$snippet_term = isset($norm) ? $norm : '';
 	$output = '';
 	if($total_row > 0)
 	{
@@ -101,6 +129,9 @@ if(isset($_POST["action"]))
 							<div>🔬 '. htmlspecialchars($row['Field_of_research'], ENT_QUOTES, 'UTF-8') .'</div>
 						</div>
 					</div>
+				'. ($mode === 'deep' && !empty($row['ocr_text'])
+					? '<div class="ak-ocr-snippet">' . makeSnippet($row['ocr_text'], $snippet_term) . '</div>'
+					: '') .'
 				</div>
 			</div>
 			';
