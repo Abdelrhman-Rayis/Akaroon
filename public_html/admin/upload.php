@@ -7,15 +7,21 @@
  *                  Local filesystem in local dev (MEDIA_BASE_URL not set)
  * Cover image    : Manual upload  OR  auto-generated from PDF page 1 (Ghostscript)
  * DB             : akaroon_akaroondb — 7 real category tables (tas, edu, philo…)
- * UI             : Arabic / English bilingual, RTL
+ * UI             : Arabic / English bilingual, RTL, AJAX progress upload
  * ─────────────────────────────────────────────────────────────────────────────
+ * BUG FIXES (v2):
+ *   - org folder = 'منظمات' (NOT 'المنظمات') to match GCS bucket structure
+ *   - status = 0 on INSERT (0 = published; fetch_data.php queries WHERE status=0)
+ *   - AJAX upload with progress bar
+ *   - Recent uploads table (last 10 across all tables)
+ *   - Direct GCS PDF link in success response
  */
 
 /* ── 0. WordPress authentication ─────────────────────────────────────────── */
 require_once __DIR__ . '/../blog/wp-load.php';
 
 if ( ! is_user_logged_in() || ! current_user_can('administrator') ) {
-    auth_redirect();   // WordPress built-in: redirects to /blog/wp-login.php
+    auth_redirect();
     exit;
 }
 $wpUser = wp_get_current_user()->display_name;
@@ -32,12 +38,18 @@ try {
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
     );
 } catch (PDOException $e) {
+    if (isset($_GET['ajax'])) {
+        header('Content-Type: application/json');
+        echo json_encode(['ok' => false, 'msg' => 'DB error: ' . $e->getMessage()]);
+        exit;
+    }
     die('<p style="color:red;padding:2rem">DB connection failed: '
         . htmlspecialchars($e->getMessage()) . '</p>');
 }
 
 /* ── 2. Category map ──────────────────────────────────────────────────────── */
-// table_key => [GCS/filesystem folder (Arabic), Arabic label, English label]
+// table_key => [GCS/filesystem folder (Arabic), Arabic display label, English label]
+// IMPORTANT: 'org' folder is 'منظمات' (NO 'ال') to match GCS bucket structure
 const CATEGORIES = [
     'tas'   => ['التأصيل',   'الدراسات التأصيلية',   'Islamic Foundations'],
     'edu'   => ['التعليم',   'التعليم',               'Education'],
@@ -45,7 +57,7 @@ const CATEGORIES = [
     'pol'   => ['السياسة',   'السياسة',               'Politics'],
     'soc'   => ['المجتمع',   'المجتمع',               'Society'],
     'state' => ['الدولة',    'الدولة',                'The State'],
-    'org'   => ['المنظمات',  'المنظمات',              'Organisations'],
+    'org'   => ['منظمات',    'المنظمات',              'Organisations'],  // FIX: GCS folder = منظمات
 ];
 
 /* ── 3. Helper: next safe ID for a table ─────────────────────────────────── */
@@ -111,19 +123,29 @@ function generateCoverFromPdf(string $pdfPath, string $outJpg): bool {
     return $code === 0 && file_exists($outJpg) && filesize($outJpg) > 0;
 }
 
-/* ── 7. Pre-load next IDs for JS hint ────────────────────────────────────── */
+/* ── 7. Helper: recent uploads across all 7 tables ───────────────────────── */
+function getRecentUploads(PDO $pdo, int $limit = 10): array {
+    $unions = [];
+    foreach (array_keys(CATEGORIES) as $table) {
+        $catFolder = CATEGORIES[$table][0];
+        $catEn     = CATEGORIES[$table][2];
+        $unions[]  = "SELECT id, '{$table}' AS tbl, '{$catFolder}' AS folder, '{$catEn}' AS cat_en,
+                             The_Title_of_Paper_Book AS title, The_number_of_the_Author AS author, Year_of_issue AS year
+                      FROM `{$table}` ORDER BY id DESC LIMIT {$limit}";
+    }
+    $sql = "SELECT * FROM (" . implode(" UNION ALL ", $unions) . ") t ORDER BY id DESC LIMIT {$limit}";
+    return $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/* ── 8. Pre-load next IDs for JS hint ────────────────────────────────────── */
 $nextIds = [];
 foreach (array_keys(CATEGORIES) as $key) {
     $nextIds[$key] = nextId($pdo, $key);
 }
 
-/* ── 8. Handle POST ───────────────────────────────────────────────────────── */
-$msg = '';
-$msgType = '';
-$newDocId = null;
-$newDocCategory = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+/* ── 9. Handle AJAX POST ──────────────────────────────────────────────────── */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['ajax'])) {
+    header('Content-Type: application/json');
 
     $tableKey = $_POST['category']  ?? '';
     $title    = trim($_POST['title']    ?? '');
@@ -135,115 +157,121 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validate
     if (!array_key_exists($tableKey, CATEGORIES)) {
-        $msg = 'يرجى اختيار تصنيف صحيح / Please select a valid category.';
-        $msgType = 'danger';
-    } elseif (empty($title)) {
-        $msg = 'العنوان مطلوب / Title is required.';
-        $msgType = 'danger';
-    } elseif (empty($author)) {
-        $msg = 'اسم المؤلف مطلوب / Author name is required.';
-        $msgType = 'danger';
-    } elseif (empty($_FILES['pdf']['name']) || $_FILES['pdf']['error'] !== UPLOAD_ERR_OK) {
-        $msg = 'يرجى رفع ملف PDF / Please upload a PDF file.';
-        $msgType = 'danger';
-    } elseif (strtolower(pathinfo($_FILES['pdf']['name'], PATHINFO_EXTENSION)) !== 'pdf') {
-        $msg = 'الملف يجب أن يكون PDF / File must be a PDF.';
-        $msgType = 'danger';
-    } else {
-        [$catFolder, $catAr, $catEn] = CATEGORIES[$tableKey];
-
-        $pdo->beginTransaction();
-        $tmpPdf = null;
-        $tmpJpg = null;
-
-        try {
-            $newId  = nextId($pdo, $tableKey);
-            $tmpPdf = sys_get_temp_dir() . "/{$newId}_upload.pdf";
-            $tmpJpg = sys_get_temp_dir() . "/{$newId}_cover.jpg";
-
-            // Save PDF to tmp
-            if (!move_uploaded_file($_FILES['pdf']['tmp_name'], $tmpPdf)) {
-                throw new Exception('Could not save uploaded PDF / تعذّر حفظ ملف PDF');
-            }
-
-            // Cover image: manual upload OR auto-generate via Ghostscript
-            $hasCover = false;
-            if (!empty($_FILES['cover']['name']) && $_FILES['cover']['error'] === UPLOAD_ERR_OK) {
-                $ext = strtolower(pathinfo($_FILES['cover']['name'], PATHINFO_EXTENSION));
-                if (!in_array($ext, ['jpg', 'jpeg', 'png'])) {
-                    throw new Exception('صورة الغلاف يجب أن تكون JPG أو PNG / Cover must be JPG or PNG.');
-                }
-                move_uploaded_file($_FILES['cover']['tmp_name'], $tmpJpg);
-                $hasCover = true;
-            } else {
-                // Auto-generate from PDF page 1
-                $hasCover = generateCoverFromPdf($tmpPdf, $tmpJpg);
-            }
-
-            $mediaBase = getenv('MEDIA_BASE_URL');
-
-            if ($mediaBase) {
-                /* ── Production: upload to GCS ───────────────────────── */
-                $pdfGcs = "files/{$catFolder}/files/{$newId}.pdf";
-                if (!uploadToGcs($tmpPdf, $pdfGcs, 'application/pdf')) {
-                    throw new Exception('فشل رفع PDF إلى GCS / GCS PDF upload failed.');
-                }
-                if ($hasCover) {
-                    uploadToGcs($tmpJpg, "files/{$catFolder}/image/{$newId}.jpg", 'image/jpeg');
-                }
-            } else {
-                /* ── Local dev: save to filesystem ───────────────────── */
-                $pdfDir = __DIR__ . "/../files/{$catFolder}/files";
-                $imgDir = __DIR__ . "/../files/{$catFolder}/image";
-                @mkdir($pdfDir, 0755, true);
-                @mkdir($imgDir, 0755, true);
-                copy($tmpPdf, "{$pdfDir}/{$newId}.pdf");
-                if ($hasCover) copy($tmpJpg, "{$imgDir}/{$newId}.jpg");
-            }
-
-            // Clean tmp files
-            @unlink($tmpPdf);
-            @unlink($tmpJpg);
-
-            // Insert DB record — use real table columns
-            $stmt = $pdo->prepare("
-                INSERT INTO `{$tableKey}`
-                    (id, image, Category, The_Title_of_Paper_Book,
-                     The_number_of_the_Author, Year_of_issue,
-                     Place_of_issue, Field_of_research, Key_words, status)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
-            ");
-            $stmt->execute([
-                $newId,
-                $hasCover ? "{$newId}.jpg" : null,
-                $catFolder,
-                $title,
-                $author,
-                $year,
-                $place,
-                $field,
-                $keywords,
-            ]);
-
-            $pdo->commit();
-
-            $newDocId       = $newId;
-            $newDocCategory = $catFolder;
-            $msg     = "تمت الإضافة بنجاح / Successfully added — ID #{$newId}: {$title}";
-            $msgType = 'success';
-
-            // Refresh next IDs after successful insert
-            $nextIds[$tableKey] = $newId + 1;
-
-        } catch (Exception $e) {
-            $pdo->rollBack();
-            if ($tmpPdf) @unlink($tmpPdf);
-            if ($tmpJpg) @unlink($tmpJpg);
-            $msg     = 'خطأ / Error: ' . htmlspecialchars($e->getMessage());
-            $msgType = 'danger';
-        }
+        echo json_encode(['ok' => false, 'msg' => 'يرجى اختيار تصنيف صحيح / Please select a valid category.']); exit;
     }
+    if (empty($title)) {
+        echo json_encode(['ok' => false, 'msg' => 'العنوان مطلوب / Title is required.']); exit;
+    }
+    if (empty($author)) {
+        echo json_encode(['ok' => false, 'msg' => 'اسم المؤلف مطلوب / Author name is required.']); exit;
+    }
+    if (empty($_FILES['pdf']['name']) || $_FILES['pdf']['error'] !== UPLOAD_ERR_OK) {
+        echo json_encode(['ok' => false, 'msg' => 'يرجى رفع ملف PDF / Please upload a PDF file.']); exit;
+    }
+    if (strtolower(pathinfo($_FILES['pdf']['name'], PATHINFO_EXTENSION)) !== 'pdf') {
+        echo json_encode(['ok' => false, 'msg' => 'الملف يجب أن يكون PDF / File must be a PDF.']); exit;
+    }
+
+    [$catFolder, $catAr, $catEn] = CATEGORIES[$tableKey];
+
+    $pdo->beginTransaction();
+    $tmpPdf = null;
+    $tmpJpg = null;
+
+    try {
+        $newId  = nextId($pdo, $tableKey);
+        $tmpPdf = sys_get_temp_dir() . "/{$newId}_upload.pdf";
+        $tmpJpg = sys_get_temp_dir() . "/{$newId}_cover.jpg";
+
+        if (!move_uploaded_file($_FILES['pdf']['tmp_name'], $tmpPdf)) {
+            throw new Exception('Could not save uploaded PDF / تعذّر حفظ ملف PDF');
+        }
+
+        // Cover image
+        $hasCover = false;
+        if (!empty($_FILES['cover']['name']) && $_FILES['cover']['error'] === UPLOAD_ERR_OK) {
+            $ext = strtolower(pathinfo($_FILES['cover']['name'], PATHINFO_EXTENSION));
+            if (!in_array($ext, ['jpg', 'jpeg', 'png'])) {
+                throw new Exception('صورة الغلاف يجب أن تكون JPG أو PNG / Cover must be JPG or PNG.');
+            }
+            move_uploaded_file($_FILES['cover']['tmp_name'], $tmpJpg);
+            $hasCover = true;
+        } else {
+            $hasCover = generateCoverFromPdf($tmpPdf, $tmpJpg);
+        }
+
+        $mediaBase = getenv('MEDIA_BASE_URL');
+        $gcsBase   = 'https://storage.googleapis.com/akaroon-media';
+
+        if ($mediaBase) {
+            /* ── Production: upload to GCS ───────────────────────── */
+            $pdfGcs = "files/{$catFolder}/files/{$newId}.pdf";
+            if (!uploadToGcs($tmpPdf, $pdfGcs, 'application/pdf')) {
+                throw new Exception('فشل رفع PDF إلى GCS / GCS PDF upload failed.');
+            }
+            if ($hasCover) {
+                uploadToGcs($tmpJpg, "files/{$catFolder}/image/{$newId}.jpg", 'image/jpeg');
+            }
+            $pdfUrl = "{$gcsBase}/files/{$catFolder}/files/{$newId}.pdf";
+        } else {
+            /* ── Local dev: save to filesystem ───────────────────── */
+            $pdfDir = __DIR__ . "/../files/{$catFolder}/files";
+            $imgDir = __DIR__ . "/../files/{$catFolder}/image";
+            @mkdir($pdfDir, 0755, true);
+            @mkdir($imgDir, 0755, true);
+            copy($tmpPdf, "{$pdfDir}/{$newId}.pdf");
+            if ($hasCover) copy($tmpJpg, "{$imgDir}/{$newId}.jpg");
+            $pdfUrl = "/files/{$catFolder}/files/{$newId}.pdf";
+        }
+
+        @unlink($tmpPdf);
+        @unlink($tmpJpg);
+
+        // FIX: status = 0 (published). fetch_data.php queries WHERE status = 0.
+        $stmt = $pdo->prepare("
+            INSERT INTO `{$tableKey}`
+                (id, image, Category, The_Title_of_Paper_Book,
+                 The_number_of_the_Author, Year_of_issue,
+                 Place_of_issue, Field_of_research, Key_words, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
+        ");
+        $stmt->execute([
+            $newId,
+            $hasCover ? "{$newId}.jpg" : null,
+            $catFolder,
+            $title,
+            $author,
+            $year,
+            $place,
+            $field,
+            $keywords,
+        ]);
+
+        $pdo->commit();
+
+        echo json_encode([
+            'ok'       => true,
+            'id'       => $newId,
+            'title'    => $title,
+            'catAr'    => $catAr,
+            'catEn'    => $catEn,
+            'pdfUrl'   => $pdfUrl,
+            'searchUrl'=> "../files/{$catFolder}/search.php",
+            'nextId'   => $newId + 1,
+            'tableKey' => $tableKey,
+        ]);
+
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        if ($tmpPdf) @unlink($tmpPdf);
+        if ($tmpJpg) @unlink($tmpJpg);
+        echo json_encode(['ok' => false, 'msg' => 'خطأ / Error: ' . $e->getMessage()]);
+    }
+    exit;
 }
+
+/* ── 10. Load recent uploads for the HTML page ───────────────────────────── */
+$recentUploads = getRecentUploads($pdo, 10);
 ?>
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
@@ -253,7 +281,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <title>أكارون — رفع وثيقة | Akaroon Upload</title>
   <!-- Bootstrap 5 RTL -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
-  <link rel="stylesheet" href="../css/akaroon-theme.css">
+  <link rel="stylesheet" href="../css/akaroon-theme.css?v=<?= filemtime(__DIR__ . '/../css/akaroon-theme.css') ?>">
   <style>
     body { background: var(--black-bg); color: var(--text-light); }
 
@@ -265,7 +293,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .ak-admin-nav .user-badge strong { color:var(--gold); }
 
     /* ── Card ── */
-    .upload-card { max-width:820px; margin:2.5rem auto 4rem;
+    .upload-card { max-width:860px; margin:2.5rem auto 1.5rem;
       background:rgba(255,255,255,.04); border:1px solid var(--border-dark);
       border-radius:14px; padding:2.2rem 2.5rem; }
     .upload-card h2 { color:var(--gold); border-bottom:1px solid var(--border-dark);
@@ -309,16 +337,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .btn-upload:hover { opacity:.88; }
     .btn-upload:disabled { opacity:.45; cursor:not-allowed; }
 
-    /* ── Success box ── */
+    /* ── Progress bar ── */
+    #progressWrap { display:none; margin-top:1rem; }
+    #progressWrap .prog-label { font-size:.85rem; color:#aaa; margin-bottom:.4rem; }
+    .progress { height:10px; background:#1e1e1e; border-radius:6px; overflow:hidden; }
+    .progress-bar { background:var(--gold); transition:width .2s ease; }
+
+    /* ── Result boxes ── */
+    #resultBox { display:none; margin-top:1rem; }
     .success-box { background:rgba(76,175,80,.1); border:1px solid #4caf50;
-      border-radius:10px; padding:1.2rem 1.5rem; margin-bottom:1.5rem; }
-    .success-box .doc-link { color:#81c784; text-decoration:underline; }
-    .success-box .doc-link:hover { color:#a5d6a7; }
+      border-radius:10px; padding:1.2rem 1.5rem; }
+    .error-box { background:rgba(220,53,69,.1); border:1px solid #dc3545;
+      border-radius:10px; padding:1.2rem 1.5rem; }
+    .doc-link { color:#81c784; text-decoration:underline; }
+    .doc-link:hover { color:#a5d6a7; }
+    .gcs-link { color:#90caf9; text-decoration:underline; word-break:break-all; font-size:.85rem; }
 
     /* ── Section title ── */
     .section-title { font-size:.82rem; text-transform:uppercase; letter-spacing:.08em;
       color:#666; margin:1.4rem 0 .8rem; border-top:1px solid var(--border-dark);
       padding-top:1rem; }
+
+    /* ── Recent uploads table ── */
+    .recent-card { max-width:860px; margin:0 auto 4rem;
+      background:rgba(255,255,255,.03); border:1px solid var(--border-dark);
+      border-radius:14px; padding:1.5rem 2rem; }
+    .recent-card h3 { color:#aaa; font-size:1rem; margin-bottom:1rem;
+      border-bottom:1px solid var(--border-dark); padding-bottom:.7rem; }
+    .recent-table { width:100%; border-collapse:collapse; font-size:.85rem; }
+    .recent-table th { color:#666; font-weight:500; padding:.45rem .6rem;
+      border-bottom:1px solid var(--border-dark); text-align:right; }
+    .recent-table td { padding:.45rem .6rem; border-bottom:1px solid rgba(255,255,255,.04);
+      color:#ccc; vertical-align:middle; }
+    .recent-table tr:last-child td { border-bottom:none; }
+    .recent-table .cat-badge { display:inline-block; background:rgba(198,168,124,.1);
+      border:1px solid rgba(198,168,124,.3); color:var(--gold);
+      border-radius:4px; padding:.1rem .4rem; font-size:.78rem; }
+    .recent-table .id-num { color:#555; font-size:.8rem; }
+    .recent-table a { color:#90caf9; text-decoration:none; }
+    .recent-table a:hover { text-decoration:underline; }
   </style>
 </head>
 <body>
@@ -337,27 +394,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <h2>📤 رفع وثيقة جديدة <span style="font-size:.85rem;font-weight:400;color:#888">/ Add New Document</span></h2>
 
-    <!-- Success -->
-    <?php if ($msgType === 'success' && $newDocId): ?>
-    <div class="success-box">
-      <strong style="color:#81c784">✓ <?= htmlspecialchars($msg) ?></strong><br>
-      <div class="mt-2" style="font-size:.88rem">
-        <?php
-          $searchUrl = "../files/{$newDocCategory}/search.php";
-        ?>
-        <a class="doc-link" href="<?= htmlspecialchars($searchUrl) ?>" target="_blank">
-          عرض الفئة / View Category ↗
-        </a>
-      </div>
-    </div>
-    <?php elseif ($msg): ?>
-    <div class="alert alert-<?= $msgType ?> alert-dismissible fade show" role="alert">
-      <?= htmlspecialchars($msg) ?>
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    <?php endif; ?>
+    <!-- Result box (filled by JS after AJAX) -->
+    <div id="resultBox"></div>
 
-    <form method="post" enctype="multipart/form-data" id="uploadForm">
+    <form id="uploadForm" enctype="multipart/form-data">
 
       <!-- Category -->
       <div class="mb-3">
@@ -365,9 +405,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <select name="category" class="form-select" id="categorySelect" required>
           <option value="">— اختر / Select —</option>
           <?php foreach (CATEGORIES as $key => [$folder, $arLabel, $enLabel]): ?>
-          <option value="<?= $key ?>"
-            data-next="<?= $nextIds[$key] ?>"
-            <?= (($_POST['category'] ?? '') === $key) ? 'selected' : '' ?>>
+          <option value="<?= $key ?>" data-next="<?= $nextIds[$key] ?>">
             <?= htmlspecialchars($arLabel) ?> / <?= htmlspecialchars($enLabel) ?>
           </option>
           <?php endforeach; ?>
@@ -384,8 +422,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="mb-3">
         <label class="field-label" for="title">عنوان البحث / الكتاب <span class="en">/ Title *</span></label>
         <input type="text" name="title" id="title" class="form-control" required
-          placeholder="مثال: الوسطية التشريعية الإسلامية"
-          value="<?= htmlspecialchars($_POST['title'] ?? '') ?>">
+          placeholder="مثال: الوسطية التشريعية الإسلامية">
       </div>
 
       <!-- Author + Year -->
@@ -393,14 +430,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="col-md-7">
           <label class="field-label" for="author">اسم المؤلف <span class="en">/ Author *</span></label>
           <input type="text" name="author" id="author" class="form-control" required
-            placeholder="مثال: أحمد عبد الله"
-            value="<?= htmlspecialchars($_POST['author'] ?? '') ?>">
+            placeholder="مثال: أحمد عبد الله">
         </div>
         <div class="col-md-5">
           <label class="field-label" for="year">سنة الإصدار <span class="en">/ Year</span></label>
-          <input type="text" name="year" id="year" class="form-control"
-            placeholder="مثال: 2024"
-            value="<?= htmlspecialchars($_POST['year'] ?? '') ?>">
+          <input type="text" name="year" id="year" class="form-control" placeholder="مثال: 2024">
         </div>
       </div>
 
@@ -408,15 +442,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="row g-3 mb-3">
         <div class="col-md-6">
           <label class="field-label" for="place">مكان الإصدار <span class="en">/ Place of Issue</span></label>
-          <input type="text" name="place" id="place" class="form-control"
-            placeholder="مثال: الخرطوم"
-            value="<?= htmlspecialchars($_POST['place'] ?? '') ?>">
+          <input type="text" name="place" id="place" class="form-control" placeholder="مثال: الخرطوم">
         </div>
         <div class="col-md-6">
           <label class="field-label" for="field">مجال البحث <span class="en">/ Field of Research</span></label>
-          <input type="text" name="field" id="field" class="form-control"
-            placeholder="مثال: الدراسات الإسلامية"
-            value="<?= htmlspecialchars($_POST['field'] ?? '') ?>">
+          <input type="text" name="field" id="field" class="form-control" placeholder="مثال: الدراسات الإسلامية">
         </div>
       </div>
 
@@ -424,8 +454,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="mb-3">
         <label class="field-label" for="keywords">الكلمات المفتاحية <span class="en">/ Keywords</span></label>
         <input type="text" name="keywords" id="keywords" class="form-control"
-          placeholder="مثال: فقه، شريعة، تشريع (مفصولة بفاصلة)"
-          value="<?= htmlspecialchars($_POST['keywords'] ?? '') ?>">
+          placeholder="مثال: فقه، شريعة، تشريع (مفصولة بفاصلة)">
       </div>
 
       <!-- File uploads -->
@@ -460,9 +489,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       </div>
 
+      <!-- Progress bar (shown during upload) -->
+      <div id="progressWrap">
+        <div class="prog-label">
+          <span id="progText">جارٍ الرفع... / Uploading...</span>
+          <span id="progPct" style="float:left;color:var(--gold);font-weight:600"></span>
+        </div>
+        <div class="progress">
+          <div class="progress-bar" id="progressBar" role="progressbar" style="width:0%"></div>
+        </div>
+      </div>
+
       <!-- Submit -->
-      <button type="submit" class="btn-upload" id="submitBtn">
-        🚀 &nbsp; رفع وإضافة إلى المكتبة / Upload & Add to Library
+      <button type="submit" class="btn-upload mt-3" id="submitBtn">
+        🚀 &nbsp; رفع وإضافة إلى المكتبة / Upload &amp; Add to Library
       </button>
       <p class="mt-2 text-center" style="font-size:.78rem;color:#555">
         سيتم تخصيص رقم معرّف تلقائي وتسمية الملفات وحفظها في المكان الصحيح
@@ -471,6 +511,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     </form>
   </div><!-- /upload-card -->
+
+  <!-- ── Recent Uploads ─────────────────────────────────────────────────── -->
+  <div class="recent-card" id="recentCard">
+    <h3>🕒 آخر الوثائق المضافة <span style="font-size:.85rem;color:#555">/ Recently Added (last 10)</span></h3>
+    <?php if (empty($recentUploads)): ?>
+      <p style="color:#555;font-size:.88rem">لا توجد وثائق حتى الآن / No documents yet.</p>
+    <?php else: ?>
+    <table class="recent-table" id="recentTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>العنوان / Title</th>
+          <th>المؤلف / Author</th>
+          <th>التصنيف / Category</th>
+          <th>PDF</th>
+        </tr>
+      </thead>
+      <tbody id="recentBody">
+        <?php foreach ($recentUploads as $r):
+          $gcsUrl = 'https://storage.googleapis.com/akaroon-media/files/'
+                  . urlencode($r['folder']) . '/files/' . $r['id'] . '.pdf';
+        ?>
+        <tr>
+          <td class="id-num"><?= (int)$r['id'] ?></td>
+          <td><?= htmlspecialchars(mb_strimwidth($r['title'] ?? '—', 0, 55, '…')) ?></td>
+          <td><?= htmlspecialchars(mb_strimwidth($r['author'] ?? '—', 0, 30, '…')) ?></td>
+          <td><span class="cat-badge"><?= htmlspecialchars($r['cat_en']) ?></span></td>
+          <td><a href="<?= htmlspecialchars($gcsUrl) ?>" target="_blank">PDF ↗</a></td>
+        </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+    <?php endif; ?>
+  </div>
+
 </div><!-- /container -->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -489,8 +564,6 @@ categorySelect.addEventListener('change', function () {
     idRow.style.display = 'none';
   }
 });
-// Init on page load (for retained POST value)
-if (categorySelect.value) categorySelect.dispatchEvent(new Event('change'));
 
 /* ── File drop zone labels ───────────────────────────────────────────────── */
 function wireDropZone(inputId, zoneId, labelId) {
@@ -502,6 +575,9 @@ function wireDropZone(inputId, zoneId, labelId) {
       label.textContent = '✓ ' + this.files[0].name;
       zone.classList.add('has-file');
     } else {
+      label.innerHTML = zoneId === 'pdfZone'
+        ? 'اضغط لاختيار ملف PDF<br><small>Click to choose PDF</small>'
+        : 'اضغط لاختيار صورة<br><small>Click to choose image</small>';
       zone.classList.remove('has-file');
     }
   });
@@ -509,12 +585,143 @@ function wireDropZone(inputId, zoneId, labelId) {
 wireDropZone('pdfInput',   'pdfZone',   'pdfLabel');
 wireDropZone('coverInput', 'coverZone', 'coverLabel');
 
-/* ── Prevent double-submit ───────────────────────────────────────────────── */
-document.getElementById('uploadForm').addEventListener('submit', function () {
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.textContent = '⏳ جارٍ الرفع... / Uploading...';
+/* ── AJAX Upload with progress bar ──────────────────────────────────────── */
+document.getElementById('uploadForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+
+  const form       = this;
+  const submitBtn  = document.getElementById('submitBtn');
+  const progWrap   = document.getElementById('progressWrap');
+  const progBar    = document.getElementById('progressBar');
+  const progPct    = document.getElementById('progPct');
+  const progText   = document.getElementById('progText');
+  const resultBox  = document.getElementById('resultBox');
+
+  // Reset UI
+  resultBox.style.display = 'none';
+  resultBox.innerHTML = '';
+  submitBtn.disabled = true;
+  submitBtn.textContent = '⏳ جارٍ الرفع... / Uploading...';
+  progWrap.style.display = 'block';
+  progBar.style.width = '0%';
+  progPct.textContent = '0%';
+
+  const data = new FormData(form);
+  const xhr  = new XMLHttpRequest();
+
+  // Progress event — tracks bytes sent to server
+  xhr.upload.addEventListener('progress', function (ev) {
+    if (ev.lengthComputable) {
+      const pct = Math.round((ev.loaded / ev.total) * 100);
+      progBar.style.width = pct + '%';
+      progPct.textContent = pct + '%';
+      if (pct >= 100) {
+        progText.textContent = 'جارٍ المعالجة... / Processing on server...';
+      }
+    }
+  });
+
+  xhr.addEventListener('load', function () {
+    progWrap.style.display = 'none';
+    submitBtn.disabled = false;
+    submitBtn.textContent = '🚀   رفع وإضافة إلى المكتبة / Upload & Add to Library';
+
+    let res;
+    try { res = JSON.parse(xhr.responseText); }
+    catch (err) {
+      showError('خطأ في الاستجابة / Unexpected server response.');
+      return;
+    }
+
+    if (res.ok) {
+      showSuccess(res);
+      updateNextId(res.tableKey, res.nextId);
+      prependToRecentTable(res);
+      form.reset();
+      // Reset drop zones
+      ['pdfZone','coverZone'].forEach(id => document.getElementById(id).classList.remove('has-file'));
+      document.getElementById('pdfLabel').innerHTML = 'اضغط لاختيار ملف PDF<br><small>Click to choose PDF</small>';
+      document.getElementById('coverLabel').innerHTML = 'اضغط لاختيار صورة<br><small>Click to choose image</small>';
+      idRow.style.display = 'none';
+    } else {
+      showError(res.msg || 'خطأ غير معروف / Unknown error.');
+    }
+  });
+
+  xhr.addEventListener('error', function () {
+    progWrap.style.display = 'none';
+    submitBtn.disabled = false;
+    submitBtn.textContent = '🚀   رفع وإضافة إلى المكتبة / Upload & Add to Library';
+    showError('فشل الاتصال / Network error. Please try again.');
+  });
+
+  xhr.open('POST', '?ajax=1');
+  xhr.send(data);
 });
+
+function showSuccess(res) {
+  const resultBox = document.getElementById('resultBox');
+  resultBox.style.display = 'block';
+  resultBox.innerHTML = `
+    <div class="success-box">
+      <strong style="color:#81c784">✓ تمت الإضافة بنجاح / Successfully added — ID #${res.id}</strong>
+      <div class="mt-2" style="font-size:.88rem">
+        <strong style="color:#ccc">${escHtml(res.title)}</strong>
+        &nbsp;·&nbsp; <span style="color:#888">${escHtml(res.catEn)}</span>
+      </div>
+      <div class="mt-2" style="font-size:.83rem">
+        📄 <a class="gcs-link" href="${escHtml(res.pdfUrl)}" target="_blank">${escHtml(res.pdfUrl)}</a>
+      </div>
+      <div class="mt-2" style="font-size:.83rem">
+        <a class="doc-link" href="${escHtml(res.searchUrl)}" target="_blank">عرض الفئة / View Category ↗</a>
+      </div>
+    </div>`;
+  resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function showError(msg) {
+  const resultBox = document.getElementById('resultBox');
+  resultBox.style.display = 'block';
+  resultBox.innerHTML = `<div class="error-box"><strong style="color:#ef9a9a">✗ ${escHtml(msg)}</strong></div>`;
+  resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function updateNextId(tableKey, nextId) {
+  document.querySelectorAll('#categorySelect option').forEach(opt => {
+    if (opt.value === tableKey) opt.dataset.next = nextId;
+  });
+  if (categorySelect.value === tableKey) idBadge.textContent = '#' + nextId;
+}
+
+function prependToRecentTable(res) {
+  const tbody = document.getElementById('recentBody');
+  if (!tbody) return;
+
+  // Build GCS URL
+  const catFolder = document.querySelector(`#categorySelect option[value="${res.tableKey}"]`)
+                              ?.text.split(' / ')[0] || '';
+  const gcsUrl = res.pdfUrl;
+
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td class="id-num">${res.id}</td>
+    <td>${escHtml(res.title.substring(0, 55))}</td>
+    <td>—</td>
+    <td><span class="cat-badge">${escHtml(res.catEn)}</span></td>
+    <td><a href="${escHtml(gcsUrl)}" target="_blank">PDF ↗</a></td>`;
+
+  tbody.insertBefore(tr, tbody.firstChild);
+  // Remove the last row if > 10
+  while (tbody.rows.length > 10) tbody.deleteRow(tbody.rows.length - 1);
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
 </script>
 </body>
 </html>
