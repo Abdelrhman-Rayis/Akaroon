@@ -150,16 +150,24 @@ function generateCoverFromPdf(string $pdfPath, string $outJpg): bool {
 
 /* ── Helper: recent uploads ───────────────────────────────────────────────── */
 function getRecentUploads(PDO $pdo, int $limit = 10): array {
-    $unions = [];
+    $all = [];
     foreach (array_keys(CATEGORIES) as $table) {
         [$folder, , $catEn] = CATEGORIES[$table];
-        // Each SELECT must be wrapped in () when using ORDER BY/LIMIT inside a UNION derived table
-        $unions[] = "(SELECT id, '{$table}' AS tbl, '{$folder}' AS folder, '{$catEn}' AS cat_en,
-                             The_Title_of_Paper_Book AS title, The_number_of_the_Author AS author
-                      FROM `{$table}` ORDER BY id DESC LIMIT {$limit})";
+        $stmt = $pdo->query(
+            "SELECT id,
+                    The_Title_of_Paper_Book  AS title,
+                    The_number_of_the_Author AS author,
+                    '{$table}'  AS tbl,
+                    '{$folder}' AS folder,
+                    '{$catEn}'  AS cat_en
+             FROM `{$table}`
+             ORDER BY id DESC
+             LIMIT {$limit}"
+        );
+        $all = array_merge($all, $stmt->fetchAll(PDO::FETCH_ASSOC));
     }
-    $sql = "SELECT * FROM (" . implode(" UNION ALL ", $unions) . ") t ORDER BY id DESC LIMIT {$limit}";
-    return $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    usort($all, fn($a, $b) => (int)$b['id'] - (int)$a['id']);
+    return array_slice($all, 0, $limit);
 }
 
 /* ── Next IDs for JS ──────────────────────────────────────────────────────── */
