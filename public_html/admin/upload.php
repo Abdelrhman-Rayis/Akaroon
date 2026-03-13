@@ -153,9 +153,10 @@ function getRecentUploads(PDO $pdo, int $limit = 10): array {
     $unions = [];
     foreach (array_keys(CATEGORIES) as $table) {
         [$folder, , $catEn] = CATEGORIES[$table];
-        $unions[] = "SELECT id, '{$table}' AS tbl, '{$folder}' AS folder, '{$catEn}' AS cat_en,
-                            The_Title_of_Paper_Book AS title, The_number_of_the_Author AS author
-                     FROM `{$table}` ORDER BY id DESC LIMIT {$limit}";
+        // Each SELECT must be wrapped in () when using ORDER BY/LIMIT inside a UNION derived table
+        $unions[] = "(SELECT id, '{$table}' AS tbl, '{$folder}' AS folder, '{$catEn}' AS cat_en,
+                             The_Title_of_Paper_Book AS title, The_number_of_the_Author AS author
+                      FROM `{$table}` ORDER BY id DESC LIMIT {$limit})";
     }
     $sql = "SELECT * FROM (" . implode(" UNION ALL ", $unions) . ") t ORDER BY id DESC LIMIT {$limit}";
     return $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
