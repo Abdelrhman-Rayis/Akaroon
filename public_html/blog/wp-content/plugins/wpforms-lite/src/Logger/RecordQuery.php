@@ -1,5 +1,8 @@
 <?php
 
+// phpcs:ignore Generic.Commenting.DocComment.MissingShort
+/** @noinspection PhpIllegalPsrClassPathInspection */
+
 namespace WPForms\Logger;
 
 /**
@@ -24,13 +27,11 @@ class RecordQuery {
 	public function get( $limit, $offset = 0, $search = '', $type = '' ) {
 
 		global $wpdb;
-		//phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
-		//phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+		//phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 		return (array) $wpdb->get_results(
 			$this->build_query( $limit, $offset, $search, $type )
 		);
-		//phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
-		//phpcs:enable WordPress.DB.PreparedSQL.NotPrepared
+		//phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 	/**
@@ -51,6 +52,7 @@ class RecordQuery {
 
 		$sql   = 'SELECT SQL_CALC_FOUND_ROWS * FROM ' . Repository::get_table_name();
 		$where = [];
+
 		if ( ! empty( $search ) ) {
 			$where[] = $wpdb->prepare(
 				'`title` REGEXP %s OR `message` REGEXP %s',
@@ -58,16 +60,19 @@ class RecordQuery {
 				$search
 			);
 		}
+
 		if ( ! empty( $type ) ) {
 			$where[] = $wpdb->prepare(
 				'`types` REGEXP %s',
 				$type
 			);
 		}
+
 		if ( $where ) {
 			$sql .= ' WHERE ' . implode( ' AND ', $where );
 		}
-		$sql .= ' ORDER BY `id` DESC';
+
+		$sql .= ' ORDER BY `create_at` DESC, `id` DESC';
 		$sql .= $wpdb->prepare( ' LIMIT %d, %d', absint( $offset ), absint( $limit ) );
 
 		return $sql;

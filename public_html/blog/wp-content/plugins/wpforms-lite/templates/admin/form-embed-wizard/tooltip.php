@@ -18,8 +18,8 @@ if ( ! \defined( 'ABSPATH' ) ) {
 			<p>
 				<?php
 				printf(
-					wp_kses( /* translators: %s - Link to the WPForms documentation page. */
-						__( 'Click the plus button, search for WPForms, click the block to<br>embed it. <a href="%s" target="_blank" rel="noopener noreferrer">Learn More</a>.', 'wpforms-lite' ),
+					wp_kses( /* translators: %s - link to the WPForms documentation page. */
+						__( 'Click the plus button, search for WPForms, click the block to<br>embed it. <a href="%s" target="_blank" rel="noopener noreferrer">Learn More</a>', 'wpforms-lite' ),
 						[
 							'a'  => [
 								'href'   => [],

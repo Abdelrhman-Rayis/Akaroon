@@ -18,7 +18,7 @@
     </div>
     <script type="text/javascript">
       (function(jContainer) {
-        var ajaxurl = '<?php echo(admin_url('admin-ajax.php'));?>', id = '<?php echo($fb3d['question']['id']);?>';
+        var ajaxurl = '<?php echo(esc_js(admin_url('admin-ajax.php')));?>', id = '<?php echo(esc_js($fb3d['question']['id']));?>';
         var send = function(state) {
           jQuery.ajax({
             type: 'post',
@@ -26,6 +26,7 @@
             url: ajaxurl,
             data: {
              action: 'fb3d_receive_question_answer',
+             fb3d_nonce: '<?php echo(esc_js(wp_create_nonce(NONCE)));?>',
              question: {
                id: id,
                state: state
@@ -66,7 +67,7 @@
         }
       }
       if($aq) {
-        $r = $wpdb->get_row("SELECT DATEDIFF(now(),post_date) as days FROM {$wpdb->posts} WHERE post_type = '".POST_ID."' ORDER BY post_date ASC LIMIT 0, 1");
+        $r = $wpdb->get_row($wpdb->prepare("SELECT DATEDIFF(now(),post_date) as days FROM $wpdb->posts WHERE post_type = %s ORDER BY post_date ASC LIMIT 0, 1", POST_ID));
         $r = $r? intval($r->days): 0;
         if($r>9) {
           $fb3d['question'] = $aq;

@@ -1,7 +1,22 @@
+<?php
+/**
+ * Jetpack_Flickr_Widget frontend widget output.
+ *
+ * @html-template Jetpack_Flickr_Widget::widget
+ * @package automattic/jetpack
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
+// phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable -- HTML template, let Phan handle it.
+
+?>
 <!-- Start of Flickr Widget -->
 <div class="flickr-wrapper flickr-size-<?php echo esc_attr( $instance['flickr_image_size'] ); ?>">
 	<div class="flickr-images">
-		<?php echo $photos; ?>
+		<?php echo $photos; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaping handled in Jetpack_Flickr_Widget class. ?>
 	</div>
 
 	<?php if ( isset( $flickr_home ) ) { ?>

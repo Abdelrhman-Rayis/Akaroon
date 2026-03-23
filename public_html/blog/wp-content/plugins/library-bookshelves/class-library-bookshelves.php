@@ -1,11 +1,16 @@
 <?php
 /**
- * Plugin Name: Library Bookshelves
- * Description: Create bookshelves that link to your library catalog. Use shortcodes and widgets to display book covers in Slick carousels.
- * Version:     4.26
- * Author:      Guilderland Public Library
- * Author URI:  https://guilderlandlibrary.org
- * License: GPLv2 or later
+ * Plugin Name:       Library Bookshelves
+ * Plugin URI:        https://wordpress.org/plugins/library-bookshelves/
+ * Description:       Create bookshelves that link to your library catalog. Use shortcodes and to display book covers in carousels.
+ * Version:           5.11
+ * Requires at least: 4.6
+ * Requires PHP:      5.3
+ * Text Domain:       library-bookshelves
+ * Author:            Jon Lorang
+ * Author URI:        https://koan-design.com
+ * License:           GPLv2 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
@@ -13,16 +18,17 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 class Library_Bookshelves {
 	private static $instance;
 	public $settings;
-	public $widget;
+	public $option_name;
+	public $options;
 	public $version;
 	public $token;
 	public $file;
 	public $dir;
 	public $db_version;
 
-	public function __construct( $file = '', $version = '4.26' ) {
+	public function __construct( $file = '', $version = '5.11' ) {
 		$this->version = $version;
-		$this->db_version = 2;
+		$this->db_version = 3; // as of v5.0
 		$this->token = 'library_bookshelves';
 		$this->option_name = 'library_bookshelves';
 		$this->options = get_option( 'library_bookshelves' );
@@ -30,8 +36,8 @@ class Library_Bookshelves {
 		$this->dir = dirname( $this->file );
 
 		// Load frontend JS & CSS
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ), 10 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 10 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ), 10 );
 
 		// Load admin JS & CSS
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 10, 1 );
@@ -41,12 +47,13 @@ class Library_Bookshelves {
 		require_once dirname( __FILE__ ) . '/functions.php';
 		require_once dirname( __FILE__ ) . '/class-bookshelves-post-type.php';
 		require_once dirname( __FILE__ ) . '/class-bookshelves-settings.php';
-		require_once dirname( __FILE__ ) . '/class-bookshelves-widget.php';
 		require_once dirname( __FILE__ ) . '/class-bookshelves-shortcode.php';
 		require_once dirname( __FILE__ ) . '/bookshelves-taxonomy.php';
 
-		// Instantiate settings and widget classes
-		if ( ! $this->settings ) { $this->settings = Bookshelves_Settings::instance( $this ); }
+		// Instantiate settings
+		if ( ! $this->settings ) {
+			$this->settings = Bookshelves_Settings::instance( $this );
+		}
 
 		// Register (de)activation hooks
 		register_activation_hook( $this->file, array( $this, 'activate' ) );
@@ -60,13 +67,13 @@ class Library_Bookshelves {
 	}
 
 	public function enqueue_styles() {
-		wp_register_style( $this->token . '-frontend', plugin_dir_url( __FILE__ ) . 'css/bookshelves.css', array(), $this->version );
+		wp_register_style( $this->token . '-frontend', plugin_dir_url( __FILE__ ) . 'css/bookshelves.css', $this->version );
 		wp_enqueue_style( $this->token . '-frontend' );
 
-		wp_register_style( $this->token . '-user-custom', plugin_dir_url( __FILE__ ) . 'css/user-custom-css.php', array(), $this->version );
-		wp_enqueue_style( $this->token . '-user-custom' );
+		$custom_css = lbs_get_css_opts();
+		wp_add_inline_style( $this->token . '-frontend', $custom_css );
 
-		wp_register_style( $this->token . '-slick', plugin_dir_url( __FILE__ ) . 'slick/slick.css', array(), $this->version );
+		wp_register_style( $this->token . '-slick', plugin_dir_url( __FILE__ ) . 'slick/slick.css', $this->version );
 		wp_enqueue_style( $this->token . '-slick' );
 
 		wp_register_style( $this->token . '-slick-theme', plugin_dir_url( __FILE__ ) . 'slick/slick-theme.css', array(), $this->version );
@@ -74,8 +81,14 @@ class Library_Bookshelves {
 	}
 
 	public function enqueue_scripts() {
-		wp_register_script( $this->token . '-slick', plugin_dir_url( __FILE__ ) . 'slick/slick.min.js', array( 'jquery' ), $this->version );
+		wp_register_script( $this->token . '-slick', plugin_dir_url( __FILE__ ) . 'slick/slick.min.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->token . '-slick' );
+
+		// Divi theme fix
+		$template = get_option( "template" );
+		if( $template  == "Divi" ) {
+			wp_enqueue_script( $this->token . '-divifix', plugin_dir_url( __FILE__ ) . 'js/divifix.js', array( 'jquery'), $this->version, true );
+		}
 	}
 
 	public function admin_enqueue_scripts( $hook = '' ) {
@@ -84,14 +97,19 @@ class Library_Bookshelves {
 
 		wp_register_script( $this->token . '-slick', plugin_dir_url( __FILE__ ) . 'slick/slick.min.js', array( 'jquery' ), $this->version );
 		wp_enqueue_script( $this->token . '-slick' );
+
+		// Enable Media Library
+		wp_enqueue_media();
 	}
 
 	public function admin_enqueue_styles( $hook = '' ) {
-		wp_register_style( $this->token . '-admin', plugin_dir_url( __FILE__ ) . 'css/bookshelves.css', array(), $this->version );
+		wp_register_style( $this->token . '-admin', plugin_dir_url( __FILE__ ) . 'css/bookshelves.css', $this->version );
 		wp_enqueue_style( $this->token . '-admin' );
-		wp_register_style( $this->token . '-user-custom', plugin_dir_url( __FILE__ ) . 'css/user-custom-css.php', array(), $this->version );
-		wp_enqueue_style( $this->token . '-user-custom' );
-		wp_register_style( $this->token . '-slick', plugin_dir_url( __FILE__ ) . 'slick/slick.css', array(), $this->version );
+
+		$custom_css = lbs_get_css_opts();
+		wp_add_inline_style( $this->token . '-admin', $custom_css );
+
+		wp_register_style( $this->token . '-slick', plugin_dir_url( __FILE__ ) . 'slick/slick.css', $this->version );
 		wp_enqueue_style( $this->token . '-slick' );
 
 		wp_register_style( $this->token . '-slick-theme', plugin_dir_url( __FILE__ ) . 'slick/slick-theme.css', array(), $this->version );
@@ -116,15 +134,8 @@ class Library_Bookshelves {
 
 	public function upgrade( $current_db_version ) {
 		// Upgrade database options from earlier versions
-		if ( $current_db_version < 2 ) {
-			$posts = new WP_Query( array( 'post_type' => 'Bookshelves' ) );
-			while ( $posts->have_posts() ) {
-				$posts->the_post();
-				$id = get_the_ID();
-				$isbns = get_post_meta( $id, 'isbn_upc', true );
-				add_post_meta( $id, 'isbn', $isbns );
-				delete_post_meta( $id, 'isbn_upc' );
-			}
+		if ( $current_db_version < 3 ) {
+			// Nothing to do here now.
 		}
 	}
 
@@ -143,4 +154,4 @@ class Library_Bookshelves {
 	}
 }
 
-$library_bookshelves = Library_Bookshelves::instance( __FILE__, '4.26' );
+$library_bookshelves = Library_Bookshelves::instance( __FILE__, '5.11' );

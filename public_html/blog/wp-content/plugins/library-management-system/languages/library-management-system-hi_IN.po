@@ -1,0 +1,933 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Online Web Tutor <onlinewebtutorhub@gmail.com>, YEAR.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Library Management System 3.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/library-management-system\n"
+"POT-Creation-Date: 2024-05-28 16:01+0530\n"
+"PO-Revision-Date: 2024-05-30 17:26+0530\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: hi_IN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.3\n"
+
+msgid "Library System"
+msgstr "पुस्तकालय प्रणाली"
+
+msgid "Book(s) Return History"
+msgstr "पुस्तकें वापसी का इतिहास"
+
+msgid "Borrow a Book"
+msgstr "एक किताब उधार लेना"
+
+msgid "Book(s) Borrow History"
+msgstr "किताबें उधार इतिहास"
+
+msgid "Book(s) Return"
+msgstr "पुस्तकें वापसी"
+
+msgid "S No"
+msgstr "क्र. सं."
+
+msgid "User Details"
+msgstr "उपयोगकर्ता विवरण"
+
+msgid "Book Details"
+msgstr "पुस्तक विवरण"
+
+msgid "Borrow Details (Y-m-d)"
+msgstr "उधार विवरण (Y-m-d)"
+
+msgid "Fine Status"
+msgstr "जुर्माना स्थिति"
+
+msgid "Action"
+msgstr "कार्रवाई"
+
+msgid "Return Books"
+msgstr "पुस्तकें लौटाएँ"
+
+msgid "Return Date"
+msgstr "वापसी दिनांक"
+
+msgid "Branch"
+msgstr "शाखा"
+
+msgid "User"
+msgstr "उपयोगकर्ता"
+
+msgid "Borrowed Books"
+msgstr "उधार ली गई किताबें"
+
+msgid "Submit & Save"
+msgstr "सबमिट करें और सेव करें"
+
+msgid "Borrow Date"
+msgstr "उधार लेने की तिथि"
+
+msgid "Category"
+msgstr "वर्ग"
+
+msgid "Book"
+msgstr "किताब"
+
+msgid "Days"
+msgstr "दिन"
+
+msgid "-- Select Days --"
+msgstr "-- दिन चुनें --"
+
+msgid "Filter by:"
+msgstr "फिल्टर के द्वारा:"
+
+msgid "Borrow ID"
+msgstr "उधार आईडी"
+
+msgid "Status"
+msgstr "स्थिति"
+
+msgid "Name"
+msgstr "नाम"
+
+msgid "days"
+msgstr "दिन"
+
+msgid "Issued on"
+msgstr "जारी करने की तिथि"
+
+msgid "Return by"
+msgstr "वापसी की तिथि"
+
+msgid "Return Pending"
+msgstr "वापसी लंबित है"
+
+msgid "Returned"
+msgstr "वापस किया गया"
+
+msgid "Return"
+msgstr "वापस करना"
+
+msgid "Delete"
+msgstr "हटाएं"
+
+msgid "Total Days"
+msgstr "कुल दिन"
+
+msgid "Issued"
+msgstr "जारी किया गया"
+
+msgid "Returned with fine"
+msgstr "जुर्माने के साथ वापस किया गया"
+
+msgid "No fine"
+msgstr "कोई जुर्माना नहीं"
+
+msgid "Pay Fine"
+msgstr "जुर्माना भुगतान करें"
+
+msgid "List Book"
+msgstr "पुस्तक सूची"
+
+msgid "Add New Category"
+msgstr "नई श्रेणी जोड़ें"
+
+msgid "List Category"
+msgstr "श्रेणी सूची"
+
+msgid "Add New Book"
+msgstr "नई पुस्तक जोड़ें"
+
+msgid "Book List"
+msgstr "पुस्तक सूची"
+
+msgid "-- All --"
+msgstr "-- सभी --"
+
+msgid "Book ID"
+msgstr "पुस्तक आईडी"
+
+msgid "Basic Details"
+msgstr "बुनियादी विवरण"
+
+msgid "Stock Quantity"
+msgstr "स्टॉक मात्रा"
+
+msgid " Category"
+msgstr "श्रेणी"
+
+msgid "Add Category"
+msgstr "श्रेणी जोड़ें"
+
+msgid "-- Select Status --"
+msgstr "-- स्थिति चुनें --"
+
+msgid " Book"
+msgstr "किताब"
+
+msgid "Add Book"
+msgstr "पुस्तक जोड़ें"
+
+msgid "Bookcase"
+msgstr "पुस्तकालय"
+
+msgid "-- Select Bookcase --"
+msgstr "-- पुस्तकालय चुनें --"
+
+msgid "Section"
+msgstr "अनुभाग"
+
+msgid "Book Name"
+msgstr "पुस्तक का नाम"
+
+msgid "Author(s) Name"
+msgstr "लेखक का नाम"
+
+msgid "Publication Name"
+msgstr "प्रकाशन का नाम"
+
+msgid "Publication Year"
+msgstr "प्रकाशन वर्ष"
+
+msgid "Publication Location"
+msgstr "प्रकाशन स्थान"
+
+msgid "Cost"
+msgstr "लागत"
+
+msgid "ISBN"
+msgstr "आईएसबीएन"
+
+msgid "Book URL"
+msgstr "पुस्तक यूआरएल"
+
+msgid "Book Language"
+msgstr "पुस्तक की भाषा"
+
+msgid "Number of Pages"
+msgstr "पृष्ठों की संख्या"
+
+msgid "Description"
+msgstr "विवरण"
+
+msgid "Cover Image"
+msgstr "आवरण चित्र"
+
+msgid "Upload Cover Image"
+msgstr "आवरण चित्र अपलोड करें"
+
+msgid "Active"
+msgstr "सक्रिय"
+
+msgid "Inactive"
+msgstr "निष्क्रिय"
+
+msgid "View"
+msgstr "देखें"
+
+msgid "Edit"
+msgstr "संपादित करें"
+
+msgid "Category List"
+msgstr "श्रेणी सूची"
+
+msgid "Total Books"
+msgstr "कुल पुस्तकें"
+
+msgid "Created at"
+msgstr "बनाया गया"
+
+msgid "Premium Library Management System"
+msgstr "प्रीमियम पुस्तकालय प्रबंधन प्रणाली"
+
+msgid "Basic"
+msgstr "बुनियादी"
+
+msgid "Introduction"
+msgstr "परिचय"
+
+msgid "Welcome to the most advanced Library Management System (LMS) Plugin. Our LMS plugin is designed to streamline and enhance the management of libraries, offering an intuitive and powerful solution for organizing books, users, bookcases, transactions, etc. Whether you are running a small community library or a large institutional library, our plugin provides the tools you need to operate efficiently and effectively."
+msgstr "स्वागत है सबसे उन्नत पुस्तकालय प्रबंधन प्रणाली (LMS) प्लगइन में। हमारा LMS प्लगइन पुस्तकालयों के प्रबंधन को सरल और बेहतर बनाने के लिए डिज़ाइन किया गया है, जो पुस्तकों, उपयोगकर्ताओं, पुस्तकालयों, लेन-देन आदि को संगठित करने के लिए एक सहज और शक्तिशाली समाधान प्रदान करता है। चाहे आप एक छोटे सामुदायिक पुस्तकालय का संचालन कर रहे हों या एक बड़े संस्थागत पुस्तकालय का, हमारा प्लगइन आपको प्रभावी ढंग से और कुशलतापूर्वक संचालन के लिए आवश्यक उपकरण प्रदान करता है।"
+
+msgid "Features"
+msgstr "विशेषताएँ"
+
+msgid "Book Management"
+msgstr "पुस्तक प्रबंधन"
+
+msgid "(Unlimited)"
+msgstr "(असीमित)"
+
+msgid "Manage your library's collection with ease. Add, edit, and categorize books effortlessly."
+msgstr "अपने पुस्तकालय के संग्रह को आसानी से प्रबंधित करें। पुस्तकों को जोड़ें, संपादित करें, और श्रेणीबद्ध करें।"
+
+msgid "User Management"
+msgstr "उपयोगकर्ता प्रबंधन"
+
+msgid "Keep track of your library members, their borrow history, and contact details."
+msgstr "अपने पुस्तकालय सदस्यों, उनकी उधार इतिहास, और संपर्क विवरणों का ट्रैक रखें।"
+
+msgid "Transaction Tracking"
+msgstr "लेन-देन ट्रैकिंग"
+
+msgid "Monitor all borrow and return transactions with detailed logs and reporting features."
+msgstr "सभी उधार और वापसी लेन-देन को विस्तृत लॉग और रिपोर्टिंग सुविधाओं के साथ मॉनिटर करें।"
+
+msgid "Analytics and Reports"
+msgstr "विश्लेषण और रिपोर्ट"
+
+msgid "Generate insightful reports to understand usage patterns and improve library services."
+msgstr "उपयोग पैटर्न को समझने और पुस्तकालय सेवाओं को बेहतर बनाने के लिए सजीव रिपोर्ट तैयार करें।"
+
+msgid "Customizable Settings"
+msgstr "अनुकूलन योग्य सेटिंग्स"
+
+msgid "Tailor the plugin settings to fit the specific needs of your library."
+msgstr "अपने पुस्तकालय की विशिष्ट आवश्यकताओं के अनुसार प्लगइन सेटिंग्स को अनुकूलित करें।"
+
+msgid "Secure and Reliable"
+msgstr "सुरक्षित और विश्वसनीय"
+
+msgid "Ensure the safety and integrity of your library data with our secure system architecture."
+msgstr "हमारी सुरक्षित प्रणाली संरचना के साथ अपने पुस्तकालय डेटा की सुरक्षा और अखंडता सुनिश्चित करें।"
+
+msgid "Data Backup"
+msgstr "डेटा बैकअप"
+
+msgid "Safeguard your data by creating backups regularly with our plugin's data backup feature."
+msgstr "हमारे प्लगइन की डेटा बैकअप सुविधा के साथ नियमित रूप से बैकअप बनाकर अपने डेटा को सुरक्षित रखें।"
+
+msgid "Late Fine System"
+msgstr "देर से लौटाने पर जुर्माना प्रणाली"
+
+msgid "Implement a late fine system to manage overdue books and encourage timely returns."
+msgstr "अधूरी पुस्तकों को प्रबंधित करने और समय पर वापसी को प्रोत्साहित करने के लिए एक देर से लौटाने पर जुर्माना प्रणाली लागू करें।"
+
+msgid "Upload CSV and Save Data"
+msgstr "CSV अपलोड करें और डेटा सहेजें"
+
+msgid "Import CSV data files to LMS. Just follow some pattern to prepare data and feed into system."
+msgstr "LMS में CSV डेटा फ़ाइलें आयात करें। डेटा तैयार करने और सिस्टम में डालने के लिए बस कुछ पैटर्न का पालन करें।"
+
+msgid "Multilanguage Support"
+msgstr "बहुभाषी समर्थन"
+
+msgid "Use the plugin in multiple languages, making it accessible to a wider audience. More than 10 Languages it supports."
+msgstr "प्लगइन को कई भाषाओं में उपयोग करें, जिससे इसे व्यापक दर्शकों के लिए सुलभ बनाया जा सके। यह 10 से अधिक भाषाओं का समर्थन करता है।"
+
+msgid "Book Listing with Filters"
+msgstr "फ़िल्टर के साथ पुस्तक सूचीकरण"
+
+msgid "Create a frontend page to list all books with filters, enhancing user browsing experience. It also opens single book page view. Plugin Shortcodes."
+msgstr "सभी पुस्तकों को फ़िल्टर के साथ सूचीबद्ध करने के लिए एक फ्रंटएंड पृष्ठ बनाएं, जिससे उपयोगकर्ता ब्राउज़िंग अनुभव में सुधार हो सके। यह एकल पुस्तक पृष्ठ दृश्य भी खोलता है। प्लगइन शॉर्टकोड।"
+
+msgid "Check Book Availability"
+msgstr "पुस्तक उपलब्धता की जांच करें"
+
+msgid "Allow users to check the availability of books from the frontend page without login."
+msgstr "उपयोगकर्ताओं को लॉगिन के बिना फ्रंटएंड पृष्ठ से पुस्तकों की उपलब्धता की जांच करने की अनुमति दें।"
+
+msgid "Get Started with Our LMS Pro Plugin"
+msgstr "हमारे LMS प्रो प्लगइन के साथ शुरू करें"
+
+msgid "Experience the future of library management today. Download our LMS plugin and transform the way you manage your library."
+msgstr "आज ही पुस्तकालय प्रबंधन के भविष्य का अनुभव करें। हमारा LMS प्लगइन डाउनलोड करें और अपने पुस्तकालय के प्रबंधन के तरीके को बदलें।"
+
+msgid "Buy Premium Version"
+msgstr "प्रीमियम संस्करण खरीदें"
+
+msgid "Library Management System"
+msgstr "पुस्तकालय प्रबंधन प्रणाली"
+
+msgid "Free Vs Pro"
+msgstr "नि: शुल्क बनाम प्रो"
+
+msgid "What is LMS Plugin?"
+msgstr "LMS प्लगइन क्या है?"
+
+msgid "LMS is a WordPress plugin which is designed to streamline and enhance the management of libraries, offering an intuitive and powerful solution for organizing books, users, bookcases, transactions, etc. Whether you are running a small community library or a large institutional library, our plugin provides the tools you need to operate efficiently and effectively."
+msgstr "LMS एक वर्डप्रेस प्लगइन है जिसे पुस्तकालयों के प्रबंधन को सरल और बेहतर बनाने के लिए डिज़ाइन किया गया है। यह पुस्तकों, उपयोगकर्ताओं, पुस्तकालयों, लेन-देन आदि को संगठित करने के लिए एक सहज और शक्तिशाली समाधान प्रदान करता है। चाहे आप एक छोटे सामुदायिक पुस्तकालय का संचालन कर रहे हों या एक बड़े संस्थागत पुस्तकालय का, हमारा प्लगइन आपको प्रभावी ढंग से और कुशलतापूर्वक संचालन के लिए आवश्यक उपकरण प्रदान करता है।"
+
+msgid "Features Comparison"
+msgstr "विशेषताएं तुलना"
+
+msgid "Free Version"
+msgstr "नि: शुल्क संस्करण"
+
+msgid "Manage Categories (Up to 5)"
+msgstr "श्रेणियों का प्रबंधन (5 तक)"
+
+msgid "Manage Bookcases (Up to 5)"
+msgstr "पुस्तकालयों का प्रबंधन (5 तक)"
+
+msgid "Manage Sections (Up to 15)"
+msgstr "अनुभागों का प्रबंधन (15 तक)"
+
+msgid "Manage Books (Up to 15)"
+msgstr "पुस्तकों का प्रबंधन (15 तक)"
+
+msgid "Manage User Branches (Up to 5)"
+msgstr "उपयोगकर्ता शाखाओं का प्रबंधन (5 तक)"
+
+msgid "Manage LMS Users (Up to 15)"
+msgstr "LMS उपयोगकर्ताओं का प्रबंधन (15 तक)"
+
+msgid "Borrow a Single Book"
+msgstr "एक पुस्तक उधार लें"
+
+msgid "Track Book Transactions and History"
+msgstr "पुस्तक लेन-देन और इतिहास का ट्रैक करें"
+
+msgid "Manage User Late Fines"
+msgstr "उपयोगकर्ता देर से लौटाने पर जुर्माना प्रबंधित करें"
+
+msgid "Test Data Import Tool"
+msgstr "डेटा आयात उपकरण का परीक्षण करें"
+
+msgid "Generate Reports (PDF / Print / CSV) with Filters"
+msgstr "फ़िल्टर के साथ रिपोर्ट उत्पन्न करें (PDF / प्रिंट / CSV)"
+
+msgid "Multilingual Support (English / Hindi)"
+msgstr "बहुभाषी समर्थन (अंग्रेजी / हिंदी)"
+
+msgid "Pro Version (Basic)"
+msgstr "प्रो संस्करण (बुनियादी)"
+
+msgid "Manage Unlimited Categories"
+msgstr "असीमित श्रेणियों का प्रबंधन करें"
+
+msgid "Manage Unlimited Bookcases"
+msgstr "असीमित पुस्तकालयों का प्रबंधन करें"
+
+msgid "Manage Unlimited Sections"
+msgstr "असीमित अनुभागों का प्रबंधन करें"
+
+msgid "Manage Unlimited Books"
+msgstr "असीमित पुस्तकों का प्रबंधन करें"
+
+msgid "Manage Unlimited User Branches"
+msgstr "असीमित उपयोगकर्ता शाखाओं का प्रबंधन करें"
+
+msgid "Manage Unlimited LMS Users"
+msgstr "असीमित LMS उपयोगकर्ताओं का प्रबंधन करें"
+
+msgid "Borrow Multiple Books"
+msgstr "कई पुस्तकें उधार लें"
+
+msgid "Return Multiple Books"
+msgstr "कई पुस्तकें वापस करें"
+
+msgid "Multilingual Support (5 Languages: English, Hindi, Turkish, Vietnamese, Italian)"
+msgstr "बहुभाषी समर्थन (5 भाषाएँ: अंग्रेजी, हिंदी, तुर्की, वियतनामी, इतालवी)"
+
+msgid "Data Backup Tool (Export and Import)"
+msgstr "डेटा बैकअप उपकरण (निर्यात और आयात)"
+
+msgid "CSV Data Import"
+msgstr "CSV डेटा आयात"
+
+msgid "Book Listing with Filters (via Shortcode)"
+msgstr "फ़िल्टर के साथ पुस्तक सूचीकरण (शॉर्टकोड के माध्यम से)"
+
+msgid "Public LMS Page with Data Filters (Category, Book Availability)"
+msgstr "डेटा फ़िल्टर के साथ सार्वजनिक LMS पृष्ठ (श्रेणी, पुस्तक उपलब्धता)"
+
+msgid "Single Book Page View"
+msgstr "एकल पुस्तक पृष्ठ दृश्य"
+
+msgid "Customizable Settings (Borrow Days, Fines, Country, Currency, Data Backup, Shortcode)"
+msgstr "अनुकूलन योग्य सेटिंग्स (उधार दिन, जुर्माने, देश, मुद्रा, डेटा बैकअप, शॉर्टकोड)"
+
+msgid "Late Fine"
+msgstr "देर से लौटाने पर जुर्माना"
+
+msgid "Update Late Fine"
+msgstr "देर से लौटाने का जुर्माना अपडेट करें"
+
+msgid "Set Late Fine"
+msgstr "देर से लौटाने का जुर्माना सेट करें"
+
+msgid "All Settings"
+msgstr "सभी सेटिंग्स"
+
+msgid "Fine Amount"
+msgstr "जुर्माने की राशि"
+
+msgid "(Currency Unknown)"
+msgstr "(मुद्रा अज्ञात)"
+
+msgid "Settings"
+msgstr "सेटिंग्स"
+
+msgid "Run Test Data Importer"
+msgstr "परीक्षण डेटा आयातक चलाएं"
+
+msgid "Refresh it?"
+msgstr "क्या आप इसे ताज़ा करना चाहते हैं?"
+
+msgid "Remove Test Data?"
+msgstr "परीक्षण डेटा हटाएं?"
+
+msgid "Set Country & Currency"
+msgstr "देश और मुद्रा सेट करें"
+
+msgid "Configure Settings"
+msgstr "सेटिंग्स कॉन्फ़िगर करें"
+
+msgid "View Settings"
+msgstr "सेटिंग्स देखें"
+
+msgid "Country & Currency"
+msgstr "देश और मुद्रा"
+
+msgid "Update Data"
+msgstr "डेटा अपडेट करें"
+
+msgid "Add Data"
+msgstr "डेटा जोड़ें"
+
+msgid "Country"
+msgstr "देश"
+
+msgid "Currency"
+msgstr "मुद्रा"
+
+msgid "Country & Currency Settings"
+msgstr "देश और मुद्रा सेटिंग्स"
+
+msgid "Enter"
+msgstr "दर्ज करें"
+
+msgid "Download Sample CSVs"
+msgstr "नमूना CSV डाउनलोड करें"
+
+msgid "Module Type"
+msgstr "मॉड्यूल प्रकार"
+
+msgid "-- Select Module --"
+msgstr "-- मॉड्यूल का चयन करें --"
+
+msgid "Categories"
+msgstr "श्रेणियाँ"
+
+msgid "Bookcases"
+msgstr "पुस्तकालय"
+
+msgid "Sections"
+msgstr "खंड"
+
+msgid "Books"
+msgstr "पुस्तकें"
+
+msgid "Branches"
+msgstr "शाखाएँ"
+
+msgid "Users"
+msgstr "उपयोगकर्ता"
+
+msgid "Click to Download"
+msgstr "डाउनलोड करने के लिए क्लिक करें"
+
+msgid "Fine Amount:"
+msgstr "जुर्माने की राशि:"
+
+msgid "Welcome to Library Management System"
+msgstr "पुस्तकालय प्रबंधन प्रणाली में आपका स्वागत है"
+
+msgid "Free"
+msgstr "नि: शुल्क"
+
+msgid "Manage Books"
+msgstr "पुस्तकों का प्रबंधन"
+
+msgid "View Book"
+msgstr "पुस्तक देखें"
+
+msgid "Manage Users"
+msgstr "उपयोगकर्ताओं का प्रबंधन"
+
+msgid "View Users"
+msgstr "उपयोगकर्ताओं को देखें"
+
+msgid "Manage Bookcase"
+msgstr "पुस्तकालय का प्रबंधन करें"
+
+msgid "View Bookcases"
+msgstr "पुस्तकालयों को देखें"
+
+msgid "Transaction Reports"
+msgstr "लेन-देन रिपोर्ट्स"
+
+msgid "View Reports"
+msgstr "रिपोर्ट्स को देखें"
+
+msgid "List Branch"
+msgstr "शाखाएँ सूचीबद्ध करें"
+
+msgid "Add User Branch"
+msgstr "उपयोगकर्ता शाखा जोड़ें"
+
+msgid "Add New User"
+msgstr "नया उपयोगकर्ता जोड़ें"
+
+msgid "List User"
+msgstr "उपयोगकर्ताओं की सूची"
+
+msgid "Branch List"
+msgstr "शाखा सूची"
+
+msgid "Total Users"
+msgstr "कुल उपयोगकर्ता"
+
+msgid "Add New Branch"
+msgstr "नई शाखा जोड़ें"
+
+msgid "Add Branch"
+msgstr "शाखा जोड़ें"
+
+msgid "Branch Name"
+msgstr "शाखा का नाम"
+
+msgid "Select Status"
+msgstr "-- स्थिति चुनें --"
+
+msgid "Add User"
+msgstr "उपयोगकर्ता जोड़ें"
+
+msgid "User / Registration ID"
+msgstr "उपयोगकर्ता / पंजीकरण आईडी"
+
+msgid "Select Branch"
+msgstr "शाखा का चयन करें"
+
+msgid "Enter Name"
+msgstr "नाम दर्ज करें"
+
+msgid "Email"
+msgstr "ईमेल"
+
+msgid "Enter Email"
+msgstr "ईमेल दर्ज करें"
+
+msgid "Phone Number"
+msgstr " फ़ोन नंबर"
+
+msgid "Enter Phone Number"
+msgstr "फ़ोन नंबर दर्ज करें"
+
+msgid "Gender"
+msgstr "लिंग"
+
+msgid "Select Gender"
+msgstr "लिंग का चयन करें"
+
+msgid "Address"
+msgstr "पता"
+
+msgid "Enter Address"
+msgstr "पता दर्ज करें"
+
+msgid "Profile Image"
+msgstr "प्रोफ़ाइल छवि"
+
+msgid "Upload Profile Image"
+msgstr "प्रोफ़ाइल छवि अपलोड करें"
+
+msgid "User(s) List"
+msgstr "उपयोगकर्ता सूची"
+
+msgid "All"
+msgstr "सभी"
+
+msgid "User ID"
+msgstr "उपयोगकर्ता आईडी"
+
+msgid "<i>N/A</i>"
+msgstr "<i>N/A</i>"
+
+msgid "Add New Bookcase"
+msgstr "नई पुस्तकालय जोड़ें"
+
+msgid "List Section"
+msgstr "अनुभाग सूची"
+
+msgid "Add New Section"
+msgstr "नया अनुभाग जोड़ें"
+
+msgid "List Bookcase"
+msgstr "सूची बुककेस"
+
+msgid "Add Bookcase"
+msgstr "बुककेस जोड़ें"
+
+msgid "Total Section(s)"
+msgstr "कुल अनुभाग"
+
+msgid "Add Section"
+msgstr "अनुभाग जोड़ें"
+
+msgid "Library Management"
+msgstr "पुस्तकालय प्रबंधन"
+
+msgid "Dashboard"
+msgstr "डैशबोर्ड"
+
+msgid "Manage Bookcase & Section"
+msgstr "बुककेस और अनुभाग प्रबंधित करें"
+
+msgid "Book Transactions"
+msgstr "पुस्तक लेन-देन और इतिहास ट्रैक"
+
+msgid "Free Vs Pro LMS"
+msgstr "निःशुल्क बनाम प्रो एलएमएस"
+
+msgid "Upgrade to Pro"
+msgstr "प्रो में अपग्रेड"
+
+msgid "Branch name already taken"
+msgstr "शाखा का नाम पहले से लिया गया है"
+
+msgid "Successfully, Branch added to LMS"
+msgstr "शाखा को सफलतापूर्वक LMS में जोड़ दिया गया"
+
+msgid "Failed to add Branch"
+msgstr "शाखा जोड़ने में विफल"
+
+msgid "Sorry, No Credits Left.<br/>Upgrade to Pro Version of LMS."
+msgstr "क्षमा करें, कोई क्रेडिट नहीं बचा है।<br/> एलएमएस के प्रो संस्करण में अपग्रेड करें।"
+
+msgid "Branch value required"
+msgstr "शाखा मान आवश्यक"
+
+msgid "Successfully, Branch data updated"
+msgstr "शाखा डेटा सफलतापूर्वक अपडेट किया गया"
+
+msgid "Branch not found"
+msgstr "शाखा नहीं मिली"
+
+msgid "Invalid Operation"
+msgstr "अवैध ऑपरेशन"
+
+msgid "User already exists"
+msgstr "उपयोगकर्ता पहले से मौजूद है"
+
+msgid "Successfully, User added to LMS"
+msgstr "सफलतापूर्वक, उपयोगकर्ता को LMS में जोड़ा गया"
+
+msgid "Failed to add User"
+msgstr "उपयोगकर्ता जोड़ने में विफल"
+
+msgid "Required fields are missing"
+msgstr "आवश्यक फ़ील्ड गायब हैं"
+
+msgid "User ID already taken"
+msgstr "उपयोगकर्ता आईडी पहले ही ले ली गई है"
+
+msgid "Successfully, User data updated"
+msgstr "सफलतापूर्वक, उपयोगकर्ता डेटा अपडेट किया गया"
+
+msgid "User not found"
+msgstr "उपयोगकर्ता नहीं मिला"
+
+msgid " not found"
+msgstr " नहीं मिला"
+
+msgid "Failed to delete. There are number of rows of "
+msgstr "हटाने में विफल रहा। कुल पंक्तियों की संख्या है।"
+
+msgid "Data Module not found"
+msgstr "डेटा मॉड्यूल नहीं मिला"
+
+msgid "Bookcase name already taken"
+msgstr "पुस्तकालय का नाम पहले से ही लिया गया है"
+
+msgid "Successfully, Bookcase added to LMS"
+msgstr "सफलतापूर्वक, पुस्तकालय LMS में जोड़ा गया"
+
+msgid "Failed to add Bookcase"
+msgstr "पुस्तकालय जोड़ने में विफल रहा"
+
+msgid "Bookcase value required"
+msgstr "पुस्तकालय मूल्य आवश्यक है"
+
+msgid "Successfully, Bookcase data updated"
+msgstr "सफलतापूर्वक, पुस्तकालय डेटा अपडेट किया गया"
+
+msgid "Bookcase not found"
+msgstr "पुस्तकालय नहीं मिला"
+
+msgid "Section name already taken"
+msgstr "अनुभाग का नाम पहले से ही लिया गया है"
+
+msgid "Successfully, Section added to LMS"
+msgstr "सफलतापूर्वक, अनुभाग LMS में जोड़ा गया"
+
+msgid "Failed to add Section"
+msgstr "अनुभाग जोड़ने में विफल रहा"
+
+msgid "Section value required"
+msgstr "अनुभाग मूल्य आवश्यक है"
+
+msgid "Successfully, Section data updated"
+msgstr "सफलतापूर्वक, अनुभाग डेटा अपडेट किया गया"
+
+msgid "Section not found"
+msgstr "अनुभाग नहीं मिला"
+
+msgid "Category name already taken"
+msgstr "श्रेणी का नाम पहले से ही लिया गया है"
+
+msgid "Successfully, Category added to LMS"
+msgstr "सफलतापूर्वक, श्रेणी LMS में जोड़ी गई"
+
+msgid "Failed to add Category"
+msgstr "श्रेणी जोड़ने में विफल रहा"
+
+msgid "Category value required"
+msgstr "श्रेणी मूल्य आवश्यक है"
+
+msgid "Successfully, Category data updated"
+msgstr "सफलतापूर्वक, श्रेणी डेटा अपडेट किया गया"
+
+msgid "Category not found"
+msgstr "श्रेणी नहीं मिली"
+
+msgid "Book name already taken"
+msgstr "पुस्तक का नाम पहले से ही लिया गया है"
+
+msgid "Successfully, Book added to LMS"
+msgstr "सफलतापूर्वक, पुस्तक LMS में जोड़ी गई"
+
+msgid "Failed to add Book"
+msgstr "पुस्तक जोड़ने में विफल रहा"
+
+msgid "Please fill required values"
+msgstr "कृपया आवश्यक मूल्यों को भरें"
+
+msgid "Successfully, Book data updated"
+msgstr "सफलतापूर्वक, पुस्तक डेटा अपडेट किया गया"
+
+msgid "Book not found"
+msgstr "पुस्तक नहीं मिली"
+
+msgid "No Section Found"
+msgstr "कोई अनुभाग नहीं मिला"
+
+msgid "No User Found"
+msgstr "कोई उपयोगकर्ता नहीं मिला"
+
+msgid "No book found"
+msgstr "कोई पुस्तक नहीं मिली"
+
+msgid "Failed, This Book already borrowed by User."
+msgstr "विफल, यह पुस्तक पहले से ही उपयोगकर्ता द्वारा उधार ली गई है।"
+
+msgid "Want to Borrow More than 1 Book?<br/>Upgrade to Pro Version"
+msgstr " से अधिक पुस्तकें उधार लेना चाहते हैं? <br/>प्रो संस्करण में अपग्रेड करें"
+
+msgid "Failed to Borrow Book.<br/>User has late fine."
+msgstr "पुस्तक उधार लेने में विफल रहा। <br/> उपयोगकर्ता के पास देर से लौटाने का जुर्माना है।"
+
+msgid "Successfully, Book borrowed"
+msgstr "फलतापूर्वक, पुस्तक उधार ली गई"
+
+msgid "Failed to borrow book"
+msgstr "पुस्तक उधार लेने में विफल रहा"
+
+msgid "Failed, Book is Out of Stock."
+msgstr "विफल, पुस्तक स्टॉक में नहीं है।"
+
+msgid "All fields are required"
+msgstr "सभी फ़ील्ड आवश्यक हैं"
+
+msgid "Successfully, Books Returned"
+msgstr "सफलतापूर्वक, पुस्तकें वापस की गईं"
+
+msgid "Please Select Books to be Return"
+msgstr "कृपया वापस करने के लिए पुस्तकें चुनें"
+
+msgid "No data found"
+msgstr "कोई डेटा नहीं मिला"
+
+msgid "Invalid LMS operation"
+msgstr "अमान्य LMS ऑपरेशन"
+
+msgid "Successfully, LMS Settings updated"
+msgstr "सफलतापूर्वक, LMS सेटिंग्स अपडेट की गईं"
+
+msgid "Invalid LMS Module"
+msgstr "अमान्य LMS मॉड्यूल"
+
+msgid "Download Link Not Found"
+msgstr "डाउनलोड लिंक नहीं मिला"
+
+msgid "Invalid Module Type"
+msgstr "अमान्य मॉड्यूल प्रकार"
+
+msgid "Successfully, Test Data Imported to LMS"
+msgstr "सफलतापूर्वक, परीक्षण डेटा LMS में आयात किया गया"
+
+msgid "Failed to Import Test data"
+msgstr "परीक्षण डेटा को आयात करने में विफल रहा"
+
+msgid "Successfully, Test Data Removed"
+msgstr "सफलतापूर्वक, परीक्षण डेटा हटा दिया गया"
+
+msgid "Successfully, Late Fine Paid."
+msgstr "सफलतापूर्वक, देर से जुर्माना भुगतान किया गया।"
+
+msgid "Fine already paid"
+msgstr "जुर्माना पहले ही भुगतान किया गया है"
+
+msgid "Invalid LMS Operation"
+msgstr "अमान्य LMS ऑपरेशन"
+
+msgid "LMS actions blocked due to security reasons"
+msgstr "सुरक्षा कारणों से LMS क्रियाएँ ब्लॉक की गईं"
+
+msgid "Submitted, please wait"
+msgstr "सबमिट किया गया, कृपया प्रतीक्षा करें"
+
+msgid "Submit"
+msgstr "सबमिट करें"
+
+msgid "Success"
+msgstr "सफलता"
+
+msgid "Error"
+msgstr "त्रुटि"
+
+msgid "Upload Image"
+msgstr "छवि अपलोड करें"
+
+msgid "-- Select Section --"
+msgstr "-- अनुभाग चुनें --"
+
+msgid "-- Select User --"
+msgstr "-- उपयोगकर्ता चुनें --"
+
+msgid "-- Select Book --"
+msgstr "-- पुस्तक चुनें --"
+
+msgid "Run Data Importer remove existing data from Categories, Books, Bookcases, Sections, Branched and Users Table and then install new data. Do you want to Run Test Data Importer?"
+msgstr "डेटा आयातक चलाएँ श्रेणियों, पुस्तकों, पुस्तकालयों, अनुभागों, शाखाओं और उपयोगकर्ता तालिका से मौजूदा डेटा हटाता है और फिर नया डेटा स्थापित करता है। क्या आप परीक्षण डेटा आयातक चलाना चाहते हैं?"
+
+msgid "Are you sure want to remove LMS Test Data?"
+msgstr "क्या आप सुनिश्चित हैं कि आप LMS परीक्षण डेटा को हटाना चाहते हैं?"
+
+msgid "Are you sure want to pay the fine?"
+msgstr "क्या आप सुनिश्चित हैं कि आप जुर्माना देना चाहते हैं?"
+
+msgid "Are you sure want to delete?"
+msgstr "क्या आप सुनिश्चित हैं कि आप हटाना चाहते हैं?"
+
+msgid "Are you sure want to return this book?"
+msgstr "क्या आप सुनिश्चित हैं कि आप इस पुस्तक को लौटाना चाहते हैं?"
+
+msgid "Auto-generate"
+msgstr "स्वत: जनरेट"

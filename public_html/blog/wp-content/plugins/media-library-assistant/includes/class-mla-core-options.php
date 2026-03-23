@@ -144,14 +144,29 @@ class MLACoreOptions {
 	const MLA_BULK_CHUNK_SIZE = 'bulk_chunk_size';
 
 	/**
-	 * Provides a unique name for the taxonomy filter maximum depth option
+	 * Provides a unique name for the Media/Assistant taxonomy filter maximum depth option
 	 */
 	const MLA_TAXONOMY_FILTER_DEPTH = 'taxonomy_filter_depth';
 
 	/**
-	 * Provides a unique name for the taxonomy filter maximum depth option
+	 * Provides a unique name for the Media/Assistant taxonomy filter maximum depth option
 	 */
 	const MLA_TAXONOMY_FILTER_INCLUDE_CHILDREN = 'taxonomy_filter_include_children';
+
+	/**
+	 * Provides a unique name for the Terms Search taxonomy filter selection 
+	 */
+	const MLA_TERMS_SEARCH_FILTER_TAXONOMY = 'terms_search_filter_taxonomy';
+
+	/**
+	 * Provides a unique name for the Terms Search taxonomy filter maximum depth option
+	 */
+	const MLA_TERMS_SEARCH_FILTER_DEPTH = 'terms_search_filter_depth';
+
+	/**
+	 * Provides a unique name for the Terms Search taxonomy filter maximum depth option
+	 */
+	const MLA_TERMS_SEARCH_FILTER_INCLUDE_CHILDREN = 'terms_search_filter_include_children';
 
 	/**
 	 * Provides a unique name for the display Search Media controls option
@@ -162,6 +177,11 @@ class MLACoreOptions {
 	 * Provides a unique name for the display Search Media controls option
 	 */
 	const MLA_SEARCH_MEDIA_FILTER_DEFAULTS = 'search_media_filter_defaults';
+
+	/**
+	 * Provides a unique name for the named transfer item encryption key option
+	 */
+	const MLA_NAMED_TRANSFER_ITEM_KEY = 'named_transfer_item_key';
 
 	/**
 	 * Provides a "size" attribute value for the EXIF/Template Value field
@@ -189,6 +209,11 @@ class MLACoreOptions {
 	const MLA_EDIT_MEDIA_META_BOXES = 'edit_media_meta_boxes';
 
 	/**
+	 * Provides a unique name for the Edit Media Attachment File Metadata meta box option
+	 */
+	const MLA_FILE_METADATA_META_BOX = 'edit_media_file_metadata_meta_box';
+
+	/**
 	 * Provides a unique name for the Media/Add New bulk edit option
 	 */
 	const MLA_ADD_NEW_BULK_EDIT = 'add_new_bulk_edit';
@@ -202,6 +227,11 @@ class MLACoreOptions {
 	 * Provides a unique name for the Media/Add New bulk edit "Open Automatically" option
 	 */
 	const MLA_ADD_NEW_BULK_EDIT_AUTO_OPEN = 'add_new_bulk_edit_auto_open';
+
+	/**
+	 * Provides a unique name for the Media/Add New bulk edit "Open Automatically" option
+	 */
+	const MLA_ADD_NEW_BULK_EDIT_AUTOFILL_PRESETS = 'add_new_bulk_edit_autofill_presets';
 
 	/**
 	 * Provides a unique name for the Media Grid toolbar option, which
@@ -263,6 +293,11 @@ class MLACoreOptions {
 	const MLA_MEDIA_MODAL_DETAILS_AUTOFILL = 'media_modal_details_autofill';
 
 	/**
+	 * Provides a unique name for the Media Manager Attachment Details taxonomy auto-open option
+	 */
+	const MLA_MEDIA_MODAL_DETAILS_AUTOOPEN = 'media_modal_details_autoopen';
+
+	/**
 	 * Provides a unique name for the Media Manager orderby option
 	 */
 	const MLA_MEDIA_MODAL_ORDERBY = 'media_modal_orderby';
@@ -283,9 +318,34 @@ class MLACoreOptions {
 	const MLA_DELETE_OPTION_BACKUPS = 'delete_option_backups';
 
 	/**
+	 * Provides a unique name for the Enabled Featured Image option
+	 */
+	const MLA_ENABLE_FEATURED_IMAGE = 'enable_featured_image';
+
+	/**
 	 * Provides a unique name for the Media Manager Force Image Default Setings option
 	 */
 	const MLA_MEDIA_MODAL_APPLY_DISPLAY_SETTINGS = 'media_modal_apply_display_settings';
+
+	/**
+	 * Provides a unique name for the Intermediate Image Sizes option
+	 */
+	const MLA_IMAGE_SIZES = 'image_sizes';
+
+	/**
+	 * Provides a unique name for the Enable Intermediate Image Sizes option
+	 */
+	const MLA_ENABLE_IMAGE_SIZES = 'enable_image_sizes';
+
+	/**
+	 * Provides a unique name for the Big Image Threshold Option
+	 */
+	const MLA_IMAGE_THRESHOLD_OPTION = 'image_threshold_option';
+
+	/**
+	 * Provides a unique name for the Enable Intermediate Image Sizes option
+	 */
+	const MLA_IMAGE_THRESHOLD_VALUE = 'image_threshold_value';
 
 	/**
 	 * Provides a unique name for the Post MIME Types option
@@ -318,12 +378,17 @@ class MLACoreOptions {
 	const MLA_FORCE_MLA_MIME_TYPE = 'force_mla_mime_type';
 
 	/**
+	 * Provides a unique name for the Custom Icon Directory option
+	 */
+	const MLA_CUSTOM_ICON_PATH = 'custom_icon_path';
+
+	/**
 	 * Provides a unique name for the Enable Custom Field Mapping option
 	 */
 	const MLA_ALLOW_CUSTOM_FIELD_MAPPING = 'allow_custom_field_mapping';
 
 	/**
-	 * Provides a unique name for the Enable IPTC/EXIF Mapping option
+	 * Provides a unique name for the Enable IPTC/EXIF/WP Mapping option
 	 */
 	const MLA_ALLOW_IPTC_EXIF_MAPPING = 'allow_iptc_exif_mapping';
 
@@ -343,6 +408,11 @@ class MLACoreOptions {
 	const MLA_DEBUG_REPLACE_PHP_LOG = 'debug_replace_php_log';
 
 	/**
+	 * Provides a unique name for the Debug taconomy columns option
+	 */
+	const MLA_DEBUG_ADD_TAXONOMY_COLUMNS = 'debug_add_taxonomy_columns';
+
+	/**
 	 * Provides a unique name for the Debug replace PHP error_reporting option
 	 */
 	const MLA_DEBUG_REPLACE_PHP_REPORTING = 'debug_replace_php_reporting';
@@ -351,6 +421,26 @@ class MLACoreOptions {
 	 * Provides a unique name for the Debug replace MLA_DEBUG_LEVEL option
 	 */
 	const MLA_DEBUG_REPLACE_LEVEL = 'debug_replace_level';
+
+	/**
+	 * Provides a unique name for the Media/Add New Bulk Edit Area presets
+	 */
+	const MLA_UPLOAD_BULK_EDIT_PRESETS = 'mla_upload_bulk_edit_presets';
+
+	/**
+	 * Provides a unique name for the Media/Add New Bulk Edit Area presets "per user" option
+	 */
+	const MLA_UPLOAD_BULK_EDIT_PRESETS_PER_USER = 'mla_upload_bulk_edit_presets_per_user';
+
+	/**
+	 * Provides a unique name for the Media/Assistant Bulk Edit Area presets
+	 */
+	const MLA_BULK_EDIT_PRESETS = 'mla_bulk_edit_presets';
+
+	/**
+	 * Provides a unique name for the Media/Assistant Bulk Edit Area presets "per user" option
+	 */
+	const MLA_BULK_EDIT_PRESETS_PER_USER = 'mla_bulk_edit_presets_per_user';
 
 	/**
 	 * $mla_option_definitions defines the database options and admin page areas for setting/updating them
@@ -385,6 +475,61 @@ class MLACoreOptions {
 	public static $mla_option_definitions = array ();
 
 	/**
+	 * Option definitions required in the MLACore::mla_plugins_loaded_action() function,
+	 * which cannot contain i18n or text domain function calls.
+	 *
+	 * @since 3.21
+	 *
+	 * @var array See above documentation of array elements
+	 */
+	public static $mla_prelocalize_option_definitions = array (
+			self::MLA_MEDIA_GRID_TOOLBAR =>
+				array('tab' => 'general',
+					'name' => 'Enable Media Grid Enhancements',
+					'type' => 'checkbox',
+					'std' => 'checked',
+					'help' => 'Check/uncheck this option to enable/disable Media Library Grid View Enhancements.' ),
+
+			self::MLA_MEDIA_MODAL_TOOLBAR =>
+				array('tab' => 'general',
+					'name' => 'Enable Media Manager Enhancements',
+					'type' => 'checkbox',
+					'std' => 'checked',
+					'help' => 'Check/uncheck this option to enable/disable Media Manager Modal Window Enhancements.' ),
+
+			self::MLA_DEBUG_FILE =>
+				array('tab' => 'debug',
+					'name' => 'Debug File',
+					'type' => 'text',
+					'std' => '',
+					'size' => 60,
+					'help' => 'Enter the name of an alternate, MLA-specific debug log file; leave blank to use the PHP error_log.<br>&nbsp;&nbsp;The WP_CONTENT_DIR value (below) will be prepended to the value here, e.g., enter something like "/uploads/mla.log".'),
+
+			self::MLA_DEBUG_REPLACE_PHP_LOG =>
+				array('tab' => 'debug',
+					'name' => 'Replace PHP error_log file',
+					'type' => 'checkbox',
+					'std' => '',
+					'help' => 'Check this option to replace the PHP error_log file with the MLA Debug File.<br>&nbsp;&nbsp;allows capture of PHP messages in the MLA Debug File.', 'media-library-assistant' ),
+
+			self::MLA_DEBUG_REPLACE_PHP_REPORTING =>
+				array('tab' => 'debug',
+					'name' => 'PHP Reporting',
+					'type' => 'text',
+					'std' => '',
+					'size' => 10,
+					'help' => 'Enter a numeric error_reporting value, e.g., 0x7FFF or 32767; leave blank to use the existing PHP error_reporting value.'),
+
+			self::MLA_DEBUG_REPLACE_LEVEL =>
+				array('tab' => 'debug',
+					'name' => 'MLA Reporting',
+					'type' => 'text',
+					'std' => '',
+					'size' => 10,
+					'help' => 'Enter a numeric MLA_DEBUG_LEVEL value, e.g., 0x0003 or 3; leave blank to use the existing MLA_DEBUG_LEVEL value.'),
+		);
+
+	/**
 	 * Localize $mla_option_definitions array
 	 *
 	 * Localization must be done at runtime; these calls cannot be placed in the
@@ -395,10 +540,10 @@ class MLACoreOptions {
 	 * @return	void
 	 */
 	public static function mla_localize_option_definitions_array() {
+		// error_log( __LINE__ . ' DEBUG: MLACoreOptions::mla_localize_option_definitions_array', 0 );
+		
 		self::$mla_option_definitions = array (
-			/*
-			 * This option records the highest MLA version so-far installed
-			 */
+			// This option records the highest MLA version so-far installed
 			self::MLA_VERSION_OPTION =>
 				array('tab' => '',
 					'type' => 'hidden', 
@@ -427,7 +572,7 @@ class MLACoreOptions {
 			'where_used_header' =>
 				array('tab' => 'general',
 					'name' => __( 'Where-used Reporting', 'media-library-assistant' ),
-					'type' => 'header'),
+					'type' => 'header', 'help' => sprintf( ' %1$s <a href="%2$s" target="_blank">%3$s</a>.<br />&nbsp;',  __( 'For complete documentation', 'media-library-assistant' ), admin_url( 'options-general.php?page=' . MLACoreOptions::MLA_SETTINGS_SLUG . '-documentation&amp;mla_tab=documentation#where_used_reporting' ), __( 'click here', 'media-library-assistant' ) )),
 
 			self::MLA_EXCLUDE_REVISIONS =>
 				array('tab' => 'general',
@@ -440,7 +585,7 @@ class MLACoreOptions {
 			'where_used_subheader' =>
 				array('tab' => 'general',
 					'name' => __( 'Where-used database access tuning', 'media-library-assistant' ),
-					'type' => 'subheader'),
+					'type' => 'subheader', 'help' => '' ),
 
 			self::MLA_FEATURED_IN_TUNING =>
 				array('tab' => 'general',
@@ -485,7 +630,7 @@ class MLACoreOptions {
 			'taxonomy_header' =>
 				array('tab' => 'general',
 					'name' => __( 'Taxonomy Support', 'media-library-assistant' ),
-					'type' => 'header'),
+					'type' => 'header', 'help' => ''),
 
 			self::MLA_COUNT_TERM_ATTACHMENTS =>
 				array('tab' => 'general',
@@ -546,12 +691,12 @@ class MLACoreOptions {
 			'media_assistant_header' =>
 				array('tab' => 'general',
 					'name' => __( 'Media/Assistant Screen Options', 'media-library-assistant' ),
-					'type' => 'header'),
+					'type' => 'header', 'help' => ''),
 
 			'admin_sidebar_subheader' =>
 				array('tab' => 'general',
 					'name' => __( 'Admin Menu Options', 'media-library-assistant' ),
-					'type' => 'subheader'),
+					'type' => 'subheader', 'help' => ''),
 
 			self::MLA_SCREEN_PAGE_TITLE =>
 				array('tab' => 'general',
@@ -578,7 +723,7 @@ class MLACoreOptions {
 					'autoload' => true,
 					'std' => '0',
 					'size' => 2,
-					'help' => __( 'Enter the position of the Media/Assistant submenu entry.<br>&nbsp;&nbsp;0 = natural order (at bottom),&nbsp;&nbsp;&nbsp;&nbsp;1 - 4 = at top<br>&nbsp;&nbsp;6-9 = after "Library",&nbsp;&nbsp;&nbsp;&nbsp;11-16 = after "Add New"', 'media-library-assistant' )),
+					'help' => __( 'Enter the position of the Media/Assistant submenu entry.<br>&nbsp;&nbsp;0 = natural order (at bottom),&nbsp;&nbsp;&nbsp;&nbsp;1 - 4 = at top<br>&nbsp;&nbsp;6-9 = after "Library",&nbsp;&nbsp;&nbsp;&nbsp;11-14 = after "Add Media File"', 'media-library-assistant' )),
 
 			self::MLA_SCREEN_DISPLAY_LIBRARY =>
 				array('tab' => 'general',
@@ -599,7 +744,7 @@ class MLACoreOptions {
 			'table_defaults_subheader' =>
 				array('tab' => 'general',
 					'name' => __( 'Table Defaults', 'media-library-assistant' ),
-					'type' => 'subheader'),
+					'type' => 'subheader', 'help' => ''),
 
 			self::MLA_DEFAULT_ORDERBY =>
 				array('tab' => 'general',
@@ -677,10 +822,17 @@ class MLACoreOptions {
 					'size' => 5,
 					'help' => __( 'Enter the size of the Bulk Edit and Map All processing chunks', 'media-library-assistant' )),
 
+			self::MLA_BULK_EDIT_PRESETS_PER_USER =>
+				array('tab' => 'general',
+					'name' => __( 'Store presets per-user', 'media-library-assistant' ),
+					'type' => 'checkbox',
+					'std' => '',
+					'help' => __( 'Check this option to store separate Bulk Edit presets for each user.', 'media-library-assistant' )),
+
 			'taxonomy_filter_subheader' =>
 				array('tab' => 'general',
-					'name' => __( 'Taxonomy Filter parameters', 'media-library-assistant' ),
-					'type' => 'subheader'),
+					'name' => __( 'Media/Assistant Taxonomy Filter parameters', 'media-library-assistant' ),
+					'type' => 'subheader', 'help' => ''),
 
 			self::MLA_TAXONOMY_FILTER_DEPTH =>
 				array('tab' => 'general',
@@ -696,13 +848,44 @@ class MLACoreOptions {
 					'name' => __( 'Include Children', 'media-library-assistant' ),
 					'type' => 'checkbox',
 					'autoload' => true,
+					'std' => '',
+					'help' => __( 'Check/uncheck this option to include/exclude children for hierarchical taxonomies.', 'media-library-assistant' )),
+
+			'terms_search_filter_subheader' =>
+				array('tab' => 'general',
+					'name' => __( 'Terms Search Taxonomy Filter parameters', 'media-library-assistant' ),
+					'type' => 'subheader', 'help' => ''),
+
+			self::MLA_TERMS_SEARCH_FILTER_TAXONOMY =>
+				array('tab' => 'general',
+					'name' => __( 'Terms Search Filter Taxonomy', 'media-library-assistant' ),
+					'type' => 'select',
+					'std' => 'none',
+					'options' => array( 'none' ),
+					'texts' => array(  '&mdash; None (Select a value) &mdash;' ),
+					'help' => __( 'Select the (optional) taxonomy on which to filter the Terms Search results.', 'media-library-assistant' )),
+
+			self::MLA_TERMS_SEARCH_FILTER_DEPTH =>
+				array('tab' => 'general',
+					'name' => __( 'Maximum Depth', 'media-library-assistant' ),
+					'type' => 'text',
+					'autoload' => true,
+					'std' => '3',
+					'size' => 2,
+					'help' => __( 'Enter the number of levels displayed for hierarchial taxonomies; enter zero for no limit.', 'media-library-assistant' )),
+
+			self::MLA_TERMS_SEARCH_FILTER_INCLUDE_CHILDREN =>
+				array('tab' => 'general',
+					'name' => __( 'Include Children', 'media-library-assistant' ),
+					'type' => 'checkbox',
+					'autoload' => true,
 					'std' => 'checked',
 					'help' => __( 'Check/uncheck this option to include/exclude children for hierarchical taxonomies.', 'media-library-assistant' )),
 
 			'search_media_subheader' =>
 				array('tab' => 'general',
 					'name' => __( 'Search Media Defaults', 'media-library-assistant' ),
-					'type' => 'subheader'),
+					'type' => 'subheader', 'help' => ''),
 
 			self::MLA_SEARCH_MEDIA_FILTER_SHOW_CONTROLS =>
 				array('tab' => 'general',
@@ -729,7 +912,7 @@ class MLACoreOptions {
 			'edit_media_header' =>
 				array('tab' => 'general',
 					'name' => __( 'Media/Edit Media Enhancements', 'media-library-assistant' ),
-					'type' => 'header'),
+					'type' => 'header', 'help' => ''),
 
 			self::MLA_EDIT_MEDIA_SEARCH_TAXONOMY =>
 				array('tab' => 'general',
@@ -745,14 +928,23 @@ class MLACoreOptions {
 					'type' => 'checkbox',
 					'autoload' => true,
 					'std' => 'checked',
-					'help' => __( 'Check this option to add "Parent Info", "Menu Order", "Attachment Metadata" and four "where-used" meta boxes to the Edit Media screen.', 'media-library-assistant' ) . '<br>&nbsp;&nbsp;' .
+					'help' => __( 'Check this option to add "Parent Info", "Menu Order", "Attachment Metadata", "Attachment File Metadata" and four "where-used" meta boxes to the Edit Media screen.', 'media-library-assistant' ) . '<br>&nbsp;&nbsp;' .
 						__( 'You can also use Filters to customize the meta boxes.', 'media-library-assistant' ) . 
+						sprintf( ' %1$s <a href="%2$s">%3$s</a>.',  __( 'For complete documentation', 'media-library-assistant' ), admin_url( 'options-general.php?page=' . self::MLA_SETTINGS_SLUG . '-documentation&amp;mla_tab=documentation#mla_edit_meta_boxes' ), __( 'click here', 'media-library-assistant' )  ) ),
+
+			self::MLA_FILE_METADATA_META_BOX =>
+				array('tab' => 'general',
+					'name' => __( 'Enable File Attachment Metadata meta box', 'media-library-assistant' ),
+					'type' => 'checkbox',
+					'autoload' => true,
+					'std' => 'checked',
+					'help' => __( 'Check this option to enable the "Attachment File Metadata"  meta box on the Edit Media screen.', 'media-library-assistant' ) . '<br>&nbsp;&nbsp;' .
 						sprintf( ' %1$s <a href="%2$s">%3$s</a>.',  __( 'For complete documentation', 'media-library-assistant' ), admin_url( 'options-general.php?page=' . self::MLA_SETTINGS_SLUG . '-documentation&amp;mla_tab=documentation#mla_edit_meta_boxes' ), __( 'click here', 'media-library-assistant' )  ) ),
 
 			'media_add_new_header' =>
 				array('tab' => 'general',
 					'name' => __( 'Media/Add New Enhancements', 'media-library-assistant' ),
-					'type' => 'header'),
+					'type' => 'header', 'help' => ''),
 
 			self::MLA_ADD_NEW_BULK_EDIT =>
 				array('tab' => 'general',
@@ -777,10 +969,24 @@ class MLACoreOptions {
 					'std' => '',
 					'help' => __( 'Check this option to automatically open the "Bulk Edit area" when the Media/Add New screen is displayed.', 'media-library-assistant' )),
 
+			self::MLA_ADD_NEW_BULK_EDIT_AUTOFILL_PRESETS =>
+				array('tab' => 'general',
+					'name' => __( '&quot;bulk edit&quot; area auto-fill presets', 'media-library-assistant' ),
+					'type' => 'checkbox',
+					'std' => '',
+					'help' => __( 'Check this option to automatically import the "Bulk Edit area" preset values when the Media/Add New screen is displayed.', 'media-library-assistant' )),
+
+			self::MLA_UPLOAD_BULK_EDIT_PRESETS_PER_USER =>
+				array('tab' => 'general',
+					'name' => __( 'Store presets per-user', 'media-library-assistant' ),
+					'type' => 'checkbox',
+					'std' => '',
+					'help' => __( 'Check this option to store separate Bulk Edit presets for each user.', 'media-library-assistant' )),
+
 			'media_modal_header' =>
 				array('tab' => 'general',
 					'name' => __( 'Media Manager/Media Grid Enhancements', 'media-library-assistant' ),
-					'type' => 'header'),
+					'type' => 'header', 'help' => ''),
 
 			self::MLA_MEDIA_GRID_TOOLBAR =>
 				array('tab' => 'general',
@@ -859,6 +1065,13 @@ class MLACoreOptions {
 					'std' => '',
 					'help' => __( 'Check this option to automatically fill MLA-enhanced meta boxes in the "ATTACHMENT DETAILS" pane<br>&nbsp;&nbsp;when the item is selected.', 'media-library-assistant' )),
 
+			self::MLA_MEDIA_MODAL_DETAILS_AUTOOPEN =>
+				array('tab' => 'general',
+					'name' => __( 'Media Manager auto-open meta boxes', 'media-library-assistant' ),
+					'type' => 'checkbox',
+					'std' => '',
+					'help' => __( 'Check this option to automatically open all MLA-enhanced taxonomy meta boxes in the "ATTACHMENT DETAILS" pane<br>&nbsp;&nbsp;when the item is selected.', 'media-library-assistant' )),
+
 			self::MLA_MEDIA_MODAL_ORDERBY =>
 				array('tab' => '',
 					'name' => __( 'Media Manager Order By', 'media-library-assistant' ),
@@ -880,7 +1093,7 @@ class MLACoreOptions {
 			'attachment_display_settings_subheader' =>
 				array('tab' => 'general',
 					'name' => __( 'Attachment Display Settings', 'media-library-assistant' ),
-					'type' => 'subheader'),
+					'type' => 'subheader', 'help' => ''),
 
 			self::MLA_MEDIA_MODAL_APPLY_DISPLAY_SETTINGS =>
 				array('tab' => 'general',
@@ -934,7 +1147,7 @@ class MLACoreOptions {
 			'uninstall_plugin_header' =>
 				array('tab' => 'general',
 					'name' => __( 'Uninstall (Delete) Plugin Settings', 'media-library-assistant' ),
-					'type' => 'header'),
+					'type' => 'header', 'help' => ''),
 
 			self::MLA_DELETE_OPTION_SETTINGS =>
 				array('tab' => 'general',
@@ -950,10 +1163,16 @@ class MLACoreOptions {
 					'std' => '',
 					'help' => __( 'Check this option to remove the <code>/wp-content/mla-backup</code> directory and its contents when the plugin is deleted.', 'media-library-assistant' )),
 
+			// This option provides a unique name for the named transfer item encryption key option
+			self::MLA_NAMED_TRANSFER_ITEM_KEY =>
+				array('tab' => '',
+					'type' => 'hidden', 
+					'std' => ''),
+
 			'template_header' =>
 				array('tab' => 'mla_gallery',
 					'name' => __( 'Default [mla_gallery] Templates and Settings', 'media-library-assistant' ),
-					'type' => 'subheader'),
+					'type' => 'subheader', 'help' => ''),
 
 			'default_tag_cloud_style' =>
 				array('tab' => '',
@@ -1046,7 +1265,7 @@ class MLACoreOptions {
 			'mal_viewer_header' =>
 				array('tab' => 'mla_gallery',
 					'name' => __( 'Thumbnail Substitution Support, mla_viewer', 'media-library-assistant' ),
-					'type' => 'subheader'),
+					'type' => 'subheader', 'help' => ''),
 
 			'enable_mla_viewer' =>
 				array('tab' => 'mla_gallery',
@@ -1055,7 +1274,7 @@ class MLACoreOptions {
 					'std' => 'checked',
 					'help' => __( 'Check this option to allow the "mla_viewer" to generate thumbnail images for PDF  documents. Thumbnails are generated dynamically, each time the item appears in an [mla_gallery] display.<br>&nbsp;&nbsp;<strong>IMPORTANT: both Ghostscript and Imagick/ImageMagick must be installed for this feature.</strong>', 'media-library-assistant' )),
 
-			'enable_featured_image' =>
+			MLACoreOptions::MLA_ENABLE_FEATURED_IMAGE =>
 				array('tab' => 'mla_gallery',
 					'name' => __( 'Enable Featured Images', 'media-library-assistant' ),
 					'type' => 'checkbox',
@@ -1084,17 +1303,13 @@ class MLACoreOptions {
 					'size' => 20,
 					'help' => __( 'If your &ldquo;gs&rdquo; executable is in a non-standard location, enter the full path and filename here, e.g., &ldquo;/usr/bin/gs&rdquo;. It will override the search for Ghostscript in other places.', 'media-library-assistant' )),
 
-			/*
-			 * Managed by mla_get_style_templates and mla_put_style_templates
-			 */
+			// Managed by mla_get_style_templates and mla_put_style_templates
 			'style_templates' =>
 				array('tab' => '',
 					'type' => 'hidden',
 					'std' => array()),
 
-			/*
-			 * Managed by mla_get_markup_templates and mla_put_markup_templates
-			 */
+			// Managed by mla_get_markup_templates and mla_put_markup_templates
 			'markup_templates' =>
 				array('tab' => '',
 					'type' => 'hidden',
@@ -1109,14 +1324,14 @@ class MLACoreOptions {
 
 			'enable_custom_field_mapping' =>
 				array('tab' => 'custom_field',
-					'name' => __( 'Enable custom field mapping when adding new media', 'media-library-assistant' ),
+					'name' => __( 'Perform custom field mapping when adding new media', 'media-library-assistant' ),
 					'type' => 'checkbox',
 					'std' => '',
 					'help' => __( 'See Help menu.', 'media-library-assistant' )),
 
 			'enable_custom_field_update' =>
 				array('tab' => 'custom_field',
-					'name' => __( 'Enable custom field mapping when updating media metadata', 'media-library-assistant' ),
+					'name' => __( 'Perform custom field mapping when updating media metadata', 'media-library-assistant' ),
 					'type' => 'checkbox',
 					'std' => '',
 					'help' => __( 'See Help menu.', 'media-library-assistant' )),
@@ -1133,30 +1348,30 @@ class MLACoreOptions {
 
 			self::MLA_ALLOW_IPTC_EXIF_MAPPING =>
 				array('tab' => 'iptc_exif',
-					'name' => __( 'Enable IPTC/EXIF Mapping', 'media-library-assistant' ),
+					'name' => __( 'Enable IPTC/EXIF/WP Mapping', 'media-library-assistant' ),
 					'type' => 'checkbox',
 					'std' => 'checked',
 					'help' => __( 'See Help menu.', 'media-library-assistant' )),
 
 			'enable_iptc_exif_mapping' =>
 				array('tab' => 'iptc_exif',
-					'name' => __( 'Enable IPTC/EXIF Mapping when adding new media', 'media-library-assistant' ),
+					'name' => __( 'Perform IPTC/EXIF/WP Mapping when adding new media', 'media-library-assistant' ),
 					'type' => 'checkbox',
 					'std' => '',
-					'help' => __( 'Check this option to enable mapping when uploading new media (attachments).<br>&nbsp;&nbsp;Does NOT affect the operation of the "Map" buttons on the bulk edit, single edit and settings screens.', 'media-library-assistant' )),
+					'help' => __( 'See Help menu.', 'media-library-assistant' )),
 
 			'enable_iptc_exif_update' =>
 				array('tab' => 'iptc_exif',
-					'name' => __( 'Enable IPTC/EXIF Mapping when updating media metadata', 'media-library-assistant' ),
+					'name' => __( 'Perform IPTC/EXIF/WP Mapping when updating media metadata', 'media-library-assistant' ),
 					'type' => 'checkbox',
 					'std' => '',
-					'help' => __( 'Check this option to enable mapping when media (attachments) metadata is regenerated,<br>&nbsp;&nbsp;e.g., when the Media/Edit Media "Edit Image" functions are used.', 'media-library-assistant' )),
+					'help' => __( 'See Help menu.', 'media-library-assistant' )),
 
 			'iptc_exif_standard_mapping' =>
 				array('tab' => '',
 					'help' => __( 'Update the standard field mapping values above, then click <strong>Save Changes</strong> to make the updates permanent.<br>You can also make temporary updates and click <strong>Map All Attachments, Standard Fields Now</strong> to apply the updates to all attachments without saving the rule changes.', 'media-library-assistant' ),
 					'std' =>  NULL, 
-					'type' => 'custom',
+					'type' => 'hidden',
 					'render' => 'mla_iptc_exif_option_handler',
 					'update' => 'mla_iptc_exif_option_handler',
 					'delete' => 'mla_iptc_exif_option_handler',
@@ -1166,7 +1381,7 @@ class MLACoreOptions {
 				array('tab' => '',
 					'help' => __( 'Update the taxonomy term mapping values above, then click <strong>Save Changes</strong> or <strong>Map All Attachments, Taxonomy Terms Now</strong>.', 'media-library-assistant' ),
 					'std' =>  NULL,
-					'type' => 'custom',
+					'type' => 'hidden',
 					'render' => 'mla_iptc_exif_option_handler',
 					'update' => 'mla_iptc_exif_option_handler',
 					'delete' => 'mla_iptc_exif_option_handler',
@@ -1176,7 +1391,7 @@ class MLACoreOptions {
 				array('tab' => '',
 					'help' => __( '<strong>Update</strong> individual custom field mapping values above, or make several updates and click <strong>Save Changes</strong> below to apply them all at once.<br>You can also <strong>add a new rule</strong> for an existing field or <strong>add a new field</strong> and rule.<br>You can make temporary updates and click <strong>Map All Attachments, Custom Fields Now</strong> to apply the updates to all attachments without saving the rule changes.', 'media-library-assistant' ),
 					'std' =>  NULL, 
-					'type' => 'custom',
+					'type' => 'hidden',
 					'render' => 'mla_iptc_exif_option_handler',
 					'update' => 'mla_iptc_exif_option_handler',
 					'delete' => 'mla_iptc_exif_option_handler',
@@ -1184,7 +1399,7 @@ class MLACoreOptions {
 
 			'iptc_exif_mapping' =>
 				array('tab' => '',
-					'help' => __( 'IPTC/EXIF Mapping help', 'media-library-assistant' ),
+					'help' => __( 'IPTC/EXIF/WP Mapping help', 'media-library-assistant' ),
 					'std' =>  array (
 						'standard' => array (
 							'post_title' => array (
@@ -1240,6 +1455,97 @@ class MLACoreOptions {
 					'update' => 'mla_iptc_exif_option_handler',
 					'delete' => 'mla_iptc_exif_option_handler',
 					'reset' => 'mla_iptc_exif_option_handler'),
+
+			self::MLA_ENABLE_IMAGE_SIZES =>
+				array('tab' => 'image',
+					'name' => __( 'Enable Intermediate Image Size Support', 'media-library-assistant' ),
+					'type' => 'checkbox',
+					'std' => '',
+					'help' => __( 'Check/uncheck this option to enable/disable Intermediate Image Size Support, then click <strong>Save Changes</strong> to record the new setting.', 'media-library-assistant' ) ),
+
+			self::MLA_IMAGE_THRESHOLD_OPTION =>
+				array('tab' => 'image',
+					'name' => __( 'Big Image Threshold Option', 'media-library-assistant' ),
+					'type' => 'select',
+					'autoload' => true,
+					'std' => 'default',
+					'options' => array('default', 'set', 'disable' ),
+					'texts' => array( __( 'Use default (2560)', 'media-library-assistant' ), __( 'Set threshold', 'media-library-assistant' ), __( 'Disable', 'media-library-assistant' ) ),
+					'help' => __( 'Set the &ldquo;BIG image&rdquo; threshold option. You can use the WordPress default value, set a custom value or disable scaling entirely.', 'media-library-assistant' )),
+
+			self::MLA_IMAGE_THRESHOLD_VALUE =>
+				array('tab' => 'image',
+					'name' => __( 'BIG image threshold', 'media-library-assistant' ),
+					'type' => 'text',
+					'std' => '2560',
+					'size' => 6,
+					'help' => __( 'Set the &ldquo;BIG image&rdquo; threshold value. If the original image width or height is above the threshold, it will be scaled down.', 'media-library-assistant' )),
+
+			self::MLA_IMAGE_SIZES =>
+				array('tab' => '',
+					'type' => 'custom',
+					'render' => 'mla_image_sizes_option_handler',
+					'update' => 'mla_image_sizes_option_handler',
+					'delete' => 'mla_image_sizes_option_handler',
+					'reset' => 'mla_image_sizes_option_handler',
+					'help' => __( 'Image Sizes help.', 'media-library-assistant' ),
+					'std' => array(
+						'thumbnail' => array(
+							'name' => _x( 'Thumbnail', 'image_sizes_name', 'media-library-assistant' ),
+							'width' => 150,
+							'height' => 150,
+							'crop' => false,
+							'horizontal' => '',
+							'vertical' => '',
+							'disabled' => false,
+							'description' => _x( 'WordPress reserved size', 'image_sizes_description', 'media-library-assistant' ),
+							'source' => 'core',
+						),
+						'medium' => array(
+							'name' => _x( 'Medium', 'image_sizes_name', 'media-library-assistant' ),
+							'width' => 300,
+							'height' => 300,
+							'crop' => false,
+							'horizontal' => '',
+							'vertical' => '',
+							'disabled' => false,
+							'description' => _x( 'WordPress reserved size', 'image_sizes_description', 'media-library-assistant' ),
+							'source' => 'core',
+						),
+						'medium_large' => array(
+							'name' => _x( 'Medium Large', 'image_sizes_name', 'media-library-assistant' ),
+							'width' => 768,
+							'height' => 0,
+							'crop' => false,
+							'horizontal' => '',
+							'vertical' => '',
+							'disabled' => false,
+							'description' => _x( 'WordPress reserved size', 'image_sizes_description', 'media-library-assistant' ),
+							'source' => 'core',
+						),
+						'large' => array(
+							'name' => _x( 'Large', 'image_sizes_name', 'media-library-assistant' ),
+							'width' => 1024,
+							'height' => 1024,
+							'crop' => false,
+							'horizontal' => '',
+							'vertical' => '',
+							'disabled' => false,
+							'description' => _x( 'WordPress reserved size', 'image_sizes_description', 'media-library-assistant' ),
+							'source' => 'core',
+						),
+						'post-thumbnail' => array(
+							'name' => _x( 'Post Thumbnail', 'image_sizes_name', 'media-library-assistant' ),
+							'width' => 266,
+							'height' => 266,
+							'crop' => false,
+							'horizontal' => '',
+							'vertical' => '',
+							'disabled' => false,
+							'description' => _x( 'WordPress reserved size, requires theme support', 'image_sizes_description', 'media-library-assistant' ),
+							'source' => 'core',
+						),
+					)),
 
 			self::MLA_ENABLE_POST_MIME_TYPES =>
 				array('tab' => 'view',
@@ -1380,6 +1686,14 @@ class MLACoreOptions {
 					'std' => '',
 					'help' => __( 'Check this option to override WordPress MIME Type security checks, then click <strong>Save Changes</strong> to record the new setting.', 'media-library-assistant' )),
 
+			self::MLA_CUSTOM_ICON_PATH =>
+				array('tab' => 'upload',
+					'name' => __( 'Custom Icons', 'media-library-assistant' ),
+					'type' => 'text',
+					'std' => '',
+					'size' => 30,
+					'help' => __( 'Enter the path (relative to .../wp-content/) of your custom icon directory.', 'media-library-assistant' )),
+
 			self::MLA_DEBUG_DISPLAY_LIMIT =>
 				array('tab' => 'debug',
 					'name' => __( 'Display Limit', 'media-library-assistant' ),
@@ -1419,6 +1733,51 @@ class MLACoreOptions {
 					'size' => 10,
 					'help' => __( 'Enter a numeric MLA_DEBUG_LEVEL value, e.g., 0x0003 or 3; leave blank to use the existing MLA_DEBUG_LEVEL value.', 'media-library-assistant' )),
 
+			self::MLA_DEBUG_ADD_TAXONOMY_COLUMNS =>
+				array('tab' => 'debug',
+					'name' => __( 'Add Tax. Columns', 'media-library-assistant' ),
+					'type' => 'checkbox',
+					'std' => '',
+					'help' => __( 'Check this option to add Parent, Term ID and Term-Taxonomy ID columns to the taxonomy edit admin submenu tables.', 'media-library-assistant' )),
+
+			self::MLA_UPLOAD_BULK_EDIT_PRESETS =>
+				array('tab' => '',
+					'type' => 'hidden',
+					'autoload' => false,
+					'std' => array (
+						'tax_input' => array(),
+						'tax_action' => array(),
+						'post_title' => '',
+						'post_excerpt' => '',
+						'post_content' => '',
+						'image_alt' => '',
+						'post_date' => '',
+						'post_parent' => '',
+						'post_author' => '-1',
+						'comment_status' => '-1',
+						'ping_status' => '-1',
+						'custom_fields' => array(),
+					)),
+
+			self::MLA_BULK_EDIT_PRESETS =>
+				array('tab' => '',
+					'type' => 'hidden',
+					'autoload' => false,
+					'std' => array (
+						'tax_input' => array(),
+						'tax_action' => array(),
+						'post_title' => '',
+						'post_excerpt' => '',
+						'post_content' => '',
+						'image_alt' => '',
+						'post_date' => '',
+						'post_parent' => '',
+						'post_author' => '-1',
+						'comment_status' => '-1',
+						'ping_status' => '-1',
+						'custom_fields' => array(),
+					)),
+
 			/* Here are examples of the other option types
 			'textarea' =>
 				array('tab' => '',
@@ -1430,6 +1789,11 @@ class MLACoreOptions {
 					'help' => __( 'Enter the text area...'),
 			*/
 		);
+
+		// MLACore not loaded nor needed in uninstall.php
+		if ( class_exists( 'MLACore' ) ) {
+			MLACore::mla_initialize_tax_checked_on_top();
+		}
 	}
 } // class MLACoreOptions
 ?>

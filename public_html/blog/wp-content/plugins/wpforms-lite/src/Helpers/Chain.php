@@ -2,8 +2,10 @@
 
 namespace WPForms\Helpers;
 
+use BadFunctionCallException;
+
 /**
- * Chain monad, useful for chaining certain array or string related functions.
+ * Chain monad, useful for chaining a certain array or string related functions.
  *
  * @since 1.5.6
  *
@@ -169,7 +171,7 @@ class Chain {
 	 * @param string $name Method name.
 	 * @param array  $params Parameters.
 	 *
-	 * @throws \BadFunctionCallException Invalid function is called.
+	 * @throws BadFunctionCallException Invalid function is called.
 	 *
 	 * @return Chain
 	 */
@@ -177,14 +179,16 @@ class Chain {
 
 		if ( in_array( $name, $this->allowed_methods(), true ) ) {
 
-			$params = null === $params ? array() : $params;
+			$params = $params === null ? [] : $params;
+
 			array_unshift( $params, $this->value );
-			$this->value = call_user_func_array( $name, $params );
+
+			$this->value = call_user_func_array( $name, array_values( $params ) );
 
 			return $this;
 		}
 
-		throw new \BadFunctionCallException( "Provided function { $name } is not allowed. See Chain::allowed_methods()." );
+		throw new BadFunctionCallException( esc_html( "Provided function { $name } is not allowed. See Chain::allowed_methods()." ) );
 	}
 
 	/**

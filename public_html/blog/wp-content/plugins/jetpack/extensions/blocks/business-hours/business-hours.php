@@ -12,8 +12,9 @@ namespace Automattic\Jetpack\Extensions\Business_Hours;
 use Automattic\Jetpack\Blocks;
 use Jetpack_Gutenberg;
 
-const FEATURE_NAME = 'business-hours';
-const BLOCK_NAME   = 'jetpack/' . FEATURE_NAME;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
 
 /**
  * Registers the block for use in Gutenberg
@@ -22,8 +23,10 @@ const BLOCK_NAME   = 'jetpack/' . FEATURE_NAME;
  */
 function register_block() {
 	Blocks::jetpack_register_block(
-		BLOCK_NAME,
-		array( 'render_callback' => __NAMESPACE__ . '\render' )
+		__DIR__,
+		array(
+			'render_callback' => __NAMESPACE__ . '\render',
+		)
 	);
 }
 add_action( 'init', __NAMESPACE__ . '\register_block' );
@@ -105,11 +108,15 @@ function render( $attributes ) {
 		$attributes['days'] = get_default_days();
 	}
 
+	$wrapper_attributes = \WP_Block_Supports::get_instance()->apply_block_supports();
+
 	$start_of_week = (int) get_option( 'start_of_week', 0 );
 	$time_format   = get_option( 'time_format' );
 	$content       = sprintf(
-		'<dl class="jetpack-business-hours %s">',
-		! empty( $attributes['className'] ) ? esc_attr( $attributes['className'] ) : ''
+		'<dl class="jetpack-business-hours%s%s"%s>',
+		! empty( $attributes['className'] ) ? ' ' . esc_attr( $attributes['className'] ) : '',
+		! empty( $wrapper_attributes['class'] ) ? ' ' . esc_attr( $wrapper_attributes['class'] ) : '',
+		! empty( $wrapper_attributes['style'] ) ? ' style="' . esc_attr( $wrapper_attributes['style'] ) . '"' : ''
 	);
 
 	$days = array( 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' );
@@ -127,20 +134,20 @@ function render( $attributes ) {
 		$content   .= '<dd class="' . esc_attr( $day['name'] ) . '">';
 		$days_hours = '';
 
-		foreach ( $day['hours'] as $key => $hour ) {
+		foreach ( $day['hours'] as $hour ) {
 			$opening = strtotime( $hour['opening'] );
 			$closing = strtotime( $hour['closing'] );
 			if ( ! $opening || ! $closing ) {
 				continue;
+			}
+			if ( $days_hours !== '' ) {
+				$days_hours .= ', ';
 			}
 			$days_hours .= sprintf(
 				'%1$s - %2$s',
 				gmdate( $time_format, $opening ),
 				gmdate( $time_format, $closing )
 			);
-			if ( $key + 1 < count( $day['hours'] ) ) {
-				$days_hours .= ', ';
-			}
 		}
 
 		if ( empty( $days_hours ) ) {
@@ -152,7 +159,7 @@ function render( $attributes ) {
 
 	$content .= '</dl>';
 
-	Jetpack_Gutenberg::load_assets_as_required( FEATURE_NAME );
+	Jetpack_Gutenberg::load_assets_as_required( __DIR__ );
 
 	/**
 	 * Allows folks to filter the HTML content for the Business Hours block

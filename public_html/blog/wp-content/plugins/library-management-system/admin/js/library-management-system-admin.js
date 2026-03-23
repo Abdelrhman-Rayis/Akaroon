@@ -1,751 +1,401 @@
-jQuery(function () {
+jQuery(function() {
 
-    var owt_lib_prefix = owt_lib.owt_lib_prefix;
+    // Show Loading Icon - Only for owt_lib_handler AJAX Calls
+    if (owt7_library.active) {
+        jQuery(document).ajaxSend(function(event, xhr, settings) {
+            // Check if the AJAX request belongs to this plugin
+            if (settings.data && settings.data.indexOf('action=owt_lib_handler') !== -1) {
+                jQuery('.owt7-lms').addClass('owt7_loader');
+            }
+        });
 
-    if (jQuery('#owt-tbl-book-list').length > 0) {
-        jQuery('#owt-tbl-book-list').DataTable();
+        jQuery(document).ajaxComplete(function(event, xhr, settings) {
+            // Remove loader only for this plugin's AJAX requests
+            if (settings.data && settings.data.indexOf('action=owt_lib_handler') !== -1) {
+                jQuery('.owt7-lms').removeClass('owt7_loader');
+            }
+        });
     }
 
-    if (jQuery('#owt-tbl-return-book-list').length > 0) {
-        jQuery('#owt-tbl-return-book-list').DataTable();
-    }
+    /**
+     * Form Validation & Submit Handler
+     */
+    jQuery(`
+		#owt7_lms_branch_form, 
+		#owt7_lms_user_form,
+        #owt7_lms_category_form,
+        #owt7_lms_bookcase_form,
+        #owt7_lms_section_form,
+        #owt7_lms_category_form,
+        #owt7_lms_book_form,
+        #owt7_lms_borrow_book,
+        #owt7_lms_return_book,
+        #owt7_lms_data_settings
+	`).validate({
+        submitHandler: function(form) {
+            var formID = jQuery(form).attr('id');
+            var paramID = formID;
+            formID = "#" + formID;
+            jQuery(formID).find("button[type='submit']").text('Processing...').css("cursor", "progress");
+            var formdata = jQuery(formID).serialize();
+            var postdata = formdata + "&action=owt_lib_handler&param=" + paramID;
+            jQuery.post(owt7_library.ajaxurl, postdata, function(response) {
+                var data = jQuery.parseJSON(response);
+                if (data.sts == 1) {
+                    jQuery(formID).find("button[type='submit']").text(owt7_library.messages.message_1 + '...').css("cursor", "progress");
+                    owt7_lms_toastr(data.msg, "success");
+                } else {
+                    jQuery(formID).find("button[type='submit']").html('<i class="mdi mdi-check-outline"></i> ' + owt7_library.messages.message_2).css("cursor", "pointer");
+                    owt7_lms_toastr(data.msg, 'error');
+                }
+            });
+        }
+    });
 
-    if (jQuery('#owt-tbl-book-issue-list').length > 0) {
-        jQuery('#owt-tbl-book-issue-list').DataTable();
-    }
+    /**
+     * Delete Function Handler
+     */
+    jQuery(document).on("click", ".action-btn-delete", function() {
+        if (confirm(owt7_library.messages.message_12)) { // True
+            var dataId = jQuery(this).data("id");
+            var dataModule = jQuery(this).data("module");
+            var postdata = "id=" + dataId + "&module=" + dataModule + "&action=owt_lib_handler&param=owt7_lms_delete_function&owt7_lms_nonce=" + owt7_library.ajax_nonce;
+            jQuery.post(owt7_library.ajaxurl, postdata, function(response) {
+                var data = jQuery.parseJSON(response);
+                if (data.sts == 1) {
+                    owt7_lms_toastr(data.msg, "success");
+                } else {
+                    owt7_lms_toastr(data.msg, 'error');
+                }
+            });
+        }
+    });
 
-    // upload profile image from here
-    jQuery("#btnUploadImage").on("click", function () {
+    /**
+     * DataTable
+     */
+    jQuery(`
+        #tbl_branches_list, 
+        #tbl_users_list,
+        #tbl_bookcases_list,
+        #tbl_sections_list,
+        #tbl_branches_list,
+        #tbl_books_list,
+        #tbl_books_borrow_history,
+        #tbl_books_return_history
+    `).DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+        ]
+    });
 
+    /**
+     * Upload Profile Image
+     */
+    jQuery("#owt7_upload_image").on("click", function() {
         var image = wp.media({
-            title: "Upload Profile Image",
+            title: owt7_library.messages.message_5,
             multiple: false
-        }).open().on("select", function () {
+        }).open().on("select", function() {
             var uploaded_image = image.state().get('selection').first();
             var image_url = uploaded_image.toJSON().url;
             var ext = image_url.split('.').pop().toLowerCase();
             if (jQuery.inArray(ext, ['gif', 'png', 'jpg', 'jpeg']) == -1) {
-
+                // Error
             } else {
-                jQuery(".wpowt-lib-img-prev").attr('src', image_url);
-                jQuery("#stu_profile_image").val(image_url);
+                jQuery("#owt7_library_image_preview").removeClass("hide-input");
+                jQuery("#owt7_library_image_preview").attr('src', image_url);
+                jQuery("#owt7_image_url").val(image_url);
             }
         });
     });
 
-    // create student from here...
-    jQuery("#wpowt-lib-frm-create-new-student").validate({
-        submitHandler: function () {
-            jQuery("#wpowt-lib-frm-create-new-student").find("button[type='submit']").text('Processing...').css("cursor", "progress");
-            var formdata = jQuery("#wpowt-lib-frm-create-new-student").serialize();
-            var postdata = formdata + "&action=owt_lib_handler&param=owt_lib_create_student";
-            jQuery("body").addClass("wpowt-pl-processing");
-            jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-                jQuery("body").removeClass("wpowt-pl-processing");
-                var data = jQuery.parseJSON(response);
-                if (data.sts == 1) {
-                    jQuery("#wpowt-lib-frm-create-new-student").find("button[type='submit']").text('Submitted, please wait...').css("cursor", "progress");
-                    wpowt_lib_toastr(data.msg, "success");
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1200);
-                } else {
-                    jQuery("#wpowt-lib-frm-create-new-student").find("button[type='submit']").html('<i class="mdi mdi-check-outline"></i> Submit').css("cursor", "pointer");
-                    wpowt_lib_toastr(data.msg, 'error')
-                }
-            });
-        }
-    });
-    // delete student from here... 
-    jQuery(document).on("click", ".wpowt-lib-del-student", function () {
-
-        var conf = confirm("Are you sure want to delete, It will delete all data of book Issues as well ?");
-        if (conf) {
-            var student_id = jQuery(this).attr("data-id");
-            var postdata = "st=" + student_id + "&action=owt_lib_handler&param=owt_lib_delete_student";
-            jQuery("body").addClass("wpowt-pl-processing");
-            jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-                jQuery("body").removeClass("wpowt-pl-processing");
-                var data = jQuery.parseJSON(response);
-                if (data.sts == 1) {
-                    wpowt_lib_toastr(data.msg, "success");
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1200);
-                } else {
-                    wpowt_lib_toastr(data.msg, "error");
-                }
-            });
-        }
-    });
-    // add branch from here...
-    jQuery("#wpowt-frm-add-frm").validate({
-        submitHandler: function () {
-            jQuery("#wpowt-frm-add-frm").find("button[type='submit']").text('Processing...').css("cursor", "progress");
-            var postdata = jQuery("#wpowt-frm-add-frm").serialize() + "&action=owt_lib_handler&param=owt_lib_add_branch";
-            jQuery("body").addClass("wpowt-pl-processing");
-            jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-                jQuery("body").removeClass("wpowt-pl-processing");
-                var data = jQuery.parseJSON(response);
-                if (data.sts == 1) {
-                    jQuery("#wpowt-frm-add-frm").find("button[type='submit']").text('Submitted, please wait...').css("cursor", "progress");
-                    wpowt_lib_toastr(data.msg, "success");
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1200);
-                } else {
-                    jQuery("#wpowt-frm-add-frm").find("button[type='submit']").html('<i class="mdi mdi-check-outline"></i> Submit').css("cursor", "pointer");
-                    wpowt_lib_toastr(data.msg, "error");
-                }
-            });
-        }
+    /**
+     * Add Book: Filter "Sections" by "Bookcase"
+     */
+    jQuery(document).on("change", "#owt7_dd_bookcase_id", function() {
+        var bookcaseId = jQuery(this).val();
+        var postdata = "bkcase_id=" + bookcaseId + "&action=owt_lib_handler&param=owt7_lms_filter_section&owt7_lms_nonce=" + owt7_library.ajax_nonce;
+        jQuery.post(owt7_library.ajaxurl, postdata, function(response) {
+            var data = jQuery.parseJSON(response);
+            var sectionHtml = '<option> -- ' + owt7_library.messages.message_6 + ' --</option>';
+            if (data.sts == 1) {
+                jQuery.each(data.arr.sections, function(index, item) {
+                    sectionHtml += `
+                        <option value="` + item.id + `">` + item.name + `</option>
+                    `;
+                });
+            }
+            jQuery("#owt7_dd_section_id").html(sectionHtml);
+        });
     });
 
-    //create staff from here...
-    jQuery("#wpowt-lib-frm-create-new-staff").validate({
-        submitHandler: function () {
-            jQuery("#wpowt-lib-frm-create-new-staff").find("button[type='submit']").text('Processing...').css("cursor", "progress");
-            var formdata = jQuery("#wpowt-lib-frm-create-new-staff").serialize();
-            var postdata = formdata + "&action=owt_lib_handler&param=owt_lib_create_staff";
-            jQuery("body").addClass("wpowt-pl-processing");
-            jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-                jQuery("body").removeClass("wpowt-pl-processing");
-                var data = jQuery.parseJSON(response);
-                if (data.sts == 1) {
-                    jQuery("#wpowt-lib-frm-create-new-staff").find("button[type='submit']").text('Submitted, please wait...').css("cursor", "progress");
-                    wpowt_lib_toastr(data.msg, "success");
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1200);
-                } else {
-                    jQuery("#wpowt-lib-frm-create-new-staff").find("button[type='submit']").html('<i class="mdi mdi-check-outline"></i> Submit').css("cursor", "pointer");
-                    wpowt_lib_toastr(data.msg, 'error')
-                }
-            });
-        }
-    });
-
-    jQuery(document).on("click", ".btn-book-return", function () {
-
-        var conf = confirm("Are you sure want to return ?");
-        if (conf) {
-            var issue_id = jQuery(this).attr("data-id");
-            var formdata = "issue_id=" + issue_id;
-            var postdata = formdata + "&action=owt_lib_handler&param=return_book_by_issue_id";
-            jQuery("body").addClass("wpowt-pl-processing");
-            jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-                jQuery("body").removeClass("wpowt-pl-processing");
-                var data = jQuery.parseJSON(response);
-                if (data.sts == 1) {
-                    wpowt_lib_toastr(data.msg, "success");
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1200);
-                } else {
-                    wpowt_lib_toastr(data.msg, 'error');
-                }
-            });
-        }
-    });
-
-    // delete staff from here... 
-    jQuery(document).on("click", ".wpowt-lib-del-staff", function () {
-
-        var conf = confirm("Are you sure want to delete, it will delete all book issues of this faculty?");
-        if (conf) {
-            var staff_id = jQuery(this).attr("data-id");
-            var postdata = "st=" + staff_id + "&action=owt_lib_handler&param=owt_lib_delete_staff";
-            jQuery("body").addClass("wpowt-pl-processing");
-            jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-                jQuery("body").removeClass("wpowt-pl-processing");
-                var data = jQuery.parseJSON(response);
-                if (data.sts == 1) {
-                    wpowt_lib_toastr(data.msg, "success");
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1200);
-                } else {
-                    wpowt_lib_toastr(data.msg, "error");
-                }
-            });
-        }
-    });
-
-    // add staff type from here...
-    jQuery("#wpowt-frm-add-type").validate({
-        submitHandler: function () {
-            jQuery("#wpowt-frm-add-type").find("button[type='submit']").text('Processing...').css("cursor", "progress");
-            var postdata = jQuery("#wpowt-frm-add-type").serialize() + "&action=owt_lib_handler&param=owt_lib_add_staff_type";
-            jQuery("body").addClass("wpowt-pl-processing");
-            jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-                jQuery("body").removeClass("wpowt-pl-processing");
-                var data = jQuery.parseJSON(response);
-                if (data.sts == 1) {
-                    jQuery("#wpowt-frm-add-type").find("button[type='submit']").text('Submitted, please wait...').css("cursor", "progress");
-                    wpowt_lib_toastr(data.msg, "success");
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1200);
-                } else {
-                    jQuery("#wpowt-frm-add-type").find("button[type='submit']").html('<i class="mdi mdi-check-outline"></i> Submit').css("cursor", "pointer");
-                    wpowt_lib_toastr(data.msg, "error");
-                }
-            });
-        }
-    });
-
-    // create book from here...
-    jQuery("#wpowt-lib-frm-create-new-book").validate({
-        submitHandler: function () {
-            jQuery("#wpowt-lib-frm-create-new-book").find("button[type='submit']").text('Processing...').css("cursor", "progress");
-            var formdata = jQuery("#wpowt-lib-frm-create-new-book").serialize();
-            var postdata = formdata + "&action=owt_lib_handler&param=owt_lib_create_book";
-            jQuery("body").addClass("wpowt-pl-processing");
-            jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-                jQuery("body").removeClass("wpowt-pl-processing");
-                var data = jQuery.parseJSON(response);
-                if (data.sts == 1) {
-                    jQuery("#wpowt-lib-frm-create-new-book").find("button[type='submit']").text('Submitted, please wait...').css("cursor", "progress");
-                    wpowt_lib_toastr(data.msg, "success");
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1200);
-                } else {
-                    jQuery("#wpowt-lib-frm-create-new-book").find("button[type='submit']").html('<i class="mdi mdi-check-outline"></i> Submit').css("cursor", "pointer");
-                    wpowt_lib_toastr(data.msg, 'error')
-                }
-            });
-        }
-    });
-
-    // create book category from here...
-    jQuery("#wpowt-frm-book-category").validate({
-        submitHandler: function () {
-            jQuery("#wpowt-frm-book-category").find("button[type='submit']").text('Processing...').css("cursor", "progress");
-            var postdata = jQuery("#wpowt-frm-book-category").serialize() + "&action=owt_lib_handler&param=owt_lib_add_book_category";
-            jQuery("body").addClass("wpowt-pl-processing");
-            jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-                jQuery("body").removeClass("wpowt-pl-processing");
-                var data = jQuery.parseJSON(response);
-                if (data.sts == 1) {
-                    jQuery("#wpowt-frm-book-category").find("button[type='submit']").text('Submitted, please wait...').css("cursor", "progress");
-                    wpowt_lib_toastr(data.msg, "success");
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1200);
-                } else {
-                    jQuery("#wpowt-frm-book-category").find("button[type='submit']").html('<i class="mdi mdi-check-outline"></i> Submit').css("cursor", "pointer");
-                    wpowt_lib_toastr(data.msg, "error");
-                }
-            });
-        }
-    });
-
-    // delete book from here... 
-    jQuery(document).on("click", ".wpowt-lib-del-book", function () {
-
-        var conf = confirm("Are you sure want to delete?");
-        if (conf) {
-            var staff_id = jQuery(this).attr("data-id");
-            var postdata = "st=" + staff_id + "&action=owt_lib_handler&param=owt_lib_delete_book";
-            jQuery("body").addClass("wpowt-pl-processing");
-            jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-                jQuery("body").removeClass("wpowt-pl-processing");
-                var data = jQuery.parseJSON(response);
-                if (data.sts == 1) {
-                    wpowt_lib_toastr(data.msg, "success");
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1200);
-                } else {
-                    wpowt_lib_toastr(data.msg, "error");
-                }
-            });
-        }
-    });
-
-    // filter book from here...
-    jQuery(document).on("change", "#wpowt-dd-category", function () {
-
-        var cat_id = jQuery(this).val();
-
-        if (cat_id == -1) {
-            wpowt_lib_toastr("Invalid category, please select other", "error");
-            jQuery("#wpowt-dd-books").html('<option value="-1">Choose book</option>');
-        } else {
-            jQuery("#wpowt-dd-books").html("<option>Finding books...</option>");
-            var postdata = "ct=" + cat_id + "&action=owt_lib_handler&param=owt_lib_filter_books";
-            jQuery("body").addClass("wpowt-pl-processing");
-            jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-                jQuery("body").removeClass("wpowt-pl-processing");
-                var data = jQuery.parseJSON(response);
-                var bookHtml = '<option value="-1">Choose book</option>';
-                if (data.sts == 1) {
-                    var books = data.arr;
-                    if (books.length > 0) {
-                        jQuery.each(books, function (index, item) {
-                            bookHtml += '<option value="' + item.id + '">' + item.name + '</option>';
-                        });
-                    }
-                    jQuery("#wpowt-dd-books").html(bookHtml);
-                } else {
-                    jQuery("#wpowt-dd-books").html(bookHtml);
-                    wpowt_lib_toastr(data.msg, "error");
-                }
-            });
-        }
-    });
-
-    // filter by user type
-    jQuery(document).on("change", "#wpowt-dd-types", function () {
-
-        var user_type = jQuery(this).val();
-
-        if (user_type == -1) {
-            wpowt_lib_toastr("Invalid user type, please select a user", "error");
-            jQuery(".wpowt-lib-student-section").css("display", "none");
-            jQuery(".wpowt-lib-staff-section").css("display", "none");
-        } else {
-            var postdata = "uid=" + user_type + "&action=owt_lib_handler&param=owt_lib_filter_users";
-            jQuery("body").addClass("wpowt-pl-processing");
-            jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-                jQuery("body").removeClass("wpowt-pl-processing");
-                var data = jQuery.parseJSON(response);
-                if (data.sts == 1) {
-                    if (data.arr.show == "student") {
-                        jQuery(".wpowt-lib-student-section").css("display", "block");
-                        jQuery(".wpowt-lib-staff-section").css("display", "none");
-                    } else if (data.arr.show == "staff") {
-                        var stafflist = '<option value="-1">Choose staff</option>';
-                        var staffs = data.arr.data;
-                        if (staffs.length > 0) {
-                            jQuery.each(staffs, function (index, item) {
-                                stafflist += '<option value="' + item.id + '">' + item.name + ' ( ' + item.staff_id + ' )</option>';
-                            });
-                        }
-                        jQuery("#wpowt-lib-stafflist").html(stafflist);
-                        jQuery(".wpowt-lib-student-section").css("display", "none");
-                        jQuery(".wpowt-lib-staff-section").css("display", "block");
-                    }
-                    jQuery("#wpowt-hidden-type").val(data.arr.show);
-                } else {
-                    wpowt_lib_toastr(data.msg, "error");
-                }
-            });
-        }
-    });
-
-    // filter by branch
-    jQuery(document).on("change", "#wpowt-student-branch-dd", function () {
-
+    /**
+     * Add Book: Filter "Users" by "Branch"
+     */
+    jQuery(document).on("change", "#owt7_dd_branch_id", function() {
         var branch_id = jQuery(this).val();
-
-        if (branch_id == -1) {
-            wpowt_lib_toastr("Invalid branch, please select branch", "error");
-            jQuery(".wpowt-lib-dd-student-list").css("display", "none");
-        } else {
-            var postdata = "bid=" + branch_id + "&action=owt_lib_handler&param=owt_lib_filter_branch";
-            jQuery("body").addClass("wpowt-pl-processing");
-            jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-                jQuery("body").removeClass("wpowt-pl-processing");
-                var data = jQuery.parseJSON(response);
-                var studentsHtml = '<option value="-1">Choose student</option>';
-                if (data.sts == 1) {
-                    var students = data.arr.students;
-                    jQuery.each(students, function (index, item) {
-                        studentsHtml += '<option value="' + item.id + '">' + item.name + ' ( ' + item.student_id + ' )</option>';
-                    });
-                    jQuery("#wpowt-students-dd-list").html(studentsHtml);
-                    jQuery(".wpowt-lib-dd-student-list").css("display", "block");
-                } else {
-                    wpowt_lib_toastr(data.msg, "error");
-                    jQuery("#wpowt-students-dd-list").html(studentsHtml);
-                    jQuery(".wpowt-lib-dd-student-list").css("display", "block");
-                }
-            });
-        }
-    });
-
-    // validate selected student
-    jQuery(document).on("change", "#wpowt-students-dd-list", function () {
-        var student_id = jQuery(this).val();
-        if (student_id == -1) {
-            wpowt_lib_toastr("Please select student", "error");
-        }
-    });
-
-    // book issue
-    jQuery("#wpowt-frm-book-issue").validate({
-        submitHandler: function () {
-            jQuery("#wpowt-frm-book-issue").find("button[type='submit']").text('Processing...').css("cursor", "progress");
-            var formdata = jQuery("#wpowt-frm-book-issue").serialize();
-            var postdata = formdata + "&action=owt_lib_handler&param=owt_lib_issue_book";
-            jQuery("body").addClass("wpowt-pl-processing");
-            jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-                jQuery("body").removeClass("wpowt-pl-processing");
-                var data = jQuery.parseJSON(response);
-                if (data.sts == 1) {
-                    jQuery("#wpowt-frm-book-issue").find("button[type='submit']").text('Submitted, please wait...').css("cursor", "progress");
-                    wpowt_lib_toastr(data.msg, "success");
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1200);
-                } else {
-                    jQuery("#wpowt-frm-book-issue").find("button[type='submit']").html('<i class="mdi mdi-check-outline"></i> Submit').css("cursor", "pointer");
-                    wpowt_lib_toastr(data.msg, "error");
-                }
-            });
-        }
-    });
-
-    jQuery(document).on("change", "select[name='wpowt_return_dd_student_id']", function () {
-        var student_id = jQuery(this).val();
-        var postdata = "stid=" + student_id + "&action=owt_lib_handler&param=owt_lib_student_issued_books";
-        jQuery("body").addClass("wpowt-pl-processing");
-        jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-            jQuery("body").removeClass("wpowt-pl-processing");
+        var postdata = "branch_id=" + branch_id + "&action=owt_lib_handler&param=owt7_lms_filter_user&owt7_lms_nonce=" + owt7_library.ajax_nonce;
+        jQuery.post(owt7_library.ajaxurl, postdata, function(response) {
             var data = jQuery.parseJSON(response);
+            var userHtml = '<option> -- ' + owt7_library.messages.message_7 + ' --</option>';
             if (data.sts == 1) {
-                // book(s) found
-                var returnHtml = '';
-                var books = data.arr.books;
-                if (books.length > 0) {
-                    jQuery.each(books, function (index, item) {
-                        returnHtml += '<label class="owt-lib-label"><input type="checkbox" name="book_return_list[]" value="' + item.issue_id + '" data-book="' + item.id + '"/> <span>' + item.book_name + '</span></label>';
-                    });
-                    jQuery(".wpowt-lib-books-issued-area").html(returnHtml);
-                } else {
-                    jQuery(".wpowt-lib-books-issued-area").html('<i>-- No Books Issued --</i>');
-                }
-
-            } else {
-                wpowt_lib_toastr(data.msg, "error");
-                jQuery(".wpowt-lib-books-issued-area").html('<i>-- No Books Issued --</i>');
+                jQuery.each(data.arr.users, function(index, item) {
+                    userHtml += `
+                        <option value="` + item.id + `">` + item.name + `</option>
+                    `;
+                });
+            }
+            jQuery("#owt7_dd_u_id").html(userHtml);
+            if (jQuery("#owt7_dd_borrow_u_id").length > 0) {
+                jQuery("#owt7_dd_borrow_u_id").html(userHtml);
             }
         });
     });
 
-    jQuery(document).on("change", "select[name='wpowt_return_dd_staff_id']", function () {
-        var staff_id = jQuery(this).val();
-        var postdata = "stfid=" + staff_id + "&action=owt_lib_handler&param=owt_lib_staff_issued_books";
-        jQuery("body").addClass("wpowt-pl-processing");
-        jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-            jQuery("body").removeClass("wpowt-pl-processing");
+    /**
+     * Add Book: Filter "Books" by "Category"
+     */
+    jQuery(document).on("change", "#owt7_dd_category_id", function() {
+        var category_id = jQuery(this).val();
+        var postdata = "category_id=" + category_id + "&action=owt_lib_handler&param=owt7_lms_filter_book&owt7_lms_nonce=" + owt7_library.ajax_nonce;
+        jQuery.post(owt7_library.ajaxurl, postdata, function(response) {
             var data = jQuery.parseJSON(response);
+            var bookHtml = '<option> -- ' + owt7_library.messages.message_8 + ' -- </option>';
             if (data.sts == 1) {
-                // book(s) found
-                var returnHtml = '';
-                var books = data.arr.books;
-                if (books.length > 0) {
-                    jQuery.each(books, function (index, item) {
-                        returnHtml += '<label class="owt-lib-label"><input type="checkbox" name="book_return_list[]" value="' + item.issue_id + '" data-book="' + item.id + '"/> <span>' + item.book_name + '</span></label>';
-                    });
-                    jQuery(".wpowt-lib-books-issued-area").html(returnHtml);
-                } else {
-                    jQuery(".wpowt-lib-books-issued-area").html('<i>-- No Books Issued --</i>');
-                }
+                jQuery.each(data.arr.books, function(index, item) {
+                    bookHtml += `
+                            <option value="` + item.id + `">` + item.name + `</option>
+                        `;
+                });
+            }
+            jQuery("#owt7_dd_book_id").html(bookHtml);
+        });
+    });
 
+    /**
+     * List of Borrowed Books By User (Return Book Page)
+     */
+    jQuery(document).on("change", "#owt7_dd_borrow_u_id", function() {
+        var u_id = jQuery(this).val();
+        var postdata = "u_id=" + u_id + "&action=owt_lib_handler&param=owt7_lms_filter_borrow_book&owt7_lms_nonce=" + owt7_library.ajax_nonce;
+        jQuery.post(owt7_library.ajaxurl, postdata, function(response) {
+            var data = jQuery.parseJSON(response);
+            var bookHtml = "";
+            if (data.sts == 1) {
+                jQuery.each(data.arr.books, function(index, item) {
+                    bookHtml += `
+                        <label>
+                        <input type="checkbox" name="owt7_borrow_books_id[]" value="` + item.id + `">` + owt7_lms_toTitleCase(item.book_name) + `</label>
+                        `;
+                });
+                jQuery(".form-books-borrow").parent(".form-row").removeClass("hide-input");
+                jQuery("#owt7_chk_books_list").html(bookHtml);
             } else {
-                wpowt_lib_toastr(data.msg, "error");
-                jQuery(".wpowt-lib-books-issued-area").html('<i>-- No Books Issued --</i>');
+                jQuery(".form-books-borrow").parent(".form-row").removeClass("hide-input");
+                jQuery("#owt7_chk_books_list").html("<span style='font-size: 15px;'><i>No Book(s) Borrowed.</i></span>");
             }
         });
     });
 
-    jQuery("#wpowt-frm-book-return").validate({
-        submitHandler: function () {
-            jQuery("#wpowt-frm-book-return").find("button[type='submit']").text('Processing...').css("cursor", "progress");
-            var postdata = jQuery("#wpowt-frm-book-return").serialize() + "&action=owt_lib_handler&param=owt_lib_student_return_book";
-            jQuery("body").addClass("wpowt-pl-processing");
-            jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-                jQuery("body").removeClass("wpowt-pl-processing");
+    /**
+     * Book Return on Click
+     */
+    jQuery(document).on("click", ".owt7_lms_btn_return", function() {
+        if (confirm(owt7_library.messages.message_13)) {
+            var dataId = jQuery(this).data("id");
+            var formdata = jQuery("#owt7_lms_return_book_" + dataId).serialize();
+            var postdata = formdata + "&action=owt_lib_handler&param=owt7_lms_return_book";
+            jQuery.post(owt7_library.ajaxurl, postdata, function(response) {
                 var data = jQuery.parseJSON(response);
                 if (data.sts == 1) {
-                    jQuery("#wpowt-frm-book-return").find("button[type='submit']").text('Submitted, please wait...').css("cursor", "progress");
-                    wpowt_lib_toastr(data.msg, "success");
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1200);
+                    owt7_lms_toastr(data.msg, "success");
                 } else {
-                    jQuery("#wpowt-frm-book-return").find("button[type='submit']").html('<i class="mdi mdi-check-outline"></i> Submit').css("cursor", "pointer");
-                    wpowt_lib_toastr(data.msg, "error");
+                    owt7_lms_toastr(data.msg, 'error');
                 }
             });
         }
     });
 
-    jQuery(document).on("click", ".wpowt-lib-fine-modal", function () {
-        var return_id = jQuery(this).attr("data-id");
-        var postdata = "return_id=" + return_id + "&action=owt_lib_handler&param=owt_lib_student_fine_details";
-        jQuery("body").addClass("wpowt-pl-processing");
-        jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-            jQuery("body").removeClass("wpowt-pl-processing");
+    /**
+     * Transactions (Borrow, Return): DataTable Filter Dropdowns
+     */
+    jQuery(document).on("change", ".owt7_lms_dd_data_filter", function() {
+
+        var dataTableBodyId = jQuery(this).data("table");
+        var dataTableId = jQuery("#" + dataTableBodyId).parent("table").attr("id");
+        var dataOption = jQuery(this).data("option");
+        var listType = jQuery(this).data("list");
+        var optionId = jQuery(this).val();
+        jQuery("#" + dataTableId).DataTable().destroy();
+        var postdata = "filterby=" + dataOption + "&id=" + optionId + "&list=" + listType + "&action=owt_lib_handler&param=owt7_lms_data_filters&owt7_lms_nonce=" + owt7_library.ajax_nonce;
+        jQuery.post(owt7_library.ajaxurl, postdata, function(response) {
             var data = jQuery.parseJSON(response);
             if (data.sts == 1) {
-                jQuery("#wpowt-txt-extra-days").val(data.arr.extra_days);
-                jQuery("#wpowt-txt-total-fine").val(data.arr.fine_amount);
-                jQuery("#wpowt-lib-return-id").val(return_id);
-                jQuery("#wpowt-fine-details-modal").modal("show");
+                jQuery("#" + dataTableBodyId).html(data.arr.template);
             } else {
-                wpowt_lib_toastr(data.msg, "error");
+                jQuery("#" + dataTableBodyId).html("");
             }
+            jQuery("#" + dataTableId).DataTable();
         });
     });
 
-    jQuery("#wpowt-lib-pay-fine").validate({
-        submitHandler: function () {
-            jQuery("#wpowt-lib-pay-fine").find("button[type='submit']").text('Processing...').css("cursor", "progress");
-            var postdata = jQuery("#wpowt-lib-pay-fine").serialize() + "&action=owt_lib_handler&param=owt_lib_pay_late_fine";
-            jQuery("body").addClass("wpowt-pl-processing");
-            jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-                jQuery("body").removeClass("wpowt-pl-processing");
-                var data = jQuery.parseJSON(response);
-                if (data.sts == 1) {
-                    jQuery("#wpowt-lib-pay-fine").find("button[type='submit']").text('Submitted, please wait...').css("cursor", "progress")
-                    wpowt_lib_toastr(data.msg, "success");
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1200);
-                } else {
-                    jQuery("#wpowt-lib-pay-fine").find("button[type='submit']").html('<i class="mdi mdi-check-outline"></i> Submit').css("cursor", "pointer");
-                    wpowt_lib_toastr(data.msg, "error");
-                }
-            });
-        }
+    /**
+     * Modal Settings
+     */
+    var owt7_lms_modal = jQuery('#owt7_lms_mdl_settings');
+
+    /** 
+     * Late Fine Modal
+     */
+    jQuery(`
+        #owt7_lms_fine_modal,
+        #owt7_lms_country_modal
+    `).on('click', function() {
+        owt7_lms_modal.show();
     });
 
-    jQuery(document).on("click", ".wpowt-lib-del-return-book", function () {
-
-        var conf = confirm("Are you sure want to delete ?");
-        if (conf) {
-            var return_id = jQuery(this).attr("data-id");
-            var postdata = "return_id=" + return_id + "&action=owt_lib_handler&param=owt_lib_delete_return";
-            jQuery("body").addClass("wpowt-pl-processing");
-            jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-                jQuery("body").removeClass("wpowt-pl-processing");
-                var data = jQuery.parseJSON(response);
-                if (data.sts == 1) {
-                    wpowt_lib_toastr(data.msg, "success");
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1200);
-                } else {
-                    wpowt_lib_toastr(data.msg, "error");
-                }
-            });
-        }
+    /** 
+     * Modal Close Button Action
+     */
+    jQuery('.close').on('click', function() {
+        owt7_lms_modal.hide();
     });
 
-    /********* EDIT NAME FROM MODAL *****************/
-    // edit for name of branch
-    jQuery(document).on("click", ".wpowt-edit-name", function () {
-        var branch_name = jQuery(this).parents(".wpowt-branch-tr-row").find(".wpowt-branch-edit-name").text();
-        jQuery(this).parents(".wpowt-branch-tr-row").find(".wpowt-branch-edit-name").html('<input type="text" class="form-control" name="txt_branch_update_title" value="' + branch_name + '"/>');
-        jQuery(this).parents(".wpowt-branch-tr-row").find(".wpowt-branch-action-btns").css("display", "none");
-        jQuery(this).parents(".wpowt-branch-tr-row").find(".wpowt-branch-save-btn").css("display", "block");
-    });
-    // edit for name of staff type
-    jQuery(document).on("click", ".wpowt-edit-staff-name", function () {
-        var staff_name = jQuery(this).parents(".wpowt-stafftypes-tr-row").find(".wpowt-stafftypes-edit-name").text();
-        jQuery(this).parents(".wpowt-stafftypes-tr-row").find(".wpowt-stafftypes-edit-name").html('<input type="text" class="form-control" name="txt_staff_update_title" value="' + staff_name + '"/>');
-        jQuery(this).parents(".wpowt-stafftypes-tr-row").find(".wpowt-stafftypes-action-btns").css("display", "none");
-        jQuery(this).parents(".wpowt-stafftypes-tr-row").find(".wpowt-stafftypes-save-btn").css("display", "block");
-    });
-    // edit for name of staff type
-    jQuery(document).on("click", ".wpowt-edit-category-name", function () {
-        var cat_name = jQuery(this).parents(".wpowt-category-tr-row").find(".wpowt-category-edit-name").text();
-        jQuery(this).parents(".wpowt-category-tr-row").find(".wpowt-category-edit-name").html('<input type="text" class="form-control" name="txt_category_update_title" value="' + cat_name + '"/>');
-        jQuery(this).parents(".wpowt-category-tr-row").find(".wpowt-category-action-btns").css("display", "none");
-        jQuery(this).parents(".wpowt-category-tr-row").find(".wpowt-category-save-btn").css("display", "block");
-    });
-    /********** EDIT NAME MODAL ENDS ********************/
-
-    /************ CANCEL EDIT FOR MODAL *************************/
-    // cancel edit for the branch
-    jQuery(document).on("click", ".wpowt-cancel-update", function () {
-        var branch_name = jQuery(this).parents(".wpowt-branch-tr-row").find(".wpowt-branch-edit-name input[name='txt_branch_update_title']").val();
-        jQuery(this).parents(".wpowt-branch-tr-row").find(".wpowt-branch-edit-name").html(branch_name);
-        jQuery(this).parents(".wpowt-branch-tr-row").find(".wpowt-branch-action-btns").css("display", "block");
-        jQuery(this).parents(".wpowt-branch-tr-row").find(".wpowt-branch-save-btn").css("display", "none");
-    });
-    // cancel edit for the staff type
-    jQuery(document).on("click", ".wpowt-cancel-stafftypes-update", function () {
-        var staff_name = jQuery(this).parents(".wpowt-stafftypes-tr-row").find(".wpowt-stafftypes-edit-name input[name='txt_staff_update_title']").val();
-        jQuery(this).parents(".wpowt-stafftypes-tr-row").find(".wpowt-stafftypes-edit-name").html(staff_name);
-        jQuery(this).parents(".wpowt-stafftypes-tr-row").find(".wpowt-stafftypes-action-btns").css("display", "block");
-        jQuery(this).parents(".wpowt-stafftypes-tr-row").find(".wpowt-stafftypes-save-btn").css("display", "none");
-    });
-    // cancel edit for the category
-    jQuery(document).on("click", ".wpowt-cancel-category-update", function () {
-        var staff_name = jQuery(this).parents(".wpowt-category-tr-row").find(".wpowt-category-edit-name input[name='txt_category_update_title']").val();
-        jQuery(this).parents(".wpowt-category-tr-row").find(".wpowt-category-edit-name").html(staff_name);
-        jQuery(this).parents(".wpowt-category-tr-row").find(".wpowt-category-action-btns").css("display", "block");
-        jQuery(this).parents(".wpowt-category-tr-row").find(".wpowt-category-save-btn").css("display", "none");
-    });
-    /********** CANCEL EDIT MODAL ENDS *******************/
-
-    /************ SAVE NAME BUTTON MODAL **************************/
-    // save updated title of branch
-    jQuery(document).on("click", ".wpowt-save-branch", function () {
-        var current = this;
-        var branch_name = jQuery(this).parents(".wpowt-branch-tr-row").find(".wpowt-branch-edit-name input[name='txt_branch_update_title']").val();
-        var branch_id = jQuery(this).attr("data-id");
-        var postdata = "branch_id=" + branch_id + "&branch_name=" + branch_name + "&action=owt_lib_handler&param=owt_lib_update_branch";
-        jQuery("body").addClass("wpowt-pl-processing");
-        jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-            jQuery("body").removeClass("wpowt-pl-processing");
+    /**
+     *  Filters: 
+     *  - "Books by Category", 
+     *  - "Sections by Bookcase", 
+     *  - "Users by Branch"
+     */
+    jQuery(document).on("change", "#owt7_lms_data_filter", function() {
+        var module = jQuery(this).data("module");
+        var filterBy = jQuery(this).data("filter-by");
+        var tableId = "#tbl_" + module + "_list";
+        var filterValue = jQuery(this).val();
+        var tableBody = jQuery("table#tbl_" + module + "_list tbody");
+        jQuery(tableId).DataTable().destroy();
+        var postdata = "module=" + module + "&filterBy=" + filterBy + "&value=" + filterValue + "&action=owt_lib_handler&param=owt7_lms_data_option_filters&owt7_lms_nonce=" + owt7_library.ajax_nonce;
+        jQuery.post(owt7_library.ajaxurl, postdata, function(response) {
             var data = jQuery.parseJSON(response);
             if (data.sts == 1) {
-                wpowt_lib_toastr(data.msg, "success");
-                jQuery(current).parents(".wpowt-branch-tr-row").find(".wpowt-branch-edit-name").html(branch_name);
-                jQuery(current).parents(".wpowt-branch-tr-row").find(".wpowt-branch-action-btns").css("display", "block");
-                jQuery(current).parents(".wpowt-branch-tr-row").find(".wpowt-branch-save-btn").css("display", "none");
+                tableBody.html(data.arr.template);
             } else {
-                wpowt_lib_toastr(data.msg, "error");
+                tableBody.html("");
             }
+            jQuery(tableId).DataTable();
         });
     });
-    // save updated title of staff type
-    jQuery(document).on("click", ".wpowt-save-stafftypes", function () {
-        var current = this;
-        var staff_name = jQuery(this).parents(".wpowt-stafftypes-tr-row").find(".wpowt-stafftypes-edit-name input[name='txt_staff_update_title']").val();
-        var staff_id = jQuery(this).attr("data-id");
-        var postdata = "staff_id=" + staff_id + "&staff_name=" + staff_name + "&action=owt_lib_handler&param=owt_lib_update_stafftype";
-        jQuery("body").addClass("wpowt-pl-processing");
-        jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-            jQuery("body").removeClass("wpowt-pl-processing");
-            var data = jQuery.parseJSON(response);
-            if (data.sts == 1) {
-                wpowt_lib_toastr(data.msg, "success");
-                jQuery(current).parents(".wpowt-stafftypes-tr-row").find(".wpowt-stafftypes-edit-name").html(staff_name);
-                jQuery(current).parents(".wpowt-stafftypes-tr-row").find(".wpowt-stafftypes-action-btns").css("display", "block");
-                jQuery(current).parents(".wpowt-stafftypes-tr-row").find(".wpowt-stafftypes-save-btn").css("display", "none");
-            } else {
-                wpowt_lib_toastr(data.msg, "error");
-            }
-        });
-    });
-    // save updated title of category
-    jQuery(document).on("click", ".wpowt-save-category", function () {
-        var current = this;
-        var category_name = jQuery(this).parents(".wpowt-category-tr-row").find(".wpowt-category-edit-name input[name='txt_category_update_title']").val();
-        var category_id = jQuery(this).attr("data-id");
-        var postdata = "category_id=" + category_id + "&category_name=" + category_name + "&action=owt_lib_handler&param=owt_lib_update_category_title";
-        jQuery("body").addClass("wpowt-pl-processing");
-        jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-            jQuery("body").removeClass("wpowt-pl-processing");
-            var data = jQuery.parseJSON(response);
-            if (data.sts == 1) {
-                wpowt_lib_toastr(data.msg, "success");
-                jQuery(current).parents(".wpowt-category-tr-row").find(".wpowt-category-edit-name").html(category_name);
-                jQuery(current).parents(".wpowt-category-tr-row").find(".wpowt-category-action-btns").css("display", "block");
-                jQuery(current).parents(".wpowt-category-tr-row").find(".wpowt-category-save-btn").css("display", "none");
-            } else {
-                wpowt_lib_toastr(data.msg, "error");
-            }
-        });
-    });
-    /*********** SAVE NAME BUTTON MODAL ENDS ************************/
 
-    /***************** DELETE NAME BUTTON MODAL **********************************/
-    // delete branch 
-    jQuery(document).on("click", ".wpowt-delete-branch", function () {
-        var conf = confirm("Are you sure want to delete?")
-        if (conf) {
-            var current = this;
-            var branch_id = jQuery(this).attr("data-id");
-            var postdata = "branch_id=" + branch_id + "&action=owt_lib_handler&param=owt_lib_delete_branch";
-            jQuery("body").addClass("wpowt-pl-processing");
-            jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-                jQuery("body").removeClass("wpowt-pl-processing");
+    /**
+     * Run Test Data Importer
+     */
+    jQuery(document).on("click", "#owt7_lms_run_data_importer, #owt7_lms_refresh_test_data", function() {
+        if (confirm(owt7_library.messages.message_9)) {
+            var postdata = "action=owt_lib_handler&param=owt7_lms_import_test_data&owt7_lms_nonce=" + owt7_library.ajax_nonce;
+            jQuery.post(owt7_library.ajaxurl, postdata, function(response) {
                 var data = jQuery.parseJSON(response);
                 if (data.sts == 1) {
-                    wpowt_lib_toastr(data.msg, "success");
-                    jQuery(current).parents(".wpowt-branch-tr-row").remove();
+                    owt7_lms_toastr(data.msg, "success");
                 } else {
-                    wpowt_lib_toastr(data.msg, "error");
+                    owt7_lms_toastr(data.msg, 'error');
                 }
             });
         }
     });
 
-    // delete staff type 
-    jQuery(document).on("click", ".wpowt-delete-staff", function () {
-        var conf = confirm("Are you sure want to delete?")
-        if (conf) {
-            var current = this;
-            var staff_id = jQuery(this).attr("data-id");
-            var postdata = "staff_id=" + staff_id + "&action=owt_lib_handler&param=owt_lib_delete_stafftype";
-            jQuery("body").addClass("wpowt-pl-processing");
-            jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-                jQuery("body").removeClass("wpowt-pl-processing");
+    /**
+     * Remove Test Data
+     */
+    jQuery(document).on("click", "#owt7_lms_remove_test_data", function() {
+        if (confirm(owt7_library.messages.message_10)) {
+            var postdata = "action=owt_lib_handler&param=owt7_lms_remove_test_data&owt7_lms_nonce=" + owt7_library.ajax_nonce;
+            jQuery.post(owt7_library.ajaxurl, postdata, function(response) {
                 var data = jQuery.parseJSON(response);
                 if (data.sts == 1) {
-                    wpowt_lib_toastr(data.msg, "success");
-                    jQuery(current).parents(".wpowt-stafftypes-tr-row").remove();
+                    owt7_lms_toastr(data.msg, "success");
                 } else {
-                    wpowt_lib_toastr(data.msg, "error");
+                    owt7_lms_toastr(data.msg, 'error');
                 }
             });
-        }
-    });
-    // delete category 
-    jQuery(document).on("click", ".wpowt-delete-category", function () {
-        var conf = confirm("Are you sure want to delete?")
-        if (conf) {
-            var current = this;
-            var category_id = jQuery(this).attr("data-id");
-            var postdata = "category_id=" + category_id + "&action=owt_lib_handler&param=owt_lib_delete_category";
-            jQuery("body").addClass("wpowt-pl-processing");
-            jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-                jQuery("body").removeClass("wpowt-pl-processing");
-                var data = jQuery.parseJSON(response);
-                if (data.sts == 1) {
-                    wpowt_lib_toastr(data.msg, "success");
-                    jQuery(current).parents(".wpowt-category-tr-row").remove();
-                } else {
-                    wpowt_lib_toastr(data.msg, "error");
-                }
-            });
-        }
-    });
-    /*********** DELETE NAME BUTTON MODAL **********************/
-
-    var listItems = jQuery("#toplevel_page_owt-lib-manage ul > li");
-    listItems.each(function (idx, li) {
-        var is_text = jQuery(this).find("a").text();
-        if (is_text == "") {
-            jQuery(this).css("display", "none")
         }
     });
 
-    jQuery("#wpowt-frm-settings-panel").validate({
-        submitHandler: function () {
-            jQuery("#wpowt-frm-settings-panel").find("button[type='submit']").text('Processing...').css("cursor", "progress");
-            var postdata = jQuery("#wpowt-frm-settings-panel").serialize() + "&action=owt_lib_handler&param=owt_lib_settings_panel";
-            jQuery("body").addClass("wpowt-pl-processing");
-            jQuery.post(owt_lib.ajaxurl, postdata, function (response) {
-                jQuery("body").removeClass("wpowt-pl-processing");
+    /**
+     * Pay Late Fine
+     */
+    jQuery(document).on("click", ".owt7_pay_late_fine", function() {
+        if (confirm(owt7_library.messages.message_11)) {
+            var return_id = jQuery(this).data("id");
+            var postdata = "return_id=" + return_id + "&action=owt_lib_handler&param=owt7_pay_late_fine&owt7_lms_nonce=" + owt7_library.ajax_nonce;
+            jQuery.post(owt7_library.ajaxurl, postdata, function(response) {
                 var data = jQuery.parseJSON(response);
                 if (data.sts == 1) {
-                    jQuery("#wpowt-frm-settings-panel").find("button[type='submit']").text('Submitted, please wait...').css("cursor", "progress")
-                    wpowt_lib_toastr(data.msg, "success");
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1200);
+                    owt7_lms_toastr(data.msg, "success");
                 } else {
-                    jQuery("#wpowt-frm-settings-panel").find("button[type='submit']").html('<i class="mdi mdi-check-outline"></i> Submit').css("cursor", "pointer");
-                    wpowt_lib_toastr(data.msg, "error");
+                    owt7_lms_toastr(data.msg, 'error');
                 }
             });
         }
+    });
+
+    /**
+     * Auto Generate ID
+     */
+    jQuery(document).on("click", "#owt7_btn_ids_auto_generate", function() {
+        var systemId = owt7_lms_generateRandomString(6);
+        var module = jQuery(this).data("module");
+        if (module == "book") {
+            jQuery("#owt7_txt_book_id").val(systemId);
+        } else if (module == "user") {
+            jQuery("#owt7_txt_u_id").val(systemId);
+        }
+    });
+
+    /**
+     * Copy to Clipboard
+     */
+    jQuery(document).on("click", "#owt7_lib_shortcode_copy", function() {
+        var valueToCopy = jQuery(this).data("value");
+        navigator.clipboard.writeText(valueToCopy);
+        owt7_lms_toastr("Successfully, Shortcode Copied", "success");
     });
 });
 
-function wpowt_lib_toastr(message, type) {
+/**
+ * Activity Notification
+ */
+function owt7_lms_toastr(message, type) {
     if (type == "success") {
-        toastr.success(message, 'Success')
+        toastr.success(message, owt7_library.messages.message_3);
+        setTimeout(function() {
+            location.reload();
+        }, 3000);
     } else if (type == "error") {
-        toastr.error(message, 'Error')
+        toastr.error(message, owt7_library.messages.message_4)
     }
+}
+
+/**
+ *jQuery function to convert the input text to Title Case
+ */
+function owt7_lms_toTitleCase(str) {
+    return str.replace(/\b\w+/g, function(txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+}
+
+/**
+ * Auto Generate IDs
+ */
+function owt7_lms_generateRandomString(length) {
+    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    var result = '';
+    for (var i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
 }

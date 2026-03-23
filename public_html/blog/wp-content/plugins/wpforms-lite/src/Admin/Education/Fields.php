@@ -25,7 +25,7 @@ class Fields {
 	 *
 	 * @return array All possible fields.
 	 */
-	private function get_all() {
+	private function get_all(): array {
 
 		if ( ! empty( $this->fields ) ) {
 			return $this->fields;
@@ -33,155 +33,226 @@ class Fields {
 
 		$this->fields = [
 			[
-				'icon'  => 'fa-phone',
-				'name'  => esc_html__( 'Phone', 'wpforms-lite' ),
-				'type'  => 'phone',
-				'group' => 'fancy',
-				'order' => '1',
+				'icon'    => 'fa-phone',
+				'name'    => esc_html__( 'Phone', 'wpforms-lite' ),
+				'name_en' => 'Phone',
+				'type'    => 'phone',
+				'group'   => 'fancy',
+				'order'   => '50',
 			],
 			[
-				'icon'  => 'fa-map-marker',
-				'name'  => esc_html__( 'Address', 'wpforms-lite' ),
-				'type'  => 'address',
-				'group' => 'fancy',
-				'order' => '2',
+				'icon'    => 'fa-map-marker',
+				'name'    => esc_html__( 'Address', 'wpforms-lite' ),
+				'name_en' => 'Address',
+				'type'    => 'address',
+				'group'   => 'fancy',
+				'order'   => '70',
 			],
 			[
-				'icon'  => 'fa-calendar-o',
-				'name'  => esc_html__( 'Date / Time', 'wpforms-lite' ),
-				'type'  => 'date-time',
-				'group' => 'fancy',
-				'order' => '3',
+				'icon'    => 'fa-map-location-dot',
+				'name'    => esc_html__( 'Map', 'wpforms-lite' ),
+				'name_en' => 'Map',
+				'type'    => 'Map',
+				'group'   => 'fancy',
+				'addon'   => 'wpforms-geolocation',
+				'order'   => '75',
 			],
 			[
-				'icon'  => 'fa-link',
-				'name'  => esc_html__( 'Website / URL', 'wpforms-lite' ),
-				'type'  => 'url',
-				'group' => 'fancy',
-				'order' => '4',
+				'icon'    => 'fa-calendar-o',
+				'name'    => esc_html__( 'Date / Time', 'wpforms-lite' ),
+				'name_en' => 'Date / Time',
+				'type'    => 'date-time',
+				'group'   => 'fancy',
+				'order'   => '80',
 			],
 			[
-				'icon'  => 'fa-upload',
-				'name'  => esc_html__( 'File Upload', 'wpforms-lite' ),
-				'type'  => 'file-upload',
-				'group' => 'fancy',
-				'order' => '5',
+				'icon'    => 'fa-link',
+				'name'    => esc_html__( 'Website / URL', 'wpforms-lite' ),
+				'name_en' => 'Website / URL',
+				'type'    => 'url',
+				'group'   => 'fancy',
+				'order'   => '90',
 			],
 			[
-				'icon'  => 'fa-lock',
-				'name'  => esc_html__( 'Password', 'wpforms-lite' ),
-				'type'  => 'password',
-				'group' => 'fancy',
-				'order' => '6',
+				'icon'    => 'fa-upload',
+				'name'    => esc_html__( 'File Upload', 'wpforms-lite' ),
+				'name_en' => 'File Upload',
+				'type'    => 'file-upload',
+				'group'   => 'fancy',
+				'order'   => '100',
 			],
 			[
-				'icon'  => 'fa-files-o',
-				'name'  => esc_html__( 'Page Break', 'wpforms-lite' ),
-				'type'  => 'pagebreak',
-				'group' => 'fancy',
-				'order' => '7',
+				'icon'    => 'fa-camera',
+				'name'    => esc_html__( 'Camera', 'wpforms-lite' ),
+				'name_en' => 'Camera',
+				'type'    => 'camera',
+				'group'   => 'fancy',
+				'order'   => '105',
 			],
 			[
-				'icon'  => 'fa-arrows-h',
-				'name'  => esc_html__( 'Section Divider', 'wpforms-lite' ),
-				'type'  => 'divider',
-				'group' => 'fancy',
-				'order' => '8',
+				'icon'    => 'fa-lock',
+				'name'    => esc_html__( 'Password', 'wpforms-lite' ),
+				'name_en' => 'Password',
+				'type'    => 'password',
+				'group'   => 'fancy',
+				'order'   => '95',
 			],
 			[
-				'icon'  => 'fa-eye-slash',
-				'name'  => esc_html__( 'Hidden Field', 'wpforms-lite' ),
-				'type'  => 'hidden',
-				'group' => 'fancy',
-				'order' => '9',
+				'icon'    => 'fa-columns',
+				'name'    => esc_html__( 'Layout', 'wpforms-lite' ),
+				'name_en' => 'Layout',
+				'type'    => 'layout',
+				'group'   => 'fancy',
+				'order'   => '140',
 			],
 			[
-				'icon'  => 'fa-code',
-				'name'  => esc_html__( 'HTML', 'wpforms-lite' ),
-				'type'  => 'html',
-				'group' => 'fancy',
-				'order' => '10',
+				'icon'    => 'fa-list',
+				'name'    => esc_html__( 'Repeater', 'wpforms-lite' ),
+				'name_en' => 'Repeater',
+				'type'    => 'repeater',
+				'group'   => 'fancy',
+				'order'   => '150',
 			],
 			[
-				'icon'  => 'fa-star',
-				'name'  => esc_html__( 'Rating', 'wpforms-lite' ),
-				'type'  => 'rating',
-				'group' => 'fancy',
-				'order' => '11',
+				'icon'    => 'fa-files-o',
+				'name'    => esc_html__( 'Page Break', 'wpforms-lite' ),
+				'name_en' => 'Page Break',
+				'type'    => 'pagebreak',
+				'group'   => 'fancy',
+				'order'   => '160',
 			],
 			[
-				'icon'  => 'fa-question-circle',
-				'name'  => esc_html__( 'Custom Captcha', 'wpforms-lite' ),
-				'type'  => 'captcha',
-				'group' => 'fancy',
-				'addon' => 'wpforms-captcha',
-				'order' => '3000',
+				'icon'    => 'fa-arrows-h',
+				'name'    => esc_html__( 'Section Divider', 'wpforms-lite' ),
+				'name_en' => 'Section Divider',
+				'type'    => 'divider',
+				'group'   => 'fancy',
+				'order'   => '170',
 			],
 			[
-				'icon'  => 'fa-pencil',
-				'name'  => esc_html__( 'Signature', 'wpforms-lite' ),
-				'type'  => 'signature',
-				'group' => 'fancy',
-				'addon' => 'wpforms-signatures',
-				'order' => '310',
+				'icon'    => 'fa-pencil-square-o',
+				'name'    => esc_html__( 'Rich Text', 'wpforms-lite' ),
+				'name_en' => 'Rich Text',
+				'type'    => 'richtext',
+				'group'   => 'fancy',
+				'order'   => '170',
 			],
 			[
-				'icon'  => 'fa-ellipsis-h',
-				'name'  => esc_html__( 'Likert Scale', 'wpforms-lite' ),
-				'type'  => 'likert_scale',
-				'group' => 'fancy',
-				'addon' => 'wpforms-surveys-polls',
-				'order' => '4000',
+				'icon'    => 'fa-file-image-o',
+				'name'    => esc_html__( 'Content', 'wpforms-lite' ),
+				'name_en' => 'Content',
+				'type'    => 'content',
+				'group'   => 'fancy',
+				'order'   => '180',
 			],
 			[
-				'icon'  => 'fa-tachometer',
-				'name'  => esc_html__( 'Net Promoter Score', 'wpforms-lite' ),
-				'type'  => 'net_promoter_score',
-				'group' => 'fancy',
-				'addon' => 'wpforms-surveys-polls',
-				'order' => '4100',
+				'icon'    => 'fa-code',
+				'name'    => esc_html__( 'HTML', 'wpforms-lite' ),
+				'name_en' => 'HTML',
+				'type'    => 'html',
+				'group'   => 'fancy',
+				'order'   => '185',
 			],
 			[
-				'icon'  => 'fa-file-o',
-				'name'  => esc_html__( 'Single Item', 'wpforms-lite' ),
-				'type'  => 'payment-single',
-				'group' => 'payment',
-				'order' => '1',
+				'icon'    => 'fa-file-text-o',
+				'name'    => esc_html__( 'Entry Preview', 'wpforms-lite' ),
+				'name_en' => 'Entry Preview',
+				'type'    => 'entry-preview',
+				'group'   => 'fancy',
+				'order'   => '190',
 			],
 			[
-				'icon'  => 'fa-list-ul',
-				'name'  => esc_html__( 'Multiple Items', 'wpforms-lite' ),
-				'type'  => 'payment-multiple',
-				'group' => 'payment',
-				'order' => '2',
+				'icon'    => 'fa-star',
+				'name'    => esc_html__( 'Rating', 'wpforms-lite' ),
+				'name_en' => 'Rating',
+				'type'    => 'rating',
+				'group'   => 'fancy',
+				'order'   => '310',
 			],
 			[
-				'icon'  => 'fa-check-square-o',
-				'name'  => esc_html__( 'Checkbox Items', 'wpforms-lite' ),
-				'type'  => 'payment-checkbox',
-				'group' => 'payment',
-				'order' => '3',
+				'icon'    => 'fa-eye-slash',
+				'name'    => esc_html__( 'Hidden Field', 'wpforms-lite' ),
+				'name_en' => 'Hidden Field',
+				'type'    => 'hidden',
+				'group'   => 'fancy',
+				'order'   => '98',
 			],
 			[
-				'icon'  => 'fa-caret-square-o-down',
-				'name'  => esc_html__( 'Dropdown Items', 'wpforms-lite' ),
-				'type'  => 'payment-select',
-				'group' => 'payment',
-				'order' => '4',
+				'icon'     => 'fa-question-circle',
+				'name'     => esc_html__( 'Custom Captcha', 'wpforms-lite' ),
+				'keywords' => esc_html__( 'spam, math, maths, question', 'wpforms-lite' ),
+				'name_en'  => 'Custom Captcha',
+				'type'     => 'captcha',
+				'group'    => 'fancy',
+				'addon'    => 'wpforms-captcha',
+				'order'    => '300',
 			],
 			[
-				'icon'  => 'fa-money',
-				'name'  => esc_html__( 'Total', 'wpforms-lite' ),
-				'type'  => 'payment-total',
-				'group' => 'payment',
-				'order' => '5',
+				'icon'     => 'fa-pencil',
+				'name'     => esc_html__( 'Signature', 'wpforms-lite' ),
+				'keywords' => esc_html__( 'user, e-signature', 'wpforms-lite' ),
+				'name_en'  => 'Signature',
+				'type'     => 'signature',
+				'group'    => 'fancy',
+				'addon'    => 'wpforms-signatures',
+				'order'    => '200',
+			],
+			[
+				'icon'     => 'fa-ellipsis-h',
+				'name'     => esc_html__( 'Likert Scale', 'wpforms-lite' ),
+				'keywords' => esc_html__( 'survey, rating scale', 'wpforms-lite' ),
+				'name_en'  => 'Likert Scale',
+				'type'     => 'likert_scale',
+				'group'    => 'fancy',
+				'addon'    => 'wpforms-surveys-polls',
+				'order'    => '400',
+			],
+			[
+				'icon'     => 'fa-tachometer',
+				'name'     => esc_html__( 'Net Promoter Score', 'wpforms-lite' ),
+				'keywords' => esc_html__( 'survey, nps', 'wpforms-lite' ),
+				'name_en'  => 'Net Promoter Score',
+				'type'     => 'net_promoter_score',
+				'group'    => 'fancy',
+				'addon'    => 'wpforms-surveys-polls',
+				'order'    => '410',
+			],
+			[
+				'icon'     => 'fa-credit-card',
+				'name'     => esc_html__( 'PayPal Commerce', 'wpforms-lite' ),
+				'keywords' => esc_html__( 'store, ecommerce, credit card, pay, payment, debit card', 'wpforms-lite' ),
+				'name_en'  => 'PayPal Commerce',
+				'type'     => 'paypal-commerce',
+				'group'    => 'payment',
+				'addon'    => 'wpforms-paypal-commerce',
+				'order'    => '89',
+			],
+			[
+				'icon'     => 'fa-credit-card',
+				'name'     => esc_html__( 'Authorize.Net', 'wpforms-lite' ),
+				'keywords' => esc_html__( 'store, ecommerce, credit card, pay, payment, debit card', 'wpforms-lite' ),
+				'name_en'  => 'Authorize.Net',
+				'type'     => 'authorize_net',
+				'group'    => 'payment',
+				'addon'    => 'wpforms-authorize-net',
+				'order'    => '95',
+			],
+			[
+				'icon'     => 'fa-ticket',
+				'name'     => esc_html__( 'Coupon', 'wpforms-lite' ),
+				'keywords' => esc_html__( 'discount, sale', 'wpforms-lite' ),
+				'name_en'  => 'Coupon',
+				'type'     => 'payment-coupon',
+				'group'    => 'payment',
+				'addon'    => 'wpforms-coupons',
+				'order'    => '100',
 			],
 		];
 
 		$captcha = $this->get_captcha();
 
 		if ( ! empty( $captcha ) ) {
-			array_push( $this->fields, $captcha );
+			$this->fields[] = $captcha;
 		}
 
 		return $this->fields;
@@ -192,31 +263,48 @@ class Fields {
 	 *
 	 * @since 1.6.6
 	 *
-	 * @return array|false Captcha field data.
+	 * @return array Captcha field data.
 	 */
-	private function get_captcha() {
+	private function get_captcha(): array {
 
 		$captcha_settings = wpforms_get_captcha_settings();
 
 		if ( empty( $captcha_settings['provider'] ) ) {
-			return false;
+			return [];
 		}
 
+		$captcha = [
+			'hcaptcha'  => [
+				'name' => 'hCaptcha',
+				'icon' => 'fa-question-circle-o',
+			],
+			'recaptcha' => [
+				'name' => 'reCAPTCHA',
+				'icon' => 'fa-google',
+			],
+			'turnstile' => [
+				'name' => 'Turnstile',
+				'icon' => 'fa-question-circle-o',
+			],
+		];
+
 		if ( ! empty( $captcha_settings['site_key'] ) || ! empty( $captcha_settings['secret_key'] ) ) {
-			$captcha_name = $captcha_settings['provider'] === 'hcaptcha' ? esc_html__( 'hCaptcha', 'wpforms-lite' ) : esc_html__( 'reCAPTCHA', 'wpforms-lite' );
-			$captcha_icon = $captcha_settings['provider'] === 'hcaptcha' ? 'fa-question-circle-o' : 'fa-google';
+			$captcha_name = $captcha[ $captcha_settings['provider'] ]['name'];
+			$captcha_icon = $captcha[ $captcha_settings['provider'] ]['icon'];
 		} else {
-			$captcha_name = esc_html__( 'CAPTCHA', 'wpforms-lite' );
+			$captcha_name = 'CAPTCHA';
 			$captcha_icon = 'fa-question-circle-o';
 		}
 
 		return [
-			'icon'  => $captcha_icon,
-			'name'  => $captcha_name,
-			'type'  => 'captcha_' . $captcha_settings['provider'],
-			'group' => 'standard',
-			'order' => 180,
-			'class' => 'not-draggable',
+			'icon'     => $captcha_icon,
+			'name'     => $captcha_name,
+			'name_en'  => $captcha_name,
+			'keywords' => esc_html__( 'captcha, spam, antispam', 'wpforms-lite' ),
+			'type'     => 'captcha_' . $captcha_settings['provider'],
+			'group'    => 'standard',
+			'order'    => 180,
+			'class'    => 'not-draggable',
 		];
 	}
 
@@ -234,7 +322,7 @@ class Fields {
 	 *
 	 * @return array Fields data filtered according to given arguments.
 	 */
-	private function get_filtered( $args = [] ) {
+	private function get_filtered( array $args = [] ): array {
 
 		$default_args = [
 			'group' => '',
@@ -248,9 +336,9 @@ class Fields {
 		$filtered_fields = [];
 
 		foreach ( $args as $prop => $prop_val ) {
-			foreach ( $fields as $key => $field ) {
+			foreach ( $fields as $field ) {
 				if ( ! empty( $field[ $prop ] ) && $field[ $prop ] === $prop_val ) {
-					array_push( $filtered_fields, $field );
+					$filtered_fields[] = $field;
 				}
 			}
 		}
@@ -267,7 +355,7 @@ class Fields {
 	 *
 	 * @return array.
 	 */
-	public function get_by_group( $group ) {
+	public function get_by_group( string $group ): array {
 
 		return $this->get_filtered( [ 'group' => $group ] );
 	}
@@ -281,7 +369,7 @@ class Fields {
 	 *
 	 * @return array.
 	 */
-	public function get_by_addon( $addon ) {
+	public function get_by_addon( string $addon ): array {
 
 		return $this->get_filtered( [ 'addon' => $addon ] );
 	}
@@ -295,7 +383,7 @@ class Fields {
 	 *
 	 * @return array Single field data. Empty array if field is not available.
 	 */
-	public function get_field( $type ) {
+	public function get_field( string $type ): array {
 
 		$fields = $this->get_filtered( [ 'type' => $type ] );
 
@@ -314,17 +402,17 @@ class Fields {
 	 *
 	 * @return array Updated field data.
 	 */
-	public function set_values( $fields, $key, $value, $condition ) {
+	public function set_values( array $fields, string $key, string $value, string $condition ): array {
 
 		if ( empty( $fields ) || empty( $key ) ) {
 			return $fields;
 		}
 
 		foreach ( $fields as $f => $field ) {
+
 			switch ( $condition ) {
 				case 'empty':
 					$fields[ $f ][ $key ] = empty( $field[ $key ] ) ? $value : $field[ $key ];
-
 					break;
 
 				default:

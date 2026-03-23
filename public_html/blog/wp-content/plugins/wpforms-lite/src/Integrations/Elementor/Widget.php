@@ -1,5 +1,10 @@
 <?php
 
+// phpcs:disable Generic.Commenting.DocComment.MissingShort
+/** @noinspection PhpUndefinedNamespaceInspection */
+/** @noinspection PhpUndefinedClassInspection */
+// phpcs:enable Generic.Commenting.DocComment.MissingShort
+
 namespace WPForms\Integrations\Elementor;
 
 use Elementor\Plugin;
@@ -12,6 +17,18 @@ use Elementor\Controls_Manager;
  * @since 1.6.2
  */
 class Widget extends Widget_Base {
+
+	/**
+	 * Script dependencies.
+	 *
+	 * @since 1.9.1
+	 *
+	 * @return array
+	 */
+	public function get_script_depends(): array {
+
+		return [ 'wpforms-elementor' ];
+	}
 
 	/**
 	 * Get widget name.
@@ -97,7 +114,7 @@ class Widget extends Widget_Base {
 	 *
 	 * @since 1.6.2
 	 */
-	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
+	protected function register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 
 		$this->content_controls();
 	}
@@ -106,6 +123,9 @@ class Widget extends Widget_Base {
 	 * Register content tab controls.
 	 *
 	 * @since 1.6.2
+	 *
+	 * @noinspection PhpUndefinedMethodInspection
+	 * @noinspection HtmlUnknownTarget
 	 */
 	protected function content_controls() {
 
@@ -132,7 +152,7 @@ class Widget extends Widget_Base {
 							'br' => [],
 						]
 					),
-					'content_classes' => 'elementor-panel-alert elementor-panel-alert-info',
+					'content_classes' => 'elementor-panel-alert elementor-panel-alert-info wpforms-elementor-no-forms-notice',
 				]
 			);
 		}
@@ -203,6 +223,8 @@ class Widget extends Widget_Base {
 			]
 		);
 
+		$this->add_legacy_styles_notice();
+
 		$this->end_controls_section();
 
 		$this->start_controls_section(
@@ -249,6 +271,51 @@ class Widget extends Widget_Base {
 	}
 
 	/**
+	 * Add legacy styles notice.
+	 *
+	 * @since 1.9.6
+	 *
+	 * @noinspection PhpUndefinedMethodInspection
+	 * @noinspection HtmlUnknownTarget
+	 */
+	private function add_legacy_styles_notice() {
+
+		$is_modern      = wpforms_get_render_engine() === 'modern';
+		$is_full_styles = (int) wpforms_setting( 'disable-css', '1' ) === 1;
+
+		if ( ! $is_modern || ! $is_full_styles ) {
+			$notice_text = ! $is_modern
+				? __( 'Upgrade your forms to use our modern markup and unlock extensive style controls.', 'wpforms-lite' )
+				: __( 'Update your forms to use base and form theme styling and unlock extensive style controls.', 'wpforms-lite' );
+
+			$this->add_control(
+				'legacy_styling_notice',
+				[
+					'show_label'      => false,
+					'type'            => Controls_Manager::RAW_HTML,
+					'raw'             => sprintf(
+						wp_kses( /* translators: %s - WPForms documentation link. */
+							__( '<b>Want to customize your form styles without editing CSS?</b> <p>%1$s</p> <a href="%2$s" target="_blank" rel="noopener noreferrer">Learn more</a>', 'wpforms-lite' ),
+							[
+								'b' => [],
+								'p' => [],
+								'a' => [
+									'href'   => [],
+									'rel'    => [],
+									'target' => [],
+								],
+							]
+						),
+						$notice_text,
+						wpforms_utm_link( 'https://wpforms.com/docs/styling-your-forms/', 'Elementor Widget Settings', 'Form Styles Documentation' )
+					),
+					'content_classes' => 'elementor-panel-alert elementor-panel-alert-warning wpforms-legacy-styles-notice',
+				]
+			);
+		}
+	}
+
+	/**
 	 * Render widget output.
 	 *
 	 * @since 1.6.2
@@ -266,6 +333,8 @@ class Widget extends Widget_Base {
 	 * Render widget output in edit mode.
 	 *
 	 * @since 1.6.3.1
+	 *
+	 * @noinspection PhpPossiblePolymorphicInvocationInspection
 	 */
 	protected function render_edit_mode() {
 
@@ -308,7 +377,7 @@ class Widget extends Widget_Base {
 	protected function render_frontend() {
 
 		// Render selected form.
-		echo do_shortcode( $this->render_shortcode() );
+		$this->render_form();
 	}
 
 	/**
@@ -318,26 +387,27 @@ class Widget extends Widget_Base {
 	 */
 	public function render_plain_content() {
 
-		echo $this->render_shortcode(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		$this->render_form();
 	}
 
 	/**
-	 * Render shortcode.
+	 * Render a form.
 	 *
-	 * @since 1.6.2
+	 * @since 1.8.3
+	 *
+	 * @noinspection PhpPossiblePolymorphicInvocationInspection
 	 */
-	public function render_shortcode() {
+	public function render_form() {
 
-		return sprintf(
-			'[wpforms id="%1$d" title="%2$s" description="%3$s"]',
-			absint( $this->get_settings_for_display( 'form_id' ) ),
-			sanitize_key( $this->get_settings_for_display( 'display_form_name' ) === 'yes' ? 'true' : 'false' ),
-			sanitize_key( $this->get_settings_for_display( 'display_form_description' ) === 'yes' ? 'true' : 'false' )
+		wpforms_display(
+			$this->get_settings_for_display( 'form_id' ),
+			$this->get_settings_for_display( 'display_form_name' ) === 'yes',
+			$this->get_settings_for_display( 'display_form_description' ) === 'yes'
 		);
 	}
 
 	/**
-	 * Get forms list.
+	 * Get form list.
 	 *
 	 * @since 1.6.2
 	 *
@@ -348,10 +418,12 @@ class Widget extends Widget_Base {
 		static $forms_list = [];
 
 		if ( empty( $forms_list ) ) {
-			$forms = wpforms()->form->get();
+			$forms_obj = wpforms()->obj( 'form' );
+			$forms     = $forms_obj ? $forms_obj->get() : null;
 
 			if ( ! empty( $forms ) ) {
 				$forms_list[0] = esc_html__( 'Select a form', 'wpforms-lite' );
+
 				foreach ( $forms as $form ) {
 					$forms_list[ $form->ID ] = mb_strlen( $form->post_title ) > 100 ? mb_substr( $form->post_title, 0, 97 ) . '...' : $form->post_title;
 				}

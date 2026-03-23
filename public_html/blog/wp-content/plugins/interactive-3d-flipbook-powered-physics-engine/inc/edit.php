@@ -90,7 +90,7 @@
     wp_nonce_field(PROPS_NONCE_ACTION, PROPS_NONCE_NAME);
     $meta = get_post_meta($post->ID);
     ?>
-    <div id="<?php echo(POST_ID.'-edit');?>" data-id="<?php echo($post->ID);?>">
+    <div id="<?php echo(esc_attr(POST_ID.'-edit'));?>" data-id="<?php echo(esc_attr($post->ID));?>">
 
     </div>
     <?php
@@ -121,9 +121,9 @@
     ?>
     <div class="fb3d">
       <div class="form-group">
-        <textarea class="form-control" readonly>[<?php echo(POST_ID.' id="'.$post->ID.'" ][/'.POST_ID) ?>]</textarea>
+        <textarea class="form-control" readonly>[<?php echo(esc_textarea(POST_ID.' id="'.$post->ID.'" ][/'.POST_ID)) ?>]</textarea>
         <div class="text-right">
-          <a href="<?php echo(admin_url('edit.php?post_type='.POST_ID.'&page='.POST_ID.'-shortcode-generator')); ?>"><?php _e('More options', POST_ID) ?></a>
+          <a href="<?php echo(esc_url(admin_url('edit.php?post_type='.POST_ID.'&page='.POST_ID.'-shortcode-generator'))); ?>"><?php _e('More options', POST_ID) ?></a>
         </div>
       </div>
     </div>

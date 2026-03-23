@@ -1,0 +1,1003 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Online Web Tutor <onlinewebtutorhub@gmail.com>, YEAR.
+
+msgid ""
+msgstr ""
+"Project-Id-Version: Library Management System 3.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/library-management-system\n"
+"POT-Creation-Date: 2024-05-28 16:01+0530\n"
+"PO-Revision-Date: 2024-05-28 5:29\n"
+"Last-Translator: Online Web Tutor <onlinewebtutorhub@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Library System"
+msgstr ""
+
+msgid "Books Return History"
+msgstr ""
+
+msgid "Borrow a Book"
+msgstr ""
+
+msgid "Books Borrow History"
+msgstr ""
+
+msgid "Books Return"
+msgstr ""
+
+msgid "-- Select Branch --"
+msgstr ""
+
+msgid "-- Select Category --"
+msgstr ""
+
+msgid "S No"
+msgstr ""
+
+msgid "User Details"
+msgstr ""
+
+msgid "Book Details"
+msgstr ""
+
+msgid "Borrow Details (Y-m-d)"
+msgstr ""
+
+msgid "Fine Status"
+msgstr ""
+
+msgid "Action"
+msgstr ""
+
+msgid "Return Books"
+msgstr ""
+
+msgid "Return Date"
+msgstr ""
+
+msgid "Branch"
+msgstr ""
+
+msgid "User"
+msgstr ""
+
+msgid "-- Select User --"
+msgstr ""
+
+msgid "Borrowed Books"
+msgstr ""
+
+msgid "Submit & Save"
+msgstr ""
+
+msgid "Borrow Date"
+msgstr ""
+
+msgid "Category"
+msgstr ""
+
+msgid "Book"
+msgstr ""
+
+msgid "-- Select Book --"
+msgstr ""
+
+msgid "Days"
+msgstr ""
+
+msgid "-- Select Days --"
+msgstr ""
+
+msgid "Filter by:"
+msgstr ""
+
+msgid "Borrow ID"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "days"
+msgstr ""
+
+msgid "Issued on"
+msgstr ""
+
+msgid "Return by"
+msgstr ""
+
+msgid "Return Pending"
+msgstr ""
+
+msgid "Returned"
+msgstr ""
+
+msgid "Return"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Total Days"
+msgstr ""
+
+msgid "Issued"
+msgstr ""
+
+msgid "Returned with fine"
+msgstr ""
+
+msgid "No fine"
+msgstr ""
+
+msgid "Pay Fine"
+msgstr ""
+
+msgid "List Book"
+msgstr ""
+
+msgid "Add New Category"
+msgstr ""
+
+msgid "List Category"
+msgstr ""
+
+msgid "Add New Book"
+msgstr ""
+
+msgid "Book List"
+msgstr ""
+
+msgid "-- All --"
+msgstr ""
+
+msgid "Book ID"
+msgstr ""
+
+msgid "Basic Details"
+msgstr ""
+
+msgid "Stock Quantity"
+msgstr ""
+
+msgid " Category"
+msgstr ""
+
+msgid "Add Category"
+msgstr ""
+
+msgid "-- Select Status --"
+msgstr ""
+
+msgid " Book"
+msgstr ""
+
+msgid "Add Book"
+msgstr ""
+
+msgid "Bookcase"
+msgstr ""
+
+msgid "-- Select Bookcase --"
+msgstr ""
+
+msgid "Section"
+msgstr ""
+
+msgid "-- Select Section --"
+msgstr ""
+
+msgid "Book Name"
+msgstr ""
+
+msgid "Authors Name"
+msgstr ""
+
+msgid "Publication Name"
+msgstr ""
+
+msgid "Publication Year"
+msgstr ""
+
+msgid "Publication Location"
+msgstr ""
+
+msgid "Cost"
+msgstr ""
+
+msgid "ISBN"
+msgstr ""
+
+msgid "Book URL"
+msgstr ""
+
+msgid "Book Language"
+msgstr ""
+
+msgid "Number of Pages"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Cover Image"
+msgstr ""
+
+msgid "Upload Cover Image"
+msgstr ""
+
+msgid "Active"
+msgstr ""
+
+msgid "Inactive"
+msgstr ""
+
+msgid "View"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Category List"
+msgstr ""
+
+msgid "Total Books"
+msgstr ""
+
+msgid "Created at"
+msgstr ""
+
+msgid "Premium Library Management System"
+msgstr ""
+
+msgid "Basic"
+msgstr ""
+
+msgid "Introduction"
+msgstr ""
+
+msgid ""
+"Welcome to the most advanced Library Management System (LMS) Plugin. Our LMS "
+"plugin is designed to streamline and enhance the management of libraries, "
+"offering an intuitive and powerful solution for organizing books, users, "
+"bookcases, transactions, etc. Whether you are running a small community "
+"library or a large institutional library, our plugin provides the tools you "
+"need to operate efficiently and effectively."
+msgstr ""
+
+msgid "Features"
+msgstr ""
+
+msgid "Book Management"
+msgstr ""
+
+msgid "(Unlimited)"
+msgstr ""
+
+msgid ""
+"Manage your library's collection with ease. Add, edit, and categorize books "
+"effortlessly."
+msgstr ""
+
+msgid "User Management"
+msgstr ""
+
+msgid ""
+"Keep track of your library members, their borrow history, and contact "
+"details."
+msgstr ""
+
+msgid "Transaction Tracking"
+msgstr ""
+
+msgid ""
+"Monitor all borrow and return transactions with detailed logs and reporting "
+"features."
+msgstr ""
+
+msgid "Analytics and Reports"
+msgstr ""
+
+msgid ""
+"Generate insightful reports to understand usage patterns and improve library "
+"services."
+msgstr ""
+
+msgid "Customizable Settings"
+msgstr ""
+
+msgid "Tailor the plugin settings to fit the specific needs of your library."
+msgstr ""
+
+msgid "Secure and Reliable"
+msgstr ""
+
+msgid ""
+"Ensure the safety and integrity of your library data with our secure system "
+"architecture."
+msgstr ""
+
+msgid "Data Backup"
+msgstr ""
+
+msgid ""
+"Safeguard your data by creating backups regularly with our plugin's data "
+"backup feature."
+msgstr ""
+
+msgid "Late Fine System"
+msgstr ""
+
+msgid ""
+"Implement a late fine system to manage overdue books and encourage timely "
+"returns."
+msgstr ""
+
+msgid "Upload CSV and Save Data"
+msgstr ""
+
+msgid ""
+"Import CSV data files to LMS. Just follow some pattern to prepare data and "
+"feed into system."
+msgstr ""
+
+msgid "Multilanguage Support"
+msgstr ""
+
+msgid ""
+"Use the plugin in multiple languages, making it accessible to a wider "
+"audience. More than 10 Languages it supports."
+msgstr ""
+
+msgid "Book Listing with Filters"
+msgstr ""
+
+msgid ""
+"Create a frontend page to list all books with filters, enhancing user "
+"browsing experience. It also opens single book page view. Plugin Shortcodes."
+msgstr ""
+
+msgid "Check Book Availability"
+msgstr ""
+
+msgid ""
+"Allow users to check the availability of books from the frontend page "
+"without login."
+msgstr ""
+
+msgid "Get Started with Our LMS Pro Plugin"
+msgstr ""
+
+msgid ""
+"Experience the future of library management today. Download our LMS plugin "
+"and transform the way you manage your library."
+msgstr ""
+
+msgid "Buy Premium Version"
+msgstr ""
+
+msgid "Library Management System"
+msgstr ""
+
+msgid "Free Vs Pro"
+msgstr ""
+
+msgid "What is LMS Plugin?"
+msgstr ""
+
+msgid ""
+"LMS is a WordPress plugin which is designed to streamline and enhance the "
+"management of libraries, offering an intuitive and powerful solution for "
+"organizing books, users, bookcases, transactions, etc. Whether you are "
+"running a small community library or a large institutional library, our "
+"plugin provides the tools you need to operate efficiently and effectively."
+msgstr ""
+
+msgid "Features Comparison"
+msgstr ""
+
+msgid "Free Version"
+msgstr ""
+
+msgid "Manage Categories (Up to 5)"
+msgstr ""
+
+msgid "Manage Bookcases (Up to 5)"
+msgstr ""
+
+msgid "Manage Sections (Up to 15)"
+msgstr ""
+
+msgid "Manage Books (Up to 15)"
+msgstr ""
+
+msgid "Manage User Branches (Up to 5)"
+msgstr ""
+
+msgid "Manage LMS Users (Up to 15)"
+msgstr ""
+
+msgid "Borrow a Single Book"
+msgstr ""
+
+msgid "Return Books"
+msgstr ""
+
+msgid "Track Book Transactions and History"
+msgstr ""
+
+msgid "Manage User Late Fines"
+msgstr ""
+
+msgid "Test Data Import Tool"
+msgstr ""
+
+msgid "Generate Reports (PDF / Print / CSV) with Filters"
+msgstr ""
+
+msgid "Multilingual Support (English / Hindi / Spanish)"
+msgstr ""
+
+msgid "Pro Version (Basic)"
+msgstr ""
+
+msgid "Manage Unlimited Categories"
+msgstr ""
+
+msgid "Manage Unlimited Bookcases"
+msgstr ""
+
+msgid "Manage Unlimited Sections"
+msgstr ""
+
+msgid "Manage Unlimited Books"
+msgstr ""
+
+msgid "Manage Unlimited User Branches"
+msgstr ""
+
+msgid "Manage Unlimited LMS Users"
+msgstr ""
+
+msgid "Borrow Multiple Books"
+msgstr ""
+
+msgid "Return Multiple Books"
+msgstr ""
+
+msgid "Multilingual Support (10 Languages: English, Hindi, Spanish, French, Arabic, Portuguese, Russian, Turkish, Vietnamese, Italian)"
+msgstr ""
+
+msgid "Data Backup Tool (Export and Import)"
+msgstr ""
+
+msgid "CSV Data Import"
+msgstr ""
+
+msgid "Book Listing with Filters (via Shortcode)"
+msgstr ""
+
+msgid "Public LMS Page with Data Filters (Category, Book Availability)"
+msgstr ""
+
+msgid "Single Book Page View"
+msgstr ""
+
+msgid "Customizable Settings (Borrow Days, Fines, Country, Currency, Data Backup, Shortcode)"
+msgstr ""
+
+msgid "Late Fine"
+msgstr ""
+
+msgid "Update Late Fine"
+msgstr ""
+
+msgid "Set Late Fine"
+msgstr ""
+
+msgid "All Settings"
+msgstr ""
+
+msgid "Fine Amount"
+msgstr ""
+
+msgid "(Currency Unknown)"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Run Test Data Importer"
+msgstr ""
+
+msgid "Refresh it?"
+msgstr ""
+
+msgid "Remove Test Data?"
+msgstr ""
+
+msgid "Set Country & Currency"
+msgstr ""
+
+msgid "Configure Settings"
+msgstr ""
+
+msgid "View Settings"
+msgstr ""
+
+msgid "Country & Currency"
+msgstr ""
+
+msgid "Update Data"
+msgstr ""
+
+msgid "Add Data"
+msgstr ""
+
+msgid "Country"
+msgstr ""
+
+msgid "Currency"
+msgstr ""
+
+msgid "Country & Currency Settings"
+msgstr ""
+
+msgid "Enter"
+msgstr ""
+
+msgid "Download Sample CSVs"
+msgstr ""
+
+msgid "Module Type"
+msgstr ""
+
+msgid "-- Select Module --"
+msgstr ""
+
+msgid "Categories"
+msgstr ""
+
+msgid "Bookcases"
+msgstr ""
+
+msgid "Sections"
+msgstr ""
+
+msgid "Books"
+msgstr ""
+
+msgid "Branches"
+msgstr ""
+
+msgid "Users"
+msgstr ""
+
+msgid "Click to Download"
+msgstr ""
+
+msgid "Fine Amount:"
+msgstr ""
+
+msgid "Welcome to Library Management System"
+msgstr ""
+
+msgid "Free"
+msgstr ""
+
+msgid "Manage Books"
+msgstr ""
+
+msgid "View Books"
+msgstr ""
+
+msgid "Manage Users"
+msgstr ""
+
+msgid "View Users"
+msgstr ""
+
+msgid "Manage Bookcase"
+msgstr ""
+
+msgid "View Bookcases"
+msgstr ""
+
+msgid "Transaction Reports"
+msgstr ""
+
+msgid "View Reports"
+msgstr ""
+
+msgid "List Branch"
+msgstr ""
+
+msgid "Add User Branch"
+msgstr ""
+
+msgid "Add New User"
+msgstr ""
+
+msgid "List User"
+msgstr ""
+
+msgid "Branch List"
+msgstr ""
+
+msgid "Total Users"
+msgstr ""
+
+msgid "Add New Branch"
+msgstr ""
+
+msgid "Add Branch"
+msgstr ""
+
+msgid "Branch Name"
+msgstr ""
+
+msgid "Select Status"
+msgstr ""
+
+msgid "Add User"
+msgstr ""
+
+msgid "User / Registration ID"
+msgstr ""
+
+msgid "Select Branch"
+msgstr ""
+
+msgid "Enter Name"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Enter Email"
+msgstr ""
+
+msgid "Phone Number"
+msgstr ""
+
+msgid "Enter Phone Number"
+msgstr ""
+
+msgid "Gender"
+msgstr ""
+
+msgid "Select Gender"
+msgstr ""
+
+msgid "Address"
+msgstr ""
+
+msgid "Enter Address"
+msgstr ""
+
+msgid "Profile Image"
+msgstr ""
+
+msgid "Upload Profile Image"
+msgstr ""
+
+msgid "Users List"
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "User ID"
+msgstr ""
+
+msgid "<i>N/A</i>"
+msgstr ""
+
+msgid "Add New Bookcase"
+msgstr ""
+
+msgid "List Section"
+msgstr ""
+
+msgid "Add New Section"
+msgstr ""
+
+msgid "List Bookcase"
+msgstr ""
+
+msgid "Add Bookcase"
+msgstr ""
+
+msgid "Total Sections"
+msgstr ""
+
+msgid "Add Section"
+msgstr ""
+
+msgid "Library Management"
+msgstr ""
+
+msgid "Dashboard"
+msgstr ""
+
+msgid "Manage Bookcase & Section"
+msgstr ""
+
+msgid "Book Transactions"
+msgstr ""
+
+msgid "Free Vs Pro LMS"
+msgstr ""
+
+msgid "Upgrade to Pro"
+msgstr ""
+
+msgid "Branch name already taken"
+msgstr ""
+
+msgid "Successfully, Branch added to LMS"
+msgstr ""
+
+msgid "Failed to add Branch"
+msgstr ""
+
+msgid "Sorry, No Credits Left.<br/>Upgrade to Pro Version of LMS."
+msgstr ""
+
+msgid "Branch value required"
+msgstr ""
+
+msgid "Successfully, Branch data updated"
+msgstr ""
+
+msgid "Branch not found"
+msgstr ""
+
+msgid "Invalid Operation"
+msgstr ""
+
+msgid "User already exists"
+msgstr ""
+
+msgid "Successfully, User added to LMS"
+msgstr ""
+
+msgid "Failed to add User"
+msgstr ""
+
+msgid "Required fields are missing"
+msgstr ""
+
+msgid "User ID already taken"
+msgstr ""
+
+msgid "Successfully, User data updated"
+msgstr ""
+
+msgid "User not found"
+msgstr ""
+
+msgid " not found"
+msgstr ""
+
+msgid "Failed to delete. There are number of rows of "
+msgstr ""
+
+msgid "Data Module not found"
+msgstr ""
+
+msgid "Bookcase name already taken"
+msgstr ""
+
+msgid "Successfully, Bookcase added to LMS"
+msgstr ""
+
+msgid "Failed to add Bookcase"
+msgstr ""
+
+msgid "Bookcase value required"
+msgstr ""
+
+msgid "Successfully, Bookcase data updated"
+msgstr ""
+
+msgid "Bookcase not found"
+msgstr ""
+
+msgid "Section name already taken"
+msgstr ""
+
+msgid "Successfully, Section added to LMS"
+msgstr ""
+
+msgid "Failed to add Section"
+msgstr ""
+
+msgid "Section value required"
+msgstr ""
+
+msgid "Successfully, Section data updated"
+msgstr ""
+
+msgid "Section not found"
+msgstr ""
+
+msgid "Category name already taken"
+msgstr ""
+
+msgid "Successfully, Category added to LMS"
+msgstr ""
+
+msgid "Failed to add Category"
+msgstr ""
+
+msgid "Category value required"
+msgstr ""
+
+msgid "Successfully, Category data updated"
+msgstr ""
+
+msgid "Category not found"
+msgstr ""
+
+msgid "Book name already taken"
+msgstr ""
+
+msgid "Successfully, Book added to LMS"
+msgstr ""
+
+msgid "Failed to add Book"
+msgstr ""
+
+msgid "Please fill required values"
+msgstr ""
+
+msgid "Successfully, Book data updated"
+msgstr ""
+
+msgid "Book not found"
+msgstr ""
+
+msgid "No Section Found"
+msgstr ""
+
+msgid "No User Found"
+msgstr ""
+
+msgid "No book found"
+msgstr ""
+
+msgid "Failed, This Book already borrowed by User."
+msgstr ""
+
+msgid "Want to Borrow More than 1 Book?<br/>Upgrade to Pro Version"
+msgstr ""
+
+msgid "Failed to Borrow Book.<br/>User has late fine."
+msgstr ""
+
+msgid "Successfully, Book borrowed"
+msgstr ""
+
+msgid "Failed to borrow book"
+msgstr ""
+
+msgid "Failed, Book is Out of Stock."
+msgstr ""
+
+msgid "All fields are required"
+msgstr ""
+
+msgid "Successfully, Books Returned"
+msgstr ""
+
+msgid "Please Select Books to be Return"
+msgstr ""
+
+msgid "No data found"
+msgstr ""
+
+msgid "Invalid LMS operation"
+msgstr ""
+
+msgid "Successfully, LMS Settings updated"
+msgstr ""
+
+msgid "Invalid LMS Module"
+msgstr ""
+
+msgid "Download Link Not Found"
+msgstr ""
+
+msgid "Invalid Module Type"
+msgstr ""
+
+msgid "Successfully, Test Data Imported to LMS"
+msgstr ""
+
+msgid "Failed to Import Test data"
+msgstr ""
+
+msgid "Successfully, Test Data Removed"
+msgstr ""
+
+msgid "Successfully, Late Fine Paid."
+msgstr ""
+
+msgid "Fine already paid"
+msgstr ""
+
+msgid "Invalid LMS Operation"
+msgstr ""
+
+msgid "LMS actions blocked due to security reasons"
+msgstr ""
+
+msgid "403 - Forbidden"
+msgstr ""
+
+msgid "Access denied."
+msgstr ""
+
+msgid "Go to Library"
+msgstr ""
+
+msgid "404 - Not Found"
+msgstr ""
+
+msgid "The requested book ID was not found."
+msgstr ""
+
+msgid "500 - Internal Server Error"
+msgstr ""
+
+msgid "Sorry, something went wrong on our end."
+msgstr ""
+
+msgid "Category:"
+msgstr ""
+
+msgid "Author:"
+msgstr ""
+
+msgid "Publication Name:"
+msgstr ""
+
+msgid "Status:"
+msgstr ""
+
+msgid "Available"
+msgstr ""
+
+msgid "Not Available"
+msgstr ""
+
+msgid "View"
+msgstr ""
+
+msgid "First"
+msgstr ""
+
+msgid "Prev"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "Last"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "Description:"
+msgstr ""

@@ -1,206 +1,174 @@
 <?php
-
 /**
- * The public-facing functionality of the plugin.
- *
- * @link       http://onlinewebtutorhub.blogspot.in/
- * @since      1.0.0
- *
+ * @link       https://onlinewebtutorblog.com
+ * @since      3.3
  * @package    Library_Management_System
  * @subpackage Library_Management_System/public
- */
-
-/**
- * The public-facing functionality of the plugin.
- *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the public-facing stylesheet and JavaScript.
- *
- * @package    Library_Management_System
- * @subpackage Library_Management_System/public
- * @author     Online Web Tutor <onlinewebtutorhub@gmail.com>
+ * @copyright  Copyright (c) 2026, Online Web Tutor
+ * @license    GPL-2.0+ https://www.gnu.org/licenses/gpl-2.0.html
+ * @author     Online Web Tutor
  */
 class Library_Management_System_Public {
 
-    /**
-     * The ID of this plugin.
-     *
-     * @since    1.0.0
-     * @access   private
-     * @var      string    $plugin_name    The ID of this plugin.
-     */
-    private $plugin_name;
+	/**
+	 * The ID of this plugin.
+	 *
+	 * @since    3.0
+	 * @access   private
+	 * @var      string    $plugin_name    The ID of this plugin.
+	 */
+	private $plugin_name;
 
-    /**
-     * The version of this plugin.
-     *
-     * @since    1.0.0
-     * @access   private
-     * @var      string    $version    The current version of this plugin.
-     */
-    private $version;
-    private $table_activator;
+	/**
+	 * The version of this plugin.
+	 *
+	 * @since    3.0
+	 * @access   private
+	 * @var      string    $version    The current version of this plugin.
+	 */
+	private $version;
 
-    /**
-     * Initialize the class and set its properties.
-     *
-     * @since    1.0.0
-     * @param      string    $plugin_name       The name of the plugin.
-     * @param      string    $version    The version of this plugin.
-     */
-    public function __construct($plugin_name, $version) {
+	private $table_activator;
 
-        $this->plugin_name = $plugin_name;
-        $this->version = $version;
+	/**
+	 * Initialize the class and set its properties.
+	 *
+	 * @since    3.0
+	 * @param      string    $plugin_name       The name of the plugin.
+	 * @param      string    $version    The version of this plugin.
+	 */
+	public function __construct( $plugin_name, $version ) {
 
-        require_once OWT_LIBRARY_PLUGIN_DIR_PATH . 'includes/class-library-management-system-activator.php';
+		$this->plugin_name = $plugin_name;
+		$this->version = $version;
+
+		require_once LIBMNS_PLUGIN_DIR_PATH . 'includes/class-library-management-system-activator.php';
         $this->table_activator = new Library_Management_System_Activator();
-    }
+	}
 
-    /**
-     * Register the stylesheets for the public-facing side of the site.
-     *
-     * @since    1.0.0
-     */
-    public function enqueue_styles() {
+	/**
+	 * Register the stylesheets for the public-facing side of the site.
+	 * @since    3.0
+	 */
+	public function owt7_library_enqueue_styles() {
 
-        wp_enqueue_style("jquery-tabs", OWT_LIBRARY_PLUGIN_URL . 'assets/css/jquery-ui.css', array(), $this->version, 'all');
-        wp_enqueue_style("owt-lib-sweetalert", OWT_LIBRARY_PLUGIN_URL . 'assets/css/sweetalert.css', array(), $this->version, 'all');
-        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/library-management-system-public.css', array(), $this->version, 'all');
-    }
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/library-management-system-public.css', array(), $this->version, 'all' );
 
-    /**
-     * Register the JavaScript for the public-facing side of the site.
-     *
-     * @since    1.0.0
-     */
-    public function enqueue_scripts() {
+		wp_enqueue_style( "owt7-lms-toastr-css", plugin_dir_url( __FILE__ ) . 'css/toastr.min.css', array(), $this->version, 'all' );
+	}
 
-        wp_enqueue_script("jquery");
-        wp_enqueue_script('jquery-ui-core'); // enqueue jQuery UI Core
-        wp_enqueue_script('jquery-ui-tabs'); // enqueue jQuery UI Tabs
-        wp_enqueue_script("validate", OWT_LIBRARY_PLUGIN_URL . 'assets/js/jquery.validate.min.js', array('jquery'), $this->version, true);
-        wp_enqueue_script("sweatalert", OWT_LIBRARY_PLUGIN_URL . 'assets/js/sweetalert.min.js', array('jquery'), $this->version, true);
-        wp_enqueue_script($this->plugin_name, OWT_LIBRARY_PLUGIN_URL . 'public/js/library-management-system-public.js', array('jquery'), $this->version, true);
-        wp_localize_script($this->plugin_name, "owt_lib", array(
-            "ajaxurl" => admin_url("admin-ajax.php"),
-            "owt_lib_prefix" => OWT_LIBRARY_PLUGIN_PREFIX
-        ));
-    }
+	/**
+	 * Register the JavaScript for the public-facing side of the site.
+	 * @since    3.0
+	 */
+	public function owt7_library_enqueue_scripts() {
 
-    public function owt_library_frontend_books_listing() {
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/library-management-system-public.js', array( 'jquery' ), $this->version, false );
 
-        global $wpdb;
+		wp_enqueue_script( "owt7-lms-toastr", plugin_dir_url( __FILE__ ) . 'js/toastr.min.js', array( 'jquery' ), $this->version, false );
 
-        $books = $wpdb->get_results(
-                $wpdb->prepare(
-                        "SELECT book.*, category.name as category_name FROM " . $this->table_activator->owt_library_tbl_books() . " book INNER JOIN " . $this->table_activator->owt_library_tbl_category() . " category ON book.category_id = category.id WHERE book.status = %d", 1
-                )
-        );
+		wp_localize_script($this->plugin_name, "owt7_library", array(
+			"ajaxurl" => admin_url("admin-ajax.php"),
+			"ajax_nonce" => wp_create_nonce('owt7_library_actions'),
+			"page_no" => 1
+		));
+	}
 
-        $categories = $wpdb->get_results(
-                $wpdb->prepare(
-                        "SELECT * FROM " . $this->table_activator->owt_library_tbl_category() . " WHERE status = %d", 1
-                )
-        );
+	// All books Shortcode Handler
+	public function owt7_library_all_books_shortcode($template) {
+		global $wpdb;
 
-        ob_start();
-        include_once OWT_LIBRARY_PLUGIN_DIR_PATH . "public/views/owt-lms-books-listing.php";
-        $template = ob_get_contents();
-        ob_end_clean();
+		$raw_bid = isset( $_REQUEST['bid'] ) ? trim( wp_unslash( $_REQUEST['bid'] ) ) : '';
+		$book_id = 0;
 
-        echo $template;
-    }
+		if ( $raw_bid !== '' ) {
 
-    public function owt_library_frontend_user_registration() {
+			$decoded = base64_decode( $raw_bid, true );
+			if ( $decoded !== false && $decoded !== '' ) {
+				$decoded = trim( $decoded );
+				if ( ctype_digit( $decoded ) ) {
+					$book_id = intval( $decoded );
+				} else {
+					$book_id = 0;
+				}
+			}
+		}
 
-        global $wpdb;
+		if ( $book_id > 0 ) {
+			$sql = "
+				SELECT book.*,
+					(SELECT category.name FROM " . $this->table_activator->owt7_library_tbl_category() . " AS category WHERE category.id = book.category_id LIMIT 1) AS category_name,
+					(SELECT bkcase.name FROM " . $this->table_activator->owt7_library_tbl_bookcase() . " AS bkcase WHERE bkcase.id = book.bookcase_id LIMIT 1) AS bookcase_name,
+					(SELECT section.name FROM " . $this->table_activator->owt7_library_tbl_bookcase_sections() . " AS section WHERE section.id = book.bookcase_section_id LIMIT 1) AS section_name
+				FROM " . $this->table_activator->owt7_library_tbl_books() . " AS book
+				WHERE book.id = %d
+				LIMIT 1
+			";
 
-        $branches = $wpdb->get_results(
-                $wpdb->prepare(
-                        "SELECT * from " . $this->table_activator->owt_library_tbl_branch() . " WHERE status = %d", 1
-                )
-        );
+			$prepared = $wpdb->prepare( $sql, $book_id );
+			$book = $wpdb->get_row( $prepared );
 
-        ob_start();
-        include_once OWT_LIBRARY_PLUGIN_DIR_PATH . "public/views/owt-lms-user-registration.php";
-        $template = ob_get_contents();
-        ob_end_clean();
+			if ( ! empty( $book ) ) {
+				return $this->owt7_library_include_template_file( "owt7_library_single_book", compact( "book_id", "book" ) );
+			} else {
+				return $this->owt7_library_include_template_file( "errors/owt7_library_404_page" );
+			}
+		} else {
+			$books_per_page = (int) LIBMNS_DEFAULT_SHOW_BOOKS;
+			if ( $books_per_page <= 0 ) {
+				$books_per_page = 10;
+			}
 
-        echo $template;
-    }
+			$current_page = isset( $_GET['p_no'] ) ? intval( $_GET['p_no'] ) : (int) LIBMNS_DEFAULT_PAGE_NUMBER;
+			if ( $current_page < 1 ) {
+				$current_page = 1;
+			}
 
-    public function owt_library_frontend_ajax_handler() {
+			$offset = ( $current_page - 1 ) * $books_per_page;
+			if ( $offset < 0 ) {
+				$offset = 0;
+			}
 
-        global $wpdb;
+			$categories_sql = "
+				SELECT category.*,
+					(SELECT count(*) FROM " . $this->table_activator->owt7_library_tbl_books() . " AS book WHERE book.category_id = category.id LIMIT 1) AS total_books
+				FROM " . $this->table_activator->owt7_library_tbl_category() . " AS category
+				WHERE status = 1
+			";
+			$categories = $wpdb->get_results( $categories_sql );
 
-        $param = isset($_REQUEST['param']) ? trim($_REQUEST['param']) : "";
+			$all_books = (int) $wpdb->get_var( "SELECT COUNT(*) FROM " . $this->table_activator->owt7_library_tbl_books() . " WHERE status = 1" );
 
-        if (!empty($param)) {
+			$books_sql = "
+				SELECT book.*,
+					(SELECT category.name FROM " . $this->table_activator->owt7_library_tbl_category() . " AS category WHERE category.id = book.category_id LIMIT 1) AS category_name,
+					(SELECT bkcase.name FROM " . $this->table_activator->owt7_library_tbl_bookcase() . " AS bkcase WHERE bkcase.id = book.bookcase_id LIMIT 1) AS bookcase_name,
+					(SELECT section.name FROM " . $this->table_activator->owt7_library_tbl_bookcase_sections() . " AS section WHERE section.id = book.bookcase_section_id LIMIT 1) AS section_name
+				FROM " . $this->table_activator->owt7_library_tbl_books() . " AS book
+				WHERE status = 1
+				LIMIT %d OFFSET %d
+			";
+			$prepared_books_sql = $wpdb->prepare( $books_sql, $books_per_page, $offset );
+			$books = $wpdb->get_results( $prepared_books_sql );
 
-            if ($param == "owt_lib_filter_book") {
+			$total_pages = 0;
+			if ( $books_per_page > 0 ) {
+				$total_pages = (int) ceil( $all_books / $books_per_page );
+			}
 
-                $category_id = isset($_REQUEST['dd_category']) ? intval($_REQUEST['dd_category']) : 0;
-                $books = $wpdb->get_results(
-                        $wpdb->prepare(
-                                "SELECT book.*, category.name as category_name FROM " . $this->table_activator->owt_library_tbl_books() . " book INNER JOIN " . $this->table_activator->owt_library_tbl_category() . " category ON book.category_id = category.id WHERE book.status = %d AND category.id = %d", 1, $category_id
-                        )
-                );
-                ob_start();
-                include_once OWT_LIBRARY_PLUGIN_DIR_PATH . 'public/views/tmpl/owt-lms-tmpl-book.php';
-                $template = ob_get_contents();
-                ob_end_clean();
-                if (count($books) > 0) {
-                    $this->json(1, "books template loaded", array("template" => $template));
-                } else {
-                    $this->json(0, "<i>No book(s) found</i>");
-                }
-            }
-        }
-        wp_die();
-    }
+			return $this->owt7_library_include_template_file( "owt7_library_books", compact( "books", "categories", "total_pages", "current_page" ) );
+		}
+	}
 
-    public function owt_library_frontend_tabs() {
+	// Helper function
+	public function owt7_library_include_template_file($template, $lib_params = array()){
 
-        global $wpdb;
+		ob_start();
+		$params = $lib_params;
+		include_once LIBMNS_PLUGIN_DIR_PATH . 'public/views/' . $template . ".php";
+		$template = ob_get_contents();
+		ob_end_clean();
 
-        $branches = $wpdb->get_results(
-                $wpdb->prepare(
-                        "SELECT * from " . $this->table_activator->owt_library_tbl_branch() . " WHERE status = %d", 1
-                )
-        );
-
-        $books = $wpdb->get_results(
-                $wpdb->prepare(
-                        "SELECT book.*, category.name as category_name FROM " . $this->table_activator->owt_library_tbl_books() . " book INNER JOIN " . $this->table_activator->owt_library_tbl_category() . " category ON book.category_id = category.id WHERE book.status = %d", 1
-                )
-        );
-
-        $courties_list = $wpdb->get_results(
-                $wpdb->prepare(
-                        "SELECT * from " . $this->table_activator->owt_library_tbl_country() . " WHERE status = %d", 1
-                )
-        );
-
-        $categories = $wpdb->get_results(
-                $wpdb->prepare(
-                        "SELECT * FROM " . $this->table_activator->owt_library_tbl_category() . " WHERE status = %d", 1
-                )
-        );
-
-        ob_start();
-        include_once OWT_LIBRARY_PLUGIN_DIR_PATH . "public/views/owt-lms-frontend-tabs.php";
-        $template = ob_get_contents();
-        ob_end_clean();
-
-        echo $template;
-    }
-
-    public function json($sts, $msg, $arr = array()) {
-        $ar = array('sts' => $sts, 'msg' => $msg, 'arr' => $arr);
-        print_r(json_encode($ar));
-        die;
-    }
-
+		return $template;
+	}
 }
-

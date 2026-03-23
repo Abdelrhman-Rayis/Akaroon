@@ -17,6 +17,10 @@ use Automattic\Jetpack\Connection\Client;
 use Automattic\Jetpack\Constants;
 use Automattic\Jetpack\Status;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 if ( defined( 'IS_WPCOM' ) && IS_WPCOM ) {
 	add_action( 'init', 'jetpack_instagram_enable_embeds' );
 } else {
@@ -30,18 +34,6 @@ if ( defined( 'IS_WPCOM' ) && IS_WPCOM ) {
  * @since 9.1.0
  */
 function jetpack_instagram_enable_embeds() {
-
-	/**
-	 * Instagram's custom Embed provider.
-	 * We first remove the embed provider that's registered by Core; then, we declare our own.
-	 *
-	 * We can drop the `wp_oembed_remove_provider` line once Core stops adding its own Instagram provider:
-	 * https://core.trac.wordpress.org/ticket/50861.
-	 *
-	 * @todo Remove once 5.6 is our minimum version. (Technically WP dropped their provider in 5.5.2).
-	 */
-	wp_oembed_remove_provider( '#https?://(www\.)?instagr(\.am|am\.com)/(p|tv)/.*#i' );
-
 	wp_oembed_add_provider(
 		'#https?://(www\.)?instagr(\.am|am\.com)/(p|tv|reel)/.*#i',
 		'https://graph.facebook.com/v5.0/instagram_oembed/',
@@ -70,7 +62,9 @@ function jetpack_instagram_enable_embeds() {
 	/**
 	 * Embed reversal: Convert an embed code from Instagram.com to an oEmbeddable URL.
 	 */
-	add_filter( 'pre_kses', 'jetpack_instagram_embed_reversal' );
+	if ( jetpack_shortcodes_should_hook_pre_kses() ) {
+		add_filter( 'pre_kses', 'jetpack_instagram_embed_reversal' );
+	}
 
 	/**
 	 * Add the shortcode.
@@ -191,7 +185,7 @@ function jetpack_instagram_get_allowed_parameters( $url, $atts = array() ) {
 	$params = shortcode_atts(
 		array(
 			'url'         => $url,
-			'width'       => isset( $content_width ) ? $content_width : $max_width,
+			'width'       => ( is_numeric( $content_width ) && $content_width > 0 ) ? $content_width : $max_width,
 			'height'      => '',
 			'hidecaption' => false,
 		),
@@ -321,7 +315,7 @@ function jetpack_shortcode_instagram( $atts ) {
 	}
 
 	if ( class_exists( 'Jetpack_AMP_Support' ) && Jetpack_AMP_Support::is_amp_request() ) {
-		$url_pattern = '#http(s?)://(www\.)?instagr(\.am|am\.com)/p/([^/?]+)#i';
+		$url_pattern = '#http(s?)://(www\.)?instagr(\.am|am\.com)/(p|tv|reel)/([^/?]+)#i';
 		preg_match( $url_pattern, $atts['url'], $matches );
 		if ( ! $matches ) {
 			return sprintf(

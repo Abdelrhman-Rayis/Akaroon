@@ -86,7 +86,12 @@ class MLAModal {
 			add_filter( 'media_view_strings', 'MLAModal::mla_media_view_strings_filter', 10, 2 );
 			add_action( 'wp_enqueue_media', 'MLAModal::mla_wp_enqueue_media_action', 10, 0 );
 			add_filter( 'media_library_months_with_files', 'MLAModal::mla_media_library_months_with_files_filter', 10, 1 );
+
+			// print_media_templates is called from wp-includes/media-template.php wp_print_media_templates
 			add_action( 'print_media_templates', 'MLAModal::mla_print_media_templates_action', 10, 0 );
+			// wp_print_footer_scripts is called from wp-includes/block-editor.php _wp_get_iframed_editor_assets()
+			add_action( 'wp_print_footer_scripts', 'MLAModal::mla_print_media_templates_action', 10, 0 );
+
 			add_action( 'admin_init', 'MLAModal::mla_admin_init_action' );
 		} // Media Modal support enabled
 	}
@@ -112,12 +117,7 @@ class MLAModal {
 			return $library_months_with_files;
 		}
 
-		$library_months_with_files = $wpdb->get_results( $wpdb->prepare( "
-			SELECT DISTINCT YEAR( post_date ) AS year, MONTH( post_date ) AS month
-			FROM $wpdb->posts
-			WHERE post_type = %s
-			ORDER BY post_date DESC
-		", 'attachment' ) );
+		$library_months_with_files = $wpdb->get_results( $wpdb->prepare( "SELECT DISTINCT YEAR( post_date ) AS year, MONTH( post_date ) AS month FROM $wpdb->posts WHERE post_type = %s ORDER BY post_date DESC ", 'attachment' ) ); // phpcs:ignore
 
 		return $library_months_with_files;
 	}
@@ -143,14 +143,16 @@ class MLAModal {
 			return $month_array;
 		}
 
-		foreach ( $months as $arc_row ) {
+		foreach ( $months as $index => $arc_row ) {
 			if ( 0 == $arc_row->year ) {
 				continue;
 			}
 
+			$prefix = zeroise( $index, 3 );
 			$month = zeroise( $arc_row->month, 2 );
 			$year = $arc_row->year;
-			$month_array[ esc_attr( $arc_row->year . $month ) ] = 
+//			$month_array[ esc_attr( $prefix . $arc_row->year . $month ) ] = 
+			$month_array[ 'M' . $prefix . $arc_row->year . $month ] = 
 				/* translators: 1: month name, 2: 4-digit year */
 				sprintf( __( '%1$s %2$d', 'media-library-assistant' ), $wp_locale->get_month( $month ), $year );
 		}
@@ -206,6 +208,7 @@ class MLAModal {
 			'state' => 'initial',
 			'comma' => ',',
 			'ajaxNonce' => '',
+			'prefix' => 0,
 			'ajaxFillCompatAction' => MLACore::JAVASCRIPT_FILL_COMPAT_ACTION,
 			'ajaxQueryAttachmentsAction' => MLACore::JAVASCRIPT_QUERY_ATTACHMENTS_ACTION,
 			'ajaxUpdateCompatAction' => MLACore::JAVASCRIPT_UPDATE_COMPAT_ACTION,
@@ -267,6 +270,7 @@ class MLAModal {
 		$default_types = MLACore::mla_get_option( MLACoreOptions::MLA_POST_MIME_TYPES, true );
 		self::$mla_media_modal_settings['comma'] = _x( ',', 'tag_delimiter', 'media-library-assistant' );
 		self::$mla_media_modal_settings['ajaxNonce'] = wp_create_nonce( MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME );
+		self::$mla_media_modal_settings['prefix'] = 0;
 		self::$mla_media_modal_settings['allMimeTypes'] = MLAMime::mla_pluck_table_views();
 		self::$mla_media_modal_settings['allMimeTypes']['detached'] = $default_types['detached']['plural'];
 		self::$mla_media_modal_settings['allMimeTypes']['attached'] = $default_types['attached']['plural'];
@@ -276,6 +280,9 @@ class MLAModal {
 		if ( EMPTY_TRASH_DAYS && MEDIA_TRASH ) {
 			self::$mla_media_modal_settings['allMimeTypes']['trash'] = $default_types['trash']['plural'];
 		}
+
+		// Set Featured Image allows views based on custom field queries
+		self::$mla_media_modal_settings['uploadMimeTypes'] = MLAMime::mla_pluck_table_views( true );
 
 		self::$mla_media_modal_settings['months'] = self::_months_dropdown('attachment');
 
@@ -312,6 +319,7 @@ class MLAModal {
 		$supported_taxonomies = MLACore::mla_supported_taxonomies('support');
 		self::$mla_media_modal_settings['enableTermsDropdown'] = ( 'checked' == MLACore::mla_get_option( MLACoreOptions::MLA_MEDIA_MODAL_TERMS ) ) && ( ! empty( $supported_taxonomies ) );
 		self::$mla_media_modal_settings['enableTermsAutofill'] = ( 'checked' == MLACore::mla_get_option( MLACoreOptions::MLA_MEDIA_MODAL_DETAILS_AUTOFILL ) ) && ( ! empty( $supported_taxonomies ) );
+		self::$mla_media_modal_settings['enableTermsAutoopen'] = ( 'checked' == MLACore::mla_get_option( MLACoreOptions::MLA_MEDIA_MODAL_DETAILS_AUTOOPEN ) ) && ( ! empty( $supported_taxonomies ) );
 
 		$supported_taxonomies = MLACore::mla_supported_taxonomies('term-search');
 		self::$mla_media_modal_settings['enableTermsSearch'] = ( 'checked' == MLACore::mla_get_option( MLACoreOptions::MLA_MEDIA_MODAL_TERMS_SEARCH ) ) && ( ! empty( $supported_taxonomies ) );
@@ -349,7 +357,7 @@ class MLAModal {
 			'searchConnector' => $search_defaults['search_connector'],
 			'searchFields' => $search_defaults['search_fields'],
 			'searchValue' => '',
-			//'termsSearch' => ''
+			'searchClicks' => 0,
 		);
 
 		$initial_values = apply_filters( 'mla_media_modal_initial_filters', $initial_values, $post );
@@ -374,12 +382,11 @@ class MLAModal {
 		self::$mla_media_modal_settings['query']['initial']['searchConnector'] = $initial_values['searchConnector']; // mla_search_connector 'OR'; //
 		self::$mla_media_modal_settings['query']['initial']['searchFields'] = $initial_values['searchFields']; // mla_search_fields array( 'excerpt', 'title', 'content' ); //
 		self::$mla_media_modal_settings['query']['initial']['searchValue'] = $initial_values['searchValue']; // mla_search_value 'col'; //
-		//self::$mla_media_modal_settings['query']['initial']['termsSearch'] = $initial_values['termsSearch']; // mla_terms_search
 		self::$mla_media_modal_settings['query']['initial']['searchClicks'] = 0; // mla_search_clicks, to force transmission
 
 		$settings = array_merge( $settings, array( 'mla_settings' => self::$mla_media_modal_settings ) );
 		return apply_filters( 'mla_media_modal_settings', $settings, $post );
-	} // mla_mla_media_view_settings_filter
+	} // mla_media_view_settings_filter
 
 	/**
 	 * Adds string values to be passed to the Media Manager in /wp-includes/js/media-views.js.
@@ -433,21 +440,21 @@ class MLAModal {
 		$suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
 
 		if ( $wp_locale->is_rtl() ) {
-			wp_register_style( self::JAVASCRIPT_MEDIA_MODAL_STYLES, MLA_PLUGIN_URL . 'css/mla-media-modal-style-rtl.css', false, MLACore::CURRENT_MLA_VERSION );
+			wp_register_style( self::JAVASCRIPT_MEDIA_MODAL_STYLES, MLA_PLUGIN_URL . 'css/mla-media-modal-style-rtl.css', false, MLACore::mla_script_version() );
 		} else {
-			wp_register_style( self::JAVASCRIPT_MEDIA_MODAL_STYLES, MLA_PLUGIN_URL . 'css/mla-media-modal-style.css', false, MLACore::CURRENT_MLA_VERSION );
+			wp_register_style( self::JAVASCRIPT_MEDIA_MODAL_STYLES, MLA_PLUGIN_URL . 'css/mla-media-modal-style.css', false, MLACore::mla_script_version() );
 		}
 
 		wp_enqueue_style( self::JAVASCRIPT_MEDIA_MODAL_STYLES );
 
 		// Make sure ajaxurl is defined before loading wp-lists and suggest
-		wp_enqueue_script( self::JAVASCRIPT_DEFINE_AJAXURL_SLUG, MLA_PLUGIN_URL . "js/mla-define-ajaxurl-scripts{$suffix}.js", array(), MLACore::CURRENT_MLA_VERSION, false );
+		wp_enqueue_script( self::JAVASCRIPT_DEFINE_AJAXURL_SLUG, MLA_PLUGIN_URL . "js/mla-define-ajaxurl-scripts{$suffix}.js", array(), MLACore::mla_script_version(), false );
 
 		// Gutenberg Block Editor won't tolerate loading 'wp-lists' in the header section; load in footer section
 		if ( ! function_exists( 'use_block_editor_for_post_type' ) || isset( $_GET['classic-editor'] ) ) {
-			wp_enqueue_script( self::JAVASCRIPT_MEDIA_MODAL_SLUG, MLA_PLUGIN_URL . "js/mla-media-modal-scripts{$suffix}.js", array( 'media-views', 'wp-lists', 'suggest' ), MLACore::CURRENT_MLA_VERSION, false );
+			wp_enqueue_script( self::JAVASCRIPT_MEDIA_MODAL_SLUG, MLA_PLUGIN_URL . "js/mla-media-modal-scripts{$suffix}.js", array( 'media-views', 'wp-lists', 'suggest' ), MLACore::mla_script_version(), false );
 		} else {
-			wp_enqueue_script( self::JAVASCRIPT_MEDIA_MODAL_SLUG, MLA_PLUGIN_URL . "js/mla-media-modal-scripts{$suffix}.js", array( 'media-views', 'wp-lists', 'suggest' ), MLACore::CURRENT_MLA_VERSION, true );
+			wp_enqueue_script( self::JAVASCRIPT_MEDIA_MODAL_SLUG, MLA_PLUGIN_URL . "js/mla-media-modal-scripts{$suffix}.js", array( 'media-views', 'wp-lists', 'suggest' ), MLACore::mla_script_version(), true );
 		}
 		
 		if ( 'checked' == MLACore::mla_get_option( MLACoreOptions::MLA_MEDIA_MODAL_TERMS_SEARCH ) ) {
@@ -464,6 +471,8 @@ class MLAModal {
 	 * @return	void	echoes HTML script tags for the templates
 	 */
 	public static function mla_print_media_templates_action( ) {
+		static $template = NULL;
+		
 		// If we know what screen we're on we can test our enabling options
 		if ( function_exists( 'get_current_screen' ) ) {
 			$screen = get_current_screen();
@@ -481,12 +490,18 @@ class MLAModal {
 			$screen = NULL;
 		}
 
-		// Include mla javascript templates
-		$template_path = apply_filters( 'mla_media_modal_template_path', MLA_PLUGIN_PATH . 'includes/mla-media-modal-js-template.php', $screen);
+		if ( empty( $template ) ) {
+			// Include mla javascript templates
+			$template_path = apply_filters( 'mla_media_modal_template_path', MLA_PLUGIN_PATH . 'includes/mla-media-modal-js-template.php', $screen);
 
-		if ( ! empty( $template_path ) ) {
-			require_once $template_path;
+			if ( ! empty( $template_path ) ) {
+				ob_start();
+				require_once $template_path;
+				$template = ob_get_clean();
+			}
 		}
+
+		echo $template;  // phpcs:ignore
 	} // mla_print_media_templates_action
 
 	/**
@@ -542,15 +557,15 @@ class MLAModal {
 
 		if ( $add_the_scripts ) {
 			if ( $wp_locale->is_rtl() ) {
-				wp_register_style( MLACore::STYLESHEET_SLUG . '-terms-search', MLA_PLUGIN_URL . 'css/mla-style-terms-search-rtl.css', false, MLACore::CURRENT_MLA_VERSION );
+				wp_register_style( MLACore::STYLESHEET_SLUG . '-terms-search', MLA_PLUGIN_URL . 'css/mla-style-terms-search-rtl.css', false, MLACore::mla_script_version() );
 			} else {
-				wp_register_style( MLACore::STYLESHEET_SLUG . '-terms-search', MLA_PLUGIN_URL . 'css/mla-style-terms-search.css', false, MLACore::CURRENT_MLA_VERSION );
+				wp_register_style( MLACore::STYLESHEET_SLUG . '-terms-search', MLA_PLUGIN_URL . 'css/mla-style-terms-search.css', false, MLACore::mla_script_version() );
 			}
 
 			wp_enqueue_style( MLACore::STYLESHEET_SLUG . '-terms-search' );
 
 			wp_enqueue_script( MLACore::JAVASCRIPT_INLINE_EDIT_SLUG . '-terms-search', MLA_PLUGIN_URL . "js/mla-terms-search-scripts{$suffix}.js", 
-				array( 'jquery' ), MLACore::CURRENT_MLA_VERSION, false );
+				array( 'jquery' ), MLACore::mla_script_version(), false );
 
 			$script_variables = array(
 				'useDashicons' => false,
@@ -605,6 +620,55 @@ class MLAModal {
 	}
 
 	/**
+	 * Get dropdown box of terms to filter the Terms Search by, if available
+	 *
+	 * @since 3.08
+	 *
+	 * @param	integer	currently selected term_id || zero (default)
+	 * @param	array	additional wp_dropdown_categories options; default empty
+	 *
+	 * @return	string	HTML markup for dropdown box
+	 */
+	public static function mla_get_terms_search_filter_dropdown( $selected = 0, $dropdown_options = array() ) {
+		$dropdown = '';
+		$tax_filter = MLACore::mla_get_option( MLACoreOptions::MLA_TERMS_SEARCH_FILTER_TAXONOMY );
+
+		if ( ( 'none' !== $tax_filter ) && ( is_object_in_taxonomy( 'attachment', $tax_filter ) ) ) {
+			$tax_object = get_taxonomy( $tax_filter );
+			$dropdown_options = array_merge( array(
+				'show_option_all' => __( 'All', 'media-library-assistant' ) . ' ' . $tax_object->labels->name,
+				'show_option_none' => _x( 'No', 'show_option_none', 'media-library-assistant' ) . ' ' . $tax_object->labels->name,
+				'orderby' => 'name',
+				'order' => 'ASC',
+				'show_count' => false,
+				'hide_empty' => false,
+				'child_of' => 0,
+				'exclude' => '',
+				// 'exclude_tree => '', 
+				'echo' => true,
+				'depth' => MLACore::mla_get_option( MLACoreOptions::MLA_TERMS_SEARCH_FILTER_DEPTH ),
+				'tab_index' => 0,
+				'name' => 'mla_terms_search[filter]',
+				'id' => 'mla-terms-search-filter',
+				'class' => 'postform',
+				'selected' => $selected,
+				'hierarchical' => true,
+				'pad_counts' => false,
+				'taxonomy' => $tax_filter,
+				'hide_if_empty' => false,
+				'update_term_meta_cache' => false,
+			), $dropdown_options );
+
+			ob_start();
+			wp_dropdown_categories( $dropdown_options );
+			$dropdown = ob_get_contents();
+			ob_end_clean();
+		}
+
+		return $dropdown;
+	}
+
+	/**
 	 * Build the hidden form for the "Search Terms" popup modal window
 	 *
 	 * @since 1.90
@@ -643,8 +707,14 @@ class MLAModal {
 				$taxonomy_list .= MLAData::mla_parse_template( $page_template_array['mla-terms-search-taxonomy'], $page_values );
 			}
 
+			$filter_dropdown = self::mla_get_terms_search_filter_dropdown();
+			$filter_style = ( !empty( $filter_dropdown ) ) ? 'style="display:block"' : 'style="display:none"';
+
 			$page_values = array(
 				'Search Terms' => __( 'Search Terms', 'media-library-assistant' ),
+				'Filter' => __( 'Filter by term', 'media-library-assistant' ),
+				'filter_dropdown' => $filter_dropdown,
+				'filter_style' => $filter_style,
 				'Search' => __( 'Search', 'media-library-assistant' ),
 				'phrases_and_checked' => 'checked="checked"',
 				'All phrases' => __( 'All phrases', 'media-library-assistant' ),

@@ -26,7 +26,7 @@
         <textarea id="3dfb-shortcode-textarea" class="form-control"></textarea>
       </div>
       <div class="fb3d-admin-container">
-        <div id="<?php echo(POST_ID.'-shortcode-generator');?>">
+        <div id="<?php echo(esc_attr(POST_ID.'-shortcode-generator'));?>">
 
         </div>
       </div>

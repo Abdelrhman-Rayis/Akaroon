@@ -1,0 +1,36 @@
+# Translation of Plugins - NHS Blocks - Stable (latest release) in English (UK)
+# This file is distributed under the same license as the Plugins - NHS Blocks - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2023-07-12 07:01:45+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/4.0.1\n"
+"Language: en_GB\n"
+"Project-Id-Version: Plugins - NHS Blocks - Stable (latest release)\n"
+
+#. Description of the plugin
+#: nhsblocks.php
+msgid "Gutenberg native custom blocks companion plugin for the NHS Nightingale theme (can also be standalone). Based on nhsuk frontend framework."
+msgstr "Gutenberg native custom blocks companion plugin for the NHS Nightingale theme (can also be standalone). Based on nhsuk frontend framework."
+
+#. Plugin Name of the plugin
+#: nhsblocks.php
+msgid "NHS Blocks"
+msgstr "NHS Blocks"
+
+#. Plugin URI of the plugin
+#: nhsblocks.php
+msgid "https://github.com/NHSLeadership/nhsblocks"
+msgstr "https://github.com/NHSLeadership/nhsblocks"
+
+#: nhsblocks.php:58
+msgid "NHS Frontend Blocks"
+msgstr "NHS Frontend Blocks"
+
+#. Author of the plugin
+#: nhsblocks.php
+msgid "Tony Blacker, NHS Leadership Academy"
+msgstr "Tony Blacker, NHS Leadership Academy"

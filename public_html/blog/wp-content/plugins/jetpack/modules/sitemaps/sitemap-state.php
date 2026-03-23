@@ -1,4 +1,4 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
 /**
  * Abstract sitemap generation state class.
  *
@@ -6,6 +6,10 @@
  * @since 4.8.0
  * @author Automattic
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
 
 /* Include standard constants and librarian. */
 require_once __DIR__ . '/sitemap-constants.php';
@@ -140,5 +144,4 @@ class Jetpack_Sitemap_State {
 		delete_transient( 'jetpack-sitemap-state-lock' );
 		delete_option( 'jetpack-sitemap-state' );
 	}
-
 }

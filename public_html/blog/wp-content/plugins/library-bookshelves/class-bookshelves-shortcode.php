@@ -27,13 +27,13 @@ class Bookshelves_Shortcode {
 			),
 			$atts
 		);
-		$id = $a['id'];
+		$post_id = $a['id'];
 
-		if ( false === get_post_status( $id ) ) {
-			echo 'This Bookshelf does not exist';
+		if ( false === get_post_status( $post_id ) ) {
+			esc_html_e( 'This Bookshelf does not exist', 'library-bookshelves' );
 		} else {
-			$html = lbs_shelveBooks( $id );
-			return $html;
+			$html = lbs_shelveBooks( $post_id );
+			return htmlspecialchars_decode( $html );
 		}
 	}
 

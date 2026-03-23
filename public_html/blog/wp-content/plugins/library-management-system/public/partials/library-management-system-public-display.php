@@ -1,15 +1,12 @@
 <?php
-
 /**
- * Provide a public-facing view for the plugin
- *
- * This file is used to markup the public-facing aspects of the plugin.
- *
- * @link       http://onlinewebtutorhub.blogspot.in/
- * @since      1.0.0
- *
+ * @link       https://onlinewebtutorblog.com
+ * @since      3.3
  * @package    Library_Management_System
- * @subpackage Library_Management_System/public/partials
+ * @subpackage Library_Management_System/public
+ * @copyright  Copyright (c) 2026, Online Web Tutor
+ * @license    GPL-2.0+ https://www.gnu.org/licenses/gpl-2.0.html
+ * @author     Online Web Tutor
  */
 ?>
 

@@ -11,6 +11,7 @@ asf,video/x-ms-asf,video,video,Microsoft Advanced Systems Format (ASF)
 asx,video/x-ms-asf,video,video,Microsoft video playlist. XML with entries giving URL for each file to play in order.
 au,audio/basic,audio,audio,AU audio files
 avi,video/msvideo,video,video,Audio Video Interleave (AVI) - earlier Microsoft video format
+avif,image/avif,default,image,A modern image format based on the AV1 video format
 bin,application/octet-stream,default,binary,Binary Data/executable program
 bmp,image/bmp,default,image,Bitmap Image File
 c,text/plain,code,source_c,C Source File
@@ -25,7 +26,7 @@ css,text/css,code,stylesheet,Cascading Style Sheets (CSS)
 csv,text/csv,text,text,Microsoft's format for import/export to Excel Word and Access.
 dat,application/octet-stream,default,binary,Various Data formats
 divx,video/divx,video,video,DivX LLC Video Format
-dll,application/x-msdownload,code,exe_wine,Microsoft Windows Dynamic Link Library
+dll,application/x-msdownload,code,exec_wine,Microsoft Windows Dynamic Link Library
 doc,application/msword,document,document,Microsoft Word document formatted
 docm,application/vnd.ms-word.document.macroEnabled.12,document,document,Micosoft Word - Macro-Enabled Document
 docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document,document,document,Microsoft Office - OOXML - Word Document
@@ -34,7 +35,7 @@ dotm,application/vnd.ms-word.template.macroEnabled.12,document,document,Micosoft
 dotx,application/vnd.openxmlformats-officedocument.wordprocessingml.template,document,document,Microsoft Office - OOXML - Word Document Template
 dtd,application/xml-dtd,code,code,Document Type Definition
 eps,application/postscript,default,postscript,Encapsulated Adobe PostScript
-exe,application/x-msdownload,code,exe_wine,Windows executable program. Refered to as an application type in the associations editor.
+exe,application/x-msdownload,code,exec_wine,Windows executable program. Refered to as an application type in the associations editor.
 flv,video/x-flv,video,video,Flash Video
 gif,image/gif,default,image,Graphics Interchange Format
 gtar,application/x-gtar,archive,archive,GNU Tar Files
@@ -139,7 +140,8 @@ wma,audio/x-ms-wma,audio,audio,Microsoft Windows Media Audio (compressed audio)
 wmf,application/x-msmetafile,default,vectorgfx,Microsoft Windows Metafile - proprietary format for vector graphics
 wmv,video/x-ms-wmv,video,video,Microsoft Audio Format
 wmx,video/x-ms-wmx,video,video,Microsoft Windows Media audio and video files
-woff,font/x-woff,default,font,Web Open Font Format
+woff,font/woff,default,font,Web Open Font Format 1.0
+woff2,font/woff2,default,font,Web Open Font Format 2.0
 word,application/msword,document,document,Microsoft Word Document
 wp,application/wordperfect,document,document,WordPerfect 5
 wpd,application/wordperfect,document,document,Wordperfect
@@ -250,7 +252,7 @@ avi,application/x-troff-msvideo,Audio Video Interleave (AVI) - earlier Microsoft
 avi,video/avi,Audio Video Interleave (AVI) - earlier Microsoft video format
 avi,video/msvideo,Audio Video Interleave (AVI) - earlier Microsoft video format
 avi,video/x-msvideo,Audio Video Interleave (AVI) - earlier Microsoft video format
-avs,video/avs-video,Animation
+avif,image/avif,A modern image format based on the AV1 video formatavs,video/avs-video,Animation
 aw,application/applixware,Applixware
 axa,audio/annodex,Annodex Audio Profile
 axs,application/olescript,
@@ -560,6 +562,8 @@ g3,image/g3fax,G3 Fax Image
 g3w,application/vnd.geospace,GeospacW
 gac,application/vnd.groove-account,Groove - Account
 gdl,model/vnd.gdl,Geometric Description Language (GDL)
+gdz,text/plain,GEnealogical Data COMmunications (GEDCOM)
+ged,text/plain,GEnealogical Data COMmunications (GEDCOM)
 geo,application/vnd.dynageo,DynaGeo
 gex,application/vnd.geometry-explorer,GeoMetry Explorer
 ggb,application/vnd.geogebra.file,GeoGebra
@@ -1545,7 +1549,12 @@ wmv,audio/x-ms-wmv,Microsoft Audio Format
 wmv,video/x-ms-wmv,Microsoft Windows Media audio and video files
 wmx,video/x-ms-wmx,Microsoft Windows Media Audio/Video Playlist
 wmz,application/x-ms-wmz,Microsoft Windows Media Player Skin Package
-woff,application/x-font-woff,Web Open Font Format
+woff,application/x-font-woff,Web Open Font Format 1.0 old PHP versions
+woff,application/font-woff,Web Open Font Format 1.0 old PHP versions
+woff,font/woff,Web Open Font Format 1.0 current type
+woff2,application/x-font-woff2,Web Open Font Format 2.0 old PHP versions
+woff2,application/font-woff2,Web Open Font Format 2.0 old PHP versions
+woff2,font/woff2,Web Open Font Format 2.0 current type
 word,application/msword,Microsoft Word Document
 wp,application/wordperfect,WordPerfect 5
 wp5,application/wordperfect,WordPerfect 5

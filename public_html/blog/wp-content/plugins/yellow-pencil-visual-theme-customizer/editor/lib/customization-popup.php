@@ -89,7 +89,6 @@ if(get_option("show_on_front") == "page"){
 	}
 
 	*{
-		-webkit-box-sizing:border-box;
 		box-sizing:border-box;
 	}
 
@@ -98,10 +97,9 @@ if(get_option("show_on_front") == "page"){
 	    color:#767676;
 	}
 
-	.yp-new-edit-popup{
+	.wyp-new-edit-popup{
 	    width:620px;
 	    background-color:#FFFFFF;
-	    -webkit-box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.14);
 	    box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.14);
 	    position:fixed;
 	    top:50%;
@@ -117,7 +115,7 @@ if(get_option("show_on_front") == "page"){
 		display:block;
 	}
 
-	.yp-new-edit-popup-background{
+	.wyp-new-edit-popup-background{
 	    width:100%;
 	    height:100%;
 	    position:fixed;
@@ -129,7 +127,7 @@ if(get_option("show_on_front") == "page"){
 	    cursor: zoom-out;
 	}
 
-	.yp-new-edit-popup h3{
+	.wyp-new-edit-popup h3{
 		font-weight:400;
 		color:#686868;
 		margin-top:0px;
@@ -331,11 +329,11 @@ if(get_option("show_on_front") == "page"){
 		margin-top: -12px;
 	}
 
-	.yp-new-edit-popup.invalid-url .customize-type-page-section::after{
+	.wyp-new-edit-popup.invalid-url .customize-type-page-section::after{
 		display:none;
 	}
 
-	.yp-new-edit-popup.invalid-url .new-edit-continue{
+	.wyp-new-edit-popup.invalid-url .new-edit-continue{
 		opacity: 0.8;
 		pointer-events: none;
 	}
@@ -387,8 +385,7 @@ if(get_option("show_on_front") == "page"){
 	    display: inline-block;
 	    overflow: hidden;
 	    white-space: nowrap;
-	    -o-text-overflow: ellipsis;
-	       text-overflow: ellipsis;
+	    text-overflow: ellipsis;
 	}
 
 	.customize-type-select:hover,.customize-type-select.active{
@@ -405,7 +402,6 @@ if(get_option("show_on_front") == "page"){
 		padding: 10px 0px;
 		border-radius: 0 0 3px 3px;
 		width: calc(98% - 42px);
-		-webkit-box-shadow: 0 0 14px 0 rgba(22,45,61,.36);
 		box-shadow: 0 0 14px 0 rgba(22,45,61,.36);
 		margin-left: 1%;
 		max-height: 280px;
@@ -506,8 +502,7 @@ if(get_option("show_on_front") == "page"){
 	}
 
 	.customize-special-url:hover,.customize-special-url.active{
-		-webkit-box-shadow: 0px 0px 8px 4px rgba(0,0,0,0.08) inset;
-		        box-shadow: 0px 0px 8px 4px rgba(0,0,0,0.08) inset;
+		box-shadow: 0px 0px 8px 4px rgba(0,0,0,0.08) inset;
 	}
 
 	.customize-special-url.active{
@@ -557,7 +552,7 @@ if(get_option("show_on_front") == "page"){
 	    opacity: 0.7;
 	}
 
-	.yp-exit-confirm-box{
+	.wyp-exit-confirm-box{
 		position: fixed;
 		top: 44%;
 		left: 50%;
@@ -571,8 +566,6 @@ if(get_option("show_on_front") == "page"){
 		color:#555555;
 		line-height: 1.4;
 		border-radius: 4px;
-
-		-webkit-box-shadow:0px 0px 4px 1px rgba(0, 0, 0, 0.14);
 		box-shadow:0px 0px 4px 1px rgba(0, 0, 0, 0.14);
 
 		text-align:center;
@@ -580,7 +573,7 @@ if(get_option("show_on_front") == "page"){
 		height: 134px;
 	}
 
-	.yp-exit-confirm-box h3{
+	.wyp-exit-confirm-box h3{
 		font-weight: 400;
 		color: #585858;
 		margin-top: 0px;
@@ -592,7 +585,7 @@ if(get_option("show_on_front") == "page"){
 		margin-right: auto;
 	}
 
-	.yp-exit-confirm-box .action-btn{
+	.wyp-exit-confirm-box .action-btn{
 		padding: 7px 12px;
 		font-size: 12px;
 		font-weight: 600;
@@ -606,7 +599,7 @@ if(get_option("show_on_front") == "page"){
 		margin-right: 3px;
 	}
 
-	.yp-exit-confirm-box .primary-btn{
+	.wyp-exit-confirm-box .primary-btn{
 		background-color: #419BF9;
     	color: #ffffff;
 	}
@@ -615,7 +608,7 @@ if(get_option("show_on_front") == "page"){
 		opacity:1;
 	}
 
-	.yp-exit-confirm-bg{
+	.wyp-exit-confirm-bg{
 		width:100%;
 	    height:100%;
 	    background-color:#000;
@@ -976,7 +969,7 @@ if(get_option("show_on_front") == "page"){
 				element.classList.remove("active");
 				urlInput.style.display = 'none';
 				selectPage.style.display = 'inline-block';
-				document.getElementsByClassName("yp-new-edit-popup")[0].classList.remove("invalid-url");
+				document.getElementsByClassName("wyp-new-edit-popup")[0].classList.remove("invalid-url");
 			}else{
 				element.classList.add("active");
 				urlInput.style.display = 'inline-block';
@@ -1005,9 +998,9 @@ if(get_option("show_on_front") == "page"){
 
 				// Test URL
 				if(/(\b \b|\.$|^\.)/g.test(pageHref) || pageHref.indexOf(".") == -1 || pageHref.length < 4 || pageHref.indexOf(window.location.hostname) == -1){
-					document.getElementsByClassName("yp-new-edit-popup")[0].classList.add("invalid-url");
+					document.getElementsByClassName("wyp-new-edit-popup")[0].classList.add("invalid-url");
 				}else{
-					document.getElementsByClassName("yp-new-edit-popup")[0].classList.remove("invalid-url");
+					document.getElementsByClassName("wyp-new-edit-popup")[0].classList.remove("invalid-url");
 				}
 
 				// enCode
@@ -1052,26 +1045,26 @@ if(get_option("show_on_front") == "page"){
 
 			// update URL too
 	        if (window.parent.history.pushState){
-	            if(window.parent.location.href.split("&yp_load_popup=").length > 0){
-					window.parent.history.pushState(null, null, window.parent.location.href.split("&yp_load_popup=")[0]);
+	            if(window.parent.location.href.split("&wyp_load_popup=").length > 0){
+					window.parent.history.pushState(null, null, window.parent.location.href.split("&wyp_load_popup=")[0]);
 	        	}
 	    	}
 
 			// Don't ask on demo mode
 			if (window.parent.document.body.classList.contains('yp-yellow-pencil-demo-mode') == false) {
 
-				if(window.parent.document.querySelectorAll(".yp-save-btn.waiting-for-save").length > 0 && document.querySelectorAll(".new-edit-btn.only-continue-btn").length == 0){
+				if(window.parent.document.querySelectorAll(".wyp-save-btn.waiting-for-save").length > 0 && document.querySelectorAll(".new-edit-btn.only-continue-btn").length == 0){
 
 					// Show
-					document.getElementsByClassName("yp-exit-confirm-box")[0].style.display = 'block';
-					document.getElementsByClassName("yp-exit-confirm-bg")[0].style.display = 'block';
+					document.getElementsByClassName("wyp-exit-confirm-box")[0].style.display = 'block';
+					document.getElementsByClassName("wyp-exit-confirm-bg")[0].style.display = 'block';
 
 					return false;
 
 				}
 			}
 
-			var parentIframe = window.parent.document.getElementById("yp-customizing-type-frame");
+			var parentIframe = window.parent.document.getElementById("wyp-customizing-type-frame");
 			parentIframe.style.display = 'none';
 
 			// var this mode
@@ -1079,7 +1072,7 @@ if(get_option("show_on_front") == "page"){
 
 			// IF no change, click only closing popup.
 			if(document.querySelectorAll(".only-continue-btn").length > 0){
-				window.parent.document.getElementById("yp-current-page").classList.remove("active");
+				window.parent.document.getElementById("wyp-current-page").classList.remove("active");
 				window.parent.document.querySelectorAll('#c-t-list > ul > li[data-value="'+editMode+'"]')[0].click();
 				return false;
 			}
@@ -1090,7 +1083,7 @@ if(get_option("show_on_front") == "page"){
 			var pageID;
 
 			// Base
-			var yp_base_uri = "<?php echo yp_get_uri(); ?>";
+			var wyp_base_uri = "<?php echo wyp_get_uri(); ?>";
 
 			// Getting Href
 			if(document.querySelectorAll(".customize-special-url.active").length > 0){
@@ -1107,7 +1100,7 @@ if(get_option("show_on_front") == "page"){
 					pageID = liHref[0].getAttribute("data-id-value");
 
 					// Go
-					goLink(yp_base_uri, pageHref, pageID, pageType, editMode);
+					goLink(wyp_base_uri, pageHref, pageID, pageType, editMode);
 
 				// Get page details with ajax
 				}else{
@@ -1123,7 +1116,7 @@ if(get_option("show_on_front") == "page"){
 					xhttp.open("POST", location.protocol+"//"+pageHrefGo, true);
 					xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 					xhttp.overrideMimeType('text/html');
-					xhttp.send("yp_get_details=true");
+					xhttp.send("wyp_get_details=true");
 
 					// When ready
 					xhttp.onreadystatechange = function(){
@@ -1137,19 +1130,19 @@ if(get_option("show_on_front") == "page"){
 					        	var parser = new DOMParser();
 								response = parser.parseFromString(this.responseText, "text/html");
 
-								if(response.getElementById("yp_page_details") == null){
+								if(response.getElementById("wyp_page_details") == null){
 									alert("YellowPencil can't reach this page.");
 									return false;
 								}
 
-					        	response = response.getElementById("yp_page_details").innerHTML;
+					        	response = response.getElementById("wyp_page_details").innerHTML;
 
 					            // Find page informations
 					            var pageID = response.split("|")[0];
 					            var pageType = response.split("|")[1];
 
 					            // Go
-								goLink(yp_base_uri, pageHref, pageID, pageType, editMode);
+								goLink(wyp_base_uri, pageHref, pageID, pageType, editMode);
 
 					        }else{
 
@@ -1157,7 +1150,7 @@ if(get_option("show_on_front") == "page"){
 								pageID = 0;
 
 								// Go
-								goLink(yp_base_uri, pageHref, pageID, pageType, editMode);
+								goLink(wyp_base_uri, pageHref, pageID, pageType, editMode);
 
 					        }
 
@@ -1177,13 +1170,13 @@ if(get_option("show_on_front") == "page"){
 				pageID = activeLi.getAttribute("data-id-value");
 
 				// Go
-				goLink(yp_base_uri, pageHref, pageID, pageType, editMode);
+				goLink(wyp_base_uri, pageHref, pageID, pageType, editMode);
 
 			}
 
 		}
 
-		function goLink(yp_base_uri, pageHref, pageID, pageType, editMode){
+		function goLink(wyp_base_uri, pageHref, pageID, pageType, editMode){
 
 			var visitorView = false;
 
@@ -1193,12 +1186,12 @@ if(get_option("show_on_front") == "page"){
 			}
 
 			if(visitorView){
-				visitorView = "&yp_out=true";
+				visitorView = "&wyp_out=true";
 			}else{
 				visitorView = '';
 			}
 
-			var redirectURL = yp_base_uri + "&href=" + pageHref + "&yp_page_id=" + pageID + "&yp_page_type=" + pageType + "&yp_mode=" + editMode + visitorView;
+			var redirectURL = wyp_base_uri + "&href=" + pageHref + "&wyp_page_id=" + pageID + "&wyp_page_type=" + pageType + "&wyp_mode=" + editMode + visitorView;
 
 			window.parent.document.getElementById("iframe").style.display = 'none';
 			window.parent.document.body.classList.remove("yellow-pencil-ready");
@@ -1209,15 +1202,15 @@ if(get_option("show_on_front") == "page"){
 
 		function newTypeCancel(){
 
-			var parentIframe = window.parent.document.getElementById("yp-customizing-type-frame");
-			window.parent.document.getElementById("yp-current-page").classList.remove("active");
+			var parentIframe = window.parent.document.getElementById("wyp-customizing-type-frame");
+			window.parent.document.getElementById("wyp-current-page").classList.remove("active");
 			parentIframe.style.display = 'none';
 
 
 			// update URL too
 	        if (window.parent.history.replaceState){
-	            if(window.parent.location.href.split("&yp_load_popup=").length > 0){
-					window.parent.history.replaceState(null, null, window.parent.location.href.split("&yp_load_popup=")[0]);
+	            if(window.parent.location.href.split("&wyp_load_popup=").length > 0){
+					window.parent.history.replaceState(null, null, window.parent.location.href.split("&wyp_load_popup=")[0]);
 	        	}
 	    	}
 
@@ -1280,10 +1273,10 @@ if(get_option("show_on_front") == "page"){
 			var url = get_url_params(url_string);
 
 			// gettings
-			var id = url.yp_page_id;
-			var type = url.yp_page_type;
-			var mode = url.yp_mode;
-			var visitor = url.yp_out;
+			var id = url.wyp_page_id;
+			var type = url.wyp_page_type;
+			var mode = url.wyp_mode;
+			var visitor = url.wyp_out;
 
 			// Disable current active page
 			if(id != null){
@@ -1347,7 +1340,7 @@ if(get_option("show_on_front") == "page"){
 
 		    if (isEscape) {
 
-		    	if(document.getElementsByClassName("yp-exit-confirm-box")[0].style.display == 'block'){
+		    	if(document.getElementsByClassName("wyp-exit-confirm-box")[0].style.display == 'block'){
 		    		actionBtn("cancel", null);
 		    	}else{
 		        	newTypeCancel();
@@ -1361,7 +1354,7 @@ if(get_option("show_on_front") == "page"){
 			if(key == 'save'){
 
 				// Save click
-				window.parent.document.querySelectorAll(".yp-save-btn")[0].click();
+				window.parent.document.querySelectorAll(".wyp-save-btn")[0].click();
 
 					element.innerHTML = 'Saving..';
 					element.classList.add("disabled");
@@ -1369,7 +1362,7 @@ if(get_option("show_on_front") == "page"){
 					// Done.
 	                window.savingCheckerX = setInterval(function(){
 
-	                    if(window.parent.document.querySelectorAll(".yp-save-btn.waiting-for-save").length == 0){
+	                    if(window.parent.document.querySelectorAll(".wyp-save-btn.waiting-for-save").length == 0){
 	                    	clearInterval(window.savingCheckerX);
 
 	                    	setTimeout(function(){
@@ -1389,7 +1382,7 @@ if(get_option("show_on_front") == "page"){
 			if(key == 'nosave'){
 
 				// remove for no ask a confirm exit alert
-				window.parent.document.querySelectorAll(".yp-save-btn.waiting-for-save")[0].classList.remove("waiting-for-save");
+				window.parent.document.querySelectorAll(".wyp-save-btn.waiting-for-save")[0].classList.remove("waiting-for-save");
 
 				element.classList.add("disabled");
 				element.innerHTML = 'Loading..';
@@ -1402,8 +1395,8 @@ if(get_option("show_on_front") == "page"){
 
 			if(key == 'cancel'){
 
-				document.getElementsByClassName("yp-exit-confirm-box")[0].style.display = "none";
-				document.getElementsByClassName("yp-exit-confirm-bg")[0].style.display = "none";
+				document.getElementsByClassName("wyp-exit-confirm-box")[0].style.display = "none";
+				document.getElementsByClassName("wyp-exit-confirm-bg")[0].style.display = "none";
 
 			}
 
@@ -1416,11 +1409,11 @@ if(get_option("show_on_front") == "page"){
 			var url = get_url_params(url_string);
 
 			// Current Settings
-			var id = url.yp_page_id;
-			var href = url.yp_page_href;
-			var type = url.yp_page_type;
-			var mode = url.yp_mode;
-			if(url.yp_out == null){var visitor = false;}else{var visitor = url.yp_out;}
+			var id = url.wyp_page_id;
+			var href = url.wyp_page_href;
+			var type = url.wyp_page_type;
+			var mode = url.wyp_mode;
+			if(url.wyp_out == null){var visitor = false;}else{var visitor = url.wyp_out;}
 
 			// ----
 
@@ -1493,9 +1486,9 @@ if(get_option("show_on_front") == "page"){
 </head>
 <body onload="auto_fill()">
 
-	<div class="yp-new-edit-popup-background" onclick="newTypeCancel();"></div>
+	<div class="wyp-new-edit-popup-background" onclick="newTypeCancel();"></div>
 
-	<div class="yp-new-edit-popup">
+	<div class="wyp-new-edit-popup">
 
 		<div class="type-select-placeholder" onclick="closeSelect(this)"></div>
 
@@ -1673,25 +1666,25 @@ if(get_option("show_on_front") == "page"){
 					<?php
 
 					if($frontpage_id == 0 || $frontpage_id == null){ ?>
-						<li onclick="typeListSelect(this)" class="active<?php echo $hasHome; ?>" data-id-value="home" data-single="<?php echo $homeRule; ?>" data-template="<?php echo $homeRule; ?>" data-type-value="home" data-type-href="<?php echo yp_urlencode(esc_url(get_home_url())); ?>"><i onclick="seePageLink(this)"></i><span>Homepage</span></li>
+						<li onclick="typeListSelect(this)" class="active<?php echo $hasHome; ?>" data-id-value="home" data-single="<?php echo $homeRule; ?>" data-template="<?php echo $homeRule; ?>" data-type-value="home" data-type-href="<?php echo wyp_urlencode(esc_url(get_home_url())); ?>"><i onclick="seePageLink(this)"></i><span>Homepage</span></li>
 					<?php } ?>
-			        <li onclick="typeListSelect(this)" data-id-value="search" <?php echo $hasSearch; ?> data-template="<?php echo $searchRule; ?>" data-type-value="search" data-type-href="<?php echo yp_urlencode(esc_url(get_home_url().'/?s='.yp_getting_last_post_title())); ?>"><i onclick="seePageLink(this)"></i><span>Search page</span></li>
-			        <?php if($tag_link != null){ ?><li onclick="typeListSelect(this)" <?php echo $hasTag; ?> data-template="<?php echo $tagRule; ?>" data-id-value="tag" data-type-value="tag" data-type-href="<?php echo yp_urlencode(esc_url($tag_link)); ?>"><i onclick="seePageLink(this)"></i><span>Tag page</span></li><?php } ?>
-			        <?php if($cat_link != null){ ?><li onclick="typeListSelect(this)" data-id-value="category" <?php echo $hasCategory; ?> data-template="<?php echo $categoryRule; ?>" data-type-value="category" data-type-href="<?php echo yp_urlencode(esc_url($cat_link)); ?>"><i onclick="seePageLink(this)"></i><span>Category page</span></li><?php } ?>
-			        <?php if($archive_link != null){ ?><li onclick="typeListSelect(this)" data-id-value="archive" <?php echo $hasArchive; ?> data-template="<?php echo $archiveRule; ?>" data-type-value="archive" data-type-href="<?php echo yp_urlencode(esc_url($archive_link)); ?>"><i onclick="seePageLink(this)"></i><span>Archive page</span></li><?php } ?>
-			        <li onclick="typeListSelect(this)" data-id-value="author" <?php echo $hasAuthor; ?> data-template="<?php echo $authorRule; ?>" data-type-value="author" data-type-href="<?php echo yp_urlencode(esc_url(get_author_posts_url(1))); ?>"><i onclick="seePageLink(this)"></i><span>Author page</span></li>
-			        <li onclick="typeListSelect(this)" data-id-value="404" <?php echo $has404; ?> data-template="<?php echo $style404Rule; ?>" data-type-value="404" data-type-href="<?php echo yp_urlencode(esc_url(get_home_url().'/?p=987654321')); ?>"><i onclick="seePageLink(this)"></i><span>404 error page</span></li>
+			        <li onclick="typeListSelect(this)" data-id-value="search" <?php echo $hasSearch; ?> data-template="<?php echo $searchRule; ?>" data-type-value="search" data-type-href="<?php echo wyp_urlencode(esc_url(get_home_url().'/?s='.wyp_getting_last_post_title())); ?>"><i onclick="seePageLink(this)"></i><span>Search page</span></li>
+			        <?php if($tag_link != null){ ?><li onclick="typeListSelect(this)" <?php echo $hasTag; ?> data-template="<?php echo $tagRule; ?>" data-id-value="tag" data-type-value="tag" data-type-href="<?php echo wyp_urlencode(esc_url($tag_link)); ?>"><i onclick="seePageLink(this)"></i><span>Tag page</span></li><?php } ?>
+			        <?php if($cat_link != null){ ?><li onclick="typeListSelect(this)" data-id-value="category" <?php echo $hasCategory; ?> data-template="<?php echo $categoryRule; ?>" data-type-value="category" data-type-href="<?php echo wyp_urlencode(esc_url($cat_link)); ?>"><i onclick="seePageLink(this)"></i><span>Category page</span></li><?php } ?>
+			        <?php if($archive_link != null){ ?><li onclick="typeListSelect(this)" data-id-value="archive" <?php echo $hasArchive; ?> data-template="<?php echo $archiveRule; ?>" data-type-value="archive" data-type-href="<?php echo wyp_urlencode(esc_url($archive_link)); ?>"><i onclick="seePageLink(this)"></i><span>Archive page</span></li><?php } ?>
+			        <li onclick="typeListSelect(this)" data-id-value="author" <?php echo $hasAuthor; ?> data-template="<?php echo $authorRule; ?>" data-type-value="author" data-type-href="<?php echo wyp_urlencode(esc_url(get_author_posts_url(1))); ?>"><i onclick="seePageLink(this)"></i><span>Author page</span></li>
+			        <li onclick="typeListSelect(this)" data-id-value="404" <?php echo $has404; ?> data-template="<?php echo $style404Rule; ?>" data-type-value="404" data-type-href="<?php echo wyp_urlencode(esc_url(get_home_url().'/?p=987654321')); ?>"><i onclick="seePageLink(this)"></i><span>404 error page</span></li>
 
 
 			        <li class="parent-select-list">WordPress</li>
 
-					<li onclick="typeListSelect(this)" data-id-value="login" <?php echo $hasLogin; ?> data-single="<?php echo $loginRule; ?>" data-type-value="login" data-type-href="<?php echo yp_urlencode(esc_url(wp_login_url())); ?>"><i onclick="seePageLink(this)"></i><span>Login page</span></li>
+					<li onclick="typeListSelect(this)" data-id-value="login" <?php echo $hasLogin; ?> data-single="<?php echo $loginRule; ?>" data-type-value="login" data-type-href="<?php echo wyp_urlencode(esc_url(wp_login_url())); ?>"><i onclick="seePageLink(this)"></i><span>Login page</span></li>
 					<?php
 						$registerEnable = get_option("users_can_register");
 						if($registerEnable){ ?>
-						<li onclick="typeListSelect(this)" data-id-value="register" <?php echo $hasRegister; ?> data-single="<?php echo $registerRule; ?>" data-type-value="register" data-type-href="<?php echo yp_urlencode(esc_url(wp_registration_url())); ?>"><i onclick="seePageLink(this)"></i><span>Register page</span></li>
+						<li onclick="typeListSelect(this)" data-id-value="register" <?php echo $hasRegister; ?> data-single="<?php echo $registerRule; ?>" data-type-value="register" data-type-href="<?php echo wyp_urlencode(esc_url(wp_registration_url())); ?>"><i onclick="seePageLink(this)"></i><span>Register page</span></li>
 					<?php } ?>
-					<li onclick="typeListSelect(this)" data-id-value="lostpassword" <?php echo $hasLostPass; ?> data-single="<?php echo $lostpassRule; ?>" data-type-value="lostpassword" data-type-href="<?php echo yp_urlencode(esc_url(wp_lostpassword_url())); ?>"><i onclick="seePageLink(this)"></i><span>Lost Password page</span></li>
+					<li onclick="typeListSelect(this)" data-id-value="lostpassword" <?php echo $hasLostPass; ?> data-single="<?php echo $lostpassRule; ?>" data-type-value="lostpassword" data-type-href="<?php echo wyp_urlencode(esc_url(wp_lostpassword_url())); ?>"><i onclick="seePageLink(this)"></i><span>Lost Password page</span></li>
 
 					<?php
 
@@ -1761,7 +1754,7 @@ if(get_option("show_on_front") == "page"){
 										$hasSingle = substr_count($get_post_meta, ';');
 									}
 
-									echo '<li onclick="typeListSelect(this)" '.$hasStyle.' data-single="'.$hasSingle.'" data-template="'.$hasTemplate.'" data-id-value="'.$id.'" data-type-value="'.$post_type.'" data-type-href="'.yp_urlencode(esc_url(get_the_permalink())).'"><i onclick="seePageLink(this)"></i><span>' . ucfirst(strtolower(yp_get_short_title($title, 50))).$infor . '</span></li>';
+									echo '<li onclick="typeListSelect(this)" '.$hasStyle.' data-single="'.$hasSingle.'" data-template="'.$hasTemplate.'" data-id-value="'.$id.'" data-type-value="'.$post_type.'" data-type-href="'.wyp_urlencode(esc_url(get_the_permalink())).'"><i onclick="seePageLink(this)"></i><span>' . ucfirst(strtolower(wyp_get_short_title($title, 50))).$infor . '</span></li>';
 
 								}
 
@@ -1815,8 +1808,8 @@ if(get_option("show_on_front") == "page"){
 
 	</div>
 
-	<div class="yp-exit-confirm-bg" onclick="actionBtn('cancel', this);"></div>
-	<div class="yp-exit-confirm-box">
+	<div class="wyp-exit-confirm-bg" onclick="actionBtn('cancel', this);"></div>
+	<div class="wyp-exit-confirm-box">
 		<h3>Do you want to save the current changes?</h3>
 		<a class="action-btn" onclick="actionBtn('nosave', this);">Discard</a><a class="action-btn" onclick="actionBtn('cancel', this);">Cancel</a><a class="action-btn primary-btn" onclick="actionBtn('save', this);">Save</a>
 	</div>

@@ -10,9 +10,9 @@
     $("#global-choose-all").click(function(){
 
         if($(this).prop('checked')){
-            $(".yp-global-group ul li .yp-checkbox input").prop('checked', true);
+            $(".wyp-global-group ul li .wyp-checkbox input").prop('checked', true);
         }else{
-            $(".yp-global-group ul li .yp-checkbox input").prop('checked', false);
+            $(".wyp-global-group ul li .wyp-checkbox input").prop('checked', false);
         }
 
     });
@@ -21,9 +21,9 @@
     $("#template-choose-all").click(function(){
 
         if($(this).prop('checked')){
-            $(".yp-template-group ul li .yp-checkbox input").prop('checked', true);
+            $(".wyp-template-group ul li .wyp-checkbox input").prop('checked', true);
         }else{
-            $(".yp-template-group ul li .yp-checkbox input").prop('checked', false);
+            $(".wyp-template-group ul li .wyp-checkbox input").prop('checked', false);
         }
 
     });
@@ -32,9 +32,9 @@
     $("#single-choose-all").click(function(){
 
         if($(this).prop('checked')){
-            $(".yp-single-group ul li .yp-checkbox input").prop('checked', true);
+            $(".wyp-single-group ul li .wyp-checkbox input").prop('checked', true);
         }else{
-            $(".yp-single-group ul li .yp-checkbox input").prop('checked', false);
+            $(".wyp-single-group ul li .wyp-checkbox input").prop('checked', false);
         }
 
     });
@@ -43,29 +43,29 @@
     $("#animation-choose-all").click(function(){
 
         if($(this).prop('checked')){
-            $(".yp-animations-code-group > ul li .yp-checkbox input").prop('checked', true);
+            $(".wyp-animations-code-group > ul li .wyp-checkbox input").prop('checked', true);
         }else{
-            $(".yp-animations-code-group > ul li .yp-checkbox input").prop('checked', false);
+            $(".wyp-animations-code-group > ul li .wyp-checkbox input").prop('checked', false);
         }
 
     });
 
 
-    $(".yp-code-group li").click(function(e){
+    $(".wyp-code-group li").click(function(e){
 
-        if($(e.target)[0].tagName == "LI" || $(e.target).hasClass("yp-edited-page-title")){
+        if($(e.target)[0].tagName == "LI" || $(e.target).hasClass("wyp-edited-page-title")){
 
             var tab = $(this);
 
             // Can't open anymore
-            if(tab.hasClass("yp-data-deleted")){
+            if(tab.hasClass("wyp-data-deleted")){
                 return false;
             }
 
-            var editorDiv = tab.next(".yp-inline-css");
+            var editorDiv = tab.next(".wyp-inline-css");
             tab.toggleClass("active");
             editorDiv.toggleClass("active");
-            editorDiv.next("li").toggleClass("yp-border-top");
+            editorDiv.next("li").toggleClass("wyp-border-top");
 
             // Set ace editor on first open
             if(editorDiv.hasClass("ace_editor") == false){
@@ -102,18 +102,18 @@
     });
     
     
-    $(".yp-button-reset").click(function(){
+    $(".wyp-button-reset").click(function(){
 
         var el = $(this);
 
         if(confirm("Are you sure to want to reset defined CSS comments and all plugin options? (This action does not delete any customizations)")){
 
             $.post(ajaxurl, {
-                action: "yp_delete_stylesheet_live",
-                yp_reset_options: true,
-                _wpnonce: window.yp_live_styles_delete_nonce
+                action: "wyp_delete_stylesheet_live",
+                wyp_reset_options: true,
+                _wpnonce: window.wyp_live_styles_delete_nonce
             }).complete(function(){
-                $("#yp-reset-form").submit();
+                $("#wyp-reset-form").submit();
             });
 
         }
@@ -121,7 +121,7 @@
     });
 
 
-    $(".yp-delete-page-edits").click(function(){
+    $(".wyp-delete-page-edits").click(function(){
 
         var text;
         var value;
@@ -147,19 +147,19 @@
         // confirm delete
         if(confirm(text)){
 
-            li.addClass("yp-data-deleted");
+            li.addClass("wyp-data-deleted");
 
             // global delete
             if(deleteValue.indexOf("GLOBAL|") != -1){
 
                 $.post(ajaxurl, {
-                    action: "yp_delete_stylesheet_live",
-                    yp_reset_global: value,
-                    _wpnonce: window.yp_live_styles_delete_nonce
+                    action: "wyp_delete_stylesheet_live",
+                    wyp_reset_global: value,
+                    _wpnonce: window.wyp_live_styles_delete_nonce
                 }).complete(function(){
 
-                    if($(".yp-global-group li:not(.yp-data-deleted)").length == 0){
-                        $(".yp-global-group").fadeOut("slow");
+                    if($(".wyp-global-group li:not(.wyp-data-deleted)").length == 0){
+                        $(".wyp-global-group").fadeOut("slow");
                     }
 
                     li.css("background", "#ff7474").css("border-color", "#ff7474").fadeOut("slow");
@@ -173,13 +173,13 @@
             }else if(deleteValue.indexOf("TYPE|") != -1){
 
                 $.post(ajaxurl, {
-                    action: "yp_delete_stylesheet_live",
-                    yp_reset_type: value,
-                    _wpnonce: window.yp_live_styles_delete_nonce
+                    action: "wyp_delete_stylesheet_live",
+                    wyp_reset_type: value,
+                    _wpnonce: window.wyp_live_styles_delete_nonce
                 }).complete(function(){
 
-                    if($(".yp-template-group li:not(.yp-data-deleted)").length == 0){
-                        $(".yp-template-group").fadeOut("slow");
+                    if($(".wyp-template-group li:not(.wyp-data-deleted)").length == 0){
+                        $(".wyp-template-group").fadeOut("slow");
                     }
 
                     li.css("background", "#ff7474").css("border-color", "#ff7474").fadeOut("slow");
@@ -193,13 +193,13 @@
             }else if(deleteValue.indexOf("ID|") != -1){
 
                 $.post(ajaxurl, {
-                    action: "yp_delete_stylesheet_live",
-                    yp_reset_id: value,
-                    _wpnonce: window.yp_live_styles_delete_nonce
+                    action: "wyp_delete_stylesheet_live",
+                    wyp_reset_id: value,
+                    _wpnonce: window.wyp_live_styles_delete_nonce
                 }).complete(function(){
 
-                    if($(".yp-single-group li:not(.yp-data-deleted)").length == 0){
-                        $(".yp-single-group").fadeOut("slow");
+                    if($(".wyp-single-group li:not(.wyp-data-deleted)").length == 0){
+                        $(".wyp-single-group").fadeOut("slow");
                     }
 
                     li.css("background", "#ff7474").css("border-color", "#ff7474").fadeOut("slow");
@@ -213,9 +213,9 @@
             }else{
 
                 $.post(ajaxurl, {
-                    action: "yp_delete_stylesheet_live",
-                    yp_delete_animate: value,
-                    _wpnonce: window.yp_live_styles_delete_nonce
+                    action: "wyp_delete_stylesheet_live",
+                    wyp_delete_animate: value,
+                    _wpnonce: window.wyp_live_styles_delete_nonce
                 }).complete(function(){
                     li.css("background", "#ff7474").css("border-color", "#ff7474").fadeOut("slow");
                     li.next().css("background", "#ff7474").css("border-color", "#ff7474").fadeOut("slow");
@@ -227,9 +227,9 @@
 
 
             // hide all
-            if($(".yp-code-group ul li:not(.yp-data-deleted)").length == 0){
-                $(".yp-tab-section").hide();
-                $(".yp-no-code,.yp-no-animation").fadeIn(300);
+            if($(".wyp-code-group ul li:not(.wyp-data-deleted)").length == 0){
+                $(".wyp-tab-section").hide();
+                $(".wyp-no-code,.wyp-no-animation").fadeIn(300);
             }
 
         }
@@ -237,13 +237,13 @@
     });
     
     // deactivate
-    $(".yp-disable-license").click(function(){
+    $(".wyp-disable-license").click(function(){
 
         // Variables
         var el = $(this), href = el.attr("data-href"), site = el.attr("data-site"), code = el.attr("data-code");
 
         // deactivating
-        el.addClass("yp-deactivating");
+        el.addClass("wyp-deactivating");
 
         // loading.
         el.text('Processing' + '...');

@@ -104,7 +104,14 @@ class MLAReferences {
 		}
 
 		$references['base_file'] = get_post_meta( $ID, '_wp_attached_file', true );
-		$pathinfo = pathinfo($references['base_file']);
+		if ( !is_string( $references['base_file'] ) ) {
+			/* translators: 1: ERROR tag 2: index */
+			MLACore::mla_debug_add( sprintf( _x( '%1$s: class-mla-data-references.php WARNING: _wp_attached_file is not a string for Item "%2$d". Value = %3$s.', 'error_log', 'media-library-assistant' ), __( 'ERROR', 'media-library-assistant' ), $ID, var_export( $references['base_file'], true ) ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+//			error_log( __LINE__ . " class-mla-data-references.php WARNING: _wp_attached_file is not a string for Item {$ID}. Value = " . var_export( $references['base_file'], true ), 0 );
+			$references['base_file'] = 'invalid-wp-attached-file';
+		}
+
+		$pathinfo = pathinfo( $references['base_file'] );
 		$references['file'] = $pathinfo['basename'];
 		if ( ( ! isset( $pathinfo['dirname'] ) ) || '.' == $pathinfo['dirname'] ) {
 			$references['path'] = '/';
@@ -146,23 +153,17 @@ class MLAReferences {
 		// Look for the "Featured Image(s)", if enabled
 		if ( MLACore::$process_featured_in ) {
 			$reference_tests++;
-			$features = $wpdb->get_results( 
-					"
+			$features = $wpdb->get_results(  // phpcs:ignore
+					$wpdb->prepare( "
 					SELECT post_id
 					FROM {$wpdb->postmeta}
-					WHERE meta_key = '_thumbnail_id' AND meta_value = {$ID}
-					"
+					WHERE meta_key = '_thumbnail_id' AND meta_value = %d
+					", $ID )
 			);
 
 			if ( ! empty( $features ) ) {
 				foreach ( $features as $feature ) {
-					$feature_results = $wpdb->get_results(
-							"
-							SELECT ID, post_type, post_status, post_title
-							FROM {$wpdb->posts}
-							WHERE {$exclude_revisions}(ID = {$feature->post_id})
-							"
-					);
+					$feature_results = $wpdb->get_results( "SELECT ID, post_type, post_status, post_title FROM {$wpdb->posts} WHERE {$exclude_revisions}(ID = {$feature->post_id}) " ); // phpcs:ignore
 
 					if ( ! empty( $feature_results ) ) {
 						$references['found_reference'] = true;
@@ -199,12 +200,7 @@ class MLAReferences {
 					}
 
 					$query[] = 'OR ( POST_CONTENT LIKE %s)';
-
-					if ( MLAQuery::$wp_4dot0_plus ) {
-						$query_parameters[] = '%' . $wpdb->esc_like( $file ) . '%';
-					} else {
-						$query_parameters[] = '%' . like_escape( $file ) . '%';
-					}
+					$query_parameters[] = '%' . $wpdb->esc_like( $file ) . '%';
 				}
 
 				$query[] = ')';
@@ -213,9 +209,7 @@ class MLAReferences {
 				MLACore::mla_debug_add( __LINE__ . " MLAReferences::mla_fetch_attachment_references_handler( {$ID}, {$parent}, {$add_references} ) inserts base query = " . var_export( $query, true ), MLACore::MLA_DEBUG_CATEGORY_WHERE_USED );
 				MLACore::mla_debug_add( __LINE__ . " MLAReferences::mla_fetch_attachment_references_handler( {$ID}, {$parent}, {$add_references} ) inserts base parms = " . var_export( $query_parameters, true ), MLACore::MLA_DEBUG_CATEGORY_WHERE_USED );
 
-				$inserts = $wpdb->get_results(
-					$wpdb->prepare( $query, $query_parameters )
-				);
+				$inserts = $wpdb->get_results( $wpdb->prepare( $query, $query_parameters ) ); // phpcs:ignore
 
 				if ( ! empty( $inserts ) ) {
 					$references['found_reference'] = true;
@@ -234,20 +228,18 @@ class MLAReferences {
 						continue;
 					}
 
-					if ( MLAQuery::$wp_4dot0_plus ) {
-						$like = $wpdb->esc_like( $file );
-					} else {
-						$like = like_escape( $file );
-					}
+					$like = $wpdb->esc_like( $file );
 
 					MLACore::mla_debug_add( __LINE__ . " MLAReferences::mla_fetch_attachment_references_handler( {$ID}, {$file}, {$like} ) inserts enabled", MLACore::MLA_DEBUG_CATEGORY_WHERE_USED );
 					
+					// phpcs:disable
 					$inserts = $wpdb->get_results(
 						$wpdb->prepare(
 							"SELECT ID, post_type, post_status, post_title FROM {$wpdb->posts}
-							WHERE {$exclude_revisions}(CONVERT(`post_content` USING utf8 ) LIKE %s)", "%{$like}%"
+							WHERE " . $exclude_revisions . " (CONVERT(`post_content` USING utf8 ) LIKE %s)", "%{$like}%"
 						)
 					);
+					// phpcs:enable
 
 					if ( ! empty( $inserts ) ) {
 						$references['found_reference'] = true;
@@ -397,6 +389,7 @@ class MLAReferences {
 				$references['base_file'] = '';
 			}
 
+//			$pathinfo = pathinfo( array() );
 			$pathinfo = pathinfo($references['base_file']);
 			if ( ( ! isset( $pathinfo['dirname'] ) ) || '.' == $pathinfo['dirname'] ) {
 				$references['path'] = '/';
@@ -446,7 +439,8 @@ class MLAReferences {
 		$features = array();
 		if ( MLACore::$process_featured_in && ! empty( $attachment_ids ) ) {
 			$attachment_ids = implode( ',', $attachment_ids );
-			$results = $wpdb->get_results( 
+			// phpcs:disable
+			$results = $wpdb->get_results(
 					"
 					SELECT m.meta_value, p.ID, p.post_type, p.post_status, p.post_title
 					FROM {$wpdb->postmeta} AS m INNER JOIN {$wpdb->posts} AS p ON m.post_id = p.ID
@@ -454,6 +448,7 @@ class MLAReferences {
 					AND ( m.meta_value IN ( {$attachment_ids} ) ){$exclude_revisions}
 					"
 			);
+			// phpcs:enable
 
 			foreach ( $results as $result ) {
 				$features[ $result->meta_value ][ $result->ID ] = (object) array( 'ID' => $result->ID, 'post_title' => $result->post_title, 'post_type' => $result->post_type, 'post_status' => $result->post_status );
@@ -475,21 +470,14 @@ class MLAReferences {
 			foreach ( $files as $file ) {
 				foreach ( $file['files'] as $base_name => $file_data ) {
 					$query[] = 'OR ( POST_CONTENT LIKE %s)';
-
-					if ( MLAQuery::$wp_4dot0_plus ) {
-						$query_parameters[] = '%' . $wpdb->esc_like( $base_name ) . '%';
-					} else {
-						$query_parameters[] = '%' . like_escape( $base_name ) . '%';
-					}
+					$query_parameters[] = '%' . $wpdb->esc_like( $base_name ) . '%';
 				}
 			}
 
 			$query[] = "){$exclude_revisions}";
 			$query = join(' ', $query);
 
-			$results = $wpdb->get_results(
-				$wpdb->prepare( $query, $query_parameters )
-			);
+			$results = $wpdb->get_results( $wpdb->prepare( $query, $query_parameters ) ); // phpcs:ignore
 
 			// Match each post with inserts back to the attachments
 			$inserts = array();
@@ -772,23 +760,21 @@ class MLAReferences {
 			$exclude_revisions = '';
 		}
 
-		if ( MLAQuery::$wp_4dot0_plus ) {
-			$like = $wpdb->esc_like( $shortcode );
-		} else {
-			$like = like_escape( $shortcode );
-		}
+		$like = $wpdb->esc_like( $shortcode );
 
+		// phpcs:disable
 		$results = $wpdb->get_results(
 			$wpdb->prepare(
 				"
 				SELECT ID, post_type, post_status, post_title, post_content
 				FROM {$wpdb->posts}
-				WHERE {$exclude_revisions}(
+				WHERE " . $exclude_revisions . " (
 					CONVERT(`post_content` USING utf8 )
 					LIKE %s)
 				", "%{$like}%"
 			)
 		);
+		// phpcs:enable
 
 		if ( empty( $results ) ) {
 			return false;
@@ -823,9 +809,9 @@ class MLAReferences {
 //error_log( __LINE__ . " MLAReferences::_build_mla_galleries( $result_id, $count ) attachments = " . var_export( $attachments, true ), 0 );
 
 						if ( is_string( $attachments ) ) {
-//error_log( __LINE__ . " MLAReferences::_build_mla_galleries( $result_id, $index ) query = " . var_export( $galleries_array[ $result_id ]['galleries'][ $instance ]['query'] . ' cache_results=false update_post_meta_cache=false update_post_term_cache=false where_used_query=this-is-a-where-used-query', true ), 0 );
+//error_log( __LINE__ . " MLAReferences::_build_mla_galleries( $result_id, $index ) attr = " . var_export( $attr, true ), 0 );
 							/* translators: 1: post_type, 2: post_title, 3: post ID, 4: query string, 5: error message */
-							trigger_error( esc_html( sprintf( __( '(%1$s) %2$s (ID %3$d) query "%4$s" failed, returning "%5$s"', 'media-library-assistant' ), $result->post_type, $result->post_title, $result->ID, $galleries_array[ $result_id ]['galleries'][ $instance ]['query'], $attachments) ), E_USER_WARNING );
+							MLACore::mla_debug_add( __LINE__ . ' MLAReferences::_build_mla_galleries ' . sprintf( __( '(%1$s) %2$s (ID %3$d) query "%4$s" failed, returning "%5$s"', 'media-library-assistant' ), $result->post_type, $result->post_title, $result->ID, var_export( $galleries_array[ $result_id ]['galleries'][ $instance ]['query'], true ), $attachments), MLACore::MLA_DEBUG_CATEGORY_WHERE_USED );
 						} elseif ( ! empty( $attachments ) ) {
 							foreach ( $attachments as $attachment ) {
 								$galleries_array[ $result_id ]['results'][ $attachment->ID ] = $attachment->ID;

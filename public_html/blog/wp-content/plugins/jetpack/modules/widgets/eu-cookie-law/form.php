@@ -1,6 +1,18 @@
 <?php
+/**
+ * EU Cookie Law Widget form.
+ *
+ * @html-template Jetpack_EU_Cookie_Law_Widget::form
+ * @package automattic/jetpack
+ */
 
 use Automattic\Jetpack\Redirect;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
+// phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable -- HTML template, let Phan handle it.
 
 ?>
 <p>
@@ -84,10 +96,21 @@ use Automattic\Jetpack\Redirect;
 				<span class="notice notice-warning custom-policy" style="display: none;">
 					<span style="display: block; margin: .5em 0;">
 						<strong><?php esc_html_e( 'Caution:', 'jetpack' ); ?></strong>
-						<?php echo sprintf(
-							__( 'For GDPR compliance, please make sure your policy contains <a href="%s" target="_blank">privacy information relating to Jetpack Ads</a>.', 'jetpack' ),
+						<?php
+						printf(
+							wp_kses(
+								/* Translators: %s is the URL to a Jetpack support article. */
+								__( 'For GDPR compliance, please make sure your policy contains <a href="%s" target="_blank">privacy information relating to WordAds</a>.', 'jetpack' ),
+								array(
+									'a' => array(
+										'href'   => array(),
+										'target' => array(),
+									),
+								)
+							),
 							esc_url( Redirect::get_url( 'jetpack-support-ads', array( 'anchor' => 'privacy' ) ) )
-						); ?>
+						);
+						?>
 					</span>
 				</span>
 			<?php endif; ?>
@@ -102,7 +125,7 @@ use Automattic\Jetpack\Redirect;
 	<label>
 		<input
 			class="widefat"
-			name="<?php echo $this->get_field_name( 'policy-link-text' ); ?>"
+			name="<?php echo esc_attr( $this->get_field_name( 'policy-link-text' ) ); ?>"
 			type="text"
 			value="<?php echo esc_attr( $instance['policy-link-text'] ); ?>"
 		/>
@@ -118,7 +141,7 @@ use Automattic\Jetpack\Redirect;
 	<label>
 		<input
 			class="widefat"
-			name="<?php echo $this->get_field_name( 'button' ); ?>"
+			name="<?php echo esc_attr( $this->get_field_name( 'button' ) ); ?>"
 			type="text"
 			value="<?php echo esc_attr( $instance['button'] ); ?>"
 		/>
@@ -129,7 +152,7 @@ use Automattic\Jetpack\Redirect;
 
 <p>
 	<strong>
-		<?php _ex( 'Capture consent & hide the banner', 'action', 'jetpack' ); ?>
+		<?php echo esc_html_x( 'Capture consent & hide the banner', 'action', 'jetpack' ); ?>
 	</strong>
 	<ul>
 		<li>
@@ -181,7 +204,7 @@ use Automattic\Jetpack\Redirect;
 	<?php if ( Jetpack::is_module_active( 'wordads' ) ) : ?>
 		<span class="notice notice-warning" style="display: block;">
 			<span style="display: block; margin: .5em 0;">
-				<?php esc_html_e( 'Visitors must provide consent by clicking the dismiss button when Jetpack Ads is turned on.', 'jetpack' ); ?>
+				<?php esc_html_e( 'Visitors must provide consent by clicking the dismiss button when WordAds is turned on.', 'jetpack' ); ?>
 			</span>
 		</span>
 	<?php endif; ?>
@@ -191,7 +214,7 @@ use Automattic\Jetpack\Redirect;
 
 <p>
 	<strong>
-		<?php _ex( 'Consent expires after', 'action', 'jetpack' ); ?>
+		<?php echo esc_html_x( 'Consent expires after', 'action', 'jetpack' ); ?>
 	</strong>
 	<ul>
 		<li>
@@ -212,7 +235,7 @@ use Automattic\Jetpack\Redirect;
 
 <p>
 	<strong>
-		<?php _e( 'Color scheme', 'jetpack' ); ?>
+		<?php esc_html_e( 'Color scheme', 'jetpack' ); ?>
 	</strong>
 	<ul>
 		<li>
@@ -244,7 +267,7 @@ use Automattic\Jetpack\Redirect;
 
 <p>
 	<strong>
-		<?php _e( 'Position', 'jetpack' ); ?>
+		<?php esc_html_e( 'Position', 'jetpack' ); ?>
 	</strong>
 	<ul>
 		<li>

@@ -20,6 +20,7 @@ namespace Google\Site_Kit_Dependencies\Google\Auth;
 use Google\Site_Kit_Dependencies\Google\Auth\HttpHandler\HttpClientCache;
 use Google\Site_Kit_Dependencies\Google\Auth\HttpHandler\HttpHandlerFactory;
 use Google\Site_Kit_Dependencies\GuzzleHttp\Psr7;
+use Google\Site_Kit_Dependencies\GuzzleHttp\Psr7\Utils;
 /**
  * Tools for using the IAM API.
  *
@@ -27,19 +28,25 @@ use Google\Site_Kit_Dependencies\GuzzleHttp\Psr7;
  */
 class Iam
 {
+    /**
+     * @deprecated
+     */
     const IAM_API_ROOT = 'https://iamcredentials.googleapis.com/v1';
     const SIGN_BLOB_PATH = '%s:signBlob?alt=json';
     const SERVICE_ACCOUNT_NAME = 'projects/-/serviceAccounts/%s';
+    private const IAM_API_ROOT_TEMPLATE = 'https://iamcredentials.UNIVERSE_DOMAIN/v1';
     /**
      * @var callable
      */
     private $httpHandler;
+    private string $universeDomain;
     /**
      * @param callable $httpHandler [optional] The HTTP Handler to send requests.
      */
-    public function __construct(callable $httpHandler = null)
+    public function __construct(?callable $httpHandler = null, string $universeDomain = \Google\Site_Kit_Dependencies\Google\Auth\GetUniverseDomainInterface::DEFAULT_UNIVERSE_DOMAIN)
     {
         $this->httpHandler = $httpHandler ?: \Google\Site_Kit_Dependencies\Google\Auth\HttpHandler\HttpHandlerFactory::build(\Google\Site_Kit_Dependencies\Google\Auth\HttpHandler\HttpClientCache::getHttpClient());
+        $this->universeDomain = $universeDomain;
     }
     /**
      * Sign a string using the IAM signBlob API.
@@ -51,7 +58,7 @@ class Iam
      * @param string $email The service account email.
      * @param string $accessToken An access token from the service account.
      * @param string $stringToSign The string to be signed.
-     * @param array $delegates [optional] A list of service account emails to
+     * @param array<string> $delegates [optional] A list of service account emails to
      *        add to the delegate chain. If omitted, the value of `$email` will
      *        be used.
      * @return string The signed string, base64-encoded.
@@ -60,7 +67,8 @@ class Iam
     {
         $httpHandler = $this->httpHandler;
         $name = \sprintf(self::SERVICE_ACCOUNT_NAME, $email);
-        $uri = self::IAM_API_ROOT . '/' . \sprintf(self::SIGN_BLOB_PATH, $name);
+        $apiRoot = \str_replace('UNIVERSE_DOMAIN', $this->universeDomain, self::IAM_API_ROOT_TEMPLATE);
+        $uri = $apiRoot . '/' . \sprintf(self::SIGN_BLOB_PATH, $name);
         if ($delegates) {
             foreach ($delegates as &$delegate) {
                 $delegate = \sprintf(self::SERVICE_ACCOUNT_NAME, $delegate);
@@ -70,7 +78,7 @@ class Iam
         }
         $body = ['delegates' => $delegates, 'payload' => \base64_encode($stringToSign)];
         $headers = ['Authorization' => 'Bearer ' . $accessToken];
-        $request = new \Google\Site_Kit_Dependencies\GuzzleHttp\Psr7\Request('POST', $uri, $headers, \Google\Site_Kit_Dependencies\GuzzleHttp\Psr7\stream_for(\json_encode($body)));
+        $request = new \Google\Site_Kit_Dependencies\GuzzleHttp\Psr7\Request('POST', $uri, $headers, \Google\Site_Kit_Dependencies\GuzzleHttp\Psr7\Utils::streamFor(\json_encode($body)));
         $res = $httpHandler($request);
         $body = \json_decode((string) $res->getBody(), \true);
         return $body['signedBlob'];

@@ -8,7 +8,7 @@
 "use strict";
 
 // jQuery Visible Plugin
-function yp_visible_function(element, t, e, o) {
+function wyp_visible_function(element, t, e, o) {
     var i = window;
     if (!(element.length < 1)) {
         var r = element.length > 1 ? element[0] : element,
@@ -140,7 +140,7 @@ function array_cleaner(actual) {
 function get_css_data() {
 
     // Stop if not CSS Output.
-    if (document.querySelectorAll("style#yellow-pencil,style#yp-live-preview,link#yp-custom-css") == null) {
+    if (document.querySelectorAll("style#yellow-pencil,style#wyp-live-preview,link#wyp-custom-css") == null) {
         return false;
     }
 
@@ -148,7 +148,7 @@ function get_css_data() {
     var data = '';
 
     // Check if not external CSS
-    if (document.querySelector("link#yp-custom-css") == null) {
+    if (document.querySelector("link#wyp-custom-css") == null) {
 
         // Adds Default CSS
         if (document.querySelector("style#yellow-pencil") != null) {
@@ -156,8 +156,8 @@ function get_css_data() {
         }
 
         // Adds live preivew CSS
-        if (document.querySelector("style#yp-live-preview") != null) {
-            data = data + document.querySelector("style#yp-live-preview").innerHTML;
+        if (document.querySelector("style#wyp-live-preview") != null) {
+            data = data + document.querySelector("style#wyp-live-preview").innerHTML;
         }
 
     } else { // else external
@@ -166,8 +166,8 @@ function get_css_data() {
         data = get_custom_CSS();
 
         // Adds live preivew CSS
-        if (document.querySelector("style#yp-live-preview") != null) {
-            data = data + document.querySelector("style#yp-live-preview").innerHTML;
+        if (document.querySelector("style#wyp-live-preview") != null) {
+            data = data + document.querySelector("style#wyp-live-preview").innerHTML;
         }
 
     }
@@ -336,7 +336,7 @@ function click_detect() {
 			if(workingCounter != limitRepeat){
 
             	// yp_click class will trigger the defined animation.
-            	el.classList.add("yp_click");
+            	this.classList.add("yp_click");
 
         	}
 
@@ -344,17 +344,17 @@ function click_detect() {
 
 		// remove yp_click when animationEnd
 		el.addEventListener("webkitAnimationEnd", function() {
-			if(el.classList.contains('yp_click')){
+			if(this.classList.contains('yp_click')){
 				webkitConter++;
-				el.classList.remove("yp_click");
+				this.classList.remove("yp_click");
 			}
 		});
 
 		// remove yp_click when animationEnd
 		el.addEventListener("animationEnd", function() {
-			if(el.classList.contains('yp_click')){
+			if(this.classList.contains('yp_click')){
 				conter++;
-				el.classList.remove("yp_click");
+				this.classList.remove("yp_click");
 			}
 		});
 
@@ -411,7 +411,7 @@ function hover_detect() {
 			if(workingCounter != limitRepeat){
 
             	// yp_hover class will trigger the defined animation.
-            	el.classList.add("yp_hover");
+            	this.classList.add("yp_hover");
 
         	}
 
@@ -419,17 +419,17 @@ function hover_detect() {
 
 		// remove yp_hover when animationEnd
 		el.addEventListener("webkitAnimationEnd", function() {
-			if(el.classList.contains('yp_hover')){
+			if(this.classList.contains('yp_hover')){
 				webkitConter++;
-				el.classList.remove("yp_hover");
+				this.classList.remove("yp_hover");
 			}
 		});
 
 		// remove yp_hover when animationEnd
 		el.addEventListener("animationEnd", function() {
-			if(el.classList.contains('yp_hover')){
+			if(this.classList.contains('yp_hover')){
 				conter++;
-				el.classList.remove("yp_hover");
+				this.classList.remove("yp_hover");
 			}
 		});
 
@@ -485,7 +485,7 @@ function focus_detect() {
 			if(workingCounter != limitRepeat){
 
             	// yp_focus class will trigger the defined animation.
-            	el.classList.add("yp_focus");
+            	this.classList.add("yp_focus");
 
         	}
 
@@ -493,17 +493,17 @@ function focus_detect() {
 
 		// remove yp_focus when animationEnd
 		el.addEventListener("webkitAnimationEnd", function() {
-			if(el.classList.contains('yp_focus')){
+			if(this.classList.contains('yp_focus')){
 				webkitConter++;
-				el.classList.remove("yp_focus");
+				this.classList.remove("yp_focus");
 			}
 		});
 
 		// remove yp_focus when animationEnd
 		el.addEventListener("animationEnd", function() {
-			if(el.classList.contains('yp_focus')){
+			if(this.classList.contains('yp_focus')){
 				conter++;
-				el.classList.remove("yp_focus");
+				this.classList.remove("yp_focus");
 			}
 		});
 
@@ -533,7 +533,7 @@ function onscreen_detect() {
         el = thisElements[i];
 
         // Add visible event
-        if (yp_visible_function(el, true)) {
+        if (wyp_visible_function(el, true)) {
 
             // yp_onscreen will trigger the defined animation.
             el.classList.add("yp_onscreen");
@@ -592,7 +592,7 @@ function get_custom_CSS() {
             t = sheet.ownerNode.outerHTML;
 
             // if yp custom css
-            if (t.indexOf("yp-custom-css") != -1) {
+            if (t.indexOf("wyp-custom-css") != -1) {
 
                 // get all css text
                 for (c = 0; c < sheet.cssRules.length; c++) {

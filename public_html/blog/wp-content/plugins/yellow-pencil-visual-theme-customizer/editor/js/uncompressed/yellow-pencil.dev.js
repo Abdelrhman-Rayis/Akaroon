@@ -6,7 +6,7 @@
     /* Setup Ace Editor.                                    */
     /* ---------------------------------------------------- */
     ace.config.set("basePath",window.aceEditorBase);
-    ace.require("ace/ext/language_tools"); 
+    ace.require("ace/ext/language_tools");
     var editor = ace.edit("cssData");
     editor.getSession().setMode("ace/mode/css");
     editor.setTheme("ace/theme/twilight");
@@ -85,12 +85,12 @@
 
 
             // Auto Load customize type
-            if($.urlParam('yp_load_popup') != null){
+            if($.urlParam('wyp_load_popup') != null){
 
                 // Load customize type iframe after a white.
                 setTimeout(function(){
                     update_type_frame();
-                    $("#yp-current-page").trigger("click");
+                    $("#wyp-current-page").trigger("click");
                 }, 10);
 
             }else{
@@ -107,25 +107,25 @@
 
 
             /* ---------------------------------------------------- */
-            /* Adding yp-animating class to all animating elements  */
+            /* Adding wyp-animating class to all animating elements  */
             /* ---------------------------------------------------- */
             iframe.find(window.basic_not_selector).on('animationend webkitAnimationEnd oanimationend MSAnimationEnd',function(){
 
                 // Stop if any yp animation tool works
-                if(body.hasClass("yp-anim-creator") || is_animation_manager()){
+                if(body.hasClass("wyp-anim-creator") || is_animation_manager()){
                     return false;
                 }
 
                 var element = $(this);
 
                 // remove animating class.
-                if(element.hasClass("yp-animating")){
-                    element.removeClass("yp-animating");
+                if(element.hasClass("wyp-animating")){
+                    element.removeClass("wyp-animating");
                 }
 
                 // Set outline selected style if selected element has animating.
-                if(element.hasClass("yp-selected") && is_content_selected()){
-                    body.removeClass("yp-has-transform");
+                if(element.hasClass("wyp-selected") && is_content_selected()){
+                    body.removeClass("wyp-has-transform");
                     draw();
                 }
 
@@ -138,13 +138,13 @@
             /* ---------------------------------------------------- */
             /* Wireframe Button                                     */
             /* ---------------------------------------------------- */
-            $(".yp-wireframe-btn").click(function(){
+            $(".wyp-wireframe-btn").click(function(){
 
                 // Disable picker on color close.
-                mainBody.removeClass("yp-element-picker-active");
-                $(".yp-element-picker").removeClass("active");
+                mainBody.removeClass("wyp-element-picker-active");
+                $(".wyp-element-picker").removeClass("active");
 
-                body.toggleClass("yp-wireframe-mode");
+                body.toggleClass("wyp-wireframe-mode");
                 $(".editor-panel-list > li.active > h3").trigger("click");
                 gui_update();
 
@@ -155,7 +155,7 @@
             /* Rotate the logo every 1 min                          */
             /* ---------------------------------------------------- */
             setInterval(function(){
-                $(".yellow-pencil-logo").toggleClass("yp-logo-play");
+                $(".yellow-pencil-logo").toggleClass("wyp-logo-play");
             },80000);
 
 
@@ -168,24 +168,24 @@
             /* ---------------------------------------------------- */
             /* Animation Manager: Play                              */
             /* ---------------------------------------------------- */
-            $(".yp-anim-control-play").on("click",function(){
+            $(".wyp-anim-control-play").on("click",function(){
 
                 if($(this).hasClass("active")){
                     return false;
                 }
 
-                body.addClass("yp-animate-manager-playing yp-clean-look yp-hide-borders-now");
+                body.addClass("wyp-animate-manager-playing wyp-clean-look wyp-hide-borders-now");
 
                 // Find largest line for play/stop.
-                var maxWidth = Math.max.apply( null, $( '.yp-anim-process-inner' ).map( function (){
+                var maxWidth = Math.max.apply( null, $( '.wyp-anim-process-inner' ).map( function (){
                     return $( this ).outerWidth( true );
                 }).get() );
 
 
                 var s = (parseFloat(maxWidth)/100);
-                $("#yp-animate-helper").html("@-webkit-keyframes playingBorder{from{left: 0px;}to{left:"+maxWidth+"px;}}@keyframes playingBorder{from{left: 0px;}to{left:"+maxWidth+"px;}}");
+                $("#wyp-animate-helper").html("@-webkit-keyframes playingBorder{from{left: 0px;}to{left:"+maxWidth+"px;}}@keyframes playingBorder{from{left: 0px;}to{left:"+maxWidth+"px;}}");
 
-                $(".yp-anim-playing-border").css("animation-duration",s+"s").css("-webkit-animation-duration",s+"s").addClass("active");
+                $(".wyp-anim-playing-border").css("animation-duration",s+"s").css("-webkit-animation-duration",s+"s").addClass("active");
 
                 $(this).addClass("active");
 
@@ -193,12 +193,12 @@
                 clear_animation_timer();
 
                 window.animationTimer3 = setTimeout(function(){
-                    $(".yp-anim-control-pause").trigger("click");
+                    $(".wyp-anim-control-pause").trigger("click");
                 },S_inMS);
 
 
                 // Playing over width
-                $(".yp-anim-playing-over").css("width",maxWidth+$(window).width());
+                $(".wyp-anim-playing-over").css("width",maxWidth+$(window).width());
 
 
                 // Play animations
@@ -217,9 +217,9 @@
                 });
 
                 // Counter
-                //yp-counter-min
-                //yp-counter-second
-                //yp-counter-ms
+                //wyp-counter-min
+                //wyp-counter-second
+                //wyp-counter-ms
                 var min = 0;
                 window.animMinC = setInterval(function(){
 
@@ -231,7 +231,7 @@
                    result = "0"+min;
                    }
 
-                   $(".yp-counter-min").text(result);
+                   $(".wyp-counter-min").text(result);
 
                 },60000);
 
@@ -245,7 +245,7 @@
                    if(second < 10){
                    result = "0"+second;
                    }
-                   $(".yp-counter-second").text(result);
+                   $(".wyp-counter-second").text(result);
 
                 },1000);
 
@@ -259,7 +259,7 @@
                    if(ms < 10){
                    result = "0"+ms;
                    }
-                   $(".yp-counter-ms").text(result);
+                   $(".wyp-counter-ms").text(result);
 
                 },1);
 
@@ -269,12 +269,12 @@
             /* ---------------------------------------------------- */
             /* Animation Manager: Pause                             */
             /* ---------------------------------------------------- */
-            $(".yp-anim-control-pause").on("click",function(){
+            $(".wyp-anim-control-pause").on("click",function(){
 
-                clearTimeout(window.yp_anim_player);
+                clearTimeout(window.wyp_anim_player);
 
-                $(".yp-anim-playing-border").removeClass("active");
-                $(".yp-anim-control-play").removeClass("active");
+                $(".wyp-anim-playing-border").removeClass("active");
+                $(".wyp-anim-control-play").removeClass("active");
 
                     // Pause animations
                     the_editor_data().find('[data-rule="animation-name"]').each(function(i){
@@ -289,14 +289,14 @@
 
                 });
 
-                body.removeClass("yp-animate-manager-playing yp-clean-look yp-hide-borders-now");
+                body.removeClass("wyp-animate-manager-playing wyp-clean-look wyp-hide-borders-now");
 
-                //yp-counter-min
-                //yp-counter-second
-                //yp-counter-ms
-                $(".yp-counter-min").text("00");
-                $(".yp-counter-second").text("00");
-                $(".yp-counter-ms").text("00");
+                //wyp-counter-min
+                //wyp-counter-second
+                //wyp-counter-ms
+                $(".wyp-counter-min").text("00");
+                $(".wyp-counter-second").text("00");
+                $(".wyp-counter-ms").text("00");
                 clearInterval(window.animMinC);
                 clearInterval(window.animSecC);
                 clearInterval(window.animMsC);
@@ -307,7 +307,7 @@
             /* ---------------------------------------------------- */
             /* Close Animation Manager                          */
             /* ---------------------------------------------------- */
-            $(".yp-anim-control-close,.yp-visual-editor-link").on("click",function(){
+            $(".wyp-anim-control-close,.wyp-visual-editor-link").on("click",function(){
                 $(".animation-manager-btn").trigger("click");
             });
 
@@ -318,28 +318,28 @@
             $(".animation-manager-btn").on("click",function(){
 
                 // Disable picker on color close.
-                mainBody.removeClass("yp-element-picker-active");
-                $(".yp-element-picker").removeClass("active");
+                mainBody.removeClass("wyp-element-picker-active");
+                $(".wyp-element-picker").removeClass("active");
 
-                 body.toggleClass("yp-animate-manager-active");
-                 $(".yp-animate-manager").toggle();
-                 $(".yp-anim-control-pause").trigger("click");
+                 body.toggleClass("wyp-animate-manager-active");
+                 $(".wyp-animate-manager").toggle();
+                 $(".wyp-anim-control-pause").trigger("click");
                  if(!$(this).hasClass("active")){
 
                     // CSS To Data.
-                    if (mainBody.hasClass("yp-need-to-process")) {
+                    if (mainBody.hasClass("wyp-need-to-process")) {
                         process(false);
                     }
 
                     animation_manager();
 
                     // Find largest line for play/stop.
-                    var maxWidth = Math.max.apply( null, $( '.yp-anim-process-inner' ).map( function (){
+                    var maxWidth = Math.max.apply( null, $( '.wyp-anim-process-inner' ).map( function (){
                         return $( this ).outerWidth( true );
                     }).get() );
 
                     // Always add +$(window).width() to animate bar width on start.
-                    $(".yp-anim-process-bar-area").width(maxWidth+$(window).width());
+                    $(".wyp-anim-process-bar-area").width(maxWidth+$(window).width());
 
                  }
 
@@ -358,7 +358,7 @@
             /* ---------------------------------------------------- */
             /* Animation Manager: delete animate                    */
             /* ---------------------------------------------------- */
-            $(document).on("mouseenter", ".yp-control-trash", function() {
+            $(document).on("mouseenter", ".wyp-control-trash", function() {
                 $(this).parent().tooltip('hide');
             });
 
@@ -366,7 +366,7 @@
             /* ---------------------------------------------------- */
             /* Animation manager: delete animate                    */
             /* ---------------------------------------------------- */
-            $(document).on("click", ".yp-control-trash", function() {
+            $(document).on("click", ".wyp-control-trash", function() {
 
                 var that = $(this);
 
@@ -379,24 +379,24 @@
                   customClass: "editor-style",
                 },function(){
 
-                    that.parent(".yp-anim-process-bar").prev(".yp-anim-process-bar-delay").remove();
-                    that.parent(".yp-anim-process-bar").remove();
+                    that.parent(".wyp-anim-process-bar").prev(".wyp-anim-process-bar-delay").remove();
+                    that.parent(".wyp-anim-process-bar").remove();
 
-                    body.addClass("yp-anim-removing");
+                    body.addClass("wyp-anim-removing");
 
-                    $(".yp-delay-zero").each(function(){
+                    $(".wyp-delay-zero").each(function(){
 
-                        var allLeft = $(".yp-anim-process-inner").offset().left-5;
-                        var left = $(this).next(".yp-anim-process-bar").offset().left-allLeft;
+                        var allLeft = $(".wyp-anim-process-inner").offset().left-5;
+                        var left = $(this).next(".wyp-anim-process-bar").offset().left-allLeft;
                         $(this).css("left",left);
 
-                        $(this).next(".yp-anim-process-bar").addClass("yp-anim-has-zero-delay");
+                        $(this).next(".wyp-anim-process-bar").addClass("wyp-anim-has-zero-delay");
 
                     });
 
                     update_animation_manager();
 
-                    body.removeClass("yp-anim-removing");
+                    body.removeClass("wyp-anim-removing");
 
                     animation_manager();
 
@@ -410,7 +410,7 @@
             /* ---------------------------------------------------- */
             function get_selected_element(){
 
-                return iframe.find(".yp-selected");
+                return iframe.find(".wyp-selected");
 
             }
 
@@ -420,43 +420,43 @@
             /* ---------------------------------------------------- */
             function is_content_selected(){
 
-                return mainBody.hasClass("yp-content-selected");
+                return mainBody.hasClass("wyp-content-selected");
 
             }
 
             function is_dragging(){
 
-                return mainBody.hasClass("yp-dragging");
+                return mainBody.hasClass("wyp-dragging");
 
             }
 
             function is_resizing(){
 
-                return mainBody.hasClass("yp-element-resizing");
+                return mainBody.hasClass("wyp-element-resizing");
 
             }
 
             function is_visual_editing(){
 
-                return mainBody.hasClass("yp-visual-editing");
+                return mainBody.hasClass("wyp-visual-editing");
 
             }
 
             function is_responsive_mod(){
 
-                return mainBody.hasClass("yp-responsive-device-mode");
+                return mainBody.hasClass("wyp-responsive-device-mode");
 
             }
 
             function is_animate_creator(){
 
-                return mainBody.hasClass("yp-anim-creator");
+                return mainBody.hasClass("wyp-anim-creator");
 
             }
 
             function is_animation_manager(){
 
-                return mainBody.hasClass("yp-animate-manager-active");
+                return mainBody.hasClass("wyp-animate-manager-active");
 
             }
 
@@ -537,9 +537,9 @@
 
 
                 // Check wireframe
-                if(body.hasClass("yp-wireframe-mode")){
+                if(body.hasClass("wyp-wireframe-mode")){
                     washaveWireFrame = true;
-                    body.removeClass("yp-wireframe-mode");
+                    body.removeClass("wyp-wireframe-mode");
                 }
 
 
@@ -578,11 +578,11 @@
 
 
                     // Append general elements
-                    iframeBody.append("<h1 id='yp-heading-test-level-1'></h1><h2 id='yp-heading-test-level-2'></h2><h3 id='yp-heading-test-level-3'></h3><h4 id='yp-heading-test-level-4'></h4><h5 id='yp-heading-test-level-5'></h5><h6 id='yp-heading-test-level-6'></h6><h6 id='yp-paragraph-test'></h6>");
+                    iframeBody.append("<h1 id='wyp-heading-test-level-1'></h1><h2 id='wyp-heading-test-level-2'></h2><h3 id='wyp-heading-test-level-3'></h3><h4 id='wyp-heading-test-level-4'></h4><h5 id='wyp-heading-test-level-5'></h5><h6 id='wyp-heading-test-level-6'></h6><h6 id='wyp-paragraph-test'></h6>");
 
 
                     // Font Sizes
-                    var paragraphElement = iframeBody.find("#yp-paragraph-test"),
+                    var paragraphElement = iframeBody.find("#wyp-paragraph-test"),
                     bodyFontSize = (Math.round( parseFloat( iframeBody.css("fontSize") ) * 10 ) / 10),
                     paragraphFontSize = (Math.round( parseFloat( paragraphElement.css("fontSize") ) * 10 ) / 10);
 
@@ -606,7 +606,7 @@
                     // Update Heading tags. h1 > h6
                     for(var i = 1; i <= 6; i++){
 
-                        var el = iframeBody.find("#yp-heading-test-level-"+i);
+                        var el = iframeBody.find("#wyp-heading-test-level-"+i);
                         var size = parseFloat(el.css("fontSize"));
                         size = Math.round( size * 10 ) / 10;
                         var family = el.css("fontFamily");
@@ -867,7 +867,7 @@
 
 
                     // Append Affected count
-                    elementMain.append('<li><span class="typo-list-left">Affected elements</span><span class="typo-list-right"><span>'+(parseInt(iframeBody.find(".yp-selected-others").length)+1)+'</span></span></li>');
+                    elementMain.append('<li><span class="typo-list-left">Affected elements</span><span class="typo-list-right"><span>'+(parseInt(iframeBody.find(".wyp-selected-others").length)+1)+'</span></span></li>');
 
 
                     // Get class Array
@@ -956,7 +956,7 @@
                 // Active wireframe if was active before open.
                 // Notice: This function close wireframe for getting colors and details of the elements.
                 if(washaveWireFrame === true){
-                    body.addClass("yp-wireframe-mode");
+                    body.addClass("wyp-wireframe-mode");
                 }
 
                 // setup tooltip and copy api
@@ -1137,7 +1137,7 @@
             /* ---------------------------------------------------- */
             $(document).on("mousedown", ".ui-resizable-handle", function(){
 
-                if($(this).parents(".yp-anim-process-bar").length == 0){
+                if($(this).parents(".wyp-anim-process-bar").length == 0){
                     mainBody.addClass("fake-layer-x-bg");
                     mainBody.append("<div class='fake-layer-x'></div>");
                     $(this).addClass("active");
@@ -1151,7 +1151,7 @@
             /* ---------------------------------------------------- */
             $(document).on("mouseup", ".ui-resizable-handle,.fake-layer-x", function(){
 
-                if($(this).parents(".yp-anim-process-bar").length == 0){
+                if($(this).parents(".wyp-anim-process-bar").length == 0){
                     mainBody.removeClass("fake-layer-x-bg");
                     $(".fake-layer-x").remove();
                     $(".ui-resizable-handle").removeClass("active");
@@ -1201,11 +1201,11 @@
             /* Setting default width for Advanced info box          */
             /* ---------------------------------------------------- */
             var defaultWidth = 288;
-            if(mainBody.hasClass("yp-fixed-right-panel")){
+            if(mainBody.hasClass("wyp-fixed-right-panel")){
                 defaultWidth = 300;
             }
             var number = read_cookie("rightPanelWidth", defaultWidth);
-            mainBody.append("<style id='rightpanel-personalized-view'>.yp-fixed-right-panel:not(.yp-animate-manager-active) #iframe{width:calc(100% - "+number+"px - 46px) !important;}.editor-panel{width:"+number+"px !important;}</style>");
+            mainBody.append("<style id='rightpanel-personalized-view'>.wyp-fixed-right-panel:not(.wyp-animate-manager-active) #iframe{width:calc(100% - "+number+"px - 46px) !important;}.editor-panel{width:"+number+"px !important;}</style>");
 
             /* ---------------------------------------------------- */
             /* Makes Right Panel Resizeable                         */
@@ -1230,7 +1230,7 @@
                     $("#rightpanel-personalized-view").remove();
 
                     // update
-                    mainBody.append("<style id='rightpanel-personalized-view'>.yp-fixed-right-panel:not(.yp-animate-manager-active) #iframe{width:calc(100% - "+ui.size.width+"px - 46px) !important;}.editor-panel{width:"+ui.size.width+"px !important;}</style>");
+                    mainBody.append("<style id='rightpanel-personalized-view'>.wyp-fixed-right-panel:not(.wyp-animate-manager-active) #iframe{width:calc(100% - "+ui.size.width+"px - 46px) !important;}.editor-panel{width:"+ui.size.width+"px !important;}</style>");
 
                 },
 
@@ -1298,7 +1298,7 @@
             /* Setting default width for CSS Editor                 */
             /* ---------------------------------------------------- */
             var number = read_cookie("cssEditorWidth", 400);
-            mainBody.append("<style id='csseditor-personalized-view'>#leftAreaEditor, #cssData, #cssEditorBar{width:"+number+"px !important;}body.yp-css-editor-active .metric,body.yp-css-editor-active .breakpoint-bar, body.yp-css-editor-active.yp-responsive-device-mode #iframe, body.yp-css-editor-active:not(.yp-responsive-device-mode) #iframe {left: "+number+"px !important;}body.yp-css-editor-active .breakpoint-bar div{margin-left: calc("+number+"px - 56px) !important;}body.yp-css-editor-active:not(.yp-responsive-device-mode) #iframe {width: calc(100% - "+number+"px) !important;}body.yp-css-editor-active .context-menu-root, body.yp-css-editor-active .metric-top-tooltip {margin-left: "+number+"px !important;}body.yp-css-editor-active .metric-top-border {margin-left: calc("+number+"px - 1px) !important;}body.yp-css-editor-active .metric-left-tooltip {margin-left: calc("+number+" + 1px) !important;}</style>");
+            mainBody.append("<style id='csseditor-personalized-view'>#leftAreaEditor, #cssData, #cssEditorBar{width:"+number+"px !important;}body.wyp-css-editor-active .metric,body.wyp-css-editor-active .breakpoint-bar, body.wyp-css-editor-active.wyp-responsive-device-mode #iframe, body.wyp-css-editor-active:not(.wyp-responsive-device-mode) #iframe {left: "+number+"px !important;}body.wyp-css-editor-active .breakpoint-bar div{margin-left: calc("+number+"px - 56px) !important;}body.wyp-css-editor-active:not(.wyp-responsive-device-mode) #iframe {width: calc(100% - "+number+"px) !important;}body.wyp-css-editor-active .context-menu-root, body.wyp-css-editor-active .metric-top-tooltip {margin-left: "+number+"px !important;}body.wyp-css-editor-active .metric-top-border {margin-left: calc("+number+"px - 1px) !important;}body.wyp-css-editor-active .metric-left-tooltip {margin-left: calc("+number+" + 1px) !important;}</style>");
 
 
 
@@ -1333,7 +1333,7 @@
 
                     // update
                     var number = ui.size.width;
-                    mainBody.append("<style id='csseditor-personalized-view'>#leftAreaEditor, #cssData, #cssEditorBar{width:"+number+"px !important;}body.yp-css-editor-active .metric,body.yp-css-editor-active .breakpoint-bar, body.yp-css-editor-active.yp-responsive-device-mode #iframe, body.yp-css-editor-active:not(.yp-responsive-device-mode) #iframe {left: "+number+"px !important;}body.yp-css-editor-active .breakpoint-bar div{margin-left: calc("+number+"px - 56px) !important;}body.yp-css-editor-active:not(.yp-responsive-device-mode) #iframe {width: calc(100% - "+number+"px) !important;}body.yp-css-editor-active .context-menu-root, body.yp-css-editor-active .metric-top-tooltip {margin-left: "+number+"px !important;}body.yp-css-editor-active .metric-top-border {margin-left: calc("+number+"px - 1px) !important;}body.yp-css-editor-active .metric-left-tooltip {margin-left: calc("+number+" + 1px) !important;}</style>");
+                    mainBody.append("<style id='csseditor-personalized-view'>#leftAreaEditor, #cssData, #cssEditorBar{width:"+number+"px !important;}body.wyp-css-editor-active .metric,body.wyp-css-editor-active .breakpoint-bar, body.wyp-css-editor-active.wyp-responsive-device-mode #iframe, body.wyp-css-editor-active:not(.wyp-responsive-device-mode) #iframe {left: "+number+"px !important;}body.wyp-css-editor-active .breakpoint-bar div{margin-left: calc("+number+"px - 56px) !important;}body.wyp-css-editor-active:not(.wyp-responsive-device-mode) #iframe {width: calc(100% - "+number+"px) !important;}body.wyp-css-editor-active .context-menu-root, body.wyp-css-editor-active .metric-top-tooltip {margin-left: "+number+"px !important;}body.wyp-css-editor-active .metric-top-border {margin-left: calc("+number+"px - 1px) !important;}body.wyp-css-editor-active .metric-left-tooltip {margin-left: calc("+number+" + 1px) !important;}</style>");
                     editor.resize();
 
 
@@ -1358,14 +1358,14 @@
             /* Setting default width for CSS Editor                 */
             /* ---------------------------------------------------- */
             var number = read_cookie("animManagerHeight", 287);
-            mainBody.append("<style id='animmanager-personalized-view'>body.yp-animate-manager-active #iframe{height:calc(100% - "+number+"px) !important;}.yp-animate-manager{height:"+number+"px !important;}</style>");
+            mainBody.append("<style id='animmanager-personalized-view'>body.wyp-animate-manager-active #iframe{height:calc(100% - "+number+"px) !important;}.wyp-animate-manager{height:"+number+"px !important;}</style>");
 
 
 
             /* ---------------------------------------------------- */
             /* Makes Animation Manager Resizeable                   */
             /* ---------------------------------------------------- */
-            $( ".yp-animate-manager" ).resizable({
+            $( ".wyp-animate-manager" ).resizable({
 
                 handles: "n",
 
@@ -1387,7 +1387,7 @@
                     $("#animmanager-personalized-view").remove();
 
                     // update
-                    mainBody.append("<style id='animmanager-personalized-view'>body.yp-animate-manager-active #iframe{height:calc(100% - "+ui.size.height+"px) !important;}.yp-animate-manager{height:"+ui.size.height+"px !important;}</style>");
+                    mainBody.append("<style id='animmanager-personalized-view'>body.wyp-animate-manager-active #iframe{height:calc(100% - "+ui.size.height+"px) !important;}.wyp-animate-manager{height:"+ui.size.height+"px !important;}</style>");
 
                 },
 
@@ -1414,11 +1414,11 @@
 
                 // IF alredy has animations, use same order to get animations
                 // so it will show animations in same order after updates.
-                if($(".yp-anim-process-bar-area").length > 0){
+                if($(".wyp-anim-process-bar-area").length > 0){
 
                     // getting current selectors
                     var listObject = [];
-                    $(".yp-anim-process-bar-area").each(function(i){
+                    $(".wyp-anim-process-bar-area").each(function(i){
 
                         // current selector
                         var selector = $(this).attr("data-selector-full");
@@ -1436,19 +1436,19 @@
 
                 }
 
-                $(".yp-animate-manager [data-toggle='tooltipAnim']").tooltip("destroy");
+                $(".wyp-animate-manager [data-toggle='tooltipAnim']").tooltip("destroy");
 
                 // destory if has.
-                if($(".yp-anim-process-bar-delay.ui-resizable-e,.yp-anim-process-bar.ui-resizable-e").length > 0){
-                    $(".yp-anim-process-bar-delay,.yp-anim-process-bar").resizable('destroy');
+                if($(".wyp-anim-process-bar-delay.ui-resizable-e,.wyp-anim-process-bar.ui-resizable-e").length > 0){
+                    $(".wyp-anim-process-bar-delay,.wyp-anim-process-bar").resizable('destroy');
                 }
 
-                $(".yp-anim-el-column,.yp-animate-bar").remove();
+                $(".wyp-anim-el-column,.wyp-animate-bar").remove();
 
                 // Update metric
-                $(".yp-anim-metric").empty();
+                $(".wyp-anim-metric").empty();
                 for(var i = 1; i < 61; i++){
-                    $(".yp-anim-metric").append('<div class="second"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b>'+i+'s</b></div>');
+                    $(".wyp-anim-metric").append('<div class="second"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b>'+i+'s</b></div>');
                 }
 
                 the_editor_data().find(list).each(function(iX){
@@ -1486,7 +1486,7 @@
                     }
 
                     if(deviceName !== ''){
-                        deviceHTML = " <label data-toggle='tooltipAnim' data-placement='right' title='This animation will only play on specific screen sizes.' class='yp-device-responsive'>"+deviceName+"</label><span class='yp-anim-media-details'>"+device+"</span>";
+                        deviceHTML = " <label data-toggle='tooltipAnim' data-placement='right' title='This animation will only play on specific screen sizes.' class='wyp-device-responsive'>"+deviceName+"</label><span class='wyp-anim-media-details'>"+device+"</span>";
                     }
 
                     // Clean Selector
@@ -1525,10 +1525,10 @@
 
                     var extraClass = '';
                     if(animateDelay == 10){
-                        extraClass = ' yp-delay-zero';
+                        extraClass = ' wyp-delay-zero';
                     }
 
-                    var animateContent = "<div class='yp-anim-process-bar-delay"+extraClass+"' data-toggle='tooltipAnim' data-placement='top' title='Delay "+parseFloat(animateDelayOr).toFixed(2)+"s' style='width:"+animateDelay+"px;'></div><div class='yp-anim-process-bar' data-toggle='tooltipAnim' data-placement='top' title='Duration: "+parseFloat(animateTimeOr).toFixed(2)+"s' style='width:"+animateTime+"px;'><span class='animate-part-icons yp-control-trash' data-toggle='tooltipAnim' data-placement='top' title='Delete'><span class='dashicons dashicons-trash'></span></span>"+animateName+"</div>";
+                    var animateContent = "<div class='wyp-anim-process-bar-delay"+extraClass+"' data-toggle='tooltipAnim' data-placement='top' title='Delay "+parseFloat(animateDelayOr).toFixed(2)+"s' style='width:"+animateDelay+"px;'></div><div class='wyp-anim-process-bar' data-toggle='tooltipAnim' data-placement='top' title='Duration: "+parseFloat(animateTimeOr).toFixed(2)+"s' style='width:"+animateTime+"px;'><span class='animate-part-icons wyp-control-trash' data-toggle='tooltipAnim' data-placement='top' title='Delete'><span class='dashicons dashicons-trash'></span></span>"+animateName+"</div>";
 
 
                     var childAnimateDelayOr,childAnimateDelay,childAnimateTimeOr,childAnimateTime;
@@ -1599,10 +1599,10 @@
 
                             extraClass = '';
                             if(SmartDelayView == 10){
-                                extraClass = ' yp-delay-zero';
+                                extraClass = ' wyp-delay-zero';
                             }
 
-                            animateContent += "<div class='yp-anim-process-bar-delay"+extraClass+"' data-toggle='tooltipAnim' data-placement='top' title='Delay "+parseFloat(smartDelayOrView).toFixed(2)+"s' style='width:"+SmartDelayView+"px;'></div><div class='yp-anim-process-bar' data-toggle='tooltipAnim' data-placement='top' title='Duration: "+parseFloat(childAnimateTimeOr).toFixed(2)+"s' style='width:"+childAnimateTime+"px;'><span class='animate-part-icons yp-control-trash' data-toggle='tooltipAnim' data-placement='top' title='Delete'><span class='dashicons dashicons-trash'></span></span>"+childAnimate+"</div>";
+                            animateContent += "<div class='wyp-anim-process-bar-delay"+extraClass+"' data-toggle='tooltipAnim' data-placement='top' title='Delay "+parseFloat(smartDelayOrView).toFixed(2)+"s' style='width:"+SmartDelayView+"px;'></div><div class='wyp-anim-process-bar' data-toggle='tooltipAnim' data-placement='top' title='Duration: "+parseFloat(childAnimateTimeOr).toFixed(2)+"s' style='width:"+childAnimateTime+"px;'><span class='animate-part-icons wyp-control-trash' data-toggle='tooltipAnim' data-placement='top' title='Delete'><span class='dashicons dashicons-trash'></span></span>"+childAnimate+"</div>";
 
                             prevsBeforeAppend = childAnimateDelay+childAnimateTime;
 
@@ -1611,25 +1611,25 @@
                     }
 
                     // Append.
-                    $(".yp-anim-left-part-column").append("<div class='yp-anim-el-column yp-anim-el-column-"+get_id(selectorClean)+"' data-anim-media-size='"+device+"'><span data-toggle='tooltipAnim' data-placement='right' title='"+selectorClean+"'>"+elementName+"</span> <label>"+modeName+"</label>"+deviceHTML+"</div>");
+                    $(".wyp-anim-left-part-column").append("<div class='wyp-anim-el-column wyp-anim-el-column-"+get_id(selectorClean)+"' data-anim-media-size='"+device+"'><span data-toggle='tooltipAnim' data-placement='right' title='"+selectorClean+"'>"+elementName+"</span> <label>"+modeName+"</label>"+deviceHTML+"</div>");
 
-                    $(".yp-anim-right-part-column").append("<div class='yp-animate-bar' id='yp-animate-bar-"+iX+"'><div class='yp-anim-process-bar-area' data-responsive='"+device+"' data-selector='"+selectorClean+"' data-selector-full='"+selector+"'><div class='yp-anim-process-inner'>"+animateContent+"</div><a class='yp-anim-add' data-toggle='tooltipAnim' data-placement='right' title='Add New Animate'></a></div>");
+                    $(".wyp-anim-right-part-column").append("<div class='wyp-animate-bar' id='wyp-animate-bar-"+iX+"'><div class='wyp-anim-process-bar-area' data-responsive='"+device+"' data-selector='"+selectorClean+"' data-selector-full='"+selector+"'><div class='wyp-anim-process-inner'>"+animateContent+"</div><a class='wyp-anim-add' data-toggle='tooltipAnim' data-placement='right' title='Add New Animate'></a></div>");
 
                 });
 
-                $(".yp-delay-zero").each(function(){
+                $(".wyp-delay-zero").each(function(){
 
-                        var allLeft = $(".yp-anim-process-inner").offset().left-5;
-                        var left = $(this).next(".yp-anim-process-bar").offset().left-allLeft;
+                        var allLeft = $(".wyp-anim-process-inner").offset().left-5;
+                        var left = $(this).next(".wyp-anim-process-bar").offset().left-allLeft;
                         $(this).css("left",left);
 
-                        $(this).next(".yp-anim-process-bar").addClass("yp-anim-has-zero-delay");
+                        $(this).next(".wyp-anim-process-bar").addClass("wyp-anim-has-zero-delay");
 
                     });
 
                 // Get current selector
                 var Cselector = get_current_selector();
-                var Lineway = $(".yp-anim-el-column-"+get_id(Cselector)+"[data-anim-media-size='"+get_media_condition()+"']");
+                var Lineway = $(".wyp-anim-el-column-"+get_id(Cselector)+"[data-anim-media-size='"+get_media_condition()+"']");
 
                 // has selected element and there not have same element in manager list
                 if(isDefined(Cselector) && Lineway.length === 0){
@@ -1643,26 +1643,26 @@
                     var deviceHTML = '';
 
                     if(get_media_condition() != 'desktop'){
-                    deviceHTML = " <label data-toggle='tooltipAnim' data-placement='right' title='This animation will only play on specific screen sizes.' class='yp-device-responsive'>Responsive</label><span class='yp-anim-media-details'>"+get_media_condition()+"</span>";
+                    deviceHTML = " <label data-toggle='tooltipAnim' data-placement='right' title='This animation will only play on specific screen sizes.' class='wyp-device-responsive'>Responsive</label><span class='wyp-anim-media-details'>"+get_media_condition()+"</span>";
                     }
 
                     // Bar
-                    $(".yp-anim-left-part-column").append("<div class='yp-anim-el-column anim-active-row yp-anim-el-column-"+get_id(Cselector)+"' data-anim-media-size='"+get_media_condition()+"'><span data-toggle='tooltipAnim' data-placement='right' title='"+Cselector+"'>"+elementName+"</span> <label>onscreen</label>"+deviceHTML+"</div>");
+                    $(".wyp-anim-left-part-column").append("<div class='wyp-anim-el-column anim-active-row wyp-anim-el-column-"+get_id(Cselector)+"' data-anim-media-size='"+get_media_condition()+"'><span data-toggle='tooltipAnim' data-placement='right' title='"+Cselector+"'>"+elementName+"</span> <label>onscreen</label>"+deviceHTML+"</div>");
 
                     // Adding
-                    $(".yp-anim-right-part-column").append("<div class='yp-animate-bar anim-active-row' id='yp-animate-bar-current'><div class='yp-anim-process-bar-area' data-responsive='"+get_media_condition()+"' data-selector='"+Cselector+"' data-selector-full='"+(Cselector+".yp_onscreen")+"'><div class='yp-anim-process-inner'></div><a class='yp-anim-add' data-toggle='tooltipAnim' data-placement='right' title='Add New Animate'></a></div>");
+                    $(".wyp-anim-right-part-column").append("<div class='wyp-animate-bar anim-active-row' id='wyp-animate-bar-current'><div class='wyp-anim-process-bar-area' data-responsive='"+get_media_condition()+"' data-selector='"+Cselector+"' data-selector-full='"+(Cselector+".yp_onscreen")+"'><div class='wyp-anim-process-inner'></div><a class='wyp-anim-add' data-toggle='tooltipAnim' data-placement='right' title='Add New Animate'></a></div>");
 
                 }else{
                     Lineway.addClass("anim-active-row");
                 }
 
                 // resizable
-                $( ".yp-anim-process-bar-delay,.yp-anim-process-bar" ).resizable({
+                $( ".wyp-anim-process-bar-delay,.wyp-anim-process-bar" ).resizable({
                     handles: 'e',
                     minWidth: 10,
                     start: function() {
 
-                        $(".yp-anim-process-bar-delay,.yp-anim-process-bar").not(this).tooltip("disable").tooltip("hide");
+                        $(".wyp-anim-process-bar-delay,.wyp-anim-process-bar").not(this).tooltip("disable").tooltip("hide");
 
                     },
                     resize: function( event, ui ) {
@@ -1672,7 +1672,7 @@
                         var s = parseFloat(w/100).toFixed(2);
 
                         var newTitle;
-                        if(that.hasClass("yp-anim-process-bar-delay")){
+                        if(that.hasClass("wyp-anim-process-bar-delay")){
 
                             if(w == 10){
                                 s = "0";
@@ -1681,11 +1681,11 @@
 
                             // Delay zero
                             if(w <= 10){
-                                that.addClass("yp-delay-zero");
-                                that.next(".yp-anim-process-bar").addClass("yp-anim-has-zero-delay");
-                            }else if(that.hasClass("yp-delay-zero")){
-                                that.removeClass("yp-delay-zero").css("left","0");
-                                that.next(".yp-anim-process-bar").removeClass("yp-anim-has-zero-delay");
+                                that.addClass("wyp-delay-zero");
+                                that.next(".wyp-anim-process-bar").addClass("wyp-anim-has-zero-delay");
+                            }else if(that.hasClass("wyp-delay-zero")){
+                                that.removeClass("wyp-delay-zero").css("left","0");
+                                that.next(".wyp-anim-process-bar").removeClass("wyp-anim-has-zero-delay");
                             }
 
                         }else{
@@ -1695,10 +1695,10 @@
                         }
 
 
-                        $(this).parents(".yp-animate-bar").find(".yp-delay-zero").each(function(){
+                        $(this).parents(".wyp-animate-bar").find(".wyp-delay-zero").each(function(){
 
-                            var allLeft = $(".yp-anim-process-inner").offset().left-5;
-                            var left = $(this).next(".yp-anim-process-bar").offset().left-allLeft;
+                            var allLeft = $(".wyp-anim-process-inner").offset().left-5;
+                            var left = $(this).next(".wyp-anim-process-bar").offset().left-allLeft;
                             $(this).css("left",left);
 
                         });
@@ -1710,7 +1710,7 @@
                     stop: function() {
 
                         update_animation_manager();
-                        $(".yp-anim-process-bar-delay,.yp-anim-process-bar").tooltip("enable");
+                        $(".wyp-anim-process-bar-delay,.wyp-anim-process-bar").tooltip("enable");
 
                     }
 
@@ -1720,7 +1720,7 @@
                 // Animation manager tooltip
                 $('[data-toggle="tooltipAnim"]').tooltip({
                     animation: false,
-                    container: ".yp-animate-manager",
+                    container: ".wyp-animate-manager",
                     html: true
                 });
 
@@ -1729,19 +1729,19 @@
                     $("[data-toggle='tooltipAnim']").not(this).tooltip("hide");
                 });
 
-                if($(".yp-animate-bar").length === 0){
+                if($(".wyp-animate-bar").length === 0){
                     $(".animation-manager-empty").show();
                 }else{
                     $(".animation-manager-empty").hide();
                 }
 
                 // Find largest line for play/stop.
-                var maxWidth = Math.max.apply( null, $( '.yp-anim-process-inner' ).map( function (){
+                var maxWidth = Math.max.apply( null, $( '.wyp-anim-process-inner' ).map( function (){
                     return $( this ).outerWidth( true );
                 }).get() );
 
                 // Always add more px to animate bar width on update.
-                $(".yp-anim-process-bar-area").width(maxWidth+$(window).width());
+                $(".wyp-anim-process-bar-area").width(maxWidth+$(window).width());
 
             }
 
@@ -1751,21 +1751,21 @@
             /* ---------------------------------------------------- */
             function update_animation_manager(){
 
-                body.addClass("yp-animate-manager-mode");
+                body.addClass("wyp-animate-manager-mode");
 
                 // Find largest line for play/stop.
-                var maxWidth = Math.max.apply( null, $( '.yp-anim-process-inner' ).map( function (){
+                var maxWidth = Math.max.apply( null, $( '.wyp-anim-process-inner' ).map( function (){
                     return $( this ).outerWidth( true );
                 }).get() );
 
                 // Always add more px to animate bar width on update.
-                $(".yp-anim-process-bar-area").width(maxWidth+$(window).width());
+                $(".wyp-anim-process-bar-area").width(maxWidth+$(window).width());
 
                 // Each all lines
-                $(".yp-animate-bar").each(function(){
+                $(".wyp-animate-bar").each(function(){
 
                     // Get selector with mode.
-                    var selector = $(this).find(".yp-anim-process-bar-area").attr("data-selector-full");
+                    var selector = $(this).find(".wyp-anim-process-bar-area").attr("data-selector-full");
 
                     // Animate name array.
                     var sMultiNames = [];
@@ -1779,13 +1779,13 @@
                     var offets = '';
 
                     // Get size
-                    var size = $(this).find(".yp-anim-process-bar-area").attr("data-responsive");
+                    var size = $(this).find(".wyp-anim-process-bar-area").attr("data-responsive");
                     if(size == ''){
                         size = 'desktop';
                     }
 
                     // Each all animate bars
-                    $(this).find(".yp-anim-process-bar,.yp-anim-process-bar-delay").each(function(){
+                    $(this).find(".wyp-anim-process-bar,.wyp-anim-process-bar-delay").each(function(){
 
                         // Get width.
                         var w = $(this).width();
@@ -1794,7 +1794,7 @@
                         var s = w/100;
 
                         // If delay and its not a multiable line.
-                        if($(this).hasClass("yp-anim-process-bar-delay") && $(this).parent().find(".yp-anim-process-bar-delay").length == 1){
+                        if($(this).hasClass("wyp-anim-process-bar-delay") && $(this).parent().find(".wyp-anim-process-bar-delay").length == 1){
 
                             if(w == 10){
                                 s = "0";
@@ -1805,7 +1805,7 @@
                             insert_rule(selector, "animation-delay", Math.round(s * 100) / 100 + "s", '', size);
 
                         // If animate bar and not a multiable line.
-                        }else if($(this).hasClass("yp-anim-process-bar") && $(this).parent().find(".yp-anim-process-bar").length == 1){
+                        }else if($(this).hasClass("wyp-anim-process-bar") && $(this).parent().find(".wyp-anim-process-bar").length == 1){
 
                             // Update one duration.
                             insert_rule(selector, "animation-duration", s, 's', size);
@@ -1813,12 +1813,12 @@
                             sMultiNames.push($(this).text());
 
                         // If multi line and its delay or animate bar.
-                        }else if($(this).parent().find(".yp-anim-process-bar-delay").length > 1 || $(this).parent().find(".yp-anim-process-bar").length > 1){
+                        }else if($(this).parent().find(".wyp-anim-process-bar-delay").length > 1 || $(this).parent().find(".wyp-anim-process-bar").length > 1){
 
                             // Delay.. Multi..
-                            if($(this).hasClass("yp-anim-process-bar-delay")){
+                            if($(this).hasClass("wyp-anim-process-bar-delay")){
 
-                                offets = $(this).offset().left-$(this).parent(".yp-anim-process-inner").offset().left;
+                                offets = $(this).offset().left-$(this).parent(".wyp-anim-process-inner").offset().left;
                                 offets = offets/100;
                                 offets = Math.round(offets * 100) / 100;
 
@@ -1837,7 +1837,7 @@
                             }
 
                             // Duration.. Multi..
-                            if($(this).hasClass("yp-anim-process-bar")){
+                            if($(this).hasClass("wyp-anim-process-bar")){
 
                                 var xy = $(this).width()/100;
 
@@ -1856,7 +1856,7 @@
                         insert_rule(selector, "animation-duration", sMultiDuration.toString(), '', size);
                         insert_rule(selector, "animation-name", sMultiNames.toString(), '', size);
 
-                    }else if(sMultiNames.length === 0 && body.hasClass("yp-anim-removing")){
+                    }else if(sMultiNames.length === 0 && body.hasClass("wyp-anim-removing")){
                         insert_rule(selector, "animation-delay", "disable", '', size);
                         insert_rule(selector, "animation-duration", "disable", '', size);
                         insert_rule(selector, "animation-name", "disable", '', size);
@@ -1866,7 +1866,7 @@
 
                 });
 
-                body.removeClass("yp-animate-manager-mode");
+                body.removeClass("wyp-animate-manager-mode");
 
             }
 
@@ -1876,8 +1876,8 @@
             /* ---------------------------------------------------- */
             $(window).click(function() {
 
-                if($(".yp-anim-list-menu").is(":visible")){
-                    $(".yp-anim-list-menu").hide();
+                if($(".wyp-anim-list-menu").is(":visible")){
+                    $(".wyp-anim-list-menu").hide();
                 }
 
             });
@@ -1886,41 +1886,41 @@
             /* ---------------------------------------------------- */
             /* Add Animation: Animation list click                  */
             /* ---------------------------------------------------- */
-            $(document).on("click", ".yp-anim-list-menu ul li", function(e) {
+            $(document).on("click", ".wyp-anim-list-menu ul li", function(e) {
 
                 // Clean old.
                 get_selected_element().removeClass("yp_onscreen yp_hover yp_click yp_focus");
 
-                var p = $(".yp-anim-add.active");
+                var p = $(".wyp-anim-add.active");
 
-                mainBody.addClass("yp-animate-manager-mode");
+                mainBody.addClass("wyp-animate-manager-mode");
                 var selector = p.parent().attr("data-selector-full");
                 var allAnimNames = [];
                 var allDurations = [];
                 var allDelays = [];
 
                 // Get size
-                var size = p.parents(".yp-anim-process-bar-area").attr("data-responsive");
+                var size = p.parents(".wyp-anim-process-bar-area").attr("data-responsive");
                 if(size == ''){
                     size = 'desktop';
                 }
 
                 // If empty, so this new.
-                if(p.parent().find(".yp-anim-process-inner").is(':empty')){
+                if(p.parent().find(".wyp-anim-process-inner").is(':empty')){
                     insert_rule(selector, "animation-name", $(this).data("value"), '',size);
                 }else{
 
                     // push older animations
-                    p.parent().find(".yp-anim-process-inner .yp-anim-process-bar").each(function(){
+                    p.parent().find(".wyp-anim-process-inner .wyp-anim-process-bar").each(function(){
                         allAnimNames.push($(this).text());
                         allDurations.push(($(this).width()/100)+"s");
                     });
 
                     // push older animations
-                    p.parent().find(".yp-anim-process-inner .yp-anim-process-bar-delay").each(function(){
-                        var offets = ($(this).offset().left-p.parent().find(".yp-anim-process-inner").offset().left)/100;
+                    p.parent().find(".wyp-anim-process-inner .wyp-anim-process-bar-delay").each(function(){
+                        var offets = ($(this).offset().left-p.parent().find(".wyp-anim-process-inner").offset().left)/100;
 
-                        if($(this).hasClass("yp-delay-zero")){
+                        if($(this).hasClass("wyp-delay-zero")){
                             allDelays.push(offets+"s");
                         }else{
                             allDelays.push(offets+($(this).width()/100)+"s");
@@ -1932,8 +1932,8 @@
                     allAnimNames.push($(this).data("value"));
                     allDurations.push("1s");
 
-                    var lastAnim = p.parent().find(".yp-anim-process-inner .yp-anim-process-bar").last();
-                    var offets = ((lastAnim.offset().left+lastAnim.width())-p.parent().find(".yp-anim-process-inner").offset().left)/100;
+                    var lastAnim = p.parent().find(".wyp-anim-process-inner .wyp-anim-process-bar").last();
+                    var offets = ((lastAnim.offset().left+lastAnim.width())-p.parent().find(".wyp-anim-process-inner").offset().left)/100;
                     allDelays.push(offets+"s");
 
                     insert_rule(selector, "animation-name",allAnimNames.toString(), '',size);
@@ -1942,7 +1942,7 @@
 
                 }
 
-                mainBody.removeClass("yp-animate-manager-mode");
+                mainBody.removeClass("wyp-animate-manager-mode");
 
                 setTimeout(function(){
                     animation_manager();
@@ -1955,16 +1955,16 @@
             /* ---------------------------------------------------- */
             /* Animation Manager: Add Animation icon                */
             /* ---------------------------------------------------- */
-            $(document).on("click", ".yp-anim-add", function(e) {
+            $(document).on("click", ".wyp-anim-add", function(e) {
 
                 e.stopPropagation();
                 var t = $(this).offset().top;
                 var l = $(this).offset().left;
 
-                var menu = $(".yp-anim-list-menu ul");
-                $(".yp-anim-list-menu").removeAttr("style").removeClass("yp-anim-list-top");
+                var menu = $(".wyp-anim-list-menu ul");
+                $(".wyp-anim-list-menu").removeAttr("style").removeClass("wyp-anim-list-top");
                 menu.empty();
-                $("#yp-animation-name-data option").each(function(){
+                $("#wyp-animation-name-data option").each(function(){
                     var el = $(this);
                     if(el.text() != 'none'){
                         menu.append("<li data-value='"+el.attr("value")+"' data-text='"+el.data("text")+"' data-content='"+el.text()+"'>"+el.text()+"</li>");
@@ -1974,18 +1974,18 @@
                 var d = $(window).height()-t-46;
 
                 if(d < 150){
-                    $(".yp-anim-list-menu").addClass("yp-anim-list-top");
+                    $(".wyp-anim-list-menu").addClass("wyp-anim-list-top");
                 }else{
                     if(menu.height() > d){
                         menu.height(d);
                     }
                 }
 
-                $(".yp-anim-list-menu").css("left",l).css("top",t).show();
+                $(".wyp-anim-list-menu").css("left",l).css("top",t).show();
 
-                $(".yp-anim-list-menu").css("margin-left", "-" + parseInt(($(".yp-anim-list-menu").width()/2) - 10) + "px");
+                $(".wyp-anim-list-menu").css("margin-left", "-" + parseInt(($(".wyp-anim-list-menu").width()/2) - 10) + "px");
 
-                $(".yp-anim-add").removeClass("active");
+                $(".wyp-anim-add").removeClass("active");
                 $(this).addClass("active");
 
             });
@@ -1994,38 +1994,38 @@
             /* ---------------------------------------------------- */
             /* Lite version modal close                */
             /* ---------------------------------------------------- */
-            $(".yp-info-modal-close").click(function() {
+            $(".wyp-info-modal-close").click(function() {
                 $(this).parent().parent().hide();
-                $(".yp-popup-background").hide();
+                $(".wyp-popup-background").hide();
             });
 
             /* ---------------------------------------------------- */
             /* Background Upload popup close                        */
             /* ---------------------------------------------------- */
-            $(".yp-popup-background").click(function() {
+            $(".wyp-popup-background").click(function() {
                 $(this).hide();
-                $(".yp-info-modal").hide();
+                $(".wyp-info-modal").hide();
             });
 
 
             /* ---------------------------------------------------- */
             /* Element Inspector button: Click                      */
             /* ---------------------------------------------------- */
-            $(".yp-selector-mode").click(function() {
+            $(".wyp-selector-mode").click(function() {
 
-                if($(".yp-ruler-btn").hasClass("active")){
-                    $(".yp-ruler-btn").trigger("click");
-                    $(".yp-selector-mode").trigger("click");
+                if($(".wyp-ruler-btn").hasClass("active")){
+                    $(".wyp-ruler-btn").trigger("click");
+                    $(".wyp-selector-mode").trigger("click");
                 }
 
-                if ($(this).hasClass("active") && $(".yp-sharp-selector-btn.active").length > 0) {
-                    $(".yp-sharp-selector-btn").removeClass("active");
-                    body.removeClass("yp-single-inspector-active");
-                    iframeBody.removeClass("yp-single-inspector-active");
+                if ($(this).hasClass("active") && $(".wyp-sharp-selector-btn.active").length > 0) {
+                    $(".wyp-sharp-selector-btn").removeClass("active");
+                    body.removeClass("wyp-single-inspector-active");
+                    iframeBody.removeClass("wyp-single-inspector-active");
                     window.singleInspector = false;
                 }
 
-                body.toggleClass("yp-flexible-inspector-active");
+                body.toggleClass("wyp-flexible-inspector-active");
                 clean();
 
             });
@@ -2084,23 +2084,23 @@
                 $('.responsive-right-handle').tooltip("hide");
 
                 window.responsiveModeRMDown = true;
-                body.addClass("yp-clean-look yp-responsive-resizing yp-responsive-resizing-right yp-hide-borders-now");
+                body.addClass("wyp-clean-look wyp-responsive-resizing wyp-responsive-resizing-right wyp-hide-borders-now");
 
-                if($(".yp-selector-mode").hasClass("active")){
+                if($(".wyp-selector-mode").hasClass("active")){
                     window.selectorWasActive = true;
                 }else{
                     window.selectorWasActive = false;
                 }
 
-                if ($(".yp-ruler-btn").hasClass("active")) {
+                if ($(".wyp-ruler-btn").hasClass("active")) {
                     window.rulerWasActive = true;
                 } else {
                     window.rulerWasActive = false;
-                    $(".yp-ruler-btn").trigger("click").removeClass("active");
+                    $(".wyp-ruler-btn").trigger("click").removeClass("active");
                 }
 
-                if ($(".yp-selector-mode").hasClass("active") && is_content_selected() === false) {
-                    $(".yp-selector-mode").trigger("click");
+                if ($(".wyp-selector-mode").hasClass("active") && is_content_selected() === false) {
+                    $(".wyp-selector-mode").trigger("click");
 
                     window.SelectorDisableResizeRight = true;
                 }
@@ -2115,7 +2115,7 @@
 
                 if (window.responsiveModeRMDown === true) {
 
-                    var hasClass = mainBody.hasClass("yp-css-editor-active");
+                    var hasClass = mainBody.hasClass("wyp-css-editor-active");
                     var ww = $(window).width();
 
                     if (hasClass === true) {
@@ -2180,10 +2180,10 @@
                         draw();
                     }
 
-                    body.removeClass("yp-clean-look yp-responsive-resizing yp-responsive-resizing-right");
+                    body.removeClass("wyp-clean-look wyp-responsive-resizing wyp-responsive-resizing-right");
 
                     setTimeout(function() {
-                        body.removeClass("yp-hide-borders-now");
+                        body.removeClass("wyp-hide-borders-now");
                         draw_tooltip();
                     }, 25);
 
@@ -2192,17 +2192,17 @@
                     }
 
                     if (window.rulerWasActive === false) {
-                        $(".yp-ruler-btn").addClass("active").trigger("click");
+                        $(".wyp-ruler-btn").addClass("active").trigger("click");
                     }
 
 
                     if(window.selectorWasActive === true){
-                        if($(".yp-selector-mode").hasClass("active") === false){
-                            $(".yp-selector-mode").trigger("click");
+                        if($(".wyp-selector-mode").hasClass("active") === false){
+                            $(".wyp-selector-mode").trigger("click");
                         }
                     }else{
-                        if($(".yp-selector-mode").hasClass("active")){
-                            $(".yp-selector-mode").trigger("click");
+                        if($(".wyp-selector-mode").hasClass("active")){
+                            $(".wyp-selector-mode").trigger("click");
                         }
                     }
 
@@ -2227,23 +2227,23 @@
             /* ---------------------------------------------------- */
             $(".responsive-bottom-handle").on("mousedown", function() {
                 window.responsiveModeBMDown = true;
-                body.addClass("yp-clean-look yp-responsive-resizing yp-responsive-resizing-bottom yp-hide-borders-now");
+                body.addClass("wyp-clean-look wyp-responsive-resizing wyp-responsive-resizing-bottom wyp-hide-borders-now");
 
-                if($(".yp-selector-mode").hasClass("active")){
+                if($(".wyp-selector-mode").hasClass("active")){
                     window.selectorWasActive = true;
                 }else{
                     window.selectorWasActive = false;
                 }
 
-                if ($(".yp-ruler-btn").hasClass("active")) {
+                if ($(".wyp-ruler-btn").hasClass("active")) {
                     window.rulerWasActive = true;
                 } else {
                     window.rulerWasActive = false;
-                    $(".yp-ruler-btn").trigger("click");
+                    $(".wyp-ruler-btn").trigger("click");
                 }
 
-                if ($(".yp-selector-mode").hasClass("active") && is_content_selected() === false) {
-                    $(".yp-selector-mode").trigger("click");
+                if ($(".wyp-selector-mode").hasClass("active") && is_content_selected() === false) {
+                    $(".wyp-selector-mode").trigger("click");
                     window.SelectorDisableResizeBottom = true;
                 }
 
@@ -2257,7 +2257,7 @@
                 if (window.responsiveModeBMDown === true) {
 
                     var ext = 0;
-                    if(mainBody.hasClass("yp-html-mod-active")){
+                    if(mainBody.hasClass("wyp-html-mod-active")){
                         ext = 42;
                     }
 
@@ -2296,28 +2296,28 @@
                         draw();
                     }
 
-                    body.removeClass("yp-clean-look yp-responsive-resizing yp-responsive-resizing-bottom");
+                    body.removeClass("wyp-clean-look wyp-responsive-resizing wyp-responsive-resizing-bottom");
 
                     setTimeout(function() {
-                        body.removeClass("yp-hide-borders-now");
+                        body.removeClass("wyp-hide-borders-now");
                     }, 25);
 
                     if (window.SelectorDisableResizeBottom === true) {
-                        $(".yp-selector-mode").trigger("click");
+                        $(".wyp-selector-mode").trigger("click");
                         window.SelectorDisableResizeBottom = false;
                     }
 
                     if (window.rulerWasActive === false) {
-                        $(".yp-ruler-btn").trigger("click");
+                        $(".wyp-ruler-btn").trigger("click");
                     }
 
                     if(window.selectorWasActive === true){
-                        if($(".yp-selector-mode").hasClass("active") === false){
-                            $(".yp-selector-mode").trigger("click");
+                        if($(".wyp-selector-mode").hasClass("active") === false){
+                            $(".wyp-selector-mode").trigger("click");
                         }
                     }else{
-                        if($(".yp-selector-mode").hasClass("active")){
-                            $(".yp-selector-mode").trigger("click");
+                        if($(".wyp-selector-mode").hasClass("active")){
+                            $(".wyp-selector-mode").trigger("click");
                         }
                     }
 
@@ -2362,9 +2362,9 @@
 
                 // Multi selecting support
                 if(ctrlKey === false && tagType === false){
-                    body.removeClass("yp-control-key-down");
-                    iframe.find(".yp-multiple-selected").removeClass("yp-multiple-selected");
-                    iframe.find(".yp-selected-others-multiable-box").remove();
+                    body.removeClass("wyp-control-key-down");
+                    iframe.find(".wyp-multiple-selected").removeClass("wyp-multiple-selected");
+                    iframe.find(".wyp-selected-others-multiable-box").remove();
                 }
 
             });
@@ -2460,13 +2460,13 @@
                             if (get_selected_element().parent()[0].nodeName.toLowerCase() != "html") {
 
                                 // add class to parent.
-                                get_selected_element().parent().addClass("yp-will-selected");
+                                get_selected_element().parent().addClass("wyp-will-selected");
 
                                 // clean
                                 clean();
 
                                 // Get parent selector.
-                                var parentSelector = $.trim(get_parents(iframe.find(".yp-will-selected"), "default"));
+                                var parentSelector = $.trim(get_parents(iframe.find(".wyp-will-selected"), "default"));
 
                                 // Set Selector
                                 set_selector(parentSelector, null, true);
@@ -2489,14 +2489,14 @@
 
                     if($(".sweet-alert").css("display") == 'none' || $(".sweet-alert").length === 0){
 
-                        if($(".yp-popup-background").css("display") != 'none'){
-                            $(".yp-info-modal-close").trigger("click");
+                        if($(".wyp-popup-background").css("display") != 'none'){
+                            $(".wyp-info-modal-close").trigger("click");
                             return false;
                         }
 
-                        if ($(".yp-button-target.active").length <= 0) {
-                            $("#yp-button-target-input").val("");
-                            $(".yp-button-target").trigger("click");
+                        if ($(".wyp-button-target.active").length <= 0) {
+                            $("#wyp-button-target-input").val("");
+                            $(".wyp-button-target").trigger("click");
                             return false;
                         }
 
@@ -2511,9 +2511,9 @@
                         // Compare key down time with key up time
                         if (+keyDownAt > +lastKeyUpAt && is_content_selected()){
 
-                            body.addClass("yp-control-key-down");
+                            body.addClass("wyp-control-key-down");
 
-                            var recentElement = iframe.find(".yp-recent-hover-element");
+                            var recentElement = iframe.find(".wyp-recent-hover-element");
 
                             if(recentElement.length > 0){
                                 recentElement.trigger("mouseover");
@@ -2618,7 +2618,7 @@
 
                     clearTimeout(window.historyDelay);
 
-                    if(mainBody.hasClass("yp-history-delay")){
+                    if(mainBody.hasClass("wyp-history-delay")){
 
                         window.historyDelay = setTimeout(function(){
                             undo_changes();
@@ -2639,7 +2639,7 @@
                 if (code == 71 && ctrlKey === true && tagType === false) {
                     e.preventDefault();
 
-                    body.toggleClass("yp-smart-guide-disabled");
+                    body.toggleClass("wyp-smart-guide-disabled");
                     return false;
                 }
 
@@ -2651,7 +2651,7 @@
 
                     clearTimeout(window.historyDelay);
 
-                    if(mainBody.hasClass("yp-history-delay")){
+                    if(mainBody.hasClass("wyp-history-delay")){
 
                         window.historyDelay = setTimeout(function(){
                             redo_changes();
@@ -2673,18 +2673,18 @@
                     e.preventDefault();
 
                     // ESC close customize type window.
-                    if($("#yp-customizing-type-frame").length > 0){
-                        if($("#yp-customizing-type-frame").css("display") == 'block'){
-                                $("#yp-current-page").removeClass("active");
-                                $("#yp-customizing-type-frame").css("display", "none");
+                    if($("#wyp-customizing-type-frame").length > 0){
+                        if($("#wyp-customizing-type-frame").css("display") == 'block'){
+                                $("#wyp-current-page").removeClass("active");
+                                $("#wyp-customizing-type-frame").css("display", "none");
                             return false;
                         }
                     }
 
                     // ESC Disable picker
-                    if(mainBody.hasClass("yp-element-picker-active")){
-                        mainBody.removeClass("yp-element-picker-active");
-                        $(".yp-element-picker").removeClass("active");
+                    if(mainBody.hasClass("wyp-element-picker-active")){
+                        mainBody.removeClass("wyp-element-picker-active");
+                        $(".wyp-element-picker").removeClass("active");
                         return false;
                     }
 
@@ -2717,7 +2717,7 @@
                         }
 
                     } else {
-                        body.removeClass("yp-select-open");
+                        body.removeClass("wyp-select-open");
                     }
 
                 }
@@ -2729,7 +2729,7 @@
 
                     var element = get_selected_element();
 
-                    if (iframe.find(".yp-selected-tooltip").hasClass("yp-fixed-tooltip") || iframe.find(".yp-selected-tooltip").hasClass("yp-fixed-tooltip-bottom")) {
+                    if (iframe.find(".wyp-selected-tooltip").hasClass("wyp-fixed-tooltip") || iframe.find(".wyp-selected-tooltip").hasClass("wyp-fixed-tooltip-bottom")) {
                         var height = parseInt($(window).height() / 2);
                         var selectedHeight = parseInt(element.height() / 2);
                         var scrollPosition = selectedHeight + element.offset().top - height;
@@ -2741,14 +2741,14 @@
                 }
 
                 // Space key select hovered element
-                if (code == 32 && shifted === false && tagType === false && is_content_selected() === false && $(".yp-selector-mode").hasClass("active")) {
+                if (code == 32 && shifted === false && tagType === false && is_content_selected() === false && $(".wyp-selector-mode").hasClass("active")) {
 
                     e.preventDefault();
 
-                    if(iframe.find(".yp-selected").length > 0){
+                    if(iframe.find(".wyp-selected").length > 0){
 
 
-                        if(mainBody.hasClass("yp-single-inspector-active")){
+                        if(mainBody.hasClass("wyp-single-inspector-active")){
                             selector = $.trim(get_parents(null, "sharp"));
                         }else{
                             selector = $.trim(get_parents(null, "default"));
@@ -2763,14 +2763,14 @@
                 }
 
                 // Space key select multiple hovered element
-                if (code == 32 && shifted === true && tagType === false && is_content_selected() === true && $(".yp-selector-mode").hasClass("active")) {
+                if (code == 32 && shifted === true && tagType === false && is_content_selected() === true && $(".wyp-selector-mode").hasClass("active")) {
 
                     e.preventDefault();
 
                     var selectorCurrent = get_current_selector();
-                    var selectorNew = get_parents(iframe.find(".yp-multiple-selected"), "sharp");
-                    iframe.find(".yp-selected-others-multiable-box").remove();
-                    iframe.find(".yp-multiple-selected").addClass("yp-selected-others").removeClass("yp-multiple-selected");
+                    var selectorNew = get_parents(iframe.find(".wyp-multiple-selected"), "sharp");
+                    iframe.find(".wyp-selected-others-multiable-box").remove();
+                    iframe.find(".wyp-multiple-selected").addClass("wyp-selected-others").removeClass("wyp-multiple-selected");
                     set_selector(selectorCurrent+","+selectorNew, get_selected_element(), true);
 
                     return false;
@@ -2780,21 +2780,21 @@
                 // R Key
                 if (code == 82 && ctrlKey === false && tagType === false) {
                     e.preventDefault();
-                    $(".yp-responsive-btn").trigger("click");
+                    $(".wyp-responsive-btn").trigger("click");
                     return false;
                 }
 
                 // M Key
                 if (code == 77 && ctrlKey === false && tagType === false) {
                     e.preventDefault();
-                    $(".yp-ruler-btn").trigger("click");
+                    $(".wyp-ruler-btn").trigger("click");
                     return false;
                 }
 
                 // W Key
                 if (code == 87 && ctrlKey === false && tagType === false) {
                     e.preventDefault();
-                    $(".yp-wireframe-btn").trigger("click");
+                    $(".wyp-wireframe-btn").trigger("click");
                     return false;
                 }
 
@@ -2815,7 +2815,7 @@
                 // L Key
                 if (code == 76 && ctrlKey === false && tagType === false && is_dragging() === false) {
                     e.preventDefault();
-                    body.toggleClass("yp-hide-borders-now");
+                    body.toggleClass("wyp-hide-borders-now");
                     return false;
                 }
 
@@ -2848,7 +2848,7 @@
                 // F Key
                 if (code == 70 && ctrlKey === false && tagType === false) {
                     e.preventDefault();
-                    $(".yp-button-target").trigger("click");
+                    $(".wyp-button-target").trigger("click");
                     return false;
                 }
 
@@ -2858,7 +2858,7 @@
             /* ---------------------------------------------------- */
             /* Up/Down keys for prefixes                            */
             /* ---------------------------------------------------- */
-            $(".yp-css-format").keydown(function(e){
+            $(".wyp-css-format").keydown(function(e){
 
                 if($(this).val() == 'xp'){
                     $(this).val("px");
@@ -2940,23 +2940,23 @@
             /* ---------------------------------------------------- */
             /* Measuring Tool                                       */
             /* ---------------------------------------------------- */
-            $(".yp-ruler-btn").click(function() {
+            $(".wyp-ruler-btn").click(function() {
 
                 if(is_content_selected() === false){
                     clean();
                 }
 
-                body.toggleClass("yp-metric-disable");
+                body.toggleClass("wyp-metric-disable");
                 gui_update();
 
                 // Disable selector mode.
                 if ($(this).hasClass("active") === false) {
-                    if ($(".yp-selector-mode.active").length > 0) {
+                    if ($(".wyp-selector-mode.active").length > 0) {
                         window.SelectorModeWasActive = true;
-                        $(".yp-selector-mode").removeClass("active");
+                        $(".wyp-selector-mode").removeClass("active");
                     }
                 } else {
-                    $(".yp-selector-mode").addClass("active");
+                    $(".wyp-selector-mode").addClass("active");
                 }
 
                 return false;
@@ -2966,19 +2966,19 @@
             /* ---------------------------------------------------- */
             /* Single Inspector Tool                                */
             /* ---------------------------------------------------- */
-            $(".yp-sharp-selector-btn").click(function() {
+            $(".wyp-sharp-selector-btn").click(function() {
 
-                body.toggleClass("yp-single-inspector-active");
+                body.toggleClass("wyp-single-inspector-active");
 
                 // Update variable
-                if(body.hasClass('yp-single-inspector-active')){
+                if(body.hasClass('wyp-single-inspector-active')){
                     window.singleInspector = true;
                 }else{
                     window.singleInspector = false;
                 }
 
-                if ($(".yp-selector-mode.active").length === 0) {
-                    $(".yp-selector-mode").trigger("click");
+                if ($(".wyp-selector-mode.active").length === 0) {
+                    $(".wyp-selector-mode").trigger("click");
                 }
             });
 
@@ -2986,7 +2986,7 @@
             /* ---------------------------------------------------- */
             /* Up / Down keys for property input value              */
             /* ---------------------------------------------------- */
-            $(".yp-css-value").keydown(function(e) {
+            $(".wyp-css-value").keydown(function(e) {
 
                 var code = e.keyCode || e.which;
 
@@ -3011,7 +3011,7 @@
             /* ---------------------------------------------------- */
             /* Select all value on input click                      */
             /* ---------------------------------------------------- */
-            $(".yp-after-css").click(function(){
+            $(".wyp-after-css").click(function(){
                 $(this).select();
             });
 
@@ -3020,7 +3020,7 @@
             /* ---------------------------------------------------- */
             /* Number filter for numberic properties input          */
             /* ---------------------------------------------------- */
-            $(".yp-css-value").keyup(function(e) {
+            $(".wyp-css-value").keyup(function(e) {
 
                 // Number only
                 var numbers = $(this).val().replace(/[^0-9.,-]/g,'');
@@ -3032,7 +3032,7 @@
                 // non-number only
                 var prefixs = $(this).val().replace(/[0-9.,-]/g,'');
 
-                var prefixSelector = $(this).parent().find(".yp-css-format");
+                var prefixSelector = $(this).parent().find(".wyp-css-format");
 
                 if(prefixs.length > 0){
 
@@ -3092,7 +3092,7 @@
                     return false;
                 }
 
-                if(is_resizing() || is_visual_editing() || is_dragging() || mainBody.hasClass("yp-processing-now")){
+                if(is_resizing() || is_visual_editing() || is_dragging() || mainBody.hasClass("wyp-processing-now")){
                     return false;
                 }
 
@@ -3108,16 +3108,16 @@
 
                 editor.commands.exec("redo", editor);
 
-                body.addClass("yp-css-data-trigger");
+                body.addClass("wyp-css-data-trigger");
                 $("#cssData").trigger("keyup");
 
                 draw();
 
                 // make transform mode if has.
-                var elx = iframeBody.find(".yp-selected");
-                body.removeClass("yp-has-transform");
+                var elx = iframeBody.find(".wyp-selected");
+                body.removeClass("wyp-has-transform");
                 if (check_with_parents(elx, "transform", "none", "!=") === true) {
-                    body.addClass("yp-has-transform");
+                    body.addClass("wyp-has-transform");
                 }
 
                 check_undoable_history();
@@ -3139,7 +3139,7 @@
                     return false;
                 }
 
-                if(is_resizing() || is_visual_editing() || is_dragging() || mainBody.hasClass("yp-processing-now")){
+                if(is_resizing() || is_visual_editing() || is_dragging() || mainBody.hasClass("wyp-processing-now")){
                         return false;
                     }
 
@@ -3155,25 +3155,25 @@
 
                     editor.commands.exec("undo", editor);
 
-                    body.addClass("yp-css-data-trigger");
+                    body.addClass("wyp-css-data-trigger");
                     $("#cssData").trigger("keyup");
                     draw();
 
                     // Update draggable after undo
-                    var elx = iframeBody.find(".yp-selected");
+                    var elx = iframeBody.find(".wyp-selected");
                     if(elx.length > 0){
 
                         if(elx.css("position") == 'static'){
                             elx.css("position","relative");
-                            iframeBody.find(".yp-selected-others").css("position","relative");
+                            iframeBody.find(".wyp-selected-others").css("position","relative");
                         }
 
                     }
 
                 // make transform mode if has.
-                body.removeClass("yp-has-transform");
+                body.removeClass("wyp-has-transform");
                 if (check_with_parents(elx, "transform", "none", "!=") === true) {
-                    body.addClass("yp-has-transform");
+                    body.addClass("wyp-has-transform");
                 }
 
                 check_undoable_history();
@@ -3226,7 +3226,7 @@
             /* ---------------------------------------------------- */
             /* Live Preview Button                                  */
             /* ---------------------------------------------------- */
-            $(".yp-button-live").click(function() {
+            $(".wyp-button-live").click(function() {
 
                 var el = $(this);
                 var href = el.attr("data-href");
@@ -3239,7 +3239,7 @@
                 }
 
                 var type, allcss = '';
-                iframe.find(".yp-data-updated").each(function(){
+                iframe.find(".wyp-data-updated").each(function(){
 
                     // Current source type: Global, template, single.
                     type = $(this).attr("data-source-mode");
@@ -3250,8 +3250,8 @@
                 });
 
                 var previewAjax = $.post( ajaxurl, {
-                    action: "yp_preview_data_save",
-                    yp_data: allcss
+                    action: "wyp_preview_data_save",
+                    wyp_data: allcss
                 });
 
                 // Done.
@@ -3267,14 +3267,14 @@
             /* ---------------------------------------------------- */
             /* Visitor view avatar                                  */
             /* ---------------------------------------------------- */
-            $(".yp-logout-btn").click(function(e){
+            $(".wyp-logout-btn").click(function(e){
 
                 if (mainBody.hasClass("yp-yellow-pencil-demo-mode")) {
                     e.preventDefault();
                     swal({title: "Sorry.",text: l18_visitor_view,type: "info",animation: false,customClass: "editor-style-ok"});
                 }
 
-                $(".yp-logout-btn").tooltip("hide");
+                $(".wyp-logout-btn").tooltip("hide");
 
             });
 
@@ -3294,9 +3294,9 @@
 
                 body.attr("data-clickable-select", selector);
 
-                if (iframe.find(".yp-will-selected").length > 0) {
-                    iframe.find(".yp-will-selected").trigger("mouseover").trigger("click");
-                    iframe.find(".yp-will-selected").removeClass("yp-will-selected");
+                if (iframe.find(".wyp-will-selected").length > 0) {
+                    iframe.find(".wyp-will-selected").trigger("mouseover").trigger("click");
+                    iframe.find(".wyp-will-selected").removeClass("wyp-will-selected");
                 } else if(selected !== null){
                     selected.trigger("mouseover").trigger("click");
                 }else{
@@ -3304,42 +3304,42 @@
                 }
 
                 if (element.length > 1) {
-                    element.addClass("yp-selected-others");
-                    get_selected_element().removeClass("yp-selected-others");
+                    element.addClass("wyp-selected-others");
+                    get_selected_element().removeClass("wyp-selected-others");
                 }
 
-                body.addClass("yp-content-selected");
+                body.addClass("wyp-content-selected");
 
                 window.orginalHeight = parseFloat(element.css("height").replace(/px/g,''));
                 window.orginalWidth = parseFloat(element.css("width").replace(/px/g,''));
 
                 if(element.css("float") == 'right'){
-                    body.addClass("yp-element-float");
+                    body.addClass("wyp-element-float");
                 }else{
-                    body.removeClass("yp-element-float");
+                    body.removeClass("wyp-element-float");
                 }
 
                 var ttag = element.prop("tagName").toLowerCase();
                 if(ttag == 'ul' || ttag == 'ol' || ttag == 'li'){
-                    body.addClass("yp-element-list");
+                    body.addClass("wyp-element-list");
                     }else{
-                    body.removeClass("yp-element-list");
+                    body.removeClass("wyp-element-list");
                 }
 
                 if($(".advanced-info-box").css("display") == 'block'){
                     update_design_information("all");
                 }
 
-                var tooltip = iframe.find(".yp-selected-tooltip");
-                tooltip.html("<small class='yp-tooltip-small'>" + iframe.find(".yp-selected-tooltip small").html() + "</small> " + selector);
+                var tooltip = iframe.find(".wyp-selected-tooltip");
+                tooltip.html("<small class='wyp-tooltip-small'>" + iframe.find(".wyp-selected-tooltip small").html() + "</small> " + selector);
 
                 // Use native hover system
                 if (selector.match(/:hover/g)) {
 
                     body.addClass("yp-selector-hover");
-                    body.attr("data-yp-selector", ":hover");
-                    $(".yp-contextmenu-hover").addClass("yp-active-contextmenu");
-                    iframe.find(".yp-selected-tooltip span").remove();
+                    body.attr("data-wyp-selector", ":hover");
+                    $(".wyp-contextmenu-hover").addClass("wyp-active-contextmenu");
+                    iframe.find(".wyp-selected-tooltip span").remove();
                     selector = selector.replace(/:hover/g, "");
 
                     add_class_to_parents();
@@ -3350,9 +3350,9 @@
                 if (selector.match(/:focus/g)) {
 
                     body.addClass("yp-selector-focus");
-                    body.attr("data-yp-selector", ":focus");
-                    $(".yp-contextmenu-focus").addClass("yp-active-contextmenu");
-                    iframe.find(".yp-selected-tooltip span").remove();
+                    body.attr("data-wyp-selector", ":focus");
+                    $(".wyp-contextmenu-focus").addClass("wyp-active-contextmenu");
+                    iframe.find(".wyp-selected-tooltip span").remove();
                     selector = selector.replace(/:focus/g, "");
 
                     add_class_to_parents();
@@ -3363,8 +3363,8 @@
                 if (selector.match(/:visited/g)) {
 
                     body.addClass("yp-selector-visited");
-                    body.attr("data-yp-selector", ":visited");
-                    iframe.find(".yp-selected-tooltip span").remove();
+                    body.attr("data-wyp-selector", ":visited");
+                    iframe.find(".wyp-selected-tooltip span").remove();
                     selector = selector.replace(/:visited/g, "");
 
                     add_class_to_parents();
@@ -3375,8 +3375,8 @@
                 if (selector.match(/:link/g)) {
 
                     body.addClass("yp-selector-link");
-                    body.attr("data-yp-selector", ":link");
-                    iframe.find(".yp-selected-tooltip span").remove();
+                    body.attr("data-wyp-selector", ":link");
+                    iframe.find(".wyp-selected-tooltip span").remove();
                     selector = selector.replace(/:link/g, "");
 
                     add_class_to_parents();
@@ -3387,8 +3387,8 @@
                 if (selector.match(/:active/g)) {
 
                     body.addClass("yp-selector-active");
-                    body.attr("data-yp-selector", ":active");
-                    iframe.find(".yp-selected-tooltip span").remove();
+                    body.attr("data-wyp-selector", ":active");
+                    iframe.find(".wyp-selected-tooltip span").remove();
                     selector = selector.replace(/:active/g, "");
 
                     add_class_to_parents();
@@ -3453,7 +3453,7 @@
                 }
             });
 
-            $(".yp-none-btn").tooltip({
+            $(".wyp-none-btn").tooltip({
                 animation: false,
                 container: '.editor-panel',
                 title: l18_none
@@ -3489,7 +3489,7 @@
                 container: ".editor-panel"
             });
 
-            $('.yp-option-group,.yp-advanced-option').on('shown.bs.popover', function () {
+            $('.wyp-option-group,.wyp-advanced-option').on('shown.bs.popover', function () {
 
                 // Don't show if popover visible
                 if(parseFloat($(".popover").css("top")) < 80){
@@ -3520,9 +3520,9 @@
                     mainBody.append("<div class='fake-layer'></div>");
 
                     // Disable fixed right panel
-                    if(mainBody.hasClass("yp-fixed-right-panel")){
+                    if(mainBody.hasClass("wyp-fixed-right-panel")){
 
-                        mainBody.removeClass("yp-fixed-right-panel");
+                        mainBody.removeClass("wyp-fixed-right-panel");
 
                         // be sure panel visible
                         css_editor_toggle(true);
@@ -3532,7 +3532,7 @@
                         // Default is 300 width in fixed, set 288 when go default if width is default.
                         if($(".editor-panel").width() == 300){
                             var width = 288;
-                            mainBody.append("<style id='rightpanel-personalized-view'>.yp-fixed-right-panel:not(.yp-animate-manager-active) #iframe{width:calc(100% - "+width+"px - 46px) !important;}.editor-panel{width:"+width+"px !important;}</style>");
+                            mainBody.append("<style id='rightpanel-personalized-view'>.wyp-fixed-right-panel:not(.wyp-animate-manager-active) #iframe{width:calc(100% - "+width+"px - 46px) !important;}.editor-panel{width:"+width+"px !important;}</style>");
                         }
 
                         draw();
@@ -3548,9 +3548,9 @@
 
                     // Show placeover for fixed right
                     if(ui.position.left > ($(window).width() - $(".editor-panel").width())){
-                        $(".yp-right-panel-placeholder").show();
+                        $(".wyp-right-panel-placeholder").show();
                     }else{
-                        $(".yp-right-panel-placeholder").hide();
+                        $(".wyp-right-panel-placeholder").hide();
                     }
 
                     gui_update();
@@ -3565,17 +3565,17 @@
                     },5);
 
                     // remove placeholder
-                    $(".yp-right-panel-placeholder").hide();
+                    $(".wyp-right-panel-placeholder").hide();
 
                     // Go fixed right mode.
                     if(ui.position.left > ($(window).width() - $(".editor-panel").width())){
 
-                        mainBody.addClass("yp-fixed-right-panel");
+                        mainBody.addClass("wyp-fixed-right-panel");
 
                         // Default is 288 width, set 300 when go fixed if width is default.
                         if($(".editor-panel").width() == 288){
                             var width = 300;
-                            mainBody.append("<style id='rightpanel-personalized-view'>.yp-fixed-right-panel:not(.yp-animate-manager-active) #iframe{width:calc(100% - "+width+"px - 46px) !important;}.editor-panel{width:"+width+"px !important;}</style>");
+                            mainBody.append("<style id='rightpanel-personalized-view'>.wyp-fixed-right-panel:not(.wyp-animate-manager-active) #iframe{width:calc(100% - "+width+"px - 46px) !important;}.editor-panel{width:"+width+"px !important;}</style>");
                         }
 
                         draw();
@@ -3595,7 +3595,7 @@
             /* Add Fixed mode by cookie                             */
             /* ---------------------------------------------------- */
             if(read_cookie("FixedrightPanel", "0") == 1){
-                mainBody.addClass("yp-fixed-right-panel");
+                mainBody.addClass("wyp-fixed-right-panel");
             }
 
 
@@ -3708,7 +3708,7 @@
             /* ---------------------------------------------------- */
             /* Creating Animation                                   */
             /* ---------------------------------------------------- */
-            function yp_create_anim(name) {
+            function wyp_create_anim(name) {
 
                 // Variables
                 var total = $(".scenes .scene").length;
@@ -3720,7 +3720,7 @@
 
                     scenesData = scenesData + $(".scenes .scene-" + i + " input").val() + "% {";
 
-                    iframe.find(".yp-anim-scenes").find(".style-scene-" + i).each(function() {
+                    iframe.find(".wyp-anim-scenes").find(".style-scene-" + i).each(function() {
                         scenesData = scenesData + (($(this).html().match(/\{(.*?)\}/g)).toString().replace("{", "").replace("}", "")) + ";";
                     });
 
@@ -3931,21 +3931,21 @@
             /* ---------------------------------------------------- */
             /* Play & Stop Animation                                */
             /* ---------------------------------------------------- */
-            $(document).on("click", ".yp-anim-play", function() {
+            $(document).on("click", ".wyp-anim-play", function() {
 
                 var element = $(this);
 
                 // pause
-                if(mainBody.hasClass("yp-animate-test-playing")){
+                if(mainBody.hasClass("wyp-animate-test-playing")){
 
                     $(".scenes .scene-" + window.willActive + "").trigger("click");
 
                     element.html('<span class="dashicons dashicons-controls-play"></span>');
                     element.attr("data-original-title","Play").tooltip('fixTitle').tooltip("show");
 
-                    body.removeClass("yp-animate-test-playing");
+                    body.removeClass("wyp-animate-test-playing");
                     iframe.find(".animate-test-drive").empty();
-                    body.removeClass("yp-hide-borders-now");
+                    body.removeClass("wyp-hide-borders-now");
 
                     element_animation_end();
 
@@ -3969,7 +3969,7 @@
 
                 });
 
-                if (iframe.find(".yp-anim-scenes style").length === 0) {
+                if (iframe.find(".wyp-anim-scenes style").length === 0) {
                     swal({title: "Sorry.",text: l18_allScenesEmpty,animation: false,customClass: "editor-style-ok"});
                     return false;
                 }
@@ -3978,24 +3978,24 @@
                 $(".scenes .scene-1").trigger("click");
 
                 // Generate keyframe
-                var anim = yp_create_anim(animName);
+                var anim = wyp_create_anim(animName);
 
                 // add webkit for test.
                 anim = anim + " " + anim.replace(/@keyframes/g, '@-webkit-keyframes');
 
                 var delay,delayWait;
 
-                body.addClass("yp-hide-borders-now");
+                body.addClass("wyp-hide-borders-now");
 
                 // Clean scene classes.
-                var newClassList = $.trim(mainBody.attr("class").replace(/yp-scene-[0-9]/g, ''));
+                var newClassList = $.trim(mainBody.attr("class").replace(/wyp-scene-[0-9]/g, ''));
                 mainBody.attr("class", newClassList);
 
-                newClassList = $.trim(iframeBody.attr("class").replace(/yp-scene-[0-9]/g, ''));
+                newClassList = $.trim(iframeBody.attr("class").replace(/wyp-scene-[0-9]/g, ''));
                 iframeBody.attr("class", newClassList);
 
                 // AddClass
-                body.addClass("yp-animate-test-playing");
+                body.addClass("wyp-animate-test-playing");
 
                 // Clean
                 iframe.find(".animate-test-drive").empty();
@@ -4018,7 +4018,7 @@
                 delay = delay + $('#animation-duration-after').val();
 
                 // Play.
-                iframe.find(".animate-test-drive").append("<style>body.yp-animate-test-playing .yp-selected,body.yp-animate-test-playing .yp-selected-others{animation-name:" + animName + " !important;animation-duration:" + delay + " !important;animation-iteration-count:1 !important;}</style>");
+                iframe.find(".animate-test-drive").append("<style>body.wyp-animate-test-playing .wyp-selected,body.wyp-animate-test-playing .wyp-selected-others{animation-name:" + animName + " !important;animation-duration:" + delay + " !important;animation-iteration-count:1 !important;}</style>");
 
                 // playing.
                 element.html('<span class="dashicons dashicons-controls-pause"></span>');
@@ -4036,9 +4036,9 @@
                         element.tooltip('show');
                     }
 
-                    body.removeClass("yp-animate-test-playing");
+                    body.removeClass("wyp-animate-test-playing");
                     iframe.find(".animate-test-drive").empty();
-                    body.removeClass("yp-hide-borders-now");
+                    body.removeClass("wyp-hide-borders-now");
 
                     $(".scenes .scene-" + window.willActive + "").trigger("click");
 
@@ -4061,9 +4061,9 @@
             /* ---------------------------------------------------- */
             /* Save Animation                                       */
             /* ---------------------------------------------------- */
-            $(".yp-anim-save").click(function() {
+            $(".wyp-anim-save").click(function() {
 
-                if (iframe.find(".yp-anim-scenes style").length === 0) {
+                if (iframe.find(".wyp-anim-scenes style").length === 0) {
                     swal({title: "Sorry.",text: l18_allScenesEmpty,animation: false,customClass: "editor-style-ok"});
                     return false;
                 }
@@ -4071,7 +4071,7 @@
                 setTimeout(function(){
 
                     // update animation name.
-                    var animID = get_basic_id(uppercase_first_letter(get_tag_information(get_current_selector())))+"_Animate_" + parseInt($("#yp-animation-name-data option").length + 1);
+                    var animID = get_basic_id(uppercase_first_letter(get_tag_information(get_current_selector())))+"_Animate_" + parseInt($("#wyp-animation-name-data option").length + 1);
 
                     $(".editor-style-input input").val(animID).trigger("focus");
 
@@ -4094,33 +4094,33 @@
                     $(".scenes .scene-1").trigger("click");
 
                     var animName = $(".editor-style-input input").val();
-                    var anim = yp_create_anim(animName);
+                    var anim = wyp_create_anim(animName);
 
                     var posting = $.post(ajaxurl, {
 
-                        action: "yp_add_animation",
-                        yp_anim_data: anim,
-                        yp_anim_name: animName
+                        action: "wyp_add_animation",
+                        wyp_anim_data: anim,
+                        wyp_anim_name: animName
 
                     });
 
                     // Add animation name
-                    $("#yp-animation-name-data").append("<option data-text='" + animName + "' data-content='" + animName + "' value='" + animName + "'>" + animName + "</option>");
+                    $("#wyp-animation-name-data").append("<option data-text='" + animName + "' data-content='" + animName + "' value='" + animName + "'>" + animName + "</option>");
 
                     // Get data by select
                     var data = [];
-                    $("#yp-animation-name-data option").each(function() {
+                    $("#wyp-animation-name-data option").each(function() {
                         data.push($(this).text());
                     });
 
                     // Autocomplete script
-                    $("#yp-animation-name").autocomplete({
+                    $("#wyp-animation-name").autocomplete({
                         source: data
                     });
 
                     // Append style
-                    iframe.find(".yp-animate-data").append("<style id='" + animName + "style'>" + anim + "</style>");
-                    iframe.find(".yp-animate-data").append("<style id='webkit-" + animName + "style'>" + anim.replace("@keyframes", "@-webkit-keyframes") + "</style>");
+                    iframe.find(".wyp-animate-data").append("<style id='" + animName + "style'>" + anim + "</style>");
+                    iframe.find(".wyp-animate-data").append("<style id='webkit-" + animName + "style'>" + anim.replace("@keyframes", "@-webkit-keyframes") + "</style>");
 
                     // close
                     close_animation_generator(false);
@@ -4130,7 +4130,7 @@
                         insert_rule(null, "animation-name", animName, '');
                         insert_rule(null, "animation-fill-mode", 'both', '');
                         $("li.animation-option").removeAttr("data-loaded");
-                        $("#yp-animation-name").val(animName).trigger("blur");
+                        $("#wyp-animation-name").val(animName).trigger("blur");
                         focus_option("animation-name");
                     }, 500);
 
@@ -4148,19 +4148,19 @@
             function close_animation_generator(disable) {
 
                 // Clean classes.
-                body.removeClass("yp-anim-creator").removeAttr("data-anim-scene").removeClass("yp-animate-test-playing");
+                body.removeClass("wyp-anim-creator").removeAttr("data-anim-scene").removeClass("wyp-animate-test-playing");
 
                 body.removeAttr("data-anim-scene");
 
                 // Clean scene classes.
-                var newClassList = $.trim(mainBody.attr("class").replace(/yp-scene-[0-9]/g, ''));
+                var newClassList = $.trim(mainBody.attr("class").replace(/wyp-scene-[0-9]/g, ''));
                 mainBody.attr("class", newClassList);
 
-                newClassList = $.trim(iframeBody.attr("class").replace(/yp-scene-[0-9]/g, ''));
+                newClassList = $.trim(iframeBody.attr("class").replace(/wyp-scene-[0-9]/g, ''));
                 iframeBody.attr("class", newClassList);
 
                 // Clean all scene data.
-                iframe.find(".yp-anim-scenes .scene-1,.yp-anim-scenes .scene-2,.yp-anim-scenes .scene-3,.yp-anim-scenes .scene-4,.yp-anim-scenes .scene-5,.yp-anim-scenes .scene-6").empty();
+                iframe.find(".wyp-anim-scenes .scene-1,.wyp-anim-scenes .scene-2,.wyp-anim-scenes .scene-3,.wyp-anim-scenes .scene-4,.wyp-anim-scenes .scene-5,.wyp-anim-scenes .scene-6").empty();
 
                 // Set default data again.
                 insert_default_options();
@@ -4198,7 +4198,7 @@
             function focus_option(id){
 
                 var group = $("#" + id + "-group");
-                $(".yp-this-content").hide();
+                $(".wyp-this-content").hide();
                 $(".editor-panel-list > li").removeClass("active");
                 group.parent().prev("h3").trigger("click");
                 group.parent().parent("li").show(); // be sure it visible.
@@ -4235,7 +4235,7 @@
                 }
 
                 // Delete all styles for this scene.
-                iframe.find(".yp-anim-scenes .scene-" + current + "").empty();
+                iframe.find(".wyp-anim-scenes .scene-" + current + "").empty();
 
                 // prev active
                 $(".scenes .scene-" + (current - 1) + "").trigger("click");
@@ -4254,7 +4254,7 @@
 
                 var content = '';
 
-                iframe.find(".yp-anim-scenes ." + activeScene + " style").each(function(){
+                iframe.find(".wyp-anim-scenes ." + activeScene + " style").each(function(){
 
                     content += "<span class='anim-info-rule'>" + $(this).attr("data-rule") + ": </span>";
                     content += "<span class='anim-info-value'>" + esc_data_value($(this).html()) + "</span>";
@@ -4350,13 +4350,13 @@
 
                     // scan current scene styles
                     var rule, style, prevStyle;
-                    iframe.find(".yp-anim-scenes .scene-" + next + " style").each(function(){
+                    iframe.find(".wyp-anim-scenes .scene-" + next + " style").each(function(){
 
                         style = $(this);
                         rule = style.attr("data-rule");
 
                         // check if same rule has in previous scene
-                        prevStyle = iframe.find(".yp-anim-scenes .scene-" + parseInt(next - 1) + " style[data-rule='"+rule+"']");
+                        prevStyle = iframe.find(".wyp-anim-scenes .scene-" + parseInt(next - 1) + " style[data-rule='"+rule+"']");
 
                         // skip if not has
                         if(prevStyle.length == 0){
@@ -4364,7 +4364,7 @@
                         }
 
                         // apply previous rule style to current scene rule style
-                        style.html(prevStyle.html().replace(/body\.yp-scene-(\d+)/g, 'body.yp-scene-' + next));
+                        style.html(prevStyle.html().replace(/body\.wyp-scene-(\d+)/g, 'body.wyp-scene-' + next));
 
                     });
 
@@ -4384,24 +4384,24 @@
                 body.attr("data-anim-scene", $(this).attr("data-scene"));
 
                 // Delete ex scene classes.
-                var newClassList = $.trim(mainBody.attr("class").replace(/yp-scene-[0-9]/g, ''));
+                var newClassList = $.trim(mainBody.attr("class").replace(/wyp-scene-[0-9]/g, ''));
                 mainBody.attr("class", newClassList);
 
-                newClassList = $.trim(iframeBody.attr("class").replace(/yp-scene-[0-9]/g, ''));
+                newClassList = $.trim(iframeBody.attr("class").replace(/wyp-scene-[0-9]/g, ''));
                 iframeBody.attr("class", newClassList);
 
                 // Add new scene class.
-                body.addClass("yp-" + $(this).attr("data-scene"));
+                body.addClass("wyp-" + $(this).attr("data-scene"));
 
                 // loop
                 for (var currentVal = parseInt($(this).attr("data-scene").replace("scene-", ""));currentVal > 1; currentVal--) {
                     if (currentVal !== 0) {
-                        body.addClass("yp-scene-" + currentVal);
+                        body.addClass("wyp-scene-" + currentVal);
                     }
                 }
 
                 insert_default_options();
-                $(".yp-disable-btn.active").trigger("click");
+                $(".wyp-disable-btn.active").trigger("click");
 
                 draw();
 
@@ -4411,7 +4411,7 @@
             /* ---------------------------------------------------- */
             /* Cancel Animation Generating                          */
             /* ---------------------------------------------------- */
-            $(".yp-anim-cancel").click(function() {
+            $(".wyp-anim-cancel").click(function() {
 
                 swal({
                     title: l18_closeAnim,
@@ -4437,14 +4437,14 @@
             /* ---------------------------------------------------- */
             /* Open Animation Generator                             */
             /* ---------------------------------------------------- */
-            $(".yp-add-animation-link").click(function() {
+            $(".wyp-add-animation-link").click(function() {
 
-                window.animGeneratorOldAnim = $("#yp-animation-name").val();
-                window.animGeneratorOldAnimDuration = $("#yp-animation-duration").val();
-                window.animGeneratorOldAnimDelay = $("#yp-animation-delay").val();
+                window.animGeneratorOldAnim = $("#wyp-animation-name").val();
+                window.animGeneratorOldAnimDuration = $("#wyp-animation-duration").val();
+                window.animGeneratorOldAnimDelay = $("#wyp-animation-delay").val();
                 window.animGeneratorOldAnimDurationF = $("#animation-duration-after").val();
                 window.animGeneratorOldAnimDelayF = $("#animation-delay-after").val();
-                window.animGeneratorOldAnimFillMode = $("#yp-animation-fill-mode").val();
+                window.animGeneratorOldAnimFillMode = $("#wyp-animation-fill-mode").val();
 
                 if(window.animGeneratorOldAnim == 'none'){
                     window.animGeneratorOldAnim = 'disable';
@@ -4458,22 +4458,22 @@
                 }
 
                  // append anim data area.
-                if (iframe.find(".yp-anim-scenes").length === 0) {
+                if (iframe.find(".wyp-anim-scenes").length === 0) {
 
                     // Append anim style area.
-                    the_editor_data().after('<div class="yp-anim-scenes"><div class="scene-1"></div><div class="scene-2"></div><div class="scene-3"></div><div class="scene-4"></div><div class="scene-5"></div><div class="scene-6"></div></div><div class="animate-test-drive"></div>');
+                    the_editor_data().after('<div class="wyp-anim-scenes"><div class="scene-1"></div><div class="scene-2"></div><div class="scene-3"></div><div class="scene-4"></div><div class="scene-5"></div><div class="scene-6"></div></div><div class="animate-test-drive"></div>');
 
                 }
 
                 // close css editor
-                if (mainBody.hasClass("yp-css-editor-active")) {
-                    $(".yp-css-close-btn").trigger("click");
+                if (mainBody.hasClass("wyp-css-editor-active")) {
+                    $(".wyp-css-close-btn").trigger("click");
                 }
 
                 // Start
-                body.addClass("yp-anim-creator");
+                body.addClass("wyp-anim-creator");
 
-                body.addClass("yp-scene-1");
+                body.addClass("wyp-scene-1");
                 body.attr("data-anim-scene", "scene-1");
 
                 $(".scene-active").removeClass("scene-active");
@@ -4497,19 +4497,19 @@
             /* ---------------------------------------------------- */
             /* Inline Collapse, used for transform                  */
             /* ---------------------------------------------------- */
-            $(".yp-advanced-link").click(function() {
+            $(".wyp-advanced-link").click(function() {
 
-                if ($(this).hasClass("yp-add-animation-link")) {
+                if ($(this).hasClass("wyp-add-animation-link")) {
                     return false;
                 }
 
-                $(".yp-on").not(this).removeClass("yp-on");
+                $(".wyp-on").not(this).removeClass("wyp-on");
 
-                $(".yp-advanced-option").not($(this).next(".yp-advanced-option")).hide(0);
+                $(".wyp-advanced-option").not($(this).next(".wyp-advanced-option")).hide(0);
 
-                $(this).next(".yp-advanced-option").toggle(0);
+                $(this).next(".wyp-advanced-option").toggle(0);
 
-                $(this).toggleClass("yp-on");
+                $(this).toggleClass("wyp-on");
 
                 gui_update();
 
@@ -4519,7 +4519,7 @@
             /* ---------------------------------------------------- */
             /* Updating Responsive handles on CSS editor toggle     */
             /* ---------------------------------------------------- */
-            $(".leftbar-button,.yp-css-close-btn").click(function(){
+            $(".leftbar-button,.wyp-css-close-btn").click(function(){
                 setTimeout(function(){
                     window.FrameleftOffset = undefined;
                     draw_responsive_handle();
@@ -4537,7 +4537,7 @@
                     $(this).toggleClass("active");
                     $(this).tooltip("hide");
 
-                }else if($(this).hasClass("yp-selector-mode") === false && $(this).hasClass("yp-button-target") === false){
+                }else if($(this).hasClass("wyp-selector-mode") === false && $(this).hasClass("wyp-button-target") === false){
 
                     $(this).toggleClass("active");
                     $(this).tooltip("hide");
@@ -4554,7 +4554,7 @@
 
                 clearTimeout(window.historyDelay);
 
-                if(mainBody.hasClass("yp-history-delay")){
+                if(mainBody.hasClass("wyp-history-delay")){
 
                     window.historyDelay = setTimeout(function(){
                         undo_changes();
@@ -4574,7 +4574,7 @@
 
                 clearTimeout(window.historyDelay);
 
-                if(mainBody.hasClass("yp-history-delay")){
+                if(mainBody.hasClass("wyp-history-delay")){
 
                     window.historyDelay = setTimeout(function(){
                         redo_changes();
@@ -4590,20 +4590,20 @@
             /* ---------------------------------------------------- */
             /* Open Pattern section and dynamic loads               */
             /* ---------------------------------------------------- */
-            $(".yp-bg-img-btn").click(function() {
+            $(".wyp-bg-img-btn").click(function() {
 
                 // Show pattern section
                 $(this).toggleClass("active");
-                $(".yp_background_assets").toggle();
+                $(".wyp_background_assets").toggle();
 
                 // get CSS
-                var val = $("#yp-background-image").val();
+                var val = $("#wyp-background-image").val();
 
                 // Update active pattern
                 if(val.indexOf("yellow-pencil") == -1){
-                    $(".yp_bg_assets").removeClass("active");
+                    $(".wyp_bg_assets").removeClass("active");
                 }else{
-                    $(".yp_bg_assets[data-url='" + val.replace(/"/g, "").replace(/'/g, "").replace(/url\(/g, "").replace(/\)/g, "") + "']").addClass("active");
+                    $(".wyp_bg_assets[data-url='" + val.replace(/"/g, "").replace(/'/g, "").replace(/url\(/g, "").replace(/\)/g, "") + "']").addClass("active");
                 }
 
                 // Delay
@@ -4611,11 +4611,11 @@
 
                     var activePattern = 0;
 
-                    if($(".yp_bg_assets.active").length > 0){
-                        activePattern = ($(".yp_bg_assets.active").index()-1) * 100;
+                    if($(".wyp_bg_assets.active").length > 0){
+                        activePattern = ($(".wyp_bg_assets.active").index()-1) * 100;
                     }
 
-                    $(".yp_background_assets").scrollTop(activePattern);
+                    $(".wyp_background_assets").scrollTop(activePattern);
 
                     load_near_patterns(activePattern);
 
@@ -4629,8 +4629,8 @@
             /* ---------------------------------------------------- */
             /* Adds focus class to mouseenter pattern               */
             /* ---------------------------------------------------- */
-            $(".yp_bg_assets").on("mouseenter mouseover",function(){
-                $(".yp_bg_assets").removeClass("focus");
+            $(".wyp_bg_assets").on("mouseenter mouseover",function(){
+                $(".wyp_bg_assets").removeClass("focus");
                 $(this).addClass("focus");
             });
 
@@ -4638,7 +4638,7 @@
             /* ---------------------------------------------------- */
             /* Loads background patterns on scrolling               */
             /* ---------------------------------------------------- */
-            $(".yp_background_assets").on("scroll",function(){
+            $(".wyp_background_assets").on("scroll",function(){
                 load_near_patterns(null);
             });
 
@@ -4649,7 +4649,7 @@
             function load_near_patterns(scrollTop){
 
                 if(scrollTop == null){
-                    scrollTop = $(".yp_background_assets").scrollTop();
+                    scrollTop = $(".wyp_background_assets").scrollTop();
                 }
 
                 var start = parseInt(scrollTop/100) - 2;
@@ -4660,7 +4660,7 @@
 
                 for(var i = start; i < end; i++){
 
-                    element = $(".yp_bg_assets:nth-child("+i+")");
+                    element = $(".wyp_bg_assets:nth-child("+i+")");
                     element.css("backgroundImage", "url(" + element.data("url") + ")");
 
                 }
@@ -4670,10 +4670,10 @@
             /* ---------------------------------------------------- */
             /* Flat color toggle                                    */
             /* ---------------------------------------------------- */
-            $(".yp-flat-colors").click(function() {
+            $(".wyp-flat-colors").click(function() {
 
                 $(this).toggleClass("active");
-                $(this).parent().find(".yp_flat_colors_area").toggle();
+                $(this).parent().find(".wyp_flat_colors_area").toggle();
 
                 gui_update();
 
@@ -4683,7 +4683,7 @@
             /* ---------------------------------------------------- */
             /* Gradient Toggle                                    */
             /* ---------------------------------------------------- */
-            $(".yp-gradient-btn").on("click", function() {
+            $(".wyp-gradient-btn").on("click", function() {
 
                 var el = $(this);
 
@@ -4691,7 +4691,7 @@
                 if(!el.hasClass("active")){
 
                     // Background image data
-                    var data = $("#yp-background-image").val();
+                    var data = $("#wyp-background-image").val();
 
                     // if has gradient, read it
                     if(data.indexOf("linear-gradient(") != -1){
@@ -4712,7 +4712,7 @@
                 el.toggleClass("active");
 
                 // show gradient tool
-                $(".yp-gradient-section").toggle();
+                $(".wyp-gradient-section").toggle();
 
                 // update gui
                 gui_update();
@@ -4723,10 +4723,10 @@
             /* ---------------------------------------------------- */
             /* Meterial Colors toggle                               */
             /* ---------------------------------------------------- */
-            $(".yp-meterial-colors").click(function() {
+            $(".wyp-meterial-colors").click(function() {
 
                 $(this).toggleClass("active");
-                $(this).parent().find(".yp_meterial_colors_area").toggle();
+                $(this).parent().find(".wyp_meterial_colors_area").toggle();
 
                 gui_update();
 
@@ -4736,9 +4736,9 @@
             /* ---------------------------------------------------- */
             /* Nice Colors toggle                                   */
             /* ---------------------------------------------------- */
-            $(".yp-nice-colors").click(function() {
+            $(".wyp-nice-colors").click(function() {
 
-                $(this).parent().find(".yp_nice_colors_area").toggle();
+                $(this).parent().find(".wyp_nice_colors_area").toggle();
                 $(this).toggleClass("active");
 
                 gui_update();
@@ -4749,7 +4749,7 @@
             /* ---------------------------------------------------- */
             /* Image uploader toggle                                */
             /* ---------------------------------------------------- */
-            $(".yp-upload-btn").click(function() {
+            $(".wyp-upload-btn").click(function() {
 
                 // Get iframe contents.
                 $('#image_uploader iframe').attr('src',$('#image_uploader iframe').attr('data-url'));
@@ -4786,9 +4786,9 @@
                     }
 
                     if($(".background-option.active").length > 0){
-                        $("#yp-background-image").val(imgNew).trigger("keyup");
+                        $("#wyp-background-image").val(imgNew).trigger("keyup");
                     }else{
-                        $("#yp-list-style-image").val(imgNew).trigger("keyup");
+                        $("#wyp-list-style-image").val(imgNew).trigger("keyup");
                     }
 
                     window.send_to_editor = window.restore_send_to_editor;
@@ -4828,9 +4828,9 @@
                 var imgurl = $('img', html).attr('src');
 
                  if($(".background-option.active").length > 0){
-                    $("#yp-background-image").val(imgurl);
+                    $("#wyp-background-image").val(imgurl);
                 }else{
-                    $("#yp-list-style-image").val(imgurl);
+                    $("#wyp-list-style-image").val(imgurl);
                 }
 
                 window.send_to_editor = window.restore_send_to_editor;
@@ -4863,7 +4863,7 @@
             /* ---------------------------------------------------- */
             function confirm_exit() {
 
-                if ($(".yp-save-btn").hasClass("waiting-for-save")) {
+                if ($(".wyp-save-btn").hasClass("waiting-for-save")) {
                     return confirm(l18_sure);
                 }
 
@@ -4872,20 +4872,20 @@
             /* ---------------------------------------------------- */
             /* Save button                                          */
             /* ---------------------------------------------------- */
-            $(".yp-save-btn").on("click", function() {
+            $(".wyp-save-btn").on("click", function() {
 
                 // If all changes already saved, So Stop.
-                if ($(this).hasClass("yp-disabled")) {
+                if ($(this).hasClass("wyp-disabled")) {
                     return false;
                 }
 
                 // Getting Customized page id.
-                var id = window.location.href.split("&yp_page_id=");
+                var id = window.location.href.split("&wyp_page_id=");
                 id = id[1].split("&");
                 id = id[0];
 
                 // Getting Customized Post Type
-                var type = window.location.href.split("&yp_page_type=");
+                var type = window.location.href.split("&wyp_page_type=");
                 type = type[1].split("&");
                 type = type[0];
 
@@ -4913,24 +4913,24 @@
 
                             $(".wt-save-btn").html(l18_save).removeClass("waiting-for-save").removeClass("wt-disabled");
 
-                            $(".yp-info-modal,.yp-popup-background").show();
+                            $(".wyp-info-modal,.wyp-popup-background").show();
 
                         } else {
 
                             // BeforeSend
-                            $(".yp-save-btn").html(l18_saving).addClass("yp-disabled");
+                            $(".wyp-save-btn").html(l18_saving).addClass("wyp-disabled");
 
                         }
 
                     } else {
 
                         // BeforeSend
-                        $(".yp-save-btn").html(l18_saving).addClass("yp-disabled");
+                        $(".wyp-save-btn").html(l18_saving).addClass("wyp-disabled");
 
                     }
 
                     // Convert CSS To Data and save.
-                    if (mainBody.hasClass("yp-need-to-process")) {
+                    if (mainBody.hasClass("wyp-need-to-process")) {
 
                         if (status) {
 
@@ -4938,7 +4938,7 @@
 
                             // wait for process end
                             setTimeout(function(){
-                                yp_ajax_save(id,type);
+                                wyp_ajax_save(id,type);
                             }, 100);
 
                             return false;
@@ -4947,7 +4947,7 @@
                     } else {
 
                         if (status) {
-                            yp_ajax_save(id,type);
+                            wyp_ajax_save(id,type);
                         }
 
                     }
@@ -4955,7 +4955,7 @@
                 } else {
 
                     swal({title: "Sorry.",text: l18_demo_alert,type: "info",animation: false,customClass: "editor-style-ok"});
-                    $(".yp-save-btn").html(l18_saved).addClass("yp-disabled").removeClass("waiting-for-save");
+                    $(".wyp-save-btn").html(l18_saved).addClass("wyp-disabled").removeClass("waiting-for-save");
 
                 }
 
@@ -4965,11 +4965,11 @@
             /* ---------------------------------------------------- */
             /* Saving Changes Ajax                                  */
             /* ---------------------------------------------------- */
-            function yp_ajax_save(id, page_type){
+            function wyp_ajax_save(id, page_type){
 
                 var type, editorData, data, allcss = '', singleSave, templateSave, globalSave;
                 var index = 0, completeIndex = 0;
-                iframe.find(".yp-data-updated").each(function(){
+                iframe.find(".wyp-data-updated").each(function(){
 
                     // +1
                     index++;
@@ -4990,11 +4990,11 @@
 
                         // Single Save
                         singleSave = $.post(ajaxurl, {
-                            action: "yp_ajax_save",
-                            yp_page_id: id,
-                            yp_stype: undefined,
-                            yp_data: data,
-                            yp_editor_data: editorData
+                            action: "wyp_ajax_save",
+                            wyp_page_id: id,
+                            wyp_stype: undefined,
+                            wyp_data: data,
+                            wyp_editor_data: editorData
                         }).complete(function(data){
                             completeIndex++;
                         });
@@ -5003,11 +5003,11 @@
 
                         // Template Save
                         templateSave = $.post(ajaxurl, {
-                            action: "yp_ajax_save",
-                            yp_page_id: undefined,
-                            yp_stype: page_type,
-                            yp_data: data,
-                            yp_editor_data: editorData
+                            action: "wyp_ajax_save",
+                            wyp_page_id: undefined,
+                            wyp_stype: page_type,
+                            wyp_data: data,
+                            wyp_editor_data: editorData
                         }).complete(function(data){
                             completeIndex++;
                         });
@@ -5016,11 +5016,11 @@
 
                         // Global Save
                         globalSave = $.post(ajaxurl, {
-                            action: "yp_ajax_save",
-                            yp_page_id: undefined,
-                            yp_stype: undefined,
-                            yp_data: data,
-                            yp_editor_data: editorData
+                            action: "wyp_ajax_save",
+                            wyp_page_id: undefined,
+                            wyp_stype: undefined,
+                            wyp_data: data,
+                            wyp_editor_data: editorData
                         }).complete(function(data){
                             completeIndex++;
                         });
@@ -5032,17 +5032,17 @@
 
                 // live preview
                 $.post(ajaxurl, {
-                    action: "yp_preview_data_save",
-                    yp_data: allcss
+                    action: "wyp_preview_data_save",
+                    wyp_data: allcss
                 });
 
                 // Done.
                 window.savingChecker =setInterval(function(){
 
                     if(completeIndex == index){
-                        $(".yp-save-btn").html(l18_saved).addClass("yp-disabled").removeClass("waiting-for-save");
+                        $(".wyp-save-btn").html(l18_saved).addClass("wyp-disabled").removeClass("waiting-for-save");
                         clearInterval(window.savingChecker);
-                        iframe.find(".yp-data-updated").removeClass("yp-data-updated");
+                        iframe.find(".wyp-data-updated").removeClass("wyp-data-updated");
                         $(".customizing-type-updated").removeClass("customizing-type-updated");
 
                     }
@@ -5067,7 +5067,7 @@
                     animation_fill_mode = null;
 
                     // Be sure there not have any element animating.
-                    if(el.hasClass("yp-animating") === false){
+                    if(el.hasClass("wyp-animating") === false){
 
                         // nowdays a lot website using animation on page loads.
                         // the problem is a lot animations has transfrom, opacity etc.
@@ -5178,16 +5178,16 @@
                     // Need to reflesh the position on scrolling and this will make feel slow the editor.
                     if (check_with_parents(get_selected_element(), "position", "fixed", "==") === true) {
 
-                        if (!mainBody.hasClass("yp-has-transform")){ // if not have.
+                        if (!mainBody.hasClass("wyp-has-transform")){ // if not have.
 
-                            body.addClass("yp-has-transform"); // add
+                            body.addClass("wyp-has-transform"); // add
 
                         }else{
 
                             // back to normal borders and update position.
                             timerx = setTimeout(function(){
 
-                                body.removeClass("yp-has-transform");
+                                body.removeClass("wyp-has-transform");
 
                                 draw();
 
@@ -5224,23 +5224,23 @@
             /* ---------------------------------------------------- */
             /* Set as Background Image                              */
             /* ---------------------------------------------------- */
-            $(".yp_background_assets div").click(function() {
-                $(".yp_background_assets div.active").removeClass("active");
-                $(this).parent().parent().find(".yp-input").val($(this).data("url")).trigger("keyup");
+            $(".wyp_background_assets div").click(function() {
+                $(".wyp_background_assets div.active").removeClass("active");
+                $(this).parent().parent().find(".wyp-input").val($(this).data("url")).trigger("keyup");
                 $(this).addClass("active");
-                $("#background-repeat-group .yp-none-btn:not(.active),#background-size-group .yp-none-btn:not(.active)").trigger("click");
+                $("#background-repeat-group .wyp-none-btn:not(.active),#background-size-group .wyp-none-btn:not(.active)").trigger("click");
             });
 
 
             /* ---------------------------------------------------- */
             /* Set Color                                            */
             /* ---------------------------------------------------- */
-            $(".yp_flat_colors_area div,.yp_meterial_colors_area div,.yp_nice_colors_area div").click(function() {
+            $(".wyp_flat_colors_area div,.wyp_meterial_colors_area div,.wyp_nice_colors_area div").click(function() {
 
                 var element = $(this);
                 var elementParent = element.parent();
 
-                $(".yp_flat_colors_area,.yp_meterial_colors_area,.yp_nice_colors_area").find(".active").removeClass("active");
+                $(".wyp_flat_colors_area,.wyp_meterial_colors_area,.wyp_nice_colors_area").find(".active").removeClass("active");
                 elementParent.parent().parent().parent().find(".wqcolorpicker").val($(this).data("color")).trigger("change");
                 $(this).addClass("active");
 
@@ -5262,7 +5262,7 @@
 
                 var el = $(event.target);
 
-                if($("#customizing-type-list").css("display") == 'block' && el.hasClass("yp-type-menu-link") == false){
+                if($("#customizing-type-list").css("display") == 'block' && el.hasClass("wyp-type-menu-link") == false){
                     if(el.parents("#customizing-type-list").length == 0){
                         $("#customizing-type-list").toggle();
                         return false;
@@ -5274,7 +5274,7 @@
                 if (el.is(".iris-picker") === false && el.is(".iris-square-inner") === false && el.is(".iris-square-handle") === false && el.is(".iris-slider-offset") === false && el.is(".iris-slider-offset .ui-slider-handle") === false && el.is(".iris-picker-inner") === false && el.is(".wqcolorpicker") === false) {
 
                     // first hide iris, later gradient. not all in one click.
-                    if($(".yp-gradient-section .iris-picker:visible").length > 0){
+                    if($(".wyp-gradient-section .iris-picker:visible").length > 0){
                         irisWasOpen = true;
                     }
 
@@ -5283,38 +5283,38 @@
                         gui_update();
                     }
 
-                    $(".yp-gradient-pointer-area").removeClass("gradient-pointer-no-cursor");
+                    $(".wyp-gradient-pointer-area").removeClass("gradient-pointer-no-cursor");
 
                 }
 
-                if (el.is('.yp_bg_assets') === false && el.is('.yp-none-btn') === false && el.is('.yp-bg-img-btn') === false && $(".yp_background_assets:visible").length > 0) {
-                    $(".yp_background_assets").hide();
-                    $(".yp-bg-img-btn").removeClass("active");
+                if (el.is('.wyp_bg_assets') === false && el.is('.wyp-none-btn') === false && el.is('.wyp-bg-img-btn') === false && $(".wyp_background_assets:visible").length > 0) {
+                    $(".wyp_background_assets").hide();
+                    $(".wyp-bg-img-btn").removeClass("active");
                     gui_update();
                 }
 
-                if (el.is('.yp-flat-c') === false && el.is('.yp-flat-colors') === false && $(".yp_flat_colors_area:visible").length > 0) {
-                    $(".yp_flat_colors_area").hide();
-                    $(".yp-flat-colors").removeClass("active");
+                if (el.is('.wyp-flat-c') === false && el.is('.wyp-flat-colors') === false && $(".wyp_flat_colors_area:visible").length > 0) {
+                    $(".wyp_flat_colors_area").hide();
+                    $(".wyp-flat-colors").removeClass("active");
                     gui_update();
                 }
 
-                if (el.is('.yp-meterial-c') === false && el.is('.yp-meterial-colors') === false && $(".yp_meterial_colors_area:visible").length > 0) {
-                    $(".yp_meterial_colors_area").hide();
-                    $(".yp-meterial-colors").removeClass("active");
+                if (el.is('.wyp-meterial-c') === false && el.is('.wyp-meterial-colors') === false && $(".wyp_meterial_colors_area:visible").length > 0) {
+                    $(".wyp_meterial_colors_area").hide();
+                    $(".wyp-meterial-colors").removeClass("active");
                     gui_update();
                 }
 
-                if (el.is('.yp-nice-c') === false && el.is('.yp-nice-colors') === false && $(".yp_nice_colors_area:visible").length > 0) {
-                    $(".yp_nice_colors_area").hide();
-                    $(".yp-nice-colors").removeClass("active");
+                if (el.is('.wyp-nice-c') === false && el.is('.wyp-nice-colors') === false && $(".wyp_nice_colors_area:visible").length > 0) {
+                    $(".wyp_nice_colors_area").hide();
+                    $(".wyp-nice-colors").removeClass("active");
                     gui_update();
                 }
 
 
-                if (irisWasOpen == false && $(".iris-picker:visible").length == 0 && el.parents('.context-menu-list').length === 0 && el.is('.context-menu-layer') === false && el.is('.yp-gradient-btn') === false && el.parents('.yp-gradient-section').length === 0 && $(".yp-gradient-section:visible").length > 0 && $(".yp-gradient-pointer.ui-draggable-dragging").length == 0 && $(".yp-gradient-orientation .ui-draggable-dragging").length == 0 && el.is("#context-menu-layer") == false && el.is(".context-menu-list") == false) {
-                    $(".yp-gradient-section").hide();
-                    $(".yp-gradient-pointer,.yp-gradient-btn").removeClass("active");
+                if (irisWasOpen == false && $(".iris-picker:visible").length == 0 && el.parents('.context-menu-list').length === 0 && el.is('.context-menu-layer') === false && el.is('.wyp-gradient-btn') === false && el.parents('.wyp-gradient-section').length === 0 && $(".wyp-gradient-section:visible").length > 0 && $(".wyp-gradient-pointer.ui-draggable-dragging").length == 0 && $(".wyp-gradient-orientation .ui-draggable-dragging").length == 0 && el.is("#context-menu-layer") == false && el.is(".context-menu-list") == false) {
+                    $(".wyp-gradient-section").hide();
+                    $(".wyp-gradient-pointer,.wyp-gradient-btn").removeClass("active");
                     gui_update();
                 }
 
@@ -5329,7 +5329,7 @@
             /* ---------------------------------------------------- */
             /* Search Selector Tool Close                           */
             /* ---------------------------------------------------- */
-            $("#yp-target-dropdown").on("click", function(e) {
+            $("#wyp-target-dropdown").on("click", function(e) {
                 if (e.target !== this) {
                     return;
                 }
@@ -5343,11 +5343,11 @@
             /* ---------------------------------------------------- */
             function add_similar_selectors(selector) {
 
-                if (selector == '' || selector == '.' || selector == '#' || selector == ' ' || selector == '  ' || selector == get_current_selector() || selector == $("#yp-button-target-input").val()) {
+                if (selector == '' || selector == '.' || selector == '#' || selector == ' ' || selector == '  ' || selector == get_current_selector() || selector == $("#wyp-button-target-input").val()) {
                     return false;
                 }
 
-                if ($("#yp-target-dropdown li").length < 10) {
+                if ($("#wyp-target-dropdown li").length < 10) {
 
                     if (iframe.find(selector).length === 0) {
                         return false;
@@ -5377,7 +5377,7 @@
                     selector = "<span style=\"color:#D70669\">" + selector.replace(new RegExp(role, "g"), '</span>' + role + '<span style="color:#D70669">') + "</span>";
                     selector = selector.replace(/<span style=\"(.*?)\">\#(.*?)<\/span>/g, '<span style="color:#6300FF">\#$2<\/span>');
 
-                    $("#yp-target-dropdown").append("<li id='" + get_id(selectorOrginal) + "'>" + selector + "</li>");
+                    $("#wyp-target-dropdown").append("<li id='" + get_id(selectorOrginal) + "'>" + selector + "</li>");
 
                 }
 
@@ -5391,15 +5391,15 @@
 
                 if (status === true) {
 
-                    if (mainBody.hasClass("yp-css-editor-active")) {
-                        $(".yp-css-close-btn").trigger("click");
+                    if (mainBody.hasClass("wyp-css-editor-active")) {
+                        $(".wyp-css-close-btn").trigger("click");
                     }
-                    mainBody.removeClass("yp-clean-look");
+                    mainBody.removeClass("wyp-clean-look");
 
                 } else {
-                    mainBody.toggleClass("yp-clean-look");
-                    if (mainBody.hasClass("yp-css-editor-active")) {
-                        mainBody.removeClass("yp-css-editor-active");
+                    mainBody.toggleClass("wyp-clean-look");
+                    if (mainBody.hasClass("wyp-css-editor-active")) {
+                        mainBody.removeClass("wyp-css-editor-active");
 
                         var ebtn = $(".css-editor-btn");
                         ebtn.attr("data-original-title",ebtn.attr("data-title"));
@@ -5419,15 +5419,15 @@
 
                 var selector;
 
-                $("#yp-target-dropdown li").remove();
+                $("#wyp-target-dropdown li").remove();
 
-                if ($("#yp-button-target-input").val() == '') {
+                if ($("#wyp-button-target-input").val() == '') {
 
                     selector = get_current_selector();
 
                 } else {
 
-                    selector = $("#yp-button-target-input").val();
+                    selector = $("#wyp-button-target-input").val();
 
                 }
 
@@ -5606,11 +5606,11 @@
             /* ---------------------------------------------------- */
             /* Click to similar selectors                           */
             /* ---------------------------------------------------- */
-            $(document).on("click", "#yp-target-dropdown li", function() {
+            $(document).on("click", "#wyp-target-dropdown li", function() {
 
-                $("#yp-button-target-input").val($(this).text().split(" |")[0]).trigger("keyup").trigger("focus");
+                $("#wyp-button-target-input").val($(this).text().split(" |")[0]).trigger("keyup").trigger("focus");
 
-                $(".yp-button-target").trigger("click");
+                $(".wyp-button-target").trigger("click");
 
             });
 
@@ -5618,9 +5618,9 @@
             /* ---------------------------------------------------- */
             /* Open Search Selector Tool                            */
             /* ---------------------------------------------------- */
-            $(".yp-button-target").click(function(e) {
+            $(".wyp-button-target").click(function(e) {
 
-                if ($(e.target).hasClass("yp-button-target-input")) {
+                if ($(e.target).hasClass("wyp-button-target-input")) {
                     return false;
                 }
 
@@ -5632,34 +5632,34 @@
                 var selector;
 
                 // if Search tool is closed
-                if (!element.hasClass("active") && body.hasClass("yp-pressed-enter-key") === false) {
+                if (!element.hasClass("active") && body.hasClass("wyp-pressed-enter-key") === false) {
 
-                    body.addClass("yp-target-active");
+                    body.addClass("wyp-target-active");
                     element.removeClass("active");
 
                     selector = get_current_selector();
 
-                    if (body.attr("data-yp-selector") == ':hover') {
+                    if (body.attr("data-wyp-selector") == ':hover') {
                         selector = selector + ":hover";
                         add_class_to_parents();
                     }
 
-                    if (body.attr("data-yp-selector") == ':focus') {
+                    if (body.attr("data-wyp-selector") == ':focus') {
                         selector = selector + ":focus";
                         add_class_to_parents();
                     }
 
-                    if (body.attr("data-yp-selector") == ':link') {
+                    if (body.attr("data-wyp-selector") == ':link') {
                         selector = selector + ":link";
                         add_class_to_parents();
                     }
 
-                    if (body.attr("data-yp-selector") == ':active') {
+                    if (body.attr("data-wyp-selector") == ':active') {
                         selector = selector + ":active";
                         add_class_to_parents();
                     }
 
-                    if (body.attr("data-yp-selector") == ':visited') {
+                    if (body.attr("data-wyp-selector") == ':visited') {
                         selector = selector + ":visited";
                         add_class_to_parents();
                     }
@@ -5668,17 +5668,17 @@
                         selector = '.';
                     }
 
-                    $("#yp-button-target-input").trigger("focus").val(selector).trigger("keyup");
+                    $("#wyp-button-target-input").trigger("focus").val(selector).trigger("keyup");
 
                     create_similar_selectors();
 
                 } else {
 
-                    selector = $("#yp-button-target-input").val();
+                    selector = $("#wyp-button-target-input").val();
 
                     if (selector == '' || selector == ' ') {
                         element.addClass("active");
-                        body.removeClass("yp-target-active");
+                        body.removeClass("wyp-target-active");
                     }
 
                     // Be sure hover and focus to last because just support hover&focus in last.
@@ -5729,8 +5729,8 @@
 
                     if (iframe.find(selectorNew).length > 0 && selectorNew != '*' && hoverPosition === 0 && focusPosition === 0) {
 
-                        if (iframe.find(selector).hasClass("yp-selected")) {
-                            get_selected_element().addClass("yp-will-selected");
+                        if (iframe.find(selector).hasClass("wyp-selected")) {
+                            get_selected_element().addClass("wyp-will-selected");
                         }
 
                         set_selector(space_cleaner(selector), null, true);
@@ -5742,14 +5742,14 @@
                         scroll_to_element(selectedElement);
 
                         element.addClass("active");
-                        body.removeClass("yp-target-active");
+                        body.removeClass("wyp-target-active");
 
                     } else if (selectorNew != '' && selectorNew != ' '){
 
-                        $("#yp-button-target-input").css("color", "red");
+                        $("#wyp-button-target-input").css("color", "red");
 
                         element.removeClass("active");
-                        body.addClass("yp-target-active");
+                        body.addClass("wyp-target-active");
 
                     }
 
@@ -5763,9 +5763,9 @@
             /* ---------------------------------------------------- */
             $("#target_background").click(function() {
 
-                body.removeClass("yp-target-active");
-                $("#yp-button-target-input").val("");
-                $(".yp-button-target").trigger("click");
+                body.removeClass("wyp-target-active");
+                $("#wyp-button-target-input").val("");
+                $(".wyp-button-target").trigger("click");
 
             });
 
@@ -5773,7 +5773,7 @@
             /* ---------------------------------------------------- */
             /* Writing to Search Selector Tool                      */
             /* ---------------------------------------------------- */
-            $("#yp-button-target-input").keyup(function(e) {
+            $("#wyp-button-target-input").keyup(function(e) {
 
                 if($(this).val().length > 1 || $(this).val() == '#' || $(this).val() == "."){
                     create_similar_selectors();
@@ -5785,9 +5785,9 @@
 
                 // Enter
                 if (e.keyCode == 13) {
-                    body.addClass("yp-pressed-enter-key");
-                    $(".yp-button-target").trigger("click");
-                    body.removeClass("yp-pressed-enter-key");
+                    body.addClass("wyp-pressed-enter-key");
+                    $(".wyp-button-target").trigger("click");
+                    body.removeClass("wyp-pressed-enter-key");
                     return false;
                 }
 
@@ -5797,7 +5797,7 @@
             /* ---------------------------------------------------- */
             /* If Selector is not available                         */
             /* ---------------------------------------------------- */
-            $("#yp-button-target-input").keydown(function(e) {
+            $("#wyp-button-target-input").keydown(function(e) {
 
                 if (e.keyCode != 13){
                     $(this).attr("style", "");
@@ -5835,7 +5835,7 @@
             /* ---------------------------------------------------- */
             $(document).on("mouseout", ".info-global-id-list li,.info-global-class-list li,.info-element-class-list li", function(){
                 clearTimeout(window.focusElementTimer);
-                iframe.find(".yp-element-viewer").remove();
+                iframe.find(".wyp-element-viewer").remove();
             });
 
 
@@ -5870,7 +5870,7 @@
 
                 var delay = 40;
 
-                if (mainBody.hasClass("yp-need-to-process")) {
+                if (mainBody.hasClass("wyp-need-to-process")) {
                     process(false);
                     delay = 70;
                 }
@@ -5879,7 +5879,7 @@
                 window.breakpointHoverTimer = setTimeout(function(){
 
                     // Delete all old viewers
-                    iframe.find(".yp-element-viewer").remove();
+                    iframe.find(".wyp-element-viewer").remove();
 
                     // variables
                     var element_offset,element,topBoxesI,leftBoxesI,widthBoxesI,heightBoxesI,selector,elements;
@@ -5917,11 +5917,11 @@
                                 widthBoxesI = element.outerWidth();
                                 heightBoxesI = element.outerHeight();
 
-                                var id = "yp-element-viewer-"+parseInt(widthBoxesI)+"-"+parseInt(heightBoxesI)+"-"+parseInt(topBoxesI)+"-"+parseInt(leftBoxesI)+"";
+                                var id = "wyp-element-viewer-"+parseInt(widthBoxesI)+"-"+parseInt(heightBoxesI)+"-"+parseInt(topBoxesI)+"-"+parseInt(leftBoxesI)+"";
 
                                 // add the viewer
                                 if(iframe.find("#"+id).length == 0){
-                                    iframeBody.append("<div class='yp-element-viewer' id='"+id+"' style='width:"+widthBoxesI+"px;height:"+heightBoxesI+"px;top:"+topBoxesI+"px;left:"+leftBoxesI+"px;'></div>");
+                                    iframeBody.append("<div class='wyp-element-viewer' id='"+id+"' style='width:"+widthBoxesI+"px;height:"+heightBoxesI+"px;top:"+topBoxesI+"px;left:"+leftBoxesI+"px;'></div>");
                                 }
 
                             } // element offset if
@@ -5952,7 +5952,7 @@
             $(document).on("mouseout",".breakpoint-bar div",function(e){
 
                 clearTimeout(window.breakpointHoverTimer);
-                iframe.find(".yp-element-viewer").remove();
+                iframe.find(".wyp-element-viewer").remove();
 
             });
 
@@ -6266,7 +6266,7 @@
                 }
 
                 // current options
-                var options = $(".editor-panel-list > li.active .yp-option-group");
+                var options = $(".editor-panel-list > li.active .wyp-option-group");
 
                 // delete all cached data.
                 $("li[data-loaded]").removeAttr("data-loaded");
@@ -6340,7 +6340,7 @@
                         if(id == 'font-family' || id == 'animation-name'){
 
                             // Find free space on screen
-                            var freeSpace = ($(window).height() - $("#yp-"+id).offset().top) - 200;
+                            var freeSpace = ($(window).height() - $("#wyp-"+id).offset().top) - 200;
 
                             // already min 300
                             if(freeSpace > 300){
@@ -6367,16 +6367,16 @@
                                 var currentFont = $.trim(current.split(",")[0]);
                                 currentFont = currentFont.replace(/'/g, "").replace(/"/g, "").replace(/ /g, "").toLowerCase();
 
-                                if ($('#yp-' + id + '-data option[data-text="' + currentFont + '"]').length > 0) {
-                                    fontGoogle = $('#yp-' + id + '-data option[data-text="' + currentFont + '"]').text();
+                                if ($('#wyp-' + id + '-data option[data-text="' + currentFont + '"]').length > 0) {
+                                    fontGoogle = $('#wyp-' + id + '-data option[data-text="' + currentFont + '"]').text();
                                 }
 
                             }
                         }
 
                         if (fontGoogle === null){
-                            if ($('#yp-' + id + '-data option[value="' + current + '"]').length > 0) {
-                                current = $('#yp-' + id + '-data option[value="' + current + '"]').text();
+                            if ($('#wyp-' + id + '-data option[value="' + current + '"]').length > 0) {
+                                current = $('#wyp-' + id + '-data option[value="' + current + '"]').text();
                             }
                         } else {
                             current = fontGoogle;
@@ -6407,7 +6407,7 @@
                         }
 
                         // Update font-weight family
-                        $("#yp-autocomplete-place-font-weight ul li").css("fontFamily", $("#yp-font-family").val());
+                        $("#wyp-autocomplete-place-font-weight ul li").css("fontFamily", $("#wyp-font-family").val());
 
                         // Font Weight
                         if (id == 'font-weight') {
@@ -6429,21 +6429,21 @@
 
                         // Text shadow show all style
                         if (id == 'text-shadow') {
-                            $("#yp-autocomplete-place-"+id + " li").each(function() {
-                                $(this).css("textShadow", $("#yp-text-shadow-data [data-content='"+$(this).text()+"']").attr("value"));
+                            $("#wyp-autocomplete-place-"+id + " li").each(function() {
+                                $(this).css("textShadow", $("#wyp-text-shadow-data [data-content='"+$(this).text()+"']").attr("value"));
                             });
                         }
 
                         // Cursor show all style
                         if (id == 'cursor') {
-                            $("#yp-autocomplete-place-"+id + " li").each(function() {
-                                $(this).attr("style", "cursor:"+$("#yp-cursor-data [data-content='"+$(this).text()+"']").attr("value")+" !important;");
+                            $("#wyp-autocomplete-place-"+id + " li").each(function() {
+                                $(this).attr("style", "cursor:"+$("#wyp-cursor-data [data-content='"+$(this).text()+"']").attr("value")+" !important;");
                             });
                         }
 
                     },
 
-                    appendTo: "#yp-autocomplete-place-" + $(this).parent().parent().attr("id").replace("-group", "").toString()
+                    appendTo: "#wyp-autocomplete-place-" + $(this).parent().parent().attr("id").replace("-group", "").toString()
                 }).click(function() {
                     $(this).autocomplete("search", "");
                 });
@@ -6454,10 +6454,10 @@
             /* ---------------------------------------------------- */
             /* Responsive Mode                                      */
             /* ---------------------------------------------------- */
-            $(".yp-responsive-btn").click(function() {
+            $(".wyp-responsive-btn").click(function() {
 
-                if (mainBody.hasClass("yp-css-editor-active")) {
-                    $(".yp-css-close-btn").trigger("click");
+                if (mainBody.hasClass("wyp-css-editor-active")) {
+                    $(".wyp-css-close-btn").trigger("click");
                 }
 
             });
@@ -6466,16 +6466,16 @@
             /* ---------------------------------------------------- */
             /* Responsive Mode                                      */
             /* ---------------------------------------------------- */
-            $(".yp-responsive-btn").click(function() {
+            $(".wyp-responsive-btn").click(function() {
 
                 if ($(this).hasClass("active")) {
-                    body.removeClass("yp-responsive-device-mode");
+                    body.removeClass("wyp-responsive-device-mode");
                     $(this).addClass("active");
                     var styleAttr = $("#iframe").attr("style");
                     $("#iframe").removeAttr("style");
                     $("#iframe").attr("data-style",styleAttr);
                 } else {
-                    body.addClass("yp-responsive-device-mode");
+                    body.addClass("wyp-responsive-device-mode");
                     $(this).removeClass("active");
 
                     styleAttr = $("#iframe").attr("data-style");
@@ -6488,7 +6488,7 @@
                 update_responsive_size_notice();
 
                 // draw_box must process first. Fix "margin responsive update" problem
-                draw_box(".yp-selected", 'yp-selected-boxed');
+                draw_box(".wyp-selected", 'wyp-selected-boxed');
 
                 // draw all again now
                 draw();
@@ -6510,7 +6510,7 @@
             /* ---------------------------------------------------- */
             /* Reset Button                                         */
             /* ---------------------------------------------------- */
-            $(".yp-button-reset").click(function() {
+            $(".wyp-button-reset").click(function() {
 
                 if (is_animate_creator()) {
 
@@ -6559,7 +6559,7 @@
                   confirmButtonText: "Apply Changes!",
                   closeOnConfirm: true,
                   animation: false,
-                  customClass: 'yp-reset-popup',
+                  customClass: 'wyp-reset-popup',
                   html: true
                 }, function(isConfirm){
 
@@ -6577,7 +6577,7 @@
 
                     // remove generated table.
                     setTimeout(function(){
-                        $(".yp-reset-popup").remove();
+                        $(".wyp-reset-popup").remove();
                     }, 200);
 
                 });
@@ -6588,19 +6588,19 @@
             /* ---------------------------------------------------- */
             /* Install all option types                             */
             /* ---------------------------------------------------- */
-            $(".yp-slider-option").each(function() {
+            $(".wyp-slider-option").each(function() {
                 slider_option(get_option_id(this), $(this).data("decimals"), $(this).data("pxv"), $(this).data("pcv"), $(this).data("emv"));
             });
 
-            $(".yp-radio-option").each(function() {
+            $(".wyp-radio-option").each(function() {
                 radio_option(get_option_id(this));
             });
 
-            $(".yp-color-option").each(function() {
+            $(".wyp-color-option").each(function() {
                 color_option(get_option_id(this));
             });
 
-            $(".yp-input-option").each(function() {
+            $(".wyp-input-option").each(function() {
                 input_option(get_option_id(this));
             });
 
@@ -6614,8 +6614,8 @@
                 var range;
 
                 if(value === false){
-                    value = element.parent().find(".yp-css-value").val();
-                    prefix = element.parent().find(".yp-css-format").val();
+                    value = element.parent().find(".wyp-css-value").val();
+                    prefix = element.parent().find(".wyp-css-format").val();
                 }
 
                 var slide = element.parent().parent().find(".wqNoUi-target");
@@ -6657,8 +6657,8 @@
             /* ---------------------------------------------------- */
             /* Process CSS before open CSS editor                   */
             /* ---------------------------------------------------- */
-            $("body:not(.yp-css-editor-active) .css-editor-btn").hover(function() {
-                if (!mainBody.hasClass("yp-css-editor-active")) {
+            $("body:not(.wyp-css-editor-active) .css-editor-btn").hover(function() {
+                if (!mainBody.hasClass("wyp-css-editor-active")) {
                     process(false);
                 }
             });
@@ -6711,7 +6711,7 @@
             /* ---------------------------------------------------- */
             /* Hide CSS Editor                                      */
             /* ---------------------------------------------------- */
-            $(".css-editor-btn,.yp-css-close-btn").click(function() {
+            $(".css-editor-btn,.wyp-css-close-btn").click(function() {
 
                 if(is_animation_manager()){
                     $(".animation-manager-btn.active").trigger("click");
@@ -6722,7 +6722,7 @@
                     editor_update();
 
                     $("#cssData,#cssEditorBar,#leftAreaEditor").show();
-                    mainBody.addClass("yp-css-editor-active");
+                    mainBody.addClass("wyp-css-editor-active");
 
                     var ebtn = $(".css-editor-btn");
                     var title = ebtn.attr("data-original-title"); // Save
@@ -6750,7 +6750,7 @@
             /* ---------------------------------------------------- */
             /* Blur Custom Slider Value                             */
             /* ---------------------------------------------------- */
-            $(".yp-css-value,.yp-css-format").on("keydown keyup",function(e){
+            $(".wyp-css-value,.wyp-css-format").on("keydown keyup",function(e){
 
                 if(!e.originalEvent){
                     return false;
@@ -6765,25 +6765,25 @@
                     clearTimeout(window.manualChangeInputDelay);
                     window.manualChangeInputDelay = setTimeout(function(){
 
-                        var id = element.parents(".yp-option-group").attr("data-css");
-                        var thisContent = $("#" + id + "-group").parent(".yp-this-content");
+                        var id = element.parents(".wyp-option-group").attr("data-css");
+                        var thisContent = $("#" + id + "-group").parent(".wyp-this-content");
                         var lock = thisContent.find(".lock-btn.active").length;
                         var lockedIdArray = [];
 
                         if(lock){
-                            thisContent.find(".yp-option-group").each(function(){
+                            thisContent.find(".wyp-option-group").each(function(){
                                 if($(this).attr("data-css") != id){
                                     lockedIdArray.push($(this).attr("data-css"));
                                 }
                             });
                         }
 
-                        var value = element.parent().find(".yp-css-value").val();
-                        var prefix = element.parent().find(".yp-css-format").val();
+                        var value = element.parent().find(".wyp-css-value").val();
+                        var prefix = element.parent().find(".wyp-css-format").val();
 
                         // Self
                         update_slide_by_input(element,false);
-                        slide_action($("#yp-" + id), id, true, false);
+                        slide_action($("#wyp-" + id), id, true, false);
 
                         // others
                         if(lock){
@@ -6792,7 +6792,7 @@
                                 $("#" + lockedIdArray[y]+"-value").val(value);
                                 $("#" + lockedIdArray[y]+"-after").val(prefix);
                                 update_slide_by_input($("#" + lockedIdArray[y]+"-value"),value,prefix);
-                                slide_action($("#yp-" + lockedIdArray[y]), lockedIdArray[y], true, false);
+                                slide_action($("#wyp-" + lockedIdArray[y]), lockedIdArray[y], true, false);
                             }
 
                         }
@@ -6848,7 +6848,7 @@
 
                 } // Each end.
 
-                selector = space_cleaner(selector + " > " + lastSelector + ".yp-selected");
+                selector = space_cleaner(selector + " > " + lastSelector + ".wyp-selected");
 
                 return selector;
 
@@ -6860,9 +6860,9 @@
             /* ---------------------------------------------------- */
             function single_selector(selector,test) {
 
-                var customClass = 'yp-selected';
-                if(mainBody.hasClass("yp-control-key-down") && is_content_selected()){
-                    customClass = 'yp-multiple-selected';
+                var customClass = 'wyp-selected';
+                if(mainBody.hasClass("wyp-control-key-down") && is_content_selected()){
+                    customClass = 'wyp-multiple-selected';
                 }
 
                 var selectorArray = get_selector_array(selector);
@@ -7144,7 +7144,7 @@
                         window.disable_auto_insert = true;
 
                         // check css editor is active
-                        if (mainBody.hasClass("yp-css-editor-active") == false) {
+                        if (mainBody.hasClass("wyp-css-editor-active") == false) {
 
                             // Open if hidden
                             $(".css-editor-btn").trigger("click");
@@ -7207,7 +7207,7 @@
             /* ---------------------------------------------------- */
             /* Menu Click prepareParents                            */
             /* ---------------------------------------------------- */
-            iframe.on("click", ".yp-edit-menu", function(event){
+            iframe.on("click", ".wyp-edit-menu", function(event){
 
                 if(event.which == 1){
                     prepare_parents();
@@ -7219,7 +7219,7 @@
             /* ---------------------------------------------------- */
             /* Element Right Click prepareParents                   */
             /* ---------------------------------------------------- */
-            iframe.on("click", ".yp-selected", function(event){
+            iframe.on("click", ".wyp-selected", function(event){
 
                 if(event.which == 3){
                     prepare_parents();
@@ -7231,7 +7231,7 @@
             /* ---------------------------------------------------- */
             /* Focus the element when hover parents in contextmenu  */
             /* ---------------------------------------------------- */
-            $(document).on("mouseenter", ".context-menu-list.yp-contextmenu-parent li", function(event){
+            $(document).on("mouseenter", ".context-menu-list.wyp-contextmenu-parent li", function(event){
 
                 // Parent deep num
                 var parentDeepNumber = $(this).prevAll("li").length;
@@ -7251,10 +7251,10 @@
             /* ---------------------------------------------------- */
             /* Focus the element when hover parents in contextmenu  */
             /* ---------------------------------------------------- */
-            $(document).on("mouseleave", ".context-menu-list.yp-contextmenu-parent li", function(event){
+            $(document).on("mouseleave", ".context-menu-list.wyp-contextmenu-parent li", function(event){
 
                 // delete focus
-                iframe.find(".yp-element-viewer").remove();
+                iframe.find(".wyp-element-viewer").remove();
 
             });
 
@@ -7304,15 +7304,15 @@
                         var elementP = iframe.find(selector).parent();
 
                         if (elementP.length > 0 && elementP[0].nodeName.toLowerCase() != "html") {
-                            $(".yp-contextmenu-parent").removeClass("yp-disable-contextmenu");
+                            $(".wyp-contextmenu-parent").removeClass("wyp-disable-contextmenu");
                         } else {
-                            $(".yp-contextmenu-parent").addClass("yp-disable-contextmenu");
+                            $(".wyp-contextmenu-parent").addClass("wyp-disable-contextmenu");
                         }
 
-                        if(iframe.find(".yp-selected-others-box").length > 0){
-                            $(".yp-contextmenu-select-it").show();
+                        if(iframe.find(".wyp-selected-others-box").length > 0){
+                            $(".wyp-contextmenu-select-it").show();
                         }else{
-                            $(".yp-contextmenu-select-it").hide();
+                            $(".wyp-contextmenu-select-it").hide();
                         }
 
                     }
@@ -7320,7 +7320,7 @@
                 },
 
                 // Open context menu only if a element selected.
-                selector: 'body.yp-content-selected .yp-selected,body.yp-content-selected.yp-selected',
+                selector: 'body.wyp-content-selected .wyp-selected,body.wyp-content-selected.wyp-selected',
                 callback: function(key, options) {
 
                     var selector = get_current_selector();
@@ -7328,9 +7328,9 @@
                     // Context Menu: Hover
                     if (key == "hover" || key == "focus" || key == "link" || key == "visited" || key == "active") {
 
-                        selector = selector.replace(/:(?!hover|focus|active|link|visited)/g,"YP_DOTTED_PREFIX");
+                        selector = selector.replace(/:(?!hover|focus|active|link|visited)/g,"WYP_DOTTED_PREFIX");
 
-                        if (!$(".yp-contextmenu-" + key).hasClass("yp-active-contextmenu")){
+                        if (!$(".wyp-contextmenu-" + key).hasClass("wyp-active-contextmenu")){
                             if (selector.indexOf(":") == -1) {
                                 selector = selector + ":" + key;
                             } else {
@@ -7340,7 +7340,7 @@
                             selector = selector.split(":")[0];
                         }
 
-                        selector = selector.replace(/YP_DOTTED_PREFIX/g,":");
+                        selector = selector.replace(/WYP_DOTTED_PREFIX/g,":");
                         set_selector(selector, get_selected_element(), true);
 
                     }
@@ -7355,22 +7355,22 @@
                         var targetElement = get_selected_element().parentsUntil("html").eq(n);
 
                         // give point
-                        targetElement.addClass("yp-will-selected");
+                        targetElement.addClass("wyp-will-selected");
 
                         // clean
                         clean();
 
                         // Get parent selector.
-                        var parentSelector = $.trim(get_parents(iframe.find(".yp-will-selected"), "default"));
+                        var parentSelector = $.trim(get_parents(iframe.find(".wyp-will-selected"), "default"));
 
                         // Set Selector
                         set_selector(parentSelector, null, false);
 
                         // delete focus
-                        iframe.find(".yp-element-viewer").addClass("yp-element-viewer-relax-opacity").removeClass("yp-element-viewer").fadeOut(300);
+                        iframe.find(".wyp-element-viewer").addClass("wyp-element-viewer-relax-opacity").removeClass("wyp-element-viewer").fadeOut(300);
 
                         setTimeout(function(){
-                            iframe.find(".yp-element-viewer-relax-opacity").remove();
+                            iframe.find(".wyp-element-viewer-relax-opacity").remove();
                         }, 400);
 
                     }
@@ -7378,7 +7378,7 @@
                     // write CSS
                     if (key == "writeCSS") {
 
-                        if (mainBody.hasClass("yp-css-editor-active")) {
+                        if (mainBody.hasClass("wyp-css-editor-active")) {
                             $(".css-editor-btn").trigger("click");
                         }
 
@@ -7389,7 +7389,7 @@
                     // Select Just It
                     if (key == 'selectjustit') {
 
-                        mainBody.addClass("yp-select-just-it");
+                        mainBody.addClass("wyp-select-just-it");
 
                         var currentSelector = get_current_selector();
 
@@ -7405,7 +7405,7 @@
 
                         }
 
-                        mainBody.removeClass("yp-select-just-it");
+                        mainBody.removeClass("wyp-select-just-it");
 
                     }
                     /* Select just it functions end here */
@@ -7427,7 +7427,7 @@
 
                     // toggle selector editor.
                     if (key == "editselector") {
-                        $(".yp-button-target").trigger("click");
+                        $(".wyp-button-target").trigger("click");
                     }
 
                 },
@@ -7439,47 +7439,47 @@
                         items: {
                             "hover": {
                                 name: ":Hover",
-                                className: "yp-contextmenu-hover"
+                                className: "wyp-contextmenu-hover"
                             },
                             "focus": {
                                 name: ":Focus",
-                                className: "yp-contextmenu-focus"
+                                className: "wyp-contextmenu-focus"
                             },
                             "sep1": "---------",
                             "parent": {
                                 name: "Parent Elements",
-                                className: "yp-contextmenu-parent",
+                                className: "wyp-contextmenu-parent",
                                 items:window.parentItems,
                             },
                             "editselector": {
                                 name: "Edit Selector",
-                                className: "yp-contextmenu-selector-edit"
+                                className: "wyp-contextmenu-selector-edit"
                             },
                             "sep2": "---------",
                             "selectjustit": {
                                 name: "Select Only This",
-                                className: "yp-contextmenu-select-it"
+                                className: "wyp-contextmenu-select-it"
                             },
                             "writeCSS": {
                                 name: "Write CSS",
-                                className: "yp-contextmenu-type-css"
+                                className: "wyp-contextmenu-type-css"
                             },
                             "reset": {
                                 name: "Reset Element",
                                 items:{
                                     "resetit": {
                                         name: "The Element",
-                                        className: "yp-contextmenu-reset-it"
+                                        className: "wyp-contextmenu-reset-it"
                                     },
                                     "reset-with-childs": {
                                         name: "The Child Elements",
-                                        className: "yp-contextmenu-reset-childs"
+                                        className: "wyp-contextmenu-reset-childs"
                                     },
                                 },
                             },
                             "close": {
                                 name: "Leave",
-                                className: "yp-contextmenu-close"
+                                className: "wyp-contextmenu-close"
                             }
                         }
                     }
@@ -7538,7 +7538,7 @@
                 }
 
                 // If right panel is fixed - Always
-                if(mainBody.hasClass("yp-fixed-right-panel")){
+                if(mainBody.hasClass("wyp-fixed-right-panel")){
                     height = window_height - (top_offset_px + top_px);
                     panel_editor.height(height);
                 }
@@ -7567,8 +7567,8 @@
             /* ---------------------------------------------------- */
             /* Element picker                                       */
             /* ---------------------------------------------------- */
-            $(".yp-element-picker").click(function() {
-                mainBody.toggleClass("yp-element-picker-active");
+            $(".wyp-element-picker").click(function() {
+                mainBody.toggleClass("wyp-element-picker-active");
                 $(this).toggleClass("active");
             });
 
@@ -7578,7 +7578,7 @@
             /* ---------------------------------------------------- */
             mainDocument.on("mousemove mousedown", function(e){
 
-                if (mainBody.hasClass("yp-metric-disable") === false) {
+                if (mainBody.hasClass("wyp-metric-disable") === false) {
 
                     var x = e.pageX;
                     var y = e.pageY;
@@ -7587,7 +7587,7 @@
                     var ww = $(window).width();
                     var wh = $(window).height();
 
-                    if (mainBody.hasClass("yp-responsive-resizing")) {
+                    if (mainBody.hasClass("wyp-responsive-resizing")) {
                         y = y - 10;
                         x = x - 10;
                         cx = cx - 10;
@@ -7598,7 +7598,7 @@
 
                         if (is_responsive_mod()) {
 
-                            if (mainBody.hasClass("yp-responsive-resizing")) {
+                            if (mainBody.hasClass("wyp-responsive-resizing")) {
 
                                 // Min 320 W
                                 if (cx < 320 + 48) {
@@ -7627,7 +7627,7 @@
                             $(".metric-top-tooltip").attr("style", "top:" + cy + "px !important;display:block;");
                             $(".metric-left-tooltip").attr("style", "left:" + cx + "px !important;display:block;margin-left:1px !important;");
 
-                            if (mainBody.hasClass("yp-responsive-resizing")) {
+                            if (mainBody.hasClass("wyp-responsive-resizing")) {
                                 $(".metric-left-tooltip span").text(x + 10);
                                 $(".metric-top-tooltip span").text(y + 10);
                             } else {
@@ -7641,7 +7641,7 @@
 
                     if ($(this).find("#iframe").length === 0) {
 
-                        if (mainBody.hasClass("yp-responsive-resizing")) {
+                        if (mainBody.hasClass("wyp-responsive-resizing")) {
 
                             // Min 320 W
                             if (cx < 320) {
@@ -7670,7 +7670,7 @@
                         $(".metric-top-tooltip").attr("style", "top:" + cy + "px !important;display:block;margin-top:32px;");
                         $(".metric-left-tooltip").attr("style", "left:" + cx + "px !important;display:block;");
 
-                        if (mainBody.hasClass("yp-responsive-resizing")) {
+                        if (mainBody.hasClass("wyp-responsive-resizing")) {
                             $(".metric-top-tooltip span").text(y + 10);
                             $(".metric-left-tooltip span").text(x + 10);
                         } else {
@@ -7690,7 +7690,7 @@
             /* ---------------------------------------------------- */
             iframe.on("mousemove", function(e) {
 
-                if (mainBody.hasClass("yp-metric-disable") === false){
+                if (mainBody.hasClass("wyp-metric-disable") === false){
 
                     var element = $(e.target);
 
@@ -7699,7 +7699,7 @@
                     }
 
                     if(element.hasAttr("class")){
-                        if(/(^|\s+)yp-(.*?)/g.test(element.attr("class"))){
+                        if(/(^|\s+)wyp-(.*?)/g.test(element.attr("class"))){
                             element = get_selected_element();
                         }
                     }
@@ -7744,23 +7744,23 @@
 
                     var bottomBoxes = topBoxes + heightBoxes;
 
-                    if (iframe.find(".yp-size-handle").length === 0) {
-                        iframeBody.append("<div class='yp-size-handle'>W : <span class='ypdw'></span> px<br>H : <span class='ypdh'></span> px</div>");
+                    if (iframe.find(".wyp-size-handle").length === 0) {
+                        iframeBody.append("<div class='wyp-size-handle'>W : <span class='ypdw'></span> px<br>H : <span class='ypdh'></span> px</div>");
                     }
 
                     var w = element.css("width");
                     var h = element.css("height");
 
-                    iframe.find(".yp-size-handle .ypdw").text(parseInt(w));
-                    iframe.find(".yp-size-handle .ypdh").text(parseInt(h));
+                    iframe.find(".wyp-size-handle .ypdw").text(parseInt(w));
+                    iframe.find(".wyp-size-handle .ypdh").text(parseInt(h));
 
                     leftBoxes = leftBoxes + (widthBoxes / 2);
 
-                    iframe.find(".yp-size-handle").css("top", bottomBoxes).css("bottom", "auto").css("left", leftBoxes).css("position", "absolute");
+                    iframe.find(".wyp-size-handle").css("top", bottomBoxes).css("bottom", "auto").css("left", leftBoxes).css("position", "absolute");
 
                     if (parseFloat(bottomBoxes) > (parseFloat($("body #iframe").height()) + parseFloat(iframe.scrollTop())) + 40) {
 
-                        iframe.find(".yp-size-handle").css("bottom", "10px").css("top", "auto").css("left", leftBoxes).css("position", "fixed");
+                        iframe.find(".wyp-size-handle").css("bottom", "10px").css("top", "auto").css("left", leftBoxes).css("position", "fixed");
 
                     }
 
@@ -7790,10 +7790,10 @@
             /* ---------------------------------------------------- */
             iframe.on("mouseover", iframe, function(evt){
 
-               if ($(".yp-selector-mode.active").length > 0 && mainBody.hasClass("yp-metric-disable")){
+               if ($(".wyp-selector-mode.active").length > 0 && mainBody.hasClass("wyp-metric-disable")){
 
                     // delete live picker if avaiable.
-                    if(mainBody.hasClass("yp-element-picker-active")){
+                    if(mainBody.hasClass("wyp-element-picker-active")){
                         iframe.find("#colorPickerLiveCSS").remove();
                     }
 
@@ -7801,23 +7801,23 @@
                     var element = $(evt.target);
 
                     // Adding always class to last hovered element for some reasions.
-                    iframe.find(".yp-recent-hover-element").removeClass("yp-recent-hover-element");
+                    iframe.find(".wyp-recent-hover-element").removeClass("wyp-recent-hover-element");
 
-                    if (is_content_selected() === true && mainBody.hasClass("yp-control-key-down") === false) {
-                        element.addClass("yp-recent-hover-element");
+                    if (is_content_selected() === true && mainBody.hasClass("wyp-control-key-down") === false) {
+                        element.addClass("wyp-recent-hover-element");
                     }
 
                     var elementClasses = element.attr("class");
 
                     // Multi selecting support
                     if (is_content_selected() === false) {
-                        if (element.hasClass("yp-selected-tooltip")) {
+                        if (element.hasClass("wyp-selected-tooltip")) {
                             clean();
                             return false;
                         }
 
                         if (element.parent().length > 0) {
-                            if (element.parent().hasClass("yp-selected-tooltip")) {
+                            if (element.parent().hasClass("wyp-selected-tooltip")) {
                                 clean();
                                 return false;
                             }
@@ -7826,13 +7826,13 @@
 
                     // If not any yellow pencil element.
                     if (isDefined(elementClasses)) {
-                        if (elementClasses.indexOf("yp-selected-boxed-") > -1) {
+                        if (elementClasses.indexOf("wyp-selected-boxed-") > -1) {
                             return false;
                         }
                     }
 
                     // If colorpicker stop.
-                    if (mainBody.hasClass("yp-element-picker-active") && /(yp-tooltip-small|yp-selected-tooltip)/g.test(elementClasses) == false) {
+                    if (mainBody.hasClass("wyp-element-picker-active") && /(wyp-tooltip-small|wyp-selected-tooltip)/g.test(elementClasses) == false) {
 
                         window.pickerColor = element.css("backgroundColor");
                         window.pickerColor = window.pickerColor.toLowerCase().replace(/ /g,"");
@@ -7852,7 +7852,7 @@
                         }
 
                         // Picker Rule
-                        var pickerCSSRule = $(".yp-element-picker.active").parents(".yp-option-group").attr("data-css");
+                        var pickerCSSRule = $(".wyp-element-picker.active").parents(".wyp-option-group").attr("data-css");
 
                         // insert live picker
                         insert_live_css(pickerCSSRule, get_color(window.pickerColor.toString()), "colorPickerLiveCSS");
@@ -7862,7 +7862,7 @@
                     var nodeName = element[0].nodeName;
 
                     // If element already selected, stop.
-                    if (is_content_selected() === true && mainBody.hasClass("yp-control-key-down") === false) {
+                    if (is_content_selected() === true && mainBody.hasClass("wyp-control-key-down") === false) {
                         return false;
                     }
 
@@ -7896,7 +7896,7 @@
                         clean();
 
                         // Hover it
-                        element.addClass("yp-selected");
+                        element.addClass("wyp-selected");
 
                     }
 
@@ -7916,27 +7916,27 @@
 
                             // transform.
                             if (check_with_parents(element, "transform", "none", "!=") === true) {
-                                body.addClass("yp-has-transform");
+                                body.addClass("wyp-has-transform");
                             }
 
-                            draw_box(evt.target, 'yp-selected-boxed');
+                            draw_box(evt.target, 'wyp-selected-boxed');
 
                             var selectorView = selector;
 
                             var selectorTag = selector.replace(/>/g, '').replace(/  /g, ' ').replace(/\:nth-child\((.*?)\)/g, '');
 
                             // Element Tooltip  |  Append setting icon.
-                            iframeBody.append("<div class='yp-selected-tooltip'><small class='yp-tooltip-small'>" + get_tag_information(selectorTag) + "</small> " + $.trim(selectorView) + "</div><div class='yp-edit-tooltip'><span class='yp-edit-menu'></span></div>");
+                            iframeBody.append("<div class='wyp-selected-tooltip'><small class='wyp-tooltip-small'>" + get_tag_information(selectorTag) + "</small> " + $.trim(selectorView) + "</div><div class='wyp-edit-tooltip'><span class='wyp-edit-menu'></span></div>");
 
                             var appendSelectData = '';
                             var currentData = '';
 
                             // Select Others.. (using .not because will be problem when selector has "," multip selectors)
-                            iframe.find(selector).not(".yp-selected").not(".yp-multiple-selected").each(function(i) {
+                            iframe.find(selector).not(".wyp-selected").not(".wyp-multiple-selected").each(function(i) {
 
-                                $(this).addClass("yp-selected-others");
+                                $(this).addClass("wyp-selected-others");
 
-                                currentData = draw_other_box(this, 'yp-selected-others', i);
+                                currentData = draw_other_box(this, 'wyp-selected-others', i);
 
                                 if (typeof currentData === 'string') {
                                     appendSelectData += currentData;
@@ -7952,18 +7952,18 @@
 
                     }else{
 
-                        if(is_content_selected() && mainBody.hasClass("yp-control-key-down")){
+                        if(is_content_selected() && mainBody.hasClass("wyp-control-key-down")){
 
-                            if(element.parents(".yp-selected").length === 0){
+                            if(element.parents(".wyp-selected").length === 0){
 
                                 // Clean before
-                                iframe.find(".yp-multiple-selected").removeClass("yp-multiple-selected");
+                                iframe.find(".wyp-multiple-selected").removeClass("wyp-multiple-selected");
 
                                 // Add new
-                                element.addClass("yp-multiple-selected");
+                                element.addClass("wyp-multiple-selected");
 
                                 // Draw
-                                appendSelectData = draw_other_box(element, 'yp-selected-others', "multiable");
+                                appendSelectData = draw_other_box(element, 'wyp-selected-others', "multiable");
 
                                 if (typeof appendSelectData === 'string') {
                                     iframeBody.append(appendSelectData);
@@ -7992,15 +7992,15 @@
                 }
 
                 // selected boxed.
-                draw_box(".yp-selected", 'yp-selected-boxed');
+                draw_box(".wyp-selected", 'wyp-selected-boxed');
 
                 var appendSelectData = '';
                 var currentData = '';
 
                 // Select Others.
-                iframe.find(".yp-selected-others:not(.yp-multiple-selected)").each(function(i) {
+                iframe.find(".wyp-selected-others:not(.wyp-multiple-selected)").each(function(i) {
 
-                    currentData = draw_other_box(this, 'yp-selected-others', i);
+                    currentData = draw_other_box(this, 'wyp-selected-others', i);
 
                     if (typeof currentData === 'string') {
                         appendSelectData += currentData;
@@ -8029,12 +8029,12 @@
                 var styleArea = the_editor_data();
 
                 // Sort element by selector because Created CSS Will keep all css rules in one selector.
-                styleArea.find("style:not(.yp-resorted)").each(function(){
+                styleArea.find("style:not(.wyp-resorted)").each(function(){
 
                     var that = $(this);
 
                     // addClass for not sort again.
-                    that.addClass("yp-resorted");
+                    that.addClass("wyp-resorted");
 
                     // Get this selector.
                     var style = that.attr("data-style");
@@ -8048,7 +8048,7 @@
                             // Cache
                             var element = $(this);
 
-                            if(element.hasClass("yp-resorted") === false){
+                            if(element.hasClass("wyp-resorted") === false){
 
                                 // move from dom.
                                 that.after(element);
@@ -8102,7 +8102,7 @@
                     var automedia = get_media_queries(css,false);
 
                     if(automedia != false && automedia != undefined){
-                        mainBody.addClass("yp-adding-auto-media");
+                        mainBody.addClass("wyp-adding-auto-media");
                         return automedia+"{";
                     }else{
                         return '';
@@ -8126,8 +8126,8 @@
                 } else {
 
                     // Auto Media
-                    if(mainBody.hasClass("yp-adding-auto-media")){
-                        mainBody.removeClass("yp-adding-auto-media");
+                    if(mainBody.hasClass("wyp-adding-auto-media")){
+                        mainBody.removeClass("wyp-adding-auto-media");
                         return '}';
                     }else{
                         return ''; // Blank
@@ -8225,7 +8225,7 @@
                 // Responsive Settings
                 var mediaBefore = create_media_query_before(id);
 
-                if(mainBody.hasClass("yp-adding-auto-media")){
+                if(mainBody.hasClass("wyp-adding-auto-media")){
                     size = space_cleaner(mediaBefore.replace("@media","").replace("{",""));
                 }
 
@@ -8243,13 +8243,13 @@
 
                     if (is_animate_creator() === true && id != 'position') {
 
-                        iframe.find(".yp-anim-scenes ." + get_id(body.attr("data-anim-scene") + id)).remove();
+                        iframe.find(".wyp-anim-scenes ." + get_id(body.attr("data-anim-scene") + id)).remove();
 
-                        iframe.find(".yp-anim-scenes ." + body.attr('data-anim-scene') + "").append('<style data-rule="' + id + '" class="style-' + body.attr("data-anim-scene") + ' scenes-' + get_id(id) + '-style">' + selector + '{' + id + ':' + current + ' !important}</style>');
+                        iframe.find(".wyp-anim-scenes ." + body.attr('data-anim-scene') + "").append('<style data-rule="' + id + '" class="style-' + body.attr("data-anim-scene") + ' scenes-' + get_id(id) + '-style">' + selector + '{' + id + ':' + current + ' !important}</style>');
 
                     } else {
 
-                        the_editor_data().append('<style data-rule="' + id + '" data-size-mode="' + size + '" data-style="' + get_id(selector) + '" class="' + get_id(selector) + '-' + id + '-style yp_current_styles">' + mediaBefore + '' + '' + selector + '{' + id + ':' + current + ' !important}' + '' + mediaAfter + '</style>');
+                        the_editor_data().append('<style data-rule="' + id + '" data-size-mode="' + size + '" data-style="' + get_id(selector) + '" class="' + get_id(selector) + '-' + id + '-style wyp_current_styles">' + mediaBefore + '' + '' + selector + '{' + id + ':' + current + ' !important}' + '' + mediaAfter + '</style>');
 
                         resort_style_data_positions();
 
@@ -8276,7 +8276,7 @@
                     window.minCroppedSelector = selectorLength + 1;
 
                     // Generate a better selector
-                    var betterSelector = get_parents(iframe.find(".yp-content-selected .yp-selected"), window.lastParentQueryStatus);
+                    var betterSelector = get_parents(iframe.find(".wyp-content-selected .wyp-selected"), window.lastParentQueryStatus);
 
                     // Return to default
                     window.minCroppedSelector = false;
@@ -8318,9 +8318,9 @@
                     typingTimerS = 900;
                 }
 
-                if (body.hasClass("yp-selectors-hide") === false && body.hasClass("yp-css-data-trigger") === false && typingTimerS !== 0) {
+                if (body.hasClass("wyp-selectors-hide") === false && body.hasClass("wyp-css-data-trigger") === false && typingTimerS !== 0) {
 
-                    body.addClass("yp-selectors-hide");
+                    body.addClass("wyp-selectors-hide");
 
                     // Opacity Selector
                     if (iframe.find(".context-menu-active").length > 0) {
@@ -8331,14 +8331,14 @@
 
                 }
 
-                body.removeClass("yp-css-data-trigger");
+                body.removeClass("wyp-css-data-trigger");
 
                 clearTimeout(typingTimer);
                 typingTimer = setTimeout(function() {
 
-                    if (body.hasClass("yp-selectors-hide") && $(".wqNoUi-active").length === 0 && mainBody.hasClass("autocomplete-active") === false && $(".editor-panel .tooltip").length === 0) {
+                    if (body.hasClass("wyp-selectors-hide") && $(".wqNoUi-active").length === 0 && mainBody.hasClass("autocomplete-active") === false && $(".editor-panel .tooltip").length === 0) {
 
-                        body.removeClass("yp-selectors-hide");
+                        body.removeClass("wyp-selectors-hide");
 
                         show_frame_ui(200);
 
@@ -8350,34 +8350,34 @@
                 }, typingTimerS);
 
                 // Append all css to iframe.
-                if (iframe.find("#yp-css-data-full").length === 0) {
-                    the_editor_data().after("<style id='yp-css-data-full'></style>");
+                if (iframe.find("#wyp-css-data-full").length === 0) {
+                    the_editor_data().after("<style id='wyp-css-data-full'></style>");
                 }
 
                 // Need to process.
-                mainBody.addClass("yp-need-to-process");
+                mainBody.addClass("wyp-need-to-process");
 
                 // Update css source.
-                iframe.find("#yp-css-data-full").html(css_editor_filter(editor.getValue()));
+                iframe.find("#wyp-css-data-full").html(css_editor_filter(editor.getValue()));
 
                 // Empty data.
                 the_editor_data().empty();
 
                 // Remove ex.
-                iframe.find(".yp-live-css").remove();
+                iframe.find(".wyp-live-css").remove();
 
                 // Update
-                $(".yp-save-btn").html(l18_save).removeClass("yp-disabled").addClass("waiting-for-save");
+                $(".wyp-save-btn").html(l18_save).removeClass("wyp-disabled").addClass("waiting-for-save");
 
                 // Update current data
-                the_editor_data().addClass("yp-data-updated");
+                the_editor_data().addClass("wyp-data-updated");
                 $(".active-customizing-list").addClass("customizing-type-updated");
 
                 // Focus To Type
-                if($(".yp-type-menu-link.done").length == 0){
-                    $(".yp-type-menu-link").addClass("focus").addClass("done");
+                if($(".wyp-type-menu-link.done").length == 0){
+                    $(".wyp-type-menu-link").addClass("focus").addClass("done");
                     setTimeout(function(){
-                        $(".yp-type-menu-link").removeClass("focus");
+                        $(".wyp-type-menu-link").removeClass("focus");
                     }, 600);
                 }
 
@@ -8407,7 +8407,7 @@
             /* ---------------------------------------------------- */
             $(".editor-panel").on("mouseover mouseout", function() {
 
-                if (mainBody.hasClass("yp-need-to-process")) {
+                if (mainBody.hasClass("wyp-need-to-process")) {
 
                     // CSS To Data.
                     process(false);
@@ -8420,7 +8420,7 @@
             /* ---------------------------------------------------- */
             /* Define the plugin elements                           */
             /* ---------------------------------------------------- */
-            window.yp_elements = ".yp-selected-handle,.yp-selected-tooltip,.yp-selected-boxed-margin-top,.yp-selected-boxed-margin-bottom,.yp-selected-boxed-margin-left,.yp-selected-boxed-margin-right,.yp-selected-boxed-top,.yp-selected-boxed-bottom,.yp-selected-boxed-left,.yp-selected-boxed-right,.yp-selected-others-box,.yp-edit-tooltip,.yp-selected-boxed-padding-top,.yp-selected-boxed-padding-bottom,.yp-selected-boxed-padding-left,.yp-selected-boxed-padding-right,.yp-edit-menu";
+            window.wyp_elements = ".wyp-selected-handle,.wyp-selected-tooltip,.wyp-selected-boxed-margin-top,.wyp-selected-boxed-margin-bottom,.wyp-selected-boxed-margin-left,.wyp-selected-boxed-margin-right,.wyp-selected-boxed-top,.wyp-selected-boxed-bottom,.wyp-selected-boxed-left,.wyp-selected-boxed-right,.wyp-selected-others-box,.wyp-edit-tooltip,.wyp-selected-boxed-padding-top,.wyp-selected-boxed-padding-bottom,.wyp-selected-boxed-padding-left,.wyp-selected-boxed-padding-right,.wyp-edit-menu";
 
 
             /* ---------------------------------------------------- */
@@ -8432,13 +8432,13 @@
                     return false;
                 }
 
-                if (iframe.find(".yp-selected-boxed-top").css("opacity") != 1) {
+                if (iframe.find(".wyp-selected-boxed-top").css("opacity") != 1) {
                     return false;
                 }
 
                 draw();
 
-                iframe.find(window.yp_elements).stop().animate({
+                iframe.find(window.wyp_elements).stop().animate({
                     opacity: 0
                 }, number);
 
@@ -8454,21 +8454,21 @@
                     return false;
                 }
 
-                if(body.hasClass("yp-force-hide-select-ui")){
+                if(body.hasClass("wyp-force-hide-select-ui")){
                     return false;
                 }
 
-                if (iframe.find(".yp-selected-boxed-top").css("opacity") != "0") {
+                if (iframe.find(".wyp-selected-boxed-top").css("opacity") != "0") {
                     return false;
                 }
 
                 draw();
 
-                iframe.find(window.yp_elements).stop().not(".yp-selected-others-box").animate({
+                iframe.find(window.wyp_elements).stop().not(".wyp-selected-others-box").animate({
                     opacity: 1
                 }, number);
 
-                iframe.find(".yp-selected-others-box").stop().animate({
+                iframe.find(".wyp-selected-others-box").stop().animate({
                     opacity: 0.9
                 }, number);
 
@@ -8478,16 +8478,16 @@
             /* ---------------------------------------------------- */
             /* Hide borders on panel and animation generator bar    */
             /* ---------------------------------------------------- */
-            $(".yp-this-content,.anim-bar").bind({
+            $(".wyp-this-content,.anim-bar").bind({
                 mouseenter: function() {
 
                     if($(".fake-layer").length > 0){
                         return false;
                     }
 
-                    if (body.hasClass("yp-selectors-hide") === false) {
+                    if (body.hasClass("wyp-selectors-hide") === false) {
 
-                        body.addClass("yp-selectors-hide");
+                        body.addClass("wyp-selectors-hide");
 
                         // Opacity Selector
                         if (iframe.find(".context-menu-active").length > 0) {
@@ -8505,9 +8505,9 @@
                         return false;
                     }
 
-                    if (body.hasClass("yp-selectors-hide") && $(".wqNoUi-active").length === 0 && mainBody.hasClass("autocomplete-active") === false && $(".editor-panel .tooltip").length === 0) {
+                    if (body.hasClass("wyp-selectors-hide") && $(".wqNoUi-active").length === 0 && mainBody.hasClass("autocomplete-active") === false && $(".editor-panel .tooltip").length === 0) {
 
-                        body.removeClass("yp-selectors-hide");
+                        body.removeClass("wyp-selectors-hide");
 
                         show_frame_ui(200);
 
@@ -8536,9 +8536,9 @@
             /* ---------------------------------------------------- */
             iframe.on("mouseleave", ".editor-panel", function(){
 
-                if (body.hasClass("yp-selectors-hide") && $(".wqNoUi-active").length === 0 && mainBody.hasClass("autocomplete-active") === false && $(".editor-panel .tooltip").length === 0) {
+                if (body.hasClass("wyp-selectors-hide") && $(".wqNoUi-active").length === 0 && mainBody.hasClass("autocomplete-active") === false && $(".editor-panel .tooltip").length === 0) {
 
-                    body.removeClass("yp-selectors-hide");
+                    body.removeClass("wyp-selectors-hide");
 
                     show_frame_ui(200);
 
@@ -8637,7 +8637,7 @@
                         find = iframe.find(searchSelector);
 
                         // if target is selected element.
-                        if(find.hasClass("yp-selected") && find.length == currentSelectorLength){
+                        if(find.hasClass("wyp-selected") && find.length == currentSelectorLength){
 
                             // remove
                             the_editor_data().find("[data-style='"+get_id(get_native_selector(array[i]))+"']").remove();
@@ -8648,7 +8648,7 @@
                     }else{
 
                         // Target is selected element and childs.
-                        if(iframe.find(searchSelector).parents(".yp-selected").length > 0){
+                        if(iframe.find(searchSelector).parents(".wyp-selected").length > 0){
 
                             // remove
                             the_editor_data().find("[data-style='"+get_id(get_native_selector(array[i]))+"']").remove();
@@ -8706,7 +8706,7 @@
                     var selector0, selector1, selector2, selector3, selector4, selector5, selector6;
 
                     // Clean
-                    selector = selector.replace(/\.yp-selected(.*?){/g,'{');
+                    selector = selector.replace(/\.wyp-selected(.*?){/g,'{');
                     selector = selector.replace(/(body)?\.yp-selector-(hover|focus|active|visited|link)/g,'');
                     selector = selector.replace(/:(hover|focus|active|visited|link)(\s+)?$/g,"");
 
@@ -8716,18 +8716,18 @@
                     // Add to element
                     selector = add_class_to_body(selector, 'yp-selector-' + selection);
 
-                    // Add yp-selected to last of selector.
-                    selector1 = selector.replace('body.yp-selector-' + selection + ' body.yp-selector-' + selection + ' ', 'body.yp-selector-' + selection + ' ') + ".yp-selected";
+                    // Add wyp-selected to last of selector.
+                    selector1 = selector.replace('body.yp-selector-' + selection + ' body.yp-selector-' + selection + ' ', 'body.yp-selector-' + selection + ' ') + ".wyp-selected";
 
-                    selector2 = selector.replace('body.yp-selector-' + selection + ' body.yp-selector-' + selection + ' ', 'body.yp-selector-' + selection + ' ') + ".yp-selected-others";
+                    selector2 = selector.replace('body.yp-selector-' + selection + ' body.yp-selector-' + selection + ' ', 'body.yp-selector-' + selection + ' ') + ".wyp-selected-others";
 
-                    selector3 = selector.replace('body.yp-selector-' + selection + ' body.yp-selector-' + selection + ' ', 'body.yp-selector-' + selection + ' ') + ".yp-selected:"+selection;
+                    selector3 = selector.replace('body.yp-selector-' + selection + ' body.yp-selector-' + selection + ' ', 'body.yp-selector-' + selection + ' ') + ".wyp-selected:"+selection;
 
-                    selector4 = selector.replace('body.yp-selector-' + selection + ' body.yp-selector-' + selection + ' ', 'body.yp-selector-' + selection + ' ') + ".yp-selected-others:"+selection;
+                    selector4 = selector.replace('body.yp-selector-' + selection + ' body.yp-selector-' + selection + ' ', 'body.yp-selector-' + selection + ' ') + ".wyp-selected-others:"+selection;
 
-                    selector5 = selector.replace('body.yp-selector-' + selection + ' body.yp-selector-' + selection + ' ', 'body.yp-selector-' + selection + ' ') + ".yp-selected-parents";
+                    selector5 = selector.replace('body.yp-selector-' + selection + ' body.yp-selector-' + selection + ' ', 'body.yp-selector-' + selection + ' ') + ".wyp-selected-parents";
 
-                    selector6 = selector.replace('body.yp-selector-' + selection + ' body.yp-selector-' + selection + ' ', 'body.yp-selector-' + selection + ' ') + ".yp-selected-parents:"+selection;
+                    selector6 = selector.replace('body.yp-selector-' + selection + ' body.yp-selector-' + selection + ' ', 'body.yp-selector-' + selection + ' ') + ".wyp-selected-parents:"+selection;
 
                     // Selector
                     selector = before + selector1 + "," + selector2 + "," + selector3 + "," + selector4 + "," + selector5 + "," + selector6 + "," + selector0 + after;
@@ -8815,7 +8815,7 @@
                 // Responsive Settings
                 var mediaBefore = create_media_query_before(id);
 
-                if(mainBody.hasClass("yp-adding-auto-media")){
+                if(mainBody.hasClass("wyp-adding-auto-media")){
                     size = space_cleaner(mediaBefore.replace("@media","").replace("{",""));
                 }
 
@@ -8831,12 +8831,12 @@
                     var dpt = ':';
 
                     // Append
-                    appendData = '<style data-rule="' + id + '" data-size-mode="' + size + '" data-style="' + get_id(selector) + '" class="' + get_id(selector) + '-' + id + '-style yp_current_styles">' + mediaBefore + '' + '' + selector + '{' + id + dpt + value + '}' + '' + mediaAfter + '</style>';
+                    appendData = '<style data-rule="' + id + '" data-size-mode="' + size + '" data-style="' + get_id(selector) + '" class="' + get_id(selector) + '-' + id + '-style wyp_current_styles">' + mediaBefore + '' + '' + selector + '{' + id + dpt + value + '}' + '' + mediaAfter + '</style>';
 
                     // Filter & transform, re-append with -webkit
                     if (id == 'filter' || id == 'transform') {
                         id = '-webkit-' + id;
-                        appendData += '<style data-rule="' + id + '" data-size-mode="' + size + '" data-style="' + get_id(selector) + '" class="' + get_id(selector) + '-' + id + '-style yp_current_styles">' + mediaBefore + '' + '' + selector + '{' + id + dpt + value + '}' + '' + mediaAfter + '</style>';
+                        appendData += '<style data-rule="' + id + '" data-size-mode="' + size + '" data-style="' + get_id(selector) + '" class="' + get_id(selector) + '-' + id + '-style wyp_current_styles">' + mediaBefore + '' + '' + selector + '{' + id + dpt + value + '}' + '' + mediaAfter + '</style>';
                     }
 
                 }
@@ -9138,33 +9138,33 @@
 
 
                 /* Yp Scenes */
-                if(/yp-scene-1/g.test(selector) != /yp-scene-1/g.test(selectorNew)){
+                if(/wyp-scene-1/g.test(selector) != /wyp-scene-1/g.test(selectorNew)){
                     return false;
                 }
 
-                if(/yp-scene-2/g.test(selector) != /yp-scene-2/g.test(selectorNew)){
+                if(/wyp-scene-2/g.test(selector) != /wyp-scene-2/g.test(selectorNew)){
                     return false;
                 }
 
-                if(/yp-scene-3/g.test(selector) != /yp-scene-3/g.test(selectorNew)){
+                if(/wyp-scene-3/g.test(selector) != /wyp-scene-3/g.test(selectorNew)){
                     return false;
                 }
 
-                if(/yp-scene-4/g.test(selector) != /yp-scene-4/g.test(selectorNew)){
+                if(/wyp-scene-4/g.test(selector) != /wyp-scene-4/g.test(selectorNew)){
                     return false;
                 }
 
-                if(/yp-scene-5/g.test(selector) != /yp-scene-5/g.test(selectorNew)){
+                if(/wyp-scene-5/g.test(selector) != /wyp-scene-5/g.test(selectorNew)){
                     return false;
                 }
 
-                if(/yp-scene-6/g.test(selector) != /yp-scene-6/g.test(selectorNew)){
+                if(/wyp-scene-6/g.test(selector) != /wyp-scene-6/g.test(selectorNew)){
                     return false;
                 }
 
 
                 /* Yp Selected */
-                if(/yp-selected/g.test(selector) != /yp-selected/g.test(selectorNew)){
+                if(/wyp-selected/g.test(selector) != /wyp-selected/g.test(selectorNew)){
                     return false;
                 }
 
@@ -9259,7 +9259,7 @@
             function update_type_frame(){
 
                 // Type frame
-                var iframe = $("#yp-customizing-type-frame");
+                var iframe = $("#wyp-customizing-type-frame");
 
                 // Getting vars
                 var page_mode = $(".active-customizing-list").attr("data-value");
@@ -9269,13 +9269,13 @@
 
                 // Update visitor view param
                 if(page_visitor == "true" || page_visitor == true){
-                    page_visitor = "&yp_out=true";
+                    page_visitor = "&wyp_out=true";
                 }else{
                     page_visitor = "";
                 }
 
                 // Generate new URL
-                var newSrc = iframe.attr('data-src') + "&yp_page_id=" + page_id + "&yp_page_type=" + page_type + "&yp_mode=" + page_mode + page_visitor;
+                var newSrc = iframe.attr('data-src') + "&wyp_page_id=" + page_id + "&wyp_page_type=" + page_type + "&wyp_mode=" + page_mode + page_visitor;
 
                 // IF same, don't update
                 if(newSrc == iframe.attr("src")){
@@ -9291,11 +9291,11 @@
             /* ---------------------------------------------------- */
             /* Open Customizing Type Popup                          */
             /* ---------------------------------------------------- */
-            $(document).on( "click", "#yp-current-page", function(){
+            $(document).on( "click", "#wyp-current-page", function(){
 
                 $(this).toggleClass("active");
 
-                var iframe = $("#yp-customizing-type-frame");
+                var iframe = $("#wyp-customizing-type-frame");
                 iframe.css("display", "block");
 
                 update_type_frame();
@@ -9377,8 +9377,8 @@
                 var heading = $(this).attr("data-type-heading");
 
                 // Updating
-                iframe.find(".yp-inline-data").removeClass("yp-styles-area");
-                iframe.find('.yp-inline-data[data-source-mode="'+contentType+'"]').addClass("yp-styles-area");
+                iframe.find(".wyp-inline-data").removeClass("wyp-styles-area");
+                iframe.find('.wyp-inline-data[data-source-mode="'+contentType+'"]').addClass("wyp-styles-area");
 
                 // Make current type active
                 $(".active-customizing-list").removeClass("active-customizing-list");
@@ -9441,7 +9441,7 @@
                 delete_live_css(id, false);
 
                 // delete live css.
-                iframe.find(".yp-live-css").remove();
+                iframe.find(".wyp-live-css").remove();
 
                 // stop if empty
                 if (isUndefined(value)) {
@@ -9603,7 +9603,7 @@
                 var duration,delay;
 
                 // update multiple duration and delay by animation name
-                if(id == 'animation-name' && $(".yp-animate-manager-active").length === 0){
+                if(id == 'animation-name' && $(".wyp-animate-manager-active").length === 0){
 
                     var animCount = 1;
 
@@ -9668,7 +9668,7 @@
                 // Animation name play.
                 if (id == 'animation-name' || id == 'animation-play' || id == 'animation-iteration' || id == 'animation-duration') {
 
-                    if($(".yp-animate-manager-active").length === 0 && value != 'none' && value != 'disable'){
+                    if($(".wyp-animate-manager-active").length === 0 && value != 'none' && value != 'disable'){
 
                         duration = get_selected_element().css("animationDuration");
                         delay = get_selected_element().css("animationDelay");
@@ -9699,14 +9699,14 @@
                         waitDelay = waitDelay + 100;
 
                         // Add class.
-                        body.addClass("yp-hide-borders-now yp-force-hide-select-ui");
+                        body.addClass("wyp-hide-borders-now wyp-force-hide-select-ui");
 
                         clear_animation_timer();
 
                         window.animationTimer1 = setTimeout(function(){
 
                             // remove class.
-                            body.removeClass("yp-hide-borders-now yp-force-hide-select-ui");
+                            body.removeClass("wyp-hide-borders-now wyp-force-hide-select-ui");
 
                             element_animation_end();
 
@@ -9764,7 +9764,7 @@
 
                 // Background color
                 if (id == 'background-color') {
-                    if ($("#yp-background-image").val() != 'none' && $("#yp-background-image").val() != '') {
+                    if ($("#wyp-background-image").val() != 'none' && $("#wyp-background-image").val() != '') {
                         force_insert_rule(selector, id, value, prefix, size);
 
                         return false;
@@ -9774,7 +9774,7 @@
                 // Responsive Settings
                 var mediaBefore = create_media_query_before(css);
 
-                if(mainBody.hasClass("yp-adding-auto-media")){
+                if(mainBody.hasClass("wyp-adding-auto-media")){
                     size = space_cleaner(mediaBefore.replace("@media","").replace("{",""));
                 }
 
@@ -9850,7 +9850,7 @@
                     // Delete same data for anim.
                     if (is_animate_creator()) {
 
-                        exStyle = iframe.find(".yp-anim-scenes ." + $('body').attr('data-anim-scene') + " .scenes-" + get_id(id) + "-style");
+                        exStyle = iframe.find(".wyp-anim-scenes ." + $('body').attr('data-anim-scene') + " .scenes-" + get_id(id) + "-style");
 
                         if (exStyle.length > 0) {
 
@@ -9871,7 +9871,7 @@
                                     if($(".anim-bar .scenes .scene-" + n).length == 0 || $(".anim-bar .scenes .scene-" + n).hasClass("scene-no-click-yet") == true){
 
                                         // if next scenes not added yet, so remove it too.
-                                        iframe.find(".yp-anim-scenes .scene-" + n + " .scenes-" + get_id(id) + "-style").remove();
+                                        iframe.find(".wyp-anim-scenes .scene-" + n + " .scenes-" + get_id(id) + "-style").remove();
 
                                     }
 
@@ -9917,14 +9917,14 @@
                 // Transform Settings
                 if (id.indexOf("-transform") != -1 && id != 'text-transform' && id != '-webkit-transform') {
 
-                    body.addClass("yp-has-transform");
+                    body.addClass("wyp-has-transform");
 
                     var translateData = transform_generator(true);
 
                     insert_rule(selector, 'transform', translateData, '', size);
 
                     if(translateData == 'none' || translateData == 'disable'){
-                        body.removeClass("yp-has-transform");
+                        body.removeClass("wyp-has-transform");
                     }
 
                     return false;
@@ -9984,7 +9984,7 @@
 
                     });
 
-                    insert_rule(selector, 'animation-name', $("#yp-animation-name").val(), prefix, size);
+                    insert_rule(selector, 'animation-name', $("#wyp-animation-name").val(), prefix, size);
 
                     return false;
 
@@ -10015,9 +10015,9 @@
 
                     if (is_animate_creator() === true && id != 'position') {
 
-                        iframe.find(".yp-anim-scenes ." + get_id(body.attr("data-anim-scene") + css)).remove();
+                        iframe.find(".wyp-anim-scenes ." + get_id(body.attr("data-anim-scene") + css)).remove();
 
-                        iframe.find(".yp-anim-scenes ." + body.attr("data-anim-scene") + "").append('<style data-rule="' + css + '" class="style-' + body.attr("data-anim-scene") + ' scenes-' + get_id(css) + '-style">' + selector + '{' + css + dpt + current + '}</style>');
+                        iframe.find(".wyp-anim-scenes ." + body.attr("data-anim-scene") + "").append('<style data-rule="' + css + '" class="style-' + body.attr("data-anim-scene") + ' scenes-' + get_id(css) + '-style">' + selector + '{' + css + dpt + current + '}</style>');
 
                         // update next scenes
                         var scene = 0;
@@ -10029,18 +10029,18 @@
                             scene = "scene-"+n;
 
                             // get style if have
-                            styleEl = iframe.find(".yp-anim-scenes ." + scene + " .scenes-" + get_id(css) + "-style");
+                            styleEl = iframe.find(".wyp-anim-scenes ." + scene + " .scenes-" + get_id(css) + "-style");
 
                             // If not has this style or has but this generated by same method
                             if(styleEl.length == 0 || styleEl.hasClass("dynamic-generated-scene")){
 
-                                selectorT = selector.replace(/body\.yp-scene-[0-9]/g, 'body.yp-scene-' + n);
+                                selectorT = selector.replace(/body\.wyp-scene-[0-9]/g, 'body.wyp-scene-' + n);
 
                                 // delete old
-                                iframe.find(".yp-anim-scenes ." + scene + " style[data-rule='"+css+"']").remove();
+                                iframe.find(".wyp-anim-scenes ." + scene + " style[data-rule='"+css+"']").remove();
 
                                 // Append
-                                iframe.find(".yp-anim-scenes ." + scene + "").append('<style data-rule="' + css + '" class="dynamic-generated-scene style-' + scene + ' scenes-' + get_id(css) + '-style">' + selectorT + '{' + css + dpt + current + '}</style>');
+                                iframe.find(".wyp-anim-scenes ." + scene + "").append('<style data-rule="' + css + '" class="dynamic-generated-scene style-' + scene + ' scenes-' + get_id(css) + '-style">' + selectorT + '{' + css + dpt + current + '}</style>');
 
                             }
 
@@ -10048,7 +10048,7 @@
 
                     } else {
 
-                        the_editor_data().append('<style data-rule="' + css + '" data-size-mode="' + size + '" data-style="' + get_id(selector) + '" class="' + get_id(selector) + '-' + id + '-style yp_current_styles">' + mediaBefore + '' + '' + selector + '{' + css + dpt + current + '}' + '' + mediaAfter + '</style>');
+                        the_editor_data().append('<style data-rule="' + css + '" data-size-mode="' + size + '" data-style="' + get_id(selector) + '" class="' + get_id(selector) + '-' + id + '-style wyp_current_styles">' + mediaBefore + '' + '' + selector + '{' + css + dpt + current + '}' + '' + mediaAfter + '</style>');
 
                         resort_style_data_positions();
 
@@ -10064,18 +10064,18 @@
                 }
 
                 // No need to important on keyframes
-                if(mainBody.hasClass("yp-anim-creator")){
+                if(mainBody.hasClass("wyp-anim-creator")){
                     return false;
                 }
 
                 // Don't use important if animation manager active
-                if(mainBody.hasClass("yp-animate-manager-mode")){
+                if(mainBody.hasClass("wyp-animate-manager-mode")){
                     return false;
                 }
 
                 // Generate the most strong selector
                 window.minCroppedSelector = 12;
-                var betterSelector = get_parents(iframe.find(".yp-content-selected .yp-selected"), window.lastParentQueryStatus);
+                var betterSelector = get_parents(iframe.find(".wyp-content-selected .wyp-selected"), window.lastParentQueryStatus);
                 window.minCroppedSelector = false;
 
                 // Check if need to important tag and apply if need.
@@ -10099,10 +10099,10 @@
                 if (is_animate_creator() === true && id != 'position') {
 
                     // Delete if has
-                    selector = $.trim(selector.replace(/(body)?\.yp-scene-[0-9]/g, ''));
+                    selector = $.trim(selector.replace(/(body)?\.wyp-scene-[0-9]/g, ''));
 
                     // Add
-                    selector = add_class_to_body(selector, "yp-" + body.attr("data-anim-scene"));
+                    selector = add_class_to_body(selector, "wyp-" + body.attr("data-anim-scene"));
 
                 }
 
@@ -10130,7 +10130,7 @@
 
 
                 // Updating Selector for animation properties on Animation Manager
-                if (mainBody.hasClass("process-by-code-editor") === false && $(".yp-animate-manager-active").length === 0) {
+                if (mainBody.hasClass("process-by-code-editor") === false && $(".wyp-animate-manager-active").length === 0) {
 
                     // Animation Properties
                     if (id == 'animation-name' || id == 'animation-duration' || id == 'animation-delay') {
@@ -10140,7 +10140,7 @@
 
                         // Play class
                         var play = '';
-                        play = "." + $("#yp-animation-play").val();
+                        play = "." + $("#wyp-animation-play").val();
 
                         // Getting array
                         var selectorNew = selector.split(":");
@@ -10175,7 +10175,7 @@
 
 
                 // Hover, Focus, Active etc Selections.
-                var selection = $('body').attr('data-yp-selector');
+                var selection = $('body').attr('data-wyp-selector');
 
                 // Has Selection
                 if (!isUndefined(selection)) {
@@ -10184,7 +10184,7 @@
                     if(/(yp_onscreen|yp_click|yp_focus|yp_hover)/g.test(selector) == false && id != 'animation-play' && id != 'animation-fill-mode'){
 
                         // Clean
-                        selector = selector.replace(/\.yp-selected(.*?){/g,'{');
+                        selector = selector.replace(/\.wyp-selected(.*?){/g,'{');
                         selector = selector.replace(/(body)?\.yp-selector-(hover|focus|active|visited|link)/g,'');
                         selector = selector.replace(/:(hover|focus|active|visited|link)(\s+)?$/g,"");
 
@@ -10197,18 +10197,18 @@
                         // Add to element
                         selector = add_class_to_body(selector, 'yp-selector-' + selectionX);
 
-                        // Add yp-selected to last of selector.
-                        var selector1 = selector.replace('body.yp-selector-' + selectionX + ' body.yp-selector-' + selectionX + ' ', 'body.yp-selector-' + selectionX + ' ') + ".yp-selected";
+                        // Add wyp-selected to last of selector.
+                        var selector1 = selector.replace('body.yp-selector-' + selectionX + ' body.yp-selector-' + selectionX + ' ', 'body.yp-selector-' + selectionX + ' ') + ".wyp-selected";
 
-                        var selector2 = selector.replace('body.yp-selector-' + selectionX + ' body.yp-selector-' + selectionX + ' ', 'body.yp-selector-' + selectionX + ' ') + ".yp-selected-others";
+                        var selector2 = selector.replace('body.yp-selector-' + selectionX + ' body.yp-selector-' + selectionX + ' ', 'body.yp-selector-' + selectionX + ' ') + ".wyp-selected-others";
 
-                        var selector3 = selector.replace('body.yp-selector-' + selectionX + ' body.yp-selector-' + selectionX + ' ', 'body.yp-selector-' + selectionX + ' ') + ".yp-selected:"+selectionX;
+                        var selector3 = selector.replace('body.yp-selector-' + selectionX + ' body.yp-selector-' + selectionX + ' ', 'body.yp-selector-' + selectionX + ' ') + ".wyp-selected:"+selectionX;
 
-                        var selector4 = selector.replace('body.yp-selector-' + selectionX + ' body.yp-selector-' + selectionX + ' ', 'body.yp-selector-' + selectionX + ' ') + ".yp-selected-others:"+selectionX;
+                        var selector4 = selector.replace('body.yp-selector-' + selectionX + ' body.yp-selector-' + selectionX + ' ', 'body.yp-selector-' + selectionX + ' ') + ".wyp-selected-others:"+selectionX;
 
-                        var selector5 = selector.replace('body.yp-selector-' + selectionX + ' body.yp-selector-' + selectionX + ' ', 'body.yp-selector-' + selectionX + ' ') + ".yp-selected-parents";
+                        var selector5 = selector.replace('body.yp-selector-' + selectionX + ' body.yp-selector-' + selectionX + ' ', 'body.yp-selector-' + selectionX + ' ') + ".wyp-selected-parents";
 
-                        var selector6 = selector.replace('body.yp-selector-' + selectionX + ' body.yp-selector-' + selectionX + ' ', 'body.yp-selector-' + selectionX + ' ') + ".yp-selected-parents:"+selectionX;
+                        var selector6 = selector.replace('body.yp-selector-' + selectionX + ' body.yp-selector-' + selectionX + ' ', 'body.yp-selector-' + selectionX + ' ') + ".wyp-selected-parents:"+selectionX;
 
                         // Selector
                         selector = selector1 + "," + selector2 + "," + selector3 + "," + selector4 + "," + selector5 + "," + selector6 + "," + selector0;
@@ -10229,7 +10229,7 @@
 
                 // to disable css codes from frame.css
                 // It will disable some cursor and transition styles which appled to target element.
-                body.addClass("yp-important-check");
+                body.addClass("wyp-important-check");
 
                 // To fix a bug in Firefox
                 var delayMode = false;
@@ -10309,7 +10309,7 @@
                     if(current != computedValue){
 
                         // append with important tag and most strong selector.
-                        iframeBody.append('<style class="yp-important-debug-' + index + '">' + appendData[0] + '' + '' + betterSelector + '{' + appendData[1] + appendData[2] + appendData[3] + '!important;}' + '' + appendData[4] + '</style>');
+                        iframeBody.append('<style class="wyp-important-debug-' + index + '">' + appendData[0] + '' + '' + betterSelector + '{' + appendData[1] + appendData[2] + appendData[3] + '!important;}' + '' + appendData[4] + '</style>');
 
                         // Sleep.
                         setTimeout(function(){
@@ -10318,7 +10318,7 @@
                             var computedValueImportant = element.css(css);
 
                             // delete it
-                            iframeBody.find(".yp-important-debug-" + index).remove();
+                            iframeBody.find(".wyp-important-debug-" + index).remove();
 
                             // compress computed values with important and no important. (if trigged from insert_rule func)
                             if(computedValueImportant != computedValue && removeData[0] == false){
@@ -10330,7 +10330,7 @@
                                 force_insert_rule(importantData[0],importantData[1],importantData[2],importantData[3],importantData[4]);
 
                                 // Disable important check, used for disable some styles in frame.css
-                                body.removeClass("yp-important-check");
+                                body.removeClass("wyp-important-check");
 
                                 return false;
 
@@ -10360,7 +10360,7 @@
                     }
 
                 // Disable important check, used for disable some styles in frame.css
-                body.removeClass("yp-important-check");
+                body.removeClass("wyp-important-check");
 
             }
 
@@ -10398,7 +10398,7 @@
             function add_class_to_parents(){
 
                 // Get selection: hover, active etc.
-                var selection = body.attr("data-yp-selector");
+                var selection = body.attr("data-wyp-selector");
 
                 // IF selection avaiable
                 if(!isUndefined(selection)){
@@ -10407,7 +10407,7 @@
                     get_selected_element().parentsUntil("body").each(function(){
 
                         // Add class
-                        $(this).addClass("yp-selected-parents");
+                        $(this).addClass("wyp-selected-parents");
 
                     });
 
@@ -10416,16 +10416,16 @@
             }
 
 
-            iframe.on("mouseover", ".yp-selected-boxed-top,.yp-selected-boxed-right,.yp-selected-boxed-bottom,.yp-selected-boxed-left,.yp-selected-boxed-padding-top,.yp-selected-boxed-padding-right,.yp-selected-boxed-padding-bottom,.yp-selected-boxed-padding-left,.yp-selected-boxed-margin-top,.yp-selected-boxed-margin-right,.yp-selected-boxed-margin-bottom,.yp-selected-boxed-margin-left,.yp-selected-tooltip,.yp-edit-tooltip", function(){
+            iframe.on("mouseover", ".wyp-selected-boxed-top,.wyp-selected-boxed-right,.wyp-selected-boxed-bottom,.wyp-selected-boxed-left,.wyp-selected-boxed-padding-top,.wyp-selected-boxed-padding-right,.wyp-selected-boxed-padding-bottom,.wyp-selected-boxed-padding-left,.wyp-selected-boxed-margin-top,.wyp-selected-boxed-margin-right,.wyp-selected-boxed-margin-bottom,.wyp-selected-boxed-margin-left,.wyp-selected-tooltip,.wyp-edit-tooltip", function(){
 
                 // Selection
-                var selection = body.attr("data-yp-selector");
+                var selection = body.attr("data-wyp-selector");
 
                 // If Undefined
                 if(isUndefined(selection)){
 
-                    body.addClass("yp-selector-hover yp-fake-hover");
-                    body.attr("data-yp-selector", ":hover");
+                    body.addClass("yp-selector-hover wyp-fake-hover");
+                    body.attr("data-wyp-selector", ":hover");
 
                     add_class_to_parents();
 
@@ -10433,11 +10433,11 @@
 
             });
 
-            iframe.on("mouseleave", ".yp-selected-boxed-top,.yp-selected-boxed-right,.yp-selected-boxed-bottom,.yp-selected-boxed-left,.yp-selected-boxed-padding-top,.yp-selected-boxed-padding-right,.yp-selected-boxed-padding-bottom,.yp-selected-boxed-padding-left,.yp-selected-boxed-margin-top,.yp-selected-boxed-margin-right,.yp-selected-boxed-margin-bottom,.yp-selected-boxed-margin-left,.yp-selected-tooltip,.yp-edit-tooltip", function(){
+            iframe.on("mouseleave", ".wyp-selected-boxed-top,.wyp-selected-boxed-right,.wyp-selected-boxed-bottom,.wyp-selected-boxed-left,.wyp-selected-boxed-padding-top,.wyp-selected-boxed-padding-right,.wyp-selected-boxed-padding-bottom,.wyp-selected-boxed-padding-left,.wyp-selected-boxed-margin-top,.wyp-selected-boxed-margin-right,.wyp-selected-boxed-margin-bottom,.wyp-selected-boxed-margin-left,.wyp-selected-tooltip,.wyp-edit-tooltip", function(){
 
-                if(body.hasClass("yp-fake-hover")){
-                    body.removeClass("yp-selector-hover yp-fake-hover");
-                    body.removeAttr("data-yp-selector");
+                if(body.hasClass("wyp-fake-hover")){
+                    body.removeClass("yp-selector-hover wyp-fake-hover");
+                    body.removeAttr("data-wyp-selector");
                 }
 
             });
@@ -10523,13 +10523,13 @@
                 // stop if empty.
                 if($.isEmptyObject(data)){
 
-                    output += '<div class="yp-reset-actions"><button class="confirm" style="background-color:rgb(128, 162, 86);">OK</button></div>';
+                    output += '<div class="wyp-reset-actions"><button class="confirm" style="background-color:rgb(128, 162, 86);">OK</button></div>';
 
                     return output;
                 }
 
                 // Manager section
-                output += '<div class="yp-manage-css-section">';
+                output += '<div class="wyp-manage-css-section">';
 
                 var m = 0;
                 var s = 0;
@@ -10633,7 +10633,7 @@
                 output += '</div>';
 
                 if(!$.isEmptyObject(data)){
-                        output += '<div class="yp-reset-actions"><button class="empty-stylesheet-btn">Empty Stylesheet</button><div class="reset-actions"><button class="cancel">Cancel</button><button class="confirm" style="background-color:rgb(128, 162, 86);">Apply Changes</button></div></div>';
+                        output += '<div class="wyp-reset-actions"><button class="empty-stylesheet-btn">Empty Stylesheet</button><div class="reset-actions"><button class="cancel">Cancel</button><button class="confirm" style="background-color:rgb(128, 162, 86);">Apply Changes</button></div></div>';
                     }
 
                 setTimeout(function(){
@@ -10661,9 +10661,9 @@
                     }
 
                     // Scrollbar
-                    $('.yp-manage-css-section').perfectScrollbar();
+                    $('.wyp-manage-css-section').perfectScrollbar();
 
-                    $(".yp-reset-popup").css("margin-top",parseFloat($(".yp-reset-popup").css("margin-top"))-parseFloat($(".yp-manage-css-section").height()/2));
+                    $(".wyp-reset-popup").css("margin-top",parseFloat($(".wyp-reset-popup").css("margin-top"))-parseFloat($(".wyp-manage-css-section").height()/2));
 
                 }, 4);
 
@@ -10890,7 +10890,7 @@
 
                 // remove generated table.
                 setTimeout(function(){
-                    $(".yp-reset-popup").remove();
+                    $(".wyp-reset-popup").remove();
                 }, 200);
 
                 // block swal normal click event.
@@ -11065,7 +11065,7 @@
 
                     }
 
-                    $('.yp-manage-css-section').perfectScrollbar('update');
+                    $('.wyp-manage-css-section').perfectScrollbar('update');
 
                 }
 
@@ -11099,7 +11099,7 @@
                         if(CSSline.find(".css-manager-checkbox").is(":checked") == true){
 
                             // remove the rule.
-                                disableStyle = the_editor_data().find(".yp_current_styles." + get_id(selector) + '-' + rule + "-style[data-size-mode='"+size+"']");
+                                disableStyle = the_editor_data().find(".wyp_current_styles." + get_id(selector) + '-' + rule + "-style[data-size-mode='"+size+"']");
 
                                 if(disableStyle.length > 0){
                                     disableStyle.remove();
@@ -11141,7 +11141,7 @@
                             if(CSSline.find(".css-manager-checkbox").is(":checked") == true){
 
                                 // remove the rule.
-                                disableStyle = the_editor_data().find(".yp_current_styles." + get_id(selector) + '-' + rule + "-style[data-size-mode='"+size+"']");
+                                disableStyle = the_editor_data().find(".wyp_current_styles." + get_id(selector) + '-' + rule + "-style[data-size-mode='"+size+"']");
 
                                 if(disableStyle.length > 0){
                                     disableStyle.remove();
@@ -11179,8 +11179,8 @@
                     var el = $(this);
 
                     // Dynamic box
-                    if (iframe.find(".yp-element-viewer-" + index).length === 0) {
-                        iframeBody.append("<div class='yp-element-viewer yp-element-viewer-" + index + "'></div>");
+                    if (iframe.find(".wyp-element-viewer-" + index).length === 0) {
+                        iframeBody.append("<div class='wyp-element-viewer wyp-element-viewer-" + index + "'></div>");
                     }
 
                     // size
@@ -11193,7 +11193,7 @@
                     var l = offset.left;
 
                     // Draw
-                    iframe.find(".yp-element-viewer-" + index).css("width", w).css("height", h).css("top", t).css("left", l);
+                    iframe.find(".wyp-element-viewer-" + index).css("width", w).css("height", h).css("top", t).css("left", l);
 
                 });
 
@@ -11204,7 +11204,7 @@
             /* ---------------------------------------------------- */
             /* Hide blue borders on options click section           */
             /* ---------------------------------------------------- */
-            $(document).on("click",".yp-this-content",function(e){
+            $(document).on("click",".wyp-this-content",function(e){
                 if (e.originalEvent) {
                     hide_frame_ui(200);
                 }
@@ -11249,7 +11249,7 @@
             /* ---------------------------------------------------- */
             function slider_option(id, decimals, pxv, pcv, emv) {
 
-                var thisContent = $("#" + id + "-group").parent(".yp-this-content");
+                var thisContent = $("#" + id + "-group").parent(".wyp-this-content");
 
                 var elementParent = $("#" + id + "-group");
 
@@ -11259,13 +11259,13 @@
                 elementParent.data("em", emv);
 
                 // Get prefix
-                var prefix = $("#" + id + "-group .yp-css-format").val();
+                var prefix = $("#" + id + "-group .wyp-css-format").val();
 
                 // Getting range
                 var range = get_format_range(prefix, elementParent);
 
                 // Setup slider.
-                $('#yp-' + id).wqNoUiSlider({
+                $('#wyp-' + id).wqNoUiSlider({
 
                     start: [0],
 
@@ -11288,16 +11288,16 @@
 
                     if(lock){
 
-                        thisContent.find(".yp-option-group").each(function(){
+                        thisContent.find(".wyp-option-group").each(function(){
                             lockedIdArray.push($(this).attr("data-css"));
                         });
 
                         var val = $(this).val();
 
                         for(var y = 0;y < lockedIdArray.length; y++){
-                            $('#yp-' + lockedIdArray[y]).val(val);
+                            $('#wyp-' + lockedIdArray[y]).val(val);
                             $('#' + lockedIdArray[y] + '-after').trigger("keyup");
-                            slide_action($("#yp-" + lockedIdArray[y]), lockedIdArray[y], true, false);
+                            slide_action($("#wyp-" + lockedIdArray[y]), lockedIdArray[y], true, false);
                         }
 
                         option_change();
@@ -11315,7 +11315,7 @@
                     var lockedIdArray = [];
 
                     if(lock){
-                        thisContent.find(".yp-option-group").each(function(){
+                        thisContent.find(".wyp-option-group").each(function(){
                             lockedIdArray.push($(this).attr("data-css"));
                         });
                     }
@@ -11377,7 +11377,7 @@
                     val = element.val();
 
                     // If active, disable it.
-                    element.parent().parent().find(".yp-btn-action.active").trigger("click");
+                    element.parent().parent().find(".wyp-btn-action.active").trigger("click");
 
                 }
 
@@ -11420,13 +11420,13 @@
             /* ---------------------------------------------------- */
             /* Border Type: Update View                             */
             /* ---------------------------------------------------- */
-            $("#yp-border-type .yp-radio").on("click", function(){
+            $("#wyp-border-type .wyp-radio").on("click", function(){
 
-                var value = $("#yp-border-type .yp-radio.active input").val();
+                var value = $("#wyp-border-type .wyp-radio.active input").val();
 
-                $(".yp-border-all-section,.yp-border-top-section,.yp-border-right-section,.yp-border-bottom-section,.yp-border-left-section").hide();
+                $(".wyp-border-all-section,.wyp-border-top-section,.wyp-border-right-section,.wyp-border-bottom-section,.wyp-border-left-section").hide();
 
-                $(".yp-border-"+value+"-section").show();
+                $(".wyp-border-"+value+"-section").show();
 
                 insert_default_options();
 
@@ -11441,10 +11441,10 @@
                 var id_prt = the_id.parent().parent();
 
                 // for none btn
-                id_prt.find(".yp-btn-action.active").trigger("click");
+                id_prt.find(".wyp-btn-action.active").trigger("click");
 
-                if (data == id_prt.find(".yp-none-btn").text()) {
-                    id_prt.find(".yp-none-btn").trigger("click");
+                if (data == id_prt.find(".wyp-none-btn").text()) {
+                    id_prt.find(".wyp-none-btn").trigger("click");
                 }
 
                 if (data == 'auto auto') {
@@ -11478,7 +11478,7 @@
 
                         });
 
-                        id_prt.find(".yp-none-btn:not(.active)").trigger("click");
+                        id_prt.find(".wyp-none-btn:not(.active)").trigger("click");
 
                     }
 
@@ -11491,7 +11491,7 @@
             /* ---------------------------------------------------- */
             function radio_option(id) {
 
-                $("#yp-" + id + " label").on('click', function() {
+                $("#wyp-" + id + " label").on('click', function() {
 
                     if($(".position-option.active").length === 0){
                         if($(this).parent().hasClass("active")){
@@ -11500,10 +11500,10 @@
                     }
 
                     // Disable none.
-                    $(this).parent().parent().parent().parent().find(".yp-btn-action.active").removeClass("active");
+                    $(this).parent().parent().parent().parent().find(".wyp-btn-action.active").removeClass("active");
                     $(this).parent().parent().parent().parent().addClass("reset-enable").css("opacity", 1);
 
-                    $("#yp-" + id).find(".active").removeClass("active");
+                    $("#wyp-" + id).find(".active").removeClass("active");
 
                     $(this).parent().addClass("active");
 
@@ -11602,7 +11602,7 @@
                 $(this).popover("destroy");
 
                 // list stype image has value, and none button not active
-                if($("#yp-list-style-image").val().length > 12 && $("#list-style-image-group .yp-none-btn.active").length == 0){
+                if($("#wyp-list-style-image").val().length > 12 && $("#list-style-image-group .wyp-none-btn.active").length == 0){
 
                     $(this).popover({
                         animation: false,
@@ -11660,7 +11660,7 @@
                 if($(this).attr("id") == 'list-style-type-group'){
 
                     // Destroy if there not have another warning.
-                    if($("#yp-list-style-image .yp-none-btn.active").length == 1){
+                    if($("#wyp-list-style-image .wyp-none-btn.active").length == 1){
                         $(this).popover("destroy");
                     }
 
@@ -11721,12 +11721,12 @@
             /* ---------------------------------------------------- */
             /* Show responsive notice one time                      */
             /* ---------------------------------------------------- */
-            $(".yp-responsive-btn").click(function(){
+            $(".wyp-responsive-btn").click(function(){
 
-                var resBtn = $(".yp-responsive-btn");
+                var resBtn = $(".wyp-responsive-btn");
 
                 // Opened && not showed before
-                if(resBtn.hasClass("active") == false && mainBody.hasClass("yp-responsive-notice-showed") == false){
+                if(resBtn.hasClass("active") == false && mainBody.hasClass("wyp-responsive-notice-showed") == false){
 
                     // 500ms wait
                     setTimeout(function(){
@@ -11747,7 +11747,7 @@
                             }).tooltip("show");
 
                             // Added: showed class
-                            mainBody.addClass("yp-responsive-notice-showed");
+                            mainBody.addClass("wyp-responsive-notice-showed");
 
                         }
 
@@ -11834,7 +11834,7 @@
 
 
                 // fixed warning
-                if($(".yp-radio.active #position-fixed").length > 0) {
+                if($(".wyp-radio.active #position-fixed").length > 0) {
 
                     $(this).popover({
                         animation: false,
@@ -11847,7 +11847,7 @@
                     }).popover("show");
 
                 // absolute warning
-                } else if($(".yp-radio.active #position-absolute").length > 0) {
+                } else if($(".wyp-radio.active #position-absolute").length > 0) {
 
                     $(this).popover({
                         animation: false,
@@ -11878,7 +11878,7 @@
                 $(this).popover("destroy");
 
                 // show warning if not have a blackground image
-                if ($("#yp-background-image").val() == '' || $("#background-image-group .yp-none-btn.active").length === 1) {
+                if ($("#wyp-background-image").val() == '' || $("#background-image-group .wyp-none-btn.active").length === 1) {
 
                     $(this).popover({
                         animation: false,
@@ -11938,14 +11938,14 @@
             /* ---------------------------------------------------- */
             /* Destroy popover after disable                        */
             /* ---------------------------------------------------- */
-            $(".yp-disable-btn").on("click",function(){
-                $(this).parents(".yp-option-group").popover("destroy");
+            $(".wyp-disable-btn").on("click",function(){
+                $(this).parents(".wyp-option-group").popover("destroy");
             });
 
 
             // Hide while editor options scrolling
             $(".editor-panel-inner").on("scroll", function(){
-                $(".yp-option-group,.yp-advanced-option").popover("hide");
+                $(".wyp-option-group,.wyp-advanced-option").popover("hide");
             });
 
 
@@ -12000,26 +12000,26 @@
                     mainBody.removeClass("autocomplete-active");
                 },300);
 
-                delete_live_css(id, "#yp-" + id + "-test-style");
+                delete_live_css(id, "#wyp-" + id + "-test-style");
 
                 // Disable
-                $(this).parent().parent().find(".yp-btn-action.active").trigger("click");
+                $(this).parent().parent().find(".wyp-btn-action.active").trigger("click");
                 $("#" + id + "-group").addClass("reset-enable");
 
                 // Font weight.
                 if (id == 'font-weight') {
-                    $("#yp-font-weight").css(id, $(this).val()).css("fontFamily", $("#yp-font-family").val());
+                    $("#wyp-font-weight").css(id, $(this).val()).css("fontFamily", $("#wyp-font-family").val());
                 }
 
                 // Font family
                 if (id == 'font-family') {
-                    $("#yp-font-family").css(id, $(this).val());
-                    $("#yp-font-weight").css("fontFamily", $("#yp-font-family").val());
+                    $("#wyp-font-family").css(id, $(this).val());
+                    $("#wyp-font-weight").css("fontFamily", $("#wyp-font-family").val());
                 }
 
                 // Text shadow live change.
                 if (id == 'text-shadow') {
-                    $("#yp-text-shadow").css(id, $(this).val());
+                    $("#wyp-text-shadow").css(id, $(this).val());
                 }
 
                 var val = $(this).val();
@@ -12042,7 +12042,7 @@
             /* Fix Break minify issue after editor loaded:          */
             /* convert line break to space in the selectors         */
             /* ---------------------------------------------------- */
-            iframe.find(".yp-styles-area,.yp-animate-data").each(function(){
+            iframe.find(".wyp-styles-area,.wyp-animate-data").each(function(){
 
                 var content = $(this).html().replace(/(\n|(\s+))/g,' ');
 
@@ -12061,7 +12061,7 @@
 
                 $(".active-autocomplete-item").removeClass("active-autocomplete-item");
 
-                var id = element.parent().parent().attr("id").replace("yp-autocomplete-place-", "");
+                var id = element.parent().parent().attr("id").replace("wyp-autocomplete-place-", "");
 
                     // If not current.
                     if (!element.hasClass("ui-state-focus")) {
@@ -12089,7 +12089,7 @@
                         delete_live_css("font-family");
 
                         // Getting the right font family
-                        var index = element.index(), currentOption = $("#yp-font-family-data option").eq(index);
+                        var index = element.index(), currentOption = $("#wyp-font-family-data option").eq(index);
 
                         // All Font family
                         if(currentOption.length > 0){
@@ -12113,7 +12113,7 @@
                         element.css("fontWeight", number_filter(element.text()).replace(/-/g, ''));
                     });
 
-                    $(".autocomplete-div li").css("fontFamily", $("#yp-font-family").val());
+                    $(".autocomplete-div li").css("fontFamily", $("#wyp-font-family").val());
                 }
 
             });
@@ -12169,16 +12169,16 @@
             /* ---------------------------------------------------- */
             $(document).on("mouseleave", $(document), function() {
 
-                if(body.hasClass("yp-mouseleave")){
+                if(body.hasClass("wyp-mouseleave")){
                     return false;
                 }
 
-                body.addClass("yp-mouseleave");
+                body.addClass("wyp-mouseleave");
 
                 // remove multiple selection support.
-                body.removeClass("yp-control-key-down");
-                iframe.find(".yp-multiple-selected").removeClass("yp-multiple-selected");
-                iframe.find(".yp-selected-others-multiable-box").remove();
+                body.removeClass("wyp-control-key-down");
+                iframe.find(".wyp-multiple-selected").removeClass("wyp-multiple-selected");
+                iframe.find(".wyp-selected-others-multiable-box").remove();
 
                 if(is_content_selected() === false){
                     clean();
@@ -12211,12 +12211,12 @@
             /* ---------------------------------------------------- */
             $(document).on("mouseenter", $(document), function() {
 
-                body.removeClass("yp-mouseleave");
+                body.removeClass("wyp-mouseleave");
 
                 // remove multiple selection support.
-                body.removeClass("yp-control-key-down");
-                iframe.find(".yp-multiple-selected").removeClass("yp-multiple-selected");
-                iframe.find(".yp-selected-others-multiable-box").remove();
+                body.removeClass("wyp-control-key-down");
+                iframe.find(".wyp-multiple-selected").removeClass("wyp-multiple-selected");
+                iframe.find(".wyp-selected-others-multiable-box").remove();
 
             });
 
@@ -12226,16 +12226,16 @@
             /* ---------------------------------------------------- */
             iframe.on("mouseleave", iframe, function() {
 
-                if(body.hasClass("yp-iframe-mouseleave")){
+                if(body.hasClass("wyp-iframe-mouseleave")){
                     return false;
                 }
 
-                body.addClass("yp-iframe-mouseleave");
+                body.addClass("wyp-iframe-mouseleave");
 
                 // remove multiple selection support.
-                body.removeClass("yp-control-key-down");
-                iframe.find(".yp-multiple-selected").removeClass("yp-multiple-selected");
-                iframe.find(".yp-selected-others-multiable-box").remove();
+                body.removeClass("wyp-control-key-down");
+                iframe.find(".wyp-multiple-selected").removeClass("wyp-multiple-selected");
+                iframe.find(".wyp-selected-others-multiable-box").remove();
 
             });
 
@@ -12244,7 +12244,7 @@
             /* ---------------------------------------------------- */
             iframe.on("mouseenter", iframe, function() {
 
-                body.removeClass("yp-iframe-mouseleave");
+                body.removeClass("wyp-iframe-mouseleave");
 
             });
 
@@ -12283,12 +12283,12 @@
 
                     var fontId = get_basic_id($.trim(element.text().replace(/ /g, '+')));
 
-                    if (is_safe_font(element.text()) === false && iframe.find(".yp-font-test-" + fontId).length === 0) {
+                    if (is_safe_font(element.text()) === false && iframe.find(".wyp-font-test-" + fontId).length === 0) {
 
-                        iframeBody.append("<link rel='stylesheet' class='yp-font-test-" + fontId + "'  href='https://fonts.googleapis.com/css?family=" + $.trim(element.text().replace(/ /g, '+')) + ":300italic,300,400,400italic,500,500italic,600,600italic,700,700italic' type='text/css' media='all' />");
+                        iframeBody.append("<link rel='stylesheet' class='wyp-font-test-" + fontId + "'  href='https://fonts.googleapis.com/css?family=" + $.trim(element.text().replace(/ /g, '+')) + ":300italic,300,400,400italic,500,500italic,600,600italic,700,700italic' type='text/css' media='all' />");
 
                         // Append always to body.
-                        mainBody.append("<link rel='stylesheet' class='yp-font-test-" + fontId + "'  href='https://fonts.googleapis.com/css?family=" + $.trim(element.text().replace(/ /g, '+')) + ":300italic,300,400,400italic,500,500italic,600,600italic,700,700italic' type='text/css' media='all' />");
+                        mainBody.append("<link rel='stylesheet' class='wyp-font-test-" + fontId + "'  href='https://fonts.googleapis.com/css?family=" + $.trim(element.text().replace(/ /g, '+')) + ":300italic,300,400,400italic,500,500italic,600,600italic,700,700italic' type='text/css' media='all' />");
 
                     }
 
@@ -12302,7 +12302,7 @@
             /* ---------------------------------------------------- */
             /* Loading fonts while autocomplete scrolling           */
             /* ---------------------------------------------------- */
-            $("#yp-autocomplete-place-font-family > ul").bind('scroll', function() {
+            $("#wyp-autocomplete-place-font-family > ul").bind('scroll', function() {
 
                 load_near_fonts($(this));
 
@@ -12346,11 +12346,11 @@
                 if(id == 'top' || id == 'left' || id == 'right' ||id == 'bottom'){
 
                     // If is static
-                    if($(".yp-radio.active #position-static").length > 0){
+                    if($(".wyp-radio.active #position-static").length > 0){
 
                         // Insert position relative
                         insert_rule(null, "position", "relative", '');
-                        $("#position-group .yp-radio.active").removeClass("active");
+                        $("#position-group .wyp-radio.active").removeClass("active");
                         $("#position-relative").parent().addClass("active");
 
                     }
@@ -12444,11 +12444,11 @@
                     // Append
                     if(id == 'filter' || id == 'transform'){ // Webkit support
 
-                        iframeBody.append("<style class='" + idAttr + " yp-live-css' id='" + idAttr + "'>" + mediaBefore + ".yp-selected,.yp-selected-others," + selector + "{" + id + ":" + val + " !important;-webkit-" + id + ":" + val + " !important;}" + mediaAfter + "</style>");
+                        iframeBody.append("<style class='" + idAttr + " wyp-live-css' id='" + idAttr + "'>" + mediaBefore + ".wyp-selected,.wyp-selected-others," + selector + "{" + id + ":" + val + " !important;-webkit-" + id + ":" + val + " !important;}" + mediaAfter + "</style>");
 
                     }else{ // default
 
-                        iframeBody.append("<style class='" + idAttr + " yp-live-css' id='" + idAttr + "'>" + mediaBefore + ".yp-selected,.yp-selected-others," + selector + "{" + id + ":" + val + " !important;}" + mediaAfter + "</style>");
+                        iframeBody.append("<style class='" + idAttr + " wyp-live-css' id='" + idAttr + "'>" + mediaBefore + ".wyp-selected,.wyp-selected-others," + selector + "{" + id + ":" + val + " !important;}" + mediaAfter + "</style>");
 
                     }
 
@@ -12473,35 +12473,35 @@
                 var skewY = "skewy(" + $.trim($("#skew-y-transform-value").val()) + "deg)";
 
                 // Check if disable or not
-                if ($("#scale-transform-group .yp-disable-btn").hasClass("active")) {
+                if ($("#scale-transform-group .wyp-disable-btn").hasClass("active")) {
                     scale = '';
                 }
 
-                if ($("#rotatex-transform-group .yp-disable-btn").hasClass("active")) {
+                if ($("#rotatex-transform-group .wyp-disable-btn").hasClass("active")) {
                     rotatex = '';
                 }
 
-                if ($("#rotatey-transform-group .yp-disable-btn").hasClass("active")) {
+                if ($("#rotatey-transform-group .wyp-disable-btn").hasClass("active")) {
                     rotatey = '';
                 }
 
-                if ($("#rotatez-transform-group .yp-disable-btn").hasClass("active")) {
+                if ($("#rotatez-transform-group .wyp-disable-btn").hasClass("active")) {
                     rotatez = '';
                 }
 
-                if ($("#translate-x-transform-group .yp-disable-btn").hasClass("active")) {
+                if ($("#translate-x-transform-group .wyp-disable-btn").hasClass("active")) {
                     translateX = '';
                 }
 
-                if ($("#translate-y-transform-group .yp-disable-btn").hasClass("active")) {
+                if ($("#translate-y-transform-group .wyp-disable-btn").hasClass("active")) {
                     translateY = '';
                 }
 
-                if ($("#skew-x-transform-group .yp-disable-btn").hasClass("active")) {
+                if ($("#skew-x-transform-group .wyp-disable-btn").hasClass("active")) {
                     skewX = '';
                 }
 
-                if ($("#skew-y-transform-group .yp-disable-btn").hasClass("active")) {
+                if ($("#skew-y-transform-group .wyp-disable-btn").hasClass("active")) {
                     skewY = '';
                 }
 
@@ -12591,7 +12591,7 @@
 
                 if (translateData === '' || translateData == ' ') {
                     translateData = 'disable';
-                    body.removeClass("yp-has-transform");
+                    body.removeClass("wyp-has-transform");
                 }
 
                 return translateData;
@@ -12614,31 +12614,31 @@
                 var sepia = "sepia(" + $.trim($("#sepia-filter-value").val()) + ")";
 
                 // Check if disable or not
-                if ($("#blur-filter-group .yp-disable-btn").hasClass("active")) {
+                if ($("#blur-filter-group .wyp-disable-btn").hasClass("active")) {
                     blur = '';
                 }
 
-                if ($("#grayscale-filter-group .yp-disable-btn").hasClass("active")) {
+                if ($("#grayscale-filter-group .wyp-disable-btn").hasClass("active")) {
                     grayscale = '';
                 }
 
-                if ($("#brightness-filter-group .yp-disable-btn").hasClass("active")) {
+                if ($("#brightness-filter-group .wyp-disable-btn").hasClass("active")) {
                     brightness = '';
                 }
 
-                if ($("#contrast-filter-group .yp-disable-btn").hasClass("active")) {
+                if ($("#contrast-filter-group .wyp-disable-btn").hasClass("active")) {
                     contrast = '';
                 }
 
-                if ($("#hue-rotate-filter-group .yp-disable-btn").hasClass("active")) {
+                if ($("#hue-rotate-filter-group .wyp-disable-btn").hasClass("active")) {
                     hueRotate = '';
                 }
 
-                if ($("#saturate-filter-group .yp-disable-btn").hasClass("active")) {
+                if ($("#saturate-filter-group .wyp-disable-btn").hasClass("active")) {
                     saturate = '';
                 }
 
-                if ($("#sepia-filter-group .yp-disable-btn").hasClass("active")) {
+                if ($("#sepia-filter-group .wyp-disable-btn").hasClass("active")) {
                     sepia = '';
                 }
 
@@ -12737,29 +12737,29 @@
                 }
 
                 // Getting all other options.
-                var color = $.trim($("#yp-box-shadow-color").val());
-                var vertical = $.trim($("#yp-box-shadow-vertical").val());
-                var radius = $.trim($("#yp-box-shadow-blur-radius").val());
-                var spread = $.trim($("#yp-box-shadow-spread").val());
-                var horizontal = $.trim($("#yp-box-shadow-horizontal").val());
+                var color = $.trim($("#wyp-box-shadow-color").val());
+                var vertical = $.trim($("#wyp-box-shadow-vertical").val());
+                var radius = $.trim($("#wyp-box-shadow-blur-radius").val());
+                var spread = $.trim($("#wyp-box-shadow-spread").val());
+                var horizontal = $.trim($("#wyp-box-shadow-horizontal").val());
 
-                if ($("#box-shadow-color-group .yp-disable-btn").hasClass("active") || $("#box-shadow-color-group .yp-none-btn").hasClass("active")) {
+                if ($("#box-shadow-color-group .wyp-disable-btn").hasClass("active") || $("#box-shadow-color-group .wyp-none-btn").hasClass("active")) {
                     color = get_color(iframe.find(selector).css("color"));
                 }
 
-                if ($("#box-shadow-vertical-group .yp-disable-btn").hasClass("active")) {
+                if ($("#box-shadow-vertical-group .wyp-disable-btn").hasClass("active")) {
                     vertical = '0';
                 }
 
-                if ($("#box-shadow-blur-radius-group .yp-disable-btn").hasClass("active")) {
+                if ($("#box-shadow-blur-radius-group .wyp-disable-btn").hasClass("active")) {
                     radius = '0';
                 }
 
-                if ($("#box-shadow-spread-group .yp-disable-btn").hasClass("active")) {
+                if ($("#box-shadow-spread-group .wyp-disable-btn").hasClass("active")) {
                     spread = '0';
                 }
 
-                if ($("#box-shadow-horizontal-group .yp-disable-btn").hasClass("active")) {
+                if ($("#box-shadow-horizontal-group .wyp-disable-btn").hasClass("active")) {
                     horizontal = '0';
                 }
 
@@ -12805,7 +12805,7 @@
 
                 if ($(".iris-dragging").length > 0) {
 
-                    element = $(".iris-dragging").parents(".yp-option-group");
+                    element = $(".iris-dragging").parents(".wyp-option-group");
 
                     css = element.data("css");
                     val = element.find(".wqcolorpicker").val();
@@ -12823,7 +12823,7 @@
 
                 if ($(".iris-slider").find(".ui-state-active").length > 0) {
 
-                    element = $(".iris-slider").find(".ui-state-active").parents(".yp-option-group");
+                    element = $(".iris-slider").find(".ui-state-active").parents(".wyp-option-group");
 
                     css = element.data("css");
                     val = element.find(".wqcolorpicker").val();
@@ -12841,7 +12841,7 @@
 
                 if ($(".cs-alpha-slider").find(".ui-state-active").length > 0) {
 
-                    element = $(".cs-alpha-slider").find(".ui-state-active").parents(".yp-option-group");
+                    element = $(".cs-alpha-slider").find(".ui-state-active").parents(".wyp-option-group");
 
                     css = element.data("css");
                     val = element.find(".wqcolorpicker").val();
@@ -12869,7 +12869,7 @@
 
                 if ($(document).find(".iris-dragging").length > 0) {
 
-                    element = $(".iris-dragging").parents(".yp-option-group");
+                    element = $(".iris-dragging").parents(".wyp-option-group");
 
                     element.find(".wqcolorpicker").trigger("change");
 
@@ -12881,7 +12881,7 @@
 
                 } else if ($(document).find(".iris-slider .ui-state-active").length > 0) {
 
-                    element = $(".ui-state-active").parents(".yp-option-group");
+                    element = $(".ui-state-active").parents(".wyp-option-group");
 
                     element.find(".wqcolorpicker").trigger("change");
 
@@ -12893,7 +12893,7 @@
 
                 } else if ($(document).find(".cs-alpha-slider .ui-state-active").length > 0) {
 
-                    element = $(".cs-alpha-slider .ui-state-active").parents(".yp-option-group");
+                    element = $(".cs-alpha-slider .ui-state-active").parents(".wyp-option-group");
 
                     $(".fake-layer").remove();
 
@@ -12903,7 +12903,7 @@
 
                 } else if($(event.target).hasClass("iris-square-handle")){
 
-                    element = $(event.target).parents(".yp-option-group");
+                    element = $(event.target).parents(".wyp-option-group");
 
                     element.find(".wqcolorpicker").trigger("change");
 
@@ -12924,7 +12924,7 @@
             function color_option(id) {
 
                 // Color picker on blur
-                $("#yp-" + id).on("blur", function() {
+                $("#wyp-" + id).on("blur", function() {
 
                     // If empty, set disable.
                     if ($(this).val() == '') {
@@ -12934,7 +12934,7 @@
                 });
 
                 // Show picker on click
-                $("#yp-" + id).on("click", function() {
+                $("#wyp-" + id).on("click", function() {
 
                     $(this).parent().parent().find(".iris-picker").show();
                     $(this).parent().parent().parent().css("opacity", 1);
@@ -12943,17 +12943,17 @@
                 });
 
                 // disable to true.
-                $("#" + id + "-group").find(".yp-after a").on("click", function() {
+                $("#" + id + "-group").find(".wyp-after a").on("click", function() {
                     $(this).parent().parent().parent().css("opacity", 1);
                 });
 
                 // Update on keyup
-                $("#yp-" + id).on("keydown keyup", function() {
+                $("#wyp-" + id).on("keydown keyup", function() {
                     $(this).parent().find(".wqminicolors-swatch-color").css("backgroundColor", $(this).val());
                 });
 
                 // Color picker on change
-                $("#yp-" + id).on('change', function() {
+                $("#wyp-" + id).on('change', function() {
 
                     var css = $(this).parent().parent().parent().data("css");
                     $(this).parent().parent().parent().addClass("reset-enable");
@@ -12964,11 +12964,11 @@
                     }
 
                     // Disable
-                    $(this).parent().parent().find(".yp-btn-action.active").trigger("click");
+                    $(this).parent().parent().find(".wyp-btn-action.active").trigger("click");
 
                     if (val.length < 3) {
                         val = 'transparent';
-                        $(this).parent().parent().find(".yp-none-btn:not(.active)").trigger("click");
+                        $(this).parent().parent().find(".wyp-none-btn:not(.active)").trigger("click");
                     }
 
                     // Set for demo
@@ -12989,22 +12989,22 @@
             function input_option(id) {
 
                 // Keyup
-                $("#yp-" + id).on('keyup', function() {
+                $("#wyp-" + id).on('keyup', function() {
 
                     $(this).parent().parent().addClass("reset-enable");
 
                     var val = $(this).val();
 
                     // Disable
-                    $(this).parent().find(".yp-btn-action.active").trigger("click");
+                    $(this).parent().find(".wyp-btn-action.active").trigger("click");
 
                     if (val == 'none') {
-                        $(this).parent().parent().find(".yp-none-btn").not(".active").trigger("click");
+                        $(this).parent().parent().find(".wyp-none-btn").not(".active").trigger("click");
                         $(this).val('');
                     }
 
                     if (val == 'disable') {
-                        $(this).parent().parent().find(".yp-disable-btn").not(".active").trigger("click");
+                        $(this).parent().parent().find(".wyp-disable-btn").not(".active").trigger("click");
                         $(this).val('');
                     }
 
@@ -13017,14 +13017,14 @@
 
                         val = 'url(' + val + ')';
 
-                        $(".yp-background-image-show").remove();
+                        $(".wyp-background-image-show").remove();
 
                         var imgSrc = val.replace(/"/g, "").replace(/'/g, "").replace(/url\(/g, "").replace(/\)/g, "");
 
                         if (val.indexOf("yellow-pencil") == -1) {
 
                             if (imgSrc.indexOf("//") != -1 && imgSrc != '' && imgSrc.indexOf(".") != -1) {
-                                $("#yp-background-image").after("<img src='" + imgSrc + "' class='yp-background-image-show' />");
+                                $("#wyp-background-image").after("<img src='" + imgSrc + "' class='wyp-background-image-show' />");
                             }
 
                         }
@@ -13044,12 +13044,12 @@
 
                     // Remove active pattern if not have pattern more.
                     if(id == 'background-image' && val.indexOf("yellow-pencil") == -1){
-                        $(".yp_bg_assets.active").removeClass("active");
+                        $(".wyp_bg_assets.active").removeClass("active");
                     }
 
                     // Add
                     if(id == 'background-image' && val.indexOf("yellow-pencil") != -1){
-                        $(".yp_bg_assets.active").addClass("active");
+                        $(".wyp_bg_assets.active").addClass("active");
                     }
 
                     // Set for demo
@@ -13069,22 +13069,22 @@
             function simple_clean(){
 
                 // Clean basic classes
-                body.removeAttr("data-clickable-select").removeAttr("data-yp-selector").removeClass("yp-element-list yp-element-float yp-selector-focus yp-selector-hover yp-selector-active yp-selector-link yp-selector-visited yp-css-data-trigger yp-content-selected yp-body-select-just-it yp-has-transform yp-element-resizing yp-element-resizing-height-top yp-element-resizing-height-bottom yp-element-resizing-width-left yp-element-resizing-width-right yp-visual-editing yp-visual-editing-x yp-visual-editing-y");
+                body.removeAttr("data-clickable-select").removeAttr("data-wyp-selector").removeClass("wyp-element-list wyp-element-float yp-selector-focus yp-selector-hover yp-selector-active yp-selector-link yp-selector-visited wyp-css-data-trigger wyp-content-selected wyp-body-select-just-it wyp-has-transform wyp-element-resizing wyp-element-resizing-height-top wyp-element-resizing-height-bottom wyp-element-resizing-width-left wyp-element-resizing-width-right wyp-visual-editing wyp-visual-editing-x wyp-visual-editing-y");
 
                 // for html overflow hidden on resizing
-                iframe.find("html").removeClass("yp-element-resizing");
+                iframe.find("html").removeClass("wyp-element-resizing");
 
                 // Clean classes from selected element
-                iframe.find(".yp-selected,.yp-selected-others").removeClass("ui-draggable ui-draggable-handle ui-draggable-handle yp-selected-has-transform");
+                iframe.find(".wyp-selected,.wyp-selected-others").removeClass("ui-draggable ui-draggable-handle ui-draggable-handle wyp-selected-has-transform");
 
-                // Remove yp-selected classes
-                iframe.find(".yp-selected-others,.yp-selected").removeClass("yp-selected-others").removeClass("yp-selected");
+                // Remove wyp-selected classes
+                iframe.find(".wyp-selected-others,.wyp-selected").removeClass("wyp-selected-others").removeClass("wyp-selected");
 
                 // Remove created elements
-                iframe.find(".yp-edit-menu,.yp-edit-tooltip,.yp-selected-handle,.yp-selected-others-box,.yp-selected-tooltip,.yp-selected-boxed-top,.yp-selected-boxed-left,.yp-selected-boxed-right,.yp-selected-boxed-bottom,.yp-selected-boxed-margin-top,.yp-selected-boxed-margin-left,.yp-selected-boxed-margin-right,.yp-selected-boxed-margin-bottom,.selected-just-it-span,.yp-selected-boxed-padding-top,.yp-selected-boxed-padding-left,.yp-selected-boxed-padding-right,.yp-selected-boxed-padding-bottom,.yp-live-css,.yp-selected-tooltip span").remove();
+                iframe.find(".wyp-edit-menu,.wyp-edit-tooltip,.wyp-selected-handle,.wyp-selected-others-box,.wyp-selected-tooltip,.wyp-selected-boxed-top,.wyp-selected-boxed-left,.wyp-selected-boxed-right,.wyp-selected-boxed-bottom,.wyp-selected-boxed-margin-top,.wyp-selected-boxed-margin-left,.wyp-selected-boxed-margin-right,.wyp-selected-boxed-margin-bottom,.selected-just-it-span,.wyp-selected-boxed-padding-top,.wyp-selected-boxed-padding-left,.wyp-selected-boxed-padding-right,.wyp-selected-boxed-padding-bottom,.wyp-live-css,.wyp-selected-tooltip span").remove();
 
                 // Update
-                if(mainBody.hasClass("yp-select-just-it") === false){
+                if(mainBody.hasClass("wyp-select-just-it") === false){
                     window.selectorClean = null;
                 }
 
@@ -13094,10 +13094,10 @@
                     $(".info-no-element-selected").show();
                 }
 
-                $(".yp-disable-btn.active").removeClass("active");
+                $(".wyp-disable-btn.active").removeClass("active");
 
                 // Remove parent trigger class.
-                iframeBody.find(".yp-selected-parents").removeClass("yp-selected-parents");
+                iframeBody.find(".wyp-selected-parents").removeClass("wyp-selected-parents");
 
             }
 
@@ -13106,7 +13106,7 @@
             /* ---------------------------------------------------- */
             /* Gradient Generator Start                             */
             /* ---------------------------------------------------- */
-            $(document).on("click", ".yp-gradient-pointer-area", function(e) {
+            $(document).on("click", ".wyp-gradient-pointer-area", function(e) {
 
                 // Not action if picker open
                 if ($(".iris-picker:visible").length !== 0) {
@@ -13114,12 +13114,12 @@
                 }
 
                 // only blank area clicks are valid
-                if ($(e.target).hasClass("yp-gradient-pointer") || $(e.target).hasClass("yp-gradient-pointer-color")) {
+                if ($(e.target).hasClass("wyp-gradient-pointer") || $(e.target).hasClass("wyp-gradient-pointer-color")) {
                     return false;
                 }
 
                 // gradient pointer area
-                var area = $(".yp-gradient-pointer-area");
+                var area = $(".wyp-gradient-pointer-area");
 
                 // Getting pointer area width
                 var areaWidth = area.width();
@@ -13134,7 +13134,7 @@
                 // find relX in % format
                 deg = parseInt(deg/areaWidth*100);
 
-                $(".yp-gradient-pointer").removeClass("active");
+                $(".wyp-gradient-pointer").removeClass("active");
 
                 // get color
                 var color = "#FF5253";
@@ -13143,7 +13143,7 @@
                 }
 
                 // pointer html Template
-                var pointerTemplate = '<div class="yp-gradient-pointer active" data-color="'+color+'" data-position="'+deg+'" style="left:'+deg+'%;"><i class="yp-gradient-pointer-color" style="background-color:'+color+';"></i></div>';
+                var pointerTemplate = '<div class="wyp-gradient-pointer active" data-color="'+color+'" data-position="'+deg+'" style="left:'+deg+'%;"><i class="wyp-gradient-pointer-color" style="background-color:'+color+';"></i></div>';
 
                 // Append pointer
                 area.append(pointerTemplate);
@@ -13160,7 +13160,7 @@
             /* ---------------------------------------------------- */
             /* Draggable gradient pointers                          */
             /* ---------------------------------------------------- */
-            $(".yp-gradient-orientation i").draggable({
+            $(".wyp-gradient-orientation i").draggable({
 
                 containment: "parent",
 
@@ -13169,7 +13169,7 @@
 
                 drag: function(e,ui){
 
-                    var ori = $(".yp-gradient-orientation");
+                    var ori = $(".wyp-gradient-orientation");
 
                     var offset = ori.offset();
 
@@ -13203,7 +13203,7 @@
             function update_gradient_pointers(){
 
                 // gradient pointer area
-                var area = $(".yp-gradient-pointer-area");
+                var area = $(".wyp-gradient-pointer-area");
 
                 // Getting pointer area width
                 var areaWidth = area.width();
@@ -13214,22 +13214,22 @@
                 var topOffset = areaOffset.top;
 
                 // Draggable gradient pointers
-                $(".yp-gradient-pointer").draggable({
+                $(".wyp-gradient-pointer").draggable({
 
                     containment: [leftOffset, topOffset, (leftOffset+areaWidth), topOffset],
 
                     start: function(e,ui){
-                        $(".yp-gradient-pointer").removeClass("active");
+                        $(".wyp-gradient-pointer").removeClass("active");
                         $(this).addClass("active");
 
                         //Block iris. not let to open while dragging
                         window.blockIrıs = true;
 
                         // Hide iris if open
-                        $(".yp-gradient-section .iris-picker").hide();
+                        $(".wyp-gradient-section .iris-picker").hide();
 
                         window.gradientPointerTop = $(this).offset().top;
-                        window.gradientPointerLen = $(".yp-gradient-pointer:not(.disable)").length;
+                        window.gradientPointerLen = $(".wyp-gradient-pointer:not(.disable)").length;
 
                     },
 
@@ -13295,11 +13295,11 @@
             window.iris_global_change_callback = function(event,ui){
 
                 // if this is gradient color picker
-                if($(".yp-gradient-section .iris-picker:visible").length > 0){
+                if($(".wyp-gradient-section .iris-picker:visible").length > 0){
 
                     // Update the pointer
-                    $(".yp-gradient-pointer.active i").css("background-color",ui.color.toString());
-                    $(".yp-gradient-pointer.active").attr("data-color",ui.color.toString());
+                    $(".wyp-gradient-pointer.active i").css("background-color",ui.color.toString());
+                    $(".wyp-gradient-pointer.active").attr("data-color",ui.color.toString());
 
                     // insert gradint CSS before close picker
                     update_gradient("live");
@@ -13312,9 +13312,9 @@
             /* ---------------------------------------------------- */
             /* ContextMenu on gradient pointers                     */
             /* ---------------------------------------------------- */
-            $(document).on("click contextmenu", ".yp-gradient-pointer", function(e) {
+            $(document).on("click contextmenu", ".wyp-gradient-pointer", function(e) {
 
-                $(".yp-gradient-pointer").removeClass("active");
+                $(".wyp-gradient-pointer").removeClass("active");
                 $(this).addClass("active");
 
             });
@@ -13323,7 +13323,7 @@
             /* ---------------------------------------------------- */
             /* Double click support to gradient pointers            */
             /* ---------------------------------------------------- */
-            $(document).on("dblclick", ".yp-gradient-pointer", function(e) {
+            $(document).on("dblclick", ".wyp-gradient-pointer", function(e) {
 
                 if(window.blockIrıs == true){
                     return false;
@@ -13334,11 +13334,11 @@
 
                 window.gradientlastColor = color;
 
-                $(".yp-gradient-pointer").removeClass("active");
+                $(".wyp-gradient-pointer").removeClass("active");
 
                 $(this).addClass("active");
 
-                $(".yp-gradient-pointer-area").addClass("gradient-pointer-no-cursor");
+                $(".wyp-gradient-pointer-area").addClass("gradient-pointer-no-cursor");
 
                 $("#iris-gradient-color").iris("color",color);
 
@@ -13362,9 +13362,9 @@
                     }
 
                 // Update iris alpha.
-                $(".yp-gradient-section .iris-picker .cs-alpha-slider").slider('value',alpha);
+                $(".wyp-gradient-section .iris-picker .cs-alpha-slider").slider('value',alpha);
 
-                $(".yp-gradient-section .iris-picker").show();
+                $(".wyp-gradient-section .iris-picker").show();
 
             });
 
@@ -13416,10 +13416,10 @@
                 }
 
                 // Update direction data
-                $(".yp-gradient-orientation").attr("data-degree",direction);
+                $(".wyp-gradient-orientation").attr("data-degree",direction);
 
                 // Empty bar
-                $(".yp-gradient-pointer-area").empty();
+                $(".wyp-gradient-pointer-area").empty();
 
                 // Each color stops
                 for(var i = 0; i < gradientObject.colorStops.length; i++){
@@ -13480,10 +13480,10 @@
                     }
 
                     // pointer html Template
-                    pointerTemplate = '<div class="yp-gradient-pointer" data-color="'+color+'" data-position="'+length+'" style="left:'+length+''+lengthFormat+';"><i class="yp-gradient-pointer-color" style="background-color:'+color+';"></i></div>';
+                    pointerTemplate = '<div class="wyp-gradient-pointer" data-color="'+color+'" data-position="'+length+'" style="left:'+length+''+lengthFormat+';"><i class="wyp-gradient-pointer-color" style="background-color:'+color+';"></i></div>';
 
                     // Append pointer
-                    $(".yp-gradient-pointer-area").append(pointerTemplate);
+                    $(".wyp-gradient-pointer-area").append(pointerTemplate);
 
                 }
 
@@ -13493,7 +13493,7 @@
                 $("#gradient-bar-view-style").remove();
 
                 // Add new
-                mainBody.append('<style id="gradient-bar-view-style">.yp-gradient-bar{background-image:'+code+';}.yp-gradient-orientation{background-image:'+value+';}</style>');
+                mainBody.append('<style id="gradient-bar-view-style">.wyp-gradient-bar{background-image:'+code+';}.wyp-gradient-orientation{background-image:'+value+';}</style>');
 
                 // Add support
                 setTimeout(function(){
@@ -13509,7 +13509,7 @@
             function update_gradient(type){
 
                 // Getting direction
-                var direction = $(".yp-gradient-orientation").attr("data-degree") + "deg";
+                var direction = $(".wyp-gradient-orientation").attr("data-degree") + "deg";
 
                 if(direction == '0deg'){
                     direction = 'to top';
@@ -13528,12 +13528,12 @@
                 var code = 'linear-gradient('+direction+',';
 
                 // Sort points by position
-                $(".yp-gradient-pointer-area .yp-gradient-pointer:not(.disable)").sort(function(a, b) {
+                $(".wyp-gradient-pointer-area .wyp-gradient-pointer:not(.disable)").sort(function(a, b) {
                     return +a.dataset.position - +b.dataset.position;
-                }).appendTo(".yp-gradient-pointer-area");
+                }).appendTo(".wyp-gradient-pointer-area");
 
                 // Each all pointers
-                $(".yp-gradient-pointer-area .yp-gradient-pointer:not(.disable)").each(function(i){
+                $(".wyp-gradient-pointer-area .wyp-gradient-pointer:not(.disable)").each(function(i){
 
                     // Element
                     var pointer = $(this);
@@ -13547,7 +13547,7 @@
                     codeBar += ' ' + color + ' ' + parseInt(position) + '%';
 
                     // add if not last.
-                    if($(".yp-gradient-pointer:not(.disable)").length-1 != i){
+                    if($(".wyp-gradient-pointer:not(.disable)").length-1 != i){
                         code += ",";
                         codeBar += ",";
                     }
@@ -13561,16 +13561,16 @@
                 $("#gradient-bar-view-style").remove();
 
                 // Add new
-                mainBody.append('<style id="gradient-bar-view-style">.yp-gradient-bar{background-image:'+codeBar+';}.yp-gradient-orientation{background-image:'+code+';}</style>');
+                mainBody.append('<style id="gradient-bar-view-style">.wyp-gradient-bar{background-image:'+codeBar+';}.wyp-gradient-orientation{background-image:'+code+';}</style>');
 
                 // Update CSS
                 if(type == 'live'){
                     delete_live_css("background-image",false);
                     insert_live_css("background-image",code,false);
-                    $("#yp-background-image").val(code);
+                    $("#wyp-background-image").val(code);
                 }else if(type == 'insert'){
                     delete_live_css("background-image",false);
-                    $("#yp-background-image").val(code).trigger("keyup");
+                    $("#wyp-background-image").val(code).trigger("keyup");
                 }
 
             }
@@ -13579,10 +13579,10 @@
             /* ---------------------------------------------------- */
             /* Disable right click on gradient parts                */
             /* ---------------------------------------------------- */
-            $(".yp-gradient-pointer-area,.yp-gradient-bar").on("contextmenu", function(e){
+            $(".wyp-gradient-pointer-area,.wyp-gradient-bar").on("contextmenu", function(e){
 
                 // right click allowed just on pointer
-                if ($(e.target).hasClass("yp-gradient-pointer") == false && $(e.target).hasClass("yp-gradient-pointer-color") == false) {
+                if ($(e.target).hasClass("wyp-gradient-pointer") == false && $(e.target).hasClass("wyp-gradient-pointer-color") == false) {
                     return false;
                 }
 
@@ -13595,7 +13595,7 @@
             /* ---------------------------------------------------- */
             function clean() {
 
-                // Use yp_simple_clean function for simple clean data.
+                // Use wyp_simple_clean function for simple clean data.
                 if(is_content_selected() === false){
                     simple_clean();
                     return false;
@@ -13607,8 +13607,8 @@
                     }
 
                     // Hide if close while playing an animate.
-                    if(body.hasClass("yp-force-hide-select-ui")){
-                        body.removeClass("yp-force-hide-select-ui yp-hide-borders-now");
+                    if(body.hasClass("wyp-force-hide-select-ui")){
+                        body.removeClass("wyp-force-hide-select-ui wyp-hide-borders-now");
                     }
 
                     /* this function remove menu from selected element */
@@ -13617,7 +13617,7 @@
                     }
 
                     // destroy ex element draggable feature.
-                    if (iframe.find(".yp-selected.ui-draggable").length > 0){
+                    if (iframe.find(".wyp-selected.ui-draggable").length > 0){
                         get_selected_element().draggable("destroy");
                     }
 
@@ -13631,7 +13631,7 @@
                     $(".editor-panel-list > li.active > h3").trigger("click");
 
                     // Dont stop playing animate
-                    if(mainBody.hasClass("yp-animate-manager-playing") === false){
+                    if(mainBody.hasClass("wyp-animate-manager-playing") === false){
                         iframe.find(".yp_onscreen,.yp_hover,.yp_click,.yp_focus").removeClass("yp_onscreen yp_hover yp_click yp_focus");
                     }
 
@@ -13639,8 +13639,8 @@
                     $(".reset-enable").removeClass("reset-enable");
 
                     // Update panel
-                    $(".yp-option-group").css("opacity", "1");
-                    $(".yp-after").css("display", "block");
+                    $(".wyp-option-group").css("opacity", "1");
+                    $(".wyp-after").css("display", "block");
 
                     // delete cached data.
                     $("li[data-loaded]").removeAttr("data-loaded");
@@ -13649,8 +13649,8 @@
                     $(".editor-panel-list > li.active > h3").trigger("click");
 
                     $(".input-autocomplete").removeAttr("style");
-                    $(".yp-disable-contextmenu").removeClass("yp-disable-contextmenu");
-                    $(".yp-active-contextmenu").removeClass("yp-active-contextmenu");
+                    $(".wyp-disable-contextmenu").removeClass("wyp-disable-contextmenu");
+                    $(".wyp-active-contextmenu").removeClass("wyp-active-contextmenu");
 
                     // Cancel if animater active
                     if(is_animate_creator()){
@@ -13658,21 +13658,21 @@
                     }
 
                     // Hide some elements from panel
-                    $(".yp-transform-area,.yp-filter-area").hide();
-                    $(".yp-on").removeClass("yp-on");
+                    $(".wyp-transform-area,.wyp-filter-area").hide();
+                    $(".wyp-on").removeClass("wyp-on");
 
                     simple_clean();
 
                     // Editor Panel Resetting
-                    $(".iris-picker,.yp-border-top-section,.yp-border-right-section,.yp-border-bottom-section,.yp-border-left-section").hide();
-                    $(".yp-border-all-section").show();
-                    $(".yp-gradient-pointer-area").removeClass("gradient-pointer-no-cursor");
-                    $(".yp_background_assets,.yp-gradient-section,.yp_nice_colors_area,.yp_meterial_colors_area,.yp_flat_colors_area").hide();
-                    $(".yp-bg-img-btn,.yp-flat-colors,.yp-meterial-colors,.yp-nice-colors,.yp-gradient-pointer,.yp-gradient-btn,#border-type-group .yp-radio.active").removeClass("active");
+                    $(".iris-picker,.wyp-border-top-section,.wyp-border-right-section,.wyp-border-bottom-section,.wyp-border-left-section").hide();
+                    $(".wyp-border-all-section").show();
+                    $(".wyp-gradient-pointer-area").removeClass("gradient-pointer-no-cursor");
+                    $(".wyp_background_assets,.wyp-gradient-section,.wyp_nice_colors_area,.wyp_meterial_colors_area,.wyp_flat_colors_area").hide();
+                    $(".wyp-bg-img-btn,.wyp-flat-colors,.wyp-meterial-colors,.wyp-nice-colors,.wyp-gradient-pointer,.wyp-gradient-btn,#border-type-group .wyp-radio.active").removeClass("active");
 
                     // Disable color picker.
-                    mainBody.removeClass("yp-element-picker-active");
-                    $(".yp-element-picker").removeClass("active");
+                    mainBody.removeClass("wyp-element-picker-active");
+                    $(".wyp-element-picker").removeClass("active");
 
                     gui_update();
 
@@ -13688,7 +13688,7 @@
             /* Data element                                         */
             /* ---------------------------------------------------- */
             function the_editor_data(){
-                return iframe.find(".yp-styles-area");
+                return iframe.find(".wyp-styles-area");
             }
 
 
@@ -13720,7 +13720,7 @@
                 var data = get_css_by_screensize('desktop', type);
 
                 // Convert interactives YP Styles to default for show.
-                data = data.replace(/\.yp-selected(.*?){/g,'{');
+                data = data.replace(/\.wyp-selected(.*?){/g,'{');
                 data = data.replace(/body\.yp-selector-(.*?) (.*?){/g, "$2:$1{");
 
                 // clean webkit filter, transform.
@@ -13749,11 +13749,11 @@
 
                 }
 
-                if (editorData.find(".yp_current_styles").length > 0) {
+                if (editorData.find(".wyp_current_styles").length > 0) {
 
                     var mediaArray = [];
 
-                    editorData.find(".yp_current_styles").each(function() {
+                    editorData.find(".wyp_current_styles").each(function() {
                         var v = $(this).attr("data-size-mode");
 
                         if ($.inArray(v, mediaArray) === -1 && v != 'desktop') {
@@ -13812,7 +13812,7 @@
                     editorData = iframe.find("[data-source-mode='"+type+"']");
                 }
 
-                if (editorData.find(".yp_current_styles").length <= 0) {
+                if (editorData.find(".wyp_current_styles").length <= 0) {
                     return '';
                 }
 
@@ -13820,9 +13820,9 @@
 
                 totalCreated = '';
 
-                editorData.find(".yp_current_styles:not(.yp_step_end)[data-size-mode='" + size + "']").each(function() {
+                editorData.find(".wyp_current_styles:not(.wyp_step_end)[data-size-mode='" + size + "']").each(function() {
 
-                    if (!$(this).hasClass("yp_step_end")) {
+                    if (!$(this).hasClass("wyp_step_end")) {
 
                         selector = esc_data_selector($(this).first().html());
 
@@ -13834,19 +13834,19 @@
 
                             totalCreated += "\t" + esc_data_content($(this).first().html()) + ';\r';
 
-                            $(this).addClass("yp_step_end");
+                            $(this).addClass("wyp_step_end");
 
                         });
 
                         totalCreated += "}\r\r";
 
-                        $(this).addClass("yp_step_end");
+                        $(this).addClass("wyp_step_end");
 
                     }
 
                 });
 
-                iframe.find(".yp_step_end").removeClass("yp_step_end");
+                iframe.find(".wyp_step_end").removeClass("wyp_step_end");
 
                 return totalCreated;
 
@@ -13856,9 +13856,9 @@
             /* ---------------------------------------------------- */
             /* Toggle background image show element                 */
             /* ---------------------------------------------------- */
-            $("#background-image-group .yp-none-btn,#background-image-group .yp-disable-btn").click(function(e) {
+            $("#background-image-group .wyp-none-btn,#background-image-group .wyp-disable-btn").click(function(e) {
                 if(e.originalEvent){
-                    $("#background-image-group .yp-background-image-show").toggle();
+                    $("#background-image-group .wyp-background-image-show").toggle();
                 }
             });
 
@@ -13866,7 +13866,7 @@
             /* ---------------------------------------------------- */
             /* Fix box shadow inset option                          */
             /* ---------------------------------------------------- */
-            $("#box-shadow-inset-group .yp-disable-btn").click(function(e) {
+            $("#box-shadow-inset-group .wyp-disable-btn").click(function(e) {
                 if(e.originalEvent){
                     $("#box-shadow-inset-inset").parent().removeClass("active");
                     $("#box-shadow-inset-no").parent().addClass("active");
@@ -13978,7 +13978,7 @@
                     var activeScene = $(".scene-active").attr("data-scene");
 
                     // Check if there is a data in current scene by this CSS Rule.
-                    var style = iframe.find(".yp-anim-scenes ." + activeScene + " " + 'style[data-rule="'+css+'"]');
+                    var style = iframe.find(".wyp-anim-scenes ." + activeScene + " " + 'style[data-rule="'+css+'"]');
 
                     // get value
                     if(style.length > 0){
@@ -14060,10 +14060,10 @@
                 var resultDataArray = [];
 
                 // Parsing by CSS Codes
-                if(samePropertiesData.length == 0 && iframe.find("#yp-css-data-full").length > 0){
+                if(samePropertiesData.length == 0 && iframe.find("#wyp-css-data-full").length > 0){
 
                     // CSS Styles
-                    data = iframe.find("#yp-css-data-full").html();
+                    data = iframe.find("#wyp-css-data-full").html();
 
                     // all data
                     mediaData = get_minimized_css(data, false);
@@ -14125,7 +14125,7 @@
                         find = iframe.find(thisSelector);
 
                         // igrone if not selecting same elements
-                        if(!find.hasClass("yp-selected")){
+                        if(!find.hasClass("wyp-selected")){
                             return true;
                         }
 
@@ -14220,7 +14220,7 @@
                                 find = iframe.find(thisSelector);
 
                                 // igrone if not selecting same elements
-                                if(!find.hasClass("yp-selected")){
+                                if(!find.hasClass("wyp-selected")){
                                     return true;
                                 }
 
@@ -14286,7 +14286,7 @@
                         find = iframe.find(thisSelector);
 
                         // igrone if not selecting same elements
-                        if(!find.hasClass("yp-selected")){
+                        if(!find.hasClass("wyp-selected")){
                             return true;
                         }
 
@@ -14341,7 +14341,7 @@
                     var hasImportant;
 
                     // CSS Specificity Calcator
-                    var calcatureStyle = '<style id="yp-calcature-style">';
+                    var calcatureStyle = '<style id="wyp-calcature-style">';
 
                     // Each
                     $.each(resultDataArray, function(index, data){
@@ -14401,7 +14401,7 @@
 
                     // Remove Appended Style
                     if(resultDataArray.length > 1){
-                        iframeBody.find("#yp-calcature-style").remove();
+                        iframeBody.find("#wyp-calcature-style").remove();
                     }
 
                 }, window.Yellow2Delay);
@@ -14777,7 +14777,7 @@
                     if(id == 'border-type'){
 
                         // Update only if not have a active radio.
-                        if($("#border-type-group").find(".yp-radio.active").length == false){
+                        if($("#border-type-group").find(".wyp-radio.active").length == false){
                             data = 'all';
                         }
 
@@ -14872,7 +14872,7 @@
                     if (id == 'animation-name' && data != 'none' && data != 'animationGeneratorTestAnimate'){
 
                         // Add class.
-                        body.addClass("yp-hide-borders-now yp-force-hide-select-ui");
+                        body.addClass("wyp-hide-borders-now wyp-force-hide-select-ui");
 
                         var time = the_element.css("animationDuration");
                         var timeDelay = the_element.css("animationDelay");
@@ -14912,7 +14912,7 @@
                             draw();
 
                             // remove class.
-                            body.removeClass("yp-hide-borders-now yp-force-hide-select-ui");
+                            body.removeClass("wyp-hide-borders-now wyp-force-hide-select-ui");
 
                         }, time);
 
@@ -15157,7 +15157,7 @@
                     }
 
                     // option element.
-                    var the_option = $("#yp-" + id);
+                    var the_option = $("#wyp-" + id);
 
                     // option element parent of parent.
                     var id_prt = the_option.parent().parent();
@@ -15224,14 +15224,14 @@
 
                         // if no data, active none option.
                         if (data == 'none' || data == 'auto' || data == 'inherit' || data == 'initial'){
-                            if(id_prt.find(".yp-none-btn").hasClass("active")){
-                                id_prt.find(".yp-none-btn").trigger("click").trigger("click");
+                            if(id_prt.find(".wyp-none-btn").hasClass("active")){
+                                id_prt.find(".wyp-none-btn").trigger("click").trigger("click");
                             }else{
-                                id_prt.find(".yp-none-btn").trigger("click");
+                                id_prt.find(".wyp-none-btn").trigger("click");
                             }
                             format = 'px';
                         } else {
-                            id_prt.find(".yp-none-btn.active").trigger("click"); // else disable none option.
+                            id_prt.find(".wyp-none-btn.active").trigger("click"); // else disable none option.
                         }
 
                         format = $.trim(format);
@@ -15399,7 +15399,7 @@
                         if (isDefined(data)) {
 
                             // Append default font family to body. only for select font family.
-                            if ($(".yp-font-test-" + get_basic_id($.trim(data.replace(/ /g, '+')))).length === 0 && id == 'font-family') {
+                            if ($(".wyp-font-test-" + get_basic_id($.trim(data.replace(/ /g, '+')))).length === 0 && id == 'font-family') {
 
                                 // If safe font, stop.
                                 if (is_safe_font(data) === false) {
@@ -15408,7 +15408,7 @@
                                     if (is_google_font(data)) {
 
                                         // Append always to body.
-                                        body.append("<link rel='stylesheet' class='yp-font-test-" + get_basic_id($.trim(data.replace(/ /g, '+'))) + "'  href='https://fonts.googleapis.com/css?family=" + $.trim(data.replace(/ /g, '+')) + ":300italic,300,400,400italic,500,500italic,600,600italic,700,700italic' type='text/css' media='all' />");
+                                        body.append("<link rel='stylesheet' class='wyp-font-test-" + get_basic_id($.trim(data.replace(/ /g, '+'))) + "'  href='https://fonts.googleapis.com/css?family=" + $.trim(data.replace(/ /g, '+')) + ":300italic,300,400,400italic,500,500italic,600,600italic,700,700italic' type='text/css' media='all' />");
 
                                     }
 
@@ -15420,7 +15420,7 @@
                             if (id == 'font-family' && data.indexOf(",") == -1) {
 
                                 // Getting value
-                                var value = $("#yp-font-family-data option").filter(function() {
+                                var value = $("#wyp-font-family-data option").filter(function() {
                                     return $(this).text() === data;
                                 }).first().attr("value");
 
@@ -15449,7 +15449,7 @@
                             }
 
                             if (id == 'font-family') {
-                                $("#yp-font-family,#yp-font-weight").each(function() {
+                                $("#wyp-font-family,#wyp-font-weight").each(function() {
                                     $(this).css("fontFamily", data);
                                 });
                             }
@@ -15457,22 +15457,22 @@
                         }
 
                         // Active none button.
-                        id_prt.find(".yp-btn-action.active").trigger("click");
+                        id_prt.find(".wyp-btn-action.active").trigger("click");
 
                         // If data is none, auto etc, so active none button.
-                        if (data == id_prt.find(".yp-none-btn").text()) {
-                            id_prt.find(".yp-none-btn").trigger("click");
+                        if (data == id_prt.find(".wyp-none-btn").text()) {
+                            id_prt.find(".wyp-none-btn").trigger("click");
                         }
 
                         // If not have this data in select options, insert this data.
-                        if (the_option.val() === null && data != id_prt.find(".yp-none-btn").text() && data !== undefined) {
+                        if (the_option.val() === null && data != id_prt.find(".wyp-none-btn").text() && data !== undefined) {
                             the_option.val(data);
                         }
 
                         return false;
 
                         // IF THIS IS A RADIO TAG
-                    } else if (the_option.hasClass("yp-radio-content")) {
+                    } else if (the_option.hasClass("wyp-radio-content")) {
 
                         // Fix background size rule.
                         if (id == 'background-size') {
@@ -15483,7 +15483,7 @@
 
                         // If disable, active disable button.
                         if (data == 'disable') {
-                            id_prt.find(".yp-disable-btn").not(".active").trigger("click");
+                            id_prt.find(".wyp-disable-btn").not(".active").trigger("click");
                         } else {
                             radio_value(the_option, id, data); // else Set radio value.
                         }
@@ -15494,7 +15494,7 @@
                     } else if (the_option.hasClass("wqcolorpicker")) {
 
                         // Remove active
-                        $(".yp-nice-c.active,.yp-flat-c.active,.yp-meterial-c.active").removeClass("active");
+                        $(".wyp-nice-c.active,.wyp-flat-c.active,.wyp-meterial-c.active").removeClass("active");
 
                         if (id == 'box-shadow-color') {
                             if (data === undefined || data === false || data == 'none' || data == '') {
@@ -15537,11 +15537,11 @@
 
                         // If transparent
                         if (data == 'transparent' || data == '') {
-                            id_prt.find(".yp-disable-btn.active").trigger("click");
-                            id_prt.find(".yp-none-btn:not(.active)").trigger("click");
+                            id_prt.find(".wyp-disable-btn.active").trigger("click");
+                            id_prt.find(".wyp-none-btn:not(.active)").trigger("click");
                             the_option.parent().find(".wqminicolors-swatch-color").css("backgroundColor", "transparent");
                         } else {
-                            id_prt.find(".yp-none-btn.active").trigger("click");
+                            id_prt.find(".wyp-none-btn.active").trigger("click");
                         }
 
                         if (id == 'box-shadow-color') {
@@ -15551,7 +15551,7 @@
                         return false;
 
                         // IF THIS IS INPUT OR TEXTAREA
-                    } else if (the_option.hasClass("yp-input") || the_option.hasClass("yp-textarea")) {
+                    } else if (the_option.hasClass("wyp-input") || the_option.hasClass("wyp-textarea")) {
 
                         // clean URL() prefix for background image. no gradients
                         if (data != 'disable' && id == "background-image" && data != window.location.href && data.indexOf("linear-gradient(") == -1) {
@@ -15569,20 +15569,20 @@
                             the_option.val(data.replace(/"/g, "").replace(/'/g, "").replace(/url\(/g, "").replace(/\)/g, ""));
 
                             // remove class from active pattern
-                            $(".yp_bg_assets").removeClass("active");
+                            $(".wyp_bg_assets").removeClass("active");
 
                             // if it is a pattern
                             if (data.indexOf("yellow-pencil") != -1) {
 
                                 // Find the pattern and add active class
-                                $(".yp_bg_assets[data-url='" + data.replace(/"/g, "").replace(/'/g, "").replace(/url\(/g, "").replace(/\)/g, "") + "']").addClass("active");
+                                $(".wyp_bg_assets[data-url='" + data.replace(/"/g, "").replace(/'/g, "").replace(/url\(/g, "").replace(/\)/g, "") + "']").addClass("active");
 
-                                $(".yp-background-image-show").remove();
+                                $(".wyp-background-image-show").remove();
 
                             } else { // if image
 
                                 // Remove background image
-                                $(".yp-background-image-show").remove();
+                                $(".wyp-background-image-show").remove();
 
                                 // Get img URL
                                 var imgSrc = data.replace(/"/g, "").replace(/'/g, "").replace(/url\(/g, "").replace(/\)/g, "");
@@ -15591,7 +15591,7 @@
                                 if (imgSrc.indexOf("//") != -1 && imgSrc != '' && imgSrc.indexOf(".") != -1) {
 
                                     // Append the view image
-                                    $("#yp-background-image").after("<img src='" + imgSrc + "' class='yp-background-image-show' />");
+                                    $("#wyp-background-image").after("<img src='" + imgSrc + "' class='wyp-background-image-show' />");
 
                                 }
 
@@ -15600,7 +15600,7 @@
                         } else {
 
                             // remove background image
-                            $(".yp-background-image-show").remove();
+                            $(".wyp-background-image-show").remove();
 
                         }
 
@@ -15636,7 +15636,7 @@
                             // Open gradient tool
                             window.documentClick = false;
 
-                            $(".yp-gradient-btn:not(.active)").trigger("click");
+                            $(".wyp-gradient-btn:not(.active)").trigger("click");
 
                             setTimeout(function(){
                                 window.documentClick = true;
@@ -15647,18 +15647,18 @@
 
                         // If no data, active none button.
                         if (data == 'none') {
-                            id_prt.find(".yp-none-btn").not(".active").trigger("click");
+                            id_prt.find(".wyp-none-btn").not(".active").trigger("click");
                             the_option.val(''); // clean value.
                         } else {
-                            id_prt.find(".yp-none-btn.active").trigger("click"); // else disable.
+                            id_prt.find(".wyp-none-btn.active").trigger("click"); // else disable.
                         }
 
                         // If no data, active disable button.
                         if (data == 'disable') {
-                            id_prt.find(".yp-disable-btn").not(".active").trigger("click");
+                            id_prt.find(".wyp-disable-btn").not(".active").trigger("click");
                             the_option.val('');
                         } else {
-                            id_prt.find(".yp-disable-btn.active").trigger("click"); // else disable.
+                            id_prt.find(".wyp-disable-btn.active").trigger("click"); // else disable.
                         }
 
                         return false;
@@ -15676,7 +15676,7 @@
             function is_google_font(font) {
 
                 var status = false;
-                $('select#yp-font-family-data option').each(function() {
+                $('select#wyp-font-family-data option').each(function() {
                     if ($(this).text() == font) {
                         status = true;
                         return true;
@@ -16833,7 +16833,7 @@
                     var type = element.attr("type");
 
                     // Single Inspector
-                    if(mainBody.hasClass("yp-single-inspector-active")){
+                    if(mainBody.hasClass("wyp-single-inspector-active")){
 
                         window.reGetBestClass = true;
 
@@ -16883,7 +16883,7 @@
                 // Matchless Classes for single Inspector
                 var matchlessClass = false;
 
-                if(mainBody.hasClass("yp-single-inspector-active")){
+                if(mainBody.hasClass("wyp-single-inspector-active")){
 
                     // Filtered 2 classes: AI
                     matchlessClass = matchless2(ai_class(filteredClasses2Array,true,false));
@@ -17228,10 +17228,10 @@
 
                     if(newSelector != false){
 
-                        if(iframe.find(".yp-selected-others").length == 0 && iframe.find(newSelector).length > 1){
-                            body.addClass("yp-single-inspector-active");
+                        if(iframe.find(".wyp-selected-others").length == 0 && iframe.find(newSelector).length > 1){
+                            body.addClass("wyp-single-inspector-active");
                             newSelector = get_parents(null, "default");
-                            body.removeClass("yp-single-inspector-active");
+                            body.removeClass("wyp-single-inspector-active");
                         }
 
                         set_selector(newSelector, get_selected_element(), true);
@@ -17417,7 +17417,7 @@
                     }
 
                     // Founded Selector
-                    if(element.hasClass("yp-selected")){
+                    if(element.hasClass("wyp-selected")){
                         foundedSelectors.push(selector);
                     }
 
@@ -17938,7 +17938,7 @@
 
 
                 // Is Single Inspector
-                if(mainBody.hasClass("yp-single-inspector-active")){
+                if(mainBody.hasClass("wyp-single-inspector-active")){
                     status = 'sharp';
                 }
 
@@ -18403,11 +18403,11 @@
                     if(parseInt(paddingBottom) == 0){paddingBottom = "7px";}
                     if(parseInt(paddingLeft) == 0){paddingLeft = "7px";}
 
-                    iframe.find(".yp-zero-margin-h").removeClass("yp-zero-margin-h");
+                    iframe.find(".wyp-zero-margin-h").removeClass("wyp-zero-margin-h");
 
                     if(parseInt(marginTop) == 0){
                         marginTop = "5px";
-                        iframe.find(".yp-selected-boxed-margin-top").addClass("yp-zero-margin-h");
+                        iframe.find(".wyp-selected-boxed-margin-top").addClass("wyp-zero-margin-h");
                     }
 
                     //Dynamic boxes variables
@@ -18429,14 +18429,14 @@
                     // Show 5px Margin Bottom if element not in bottom.
                     if(parseInt(marginBottom) == 0 && Math.round(bottomBoxes) != iframeHeight && Math.round(bottomBoxes+2) != iframeHeight){
                         marginBottom = "5px";
-                        iframe.find(".yp-selected-boxed-margin-bottom").addClass("yp-zero-margin-h");
+                        iframe.find(".wyp-selected-boxed-margin-bottom").addClass("wyp-zero-margin-h");
                     }
 
                     // bottom element or not
                     if (Math.round(bottomBoxes) == iframeHeight || Math.round(bottomBoxes+2) == iframeHeight) {
-                        body.addClass("yp-selected-bottom");
+                        body.addClass("wyp-selected-bottom");
                     }else{
-                        body.removeClass("yp-selected-bottom");
+                        body.removeClass("wyp-selected-bottom");
                     }
 
                     // Window Width
@@ -18474,10 +18474,10 @@
 
                     // if element full width
                     if ((leftBoxes + widthBoxes + 2) >= (iframeWidth - scroll_width)) {
-                        body.addClass("yp-full-width-selected");
+                        body.addClass("wyp-full-width-selected");
 
                     }else{
-                        body.removeClass("yp-full-width-selected");
+                        body.removeClass("wyp-full-width-selected");
                     }
 
 
@@ -18495,16 +18495,16 @@
                     // Show empty margin left/right just if there have free space (if not full width)
                     if((iframeWidth - scroll_width) > (leftBoxes + widthBoxes + 30)){
 
-                        iframe.find(".yp-zero-margin-w").removeClass("yp-zero-margin-w");
+                        iframe.find(".wyp-zero-margin-w").removeClass("wyp-zero-margin-w");
 
                         if(parseInt(marginRight) == 0){
                             marginRight = "5px";
-                            iframe.find(".yp-selected-boxed-margin-right").addClass("yp-zero-margin-w");
+                            iframe.find(".wyp-selected-boxed-margin-right").addClass("wyp-zero-margin-w");
                         }
 
                         if(parseInt(marginLeft) == 0){
                             marginLeft = "5px";
-                            iframe.find(".yp-selected-boxed-margin-left").addClass("yp-zero-margin-w");
+                            iframe.find(".wyp-selected-boxed-margin-left").addClass("wyp-zero-margin-w");
                         }
 
                     }
@@ -18600,18 +18600,18 @@
                         style += "." + classes + "-padding-right{top:"+parseFloat(topBoxes)+"px !important;left:"+rightRight+"px !important;width:"+parseFloat(paddingRight)+"px !important;height:"+parseFloat(heightBoxes)+"px !important;}";
 
 
-                        // Style#yp-draw-box
-                        var drawBoxStyle = iframeBody.find("#yp-draw-box");
+                        // Style#wyp-draw-box
+                        var drawBoxStyle = iframeBody.find("#wyp-draw-box");
 
                         // Append
                         if(drawBoxStyle.length > 0){
                             drawBoxStyle.html(style);
                         }else{
-                            iframeBody.append("<style id='yp-draw-box'>"+style+"</style>");
+                            iframeBody.append("<style id='wyp-draw-box'>"+style+"</style>");
                         }
 
                         if(is_resizing() == false && is_dragging() == false && is_visual_editing() == false){
-                            iframe.find(".yp-selected-handle").css("left", leftBoxes).css("top", topBoxes);
+                            iframe.find(".wyp-selected-handle").css("left", leftBoxes).css("top", topBoxes);
                         }
 
                     }
@@ -18719,10 +18719,10 @@
                 // Adding Editor data for justCondition mode.
                 if(justCondition){
 
-                    if(iframe.find("#yp-css-data-full").length == 0){
+                    if(iframe.find("#wyp-css-data-full").length == 0){
                         dataOther = get_clean_css();
                     }else{
-                        dataOther = iframe.find("#yp-css-data-full").html();
+                        dataOther = iframe.find("#wyp-css-data-full").html();
                     }
 
                     // Getting minimized data.
@@ -18786,7 +18786,7 @@
 
                             selector = selector.trim();
 
-                            if(iframe.find(get_foundable_query(selector,true,true,true)).hasClass("yp-selected")){
+                            if(iframe.find(get_foundable_query(selector,true,true,true)).hasClass("wyp-selected")){
 
                                 var ruleAll = mediaContent.match(new RegExp(selector_regex(selector) + "(\s+)?\{(.*?)\}",'gi')).toString();
 
@@ -18942,7 +18942,7 @@
                 }
 
                 // If no scrollbar, return zero.
-                if (iframe.height() <= $(window).height() && mainBody.hasClass("yp-metric-disable")) {
+                if (iframe.height() <= $(window).height() && mainBody.hasClass("wyp-metric-disable")) {
                     return 0;
                 }
 
@@ -18976,16 +18976,16 @@
             /* ---------------------------------------------------- */
             /* Unselect multiple selected items                     */
             /* ---------------------------------------------------- */
-            iframe.on("click", '.yp-selected-others', function() {
+            iframe.on("click", '.wyp-selected-others', function() {
 
                 var el = $(this);
 
                 var currentSelector = get_current_selector();
 
-                if(mainBody.hasClass("yp-control-key-down") && currentSelector.split(",").length > 0){
+                if(mainBody.hasClass("wyp-control-key-down") && currentSelector.split(",").length > 0){
 
                     // Remove YP Classes
-                    el.removeClass("yp-selected-others yp-recent-hover-element");
+                    el.removeClass("wyp-selected-others wyp-recent-hover-element");
 
                     // Get Selector
                     var selector = get_parents(el,'sharp');
@@ -19037,18 +19037,18 @@
                 }
 
                 // Stop.
-                if(mainBody.hasClass("yp-has-transform")){
+                if(mainBody.hasClass("wyp-has-transform")){
                     return false;
                 }
 
                 // not draw new box and delete last.
                 if(isDefined(elementClasses)){
 
-                    elementClasses = elementClasses.replace(/yp-selected-others/g,'');
+                    elementClasses = elementClasses.replace(/wyp-selected-others/g,'');
 
-                    var pluginelRex = /yp-selected|yp-tooltip-small|yp-edit-/;
+                    var pluginelRex = /wyp-selected|wyp-tooltip-small|wyp-edit-/;
 
-                    if(pluginelRex.test(elementClasses) || element_p.hasClass("yp-selected-others-box")){
+                    if(pluginelRex.test(elementClasses) || element_p.hasClass("wyp-selected-others-box")){
                         if(iframe.find("." + classes + "-" + $i + "-box").length > 0){
                             iframe.find("." + classes + "-" + $i + "-box").remove();
                         }
@@ -19061,7 +19061,7 @@
 
                 // Stop.
                 if (check_with_parents(element_p, "transform", "none", "!=") === true) {
-                    element_p.addClass("yp-selected-has-transform");
+                    element_p.addClass("wyp-selected-has-transform");
                     return false;
                 }
 
@@ -19118,15 +19118,15 @@
             /* ---------------------------------------------------- */
             function draw_tooltip(){
 
-                var tooltip = iframe.find(".yp-selected-tooltip");
-                var tooltipMenu = iframe.find(".yp-edit-tooltip");
+                var tooltip = iframe.find(".wyp-selected-tooltip");
+                var tooltipMenu = iframe.find(".wyp-edit-tooltip");
 
                 if (tooltip.length <= 0) {
                     return false;
                 }
 
                 // remove small tooltip class
-                tooltip.removeClass("yp-small-tooltip");
+                tooltip.removeClass("wyp-small-tooltip");
 
                 // Hide until set position to tooltip if element still not selected.
                 if (!is_content_selected()) {
@@ -19147,7 +19147,7 @@
                     return false;
                 }
 
-                tooltip.removeClass("yp-tooltip-bottom-outside");
+                tooltip.removeClass("wyp-tooltip-bottom-outside");
 
                 var topElement = parseFloat(element_offset.top) - 24;
 
@@ -19163,22 +19163,22 @@
                 // If outside of bottom, show.
                 if (topElement >= ($(window).height() + iframe.scrollTop() - 24)) {
 
-                    if (!tooltip.hasClass("yp-fixed-tooltip")) {
-                        tooltip.addClass("yp-fixed-tooltip");
+                    if (!tooltip.hasClass("wyp-fixed-tooltip")) {
+                        tooltip.addClass("wyp-fixed-tooltip");
                     }
 
                     // Update
                     topElement = ($(window).height() + iframe.scrollTop() - 24);
 
-                    tooltip.addClass("yp-fixed-tooltip-bottom");
+                    tooltip.addClass("wyp-fixed-tooltip-bottom");
 
                 } else {
 
-                    if (tooltip.hasClass("yp-fixed-tooltip")) {
-                        tooltip.removeClass("yp-fixed-tooltip");
+                    if (tooltip.hasClass("wyp-fixed-tooltip")) {
+                        tooltip.removeClass("wyp-fixed-tooltip");
                     }
 
-                    tooltip.removeClass("yp-fixed-tooltip-bottom");
+                    tooltip.removeClass("wyp-fixed-tooltip-bottom");
 
                 }
 
@@ -19186,52 +19186,52 @@
                 var tooltipRatio;
                 if (topElement < 2 || topElement < (iframe.scrollTop() + 2)) {
 
-                    var bottomBorder = iframe.find(".yp-selected-boxed-bottom");
+                    var bottomBorder = iframe.find(".wyp-selected-boxed-bottom");
 
                     topElement = parseFloat(bottomBorder.css("top")) - parseFloat(get_visible_height(element));
 
                     tooltip.css("top", topElement);
                     tooltipMenu.css("top", topElement);
 
-                    tooltip.addClass("yp-fixed-tooltip");
+                    tooltip.addClass("wyp-fixed-tooltip");
 
                     tooltipRatio = (tooltip.outerHeight() * 100 / get_visible_height(element));
 
                     if (tooltipRatio > 10) {
-                        tooltip.addClass("yp-tooltip-bottom-outside");
+                        tooltip.addClass("wyp-tooltip-bottom-outside");
                         topElement = parseFloat(bottomBorder.css("top")) - parseFloat(tooltip.outerHeight()) + tooltip.outerHeight();
 
                         tooltip.css("top", topElement);
                         tooltipMenu.css("top", topElement);
 
                     } else {
-                        tooltip.removeClass("yp-tooltip-bottom-outside");
+                        tooltip.removeClass("wyp-tooltip-bottom-outside");
                     }
 
                 } else {
-                    tooltip.removeClass("yp-fixed-tooltip");
+                    tooltip.removeClass("wyp-fixed-tooltip");
                 }
 
                 if (tooltipRatio < 11) {
-                    tooltip.removeClass("yp-tooltip-bottom-outside");
+                    tooltip.removeClass("wyp-tooltip-bottom-outside");
                 }
 
-                if (tooltip.hasClass("yp-fixed-tooltip") && tooltip.hasClass("yp-tooltip-bottom-outside") === false) {
-                    tooltipMenu.addClass("yp-fixed-edit-menu");
+                if (tooltip.hasClass("wyp-fixed-tooltip") && tooltip.hasClass("wyp-tooltip-bottom-outside") === false) {
+                    tooltipMenu.addClass("wyp-fixed-edit-menu");
                 } else {
-                    tooltipMenu.removeClass("yp-fixed-edit-menu");
+                    tooltipMenu.removeClass("wyp-fixed-edit-menu");
                 }
 
-                if (tooltip.hasClass("yp-tooltip-bottom-outside")) {
-                    tooltipMenu.addClass("yp-bottom-outside-edit-menu");
+                if (tooltip.hasClass("wyp-tooltip-bottom-outside")) {
+                    tooltipMenu.addClass("wyp-bottom-outside-edit-menu");
                 } else {
-                    tooltipMenu.removeClass("yp-bottom-outside-edit-menu");
+                    tooltipMenu.removeClass("wyp-bottom-outside-edit-menu");
                 }
 
-                if (tooltip.hasClass("yp-fixed-tooltip-bottom")) {
-                    tooltipMenu.addClass("yp-fixed-bottom-edit-menu");
+                if (tooltip.hasClass("wyp-fixed-tooltip-bottom")) {
+                    tooltipMenu.addClass("wyp-fixed-bottom-edit-menu");
                 } else {
-                    tooltipMenu.removeClass("yp-fixed-bottom-edit-menu");
+                    tooltipMenu.removeClass("wyp-fixed-bottom-edit-menu");
                 }
 
 
@@ -19242,21 +19242,21 @@
                     if ($("#iframe").width() - (tooltip.width() + tooltip.offset().left + 80) <= 0) {
 
                         // simple tooltip.
-                        tooltip.addClass("yp-small-tooltip");
+                        tooltip.addClass("wyp-small-tooltip");
 
                     } else { // If not high
 
                         // if already simple tooltip
-                        if (tooltip.hasClass("yp-small-tooltip")) {
+                        if (tooltip.hasClass("wyp-small-tooltip")) {
 
                             // return to default.
-                            tooltip.removeClass("yp-small-tooltip");
+                            tooltip.removeClass("wyp-small-tooltip");
 
                             // check again if need to be simple
                             if ($("#iframe").width() - (tooltip.width() + tooltip.offset().left + 80) <= 0) {
 
                                 // make it simple.
-                                tooltip.addClass("yp-small-tooltip");
+                                tooltip.addClass("wyp-small-tooltip");
 
                             }
 
@@ -19281,7 +19281,7 @@
             /* ---------------------------------------------------- */
             /* Adding Position:Relative before drag start           */
             /* ---------------------------------------------------- */
-            iframe.on("mousedown", "body.yp-content-selected .yp-selected", function() {
+            iframe.on("mousedown", "body.wyp-content-selected .wyp-selected", function() {
 
                 // cache
                 var element = get_selected_element();
@@ -19297,7 +19297,7 @@
                 // make element re-positionable.
                 element.css("position", pos);
 
-                mainBody.addClass("yp-position-added");
+                mainBody.addClass("wyp-position-added");
 
             });
 
@@ -19308,12 +19308,12 @@
             $(window).on('mouseup', function(){
 
                 // If this were dragging, let make this work in stop func of draggable.
-                if(mainBody.hasClass("yp-dragging") || mainBody.hasClass("yp-visual-editing")){
+                if(mainBody.hasClass("wyp-dragging") || mainBody.hasClass("wyp-visual-editing")){
                     return false;
                 }
 
-                // If has yp-position-added
-                if(mainBody.hasClass("yp-position-added") == false){
+                // If has wyp-position-added
+                if(mainBody.hasClass("wyp-position-added") == false){
                     return false;
                 }
 
@@ -19326,7 +19326,7 @@
 
                 window.styleAttr = '';
 
-                mainBody.removeClass("yp-position-added");
+                mainBody.removeClass("wyp-position-added");
 
             });
 
@@ -19337,7 +19337,7 @@
             function set_draggable(element) {
 
                 // Add drag support
-                if (iframeBody.find(".yp-selected").length > 0) {
+                if (iframeBody.find(".wyp-selected").length > 0) {
 
                     var defaultStyleAttr = element.attr("style");
 
@@ -19350,7 +19350,7 @@
                             window.elDragWidth = element.outerWidth();
                             window.elDragHeight = element.outerHeight();
 
-                            if (mainBody.hasClass("yp-css-editor-active")) {
+                            if (mainBody.hasClass("wyp-css-editor-active")) {
                                 $(".css-editor-btn").trigger("click");
                             }
 
@@ -19366,10 +19366,10 @@
                             element.removeClass("yp_onscreen yp_hover yp_click yp_focus");
 
                             // Add some classes
-                            body.addClass("yp-clean-look yp-dragging yp-hide-borders-now");
+                            body.addClass("wyp-clean-look wyp-dragging wyp-hide-borders-now");
 
                             // show position tooltip
-                            iframeBody.append("<div class='yp-helper-tooltip'></div>");
+                            iframeBody.append("<div class='wyp-helper-tooltip'></div>");
 
                             create_smart_guides();
 
@@ -19409,13 +19409,13 @@
                             var self = $(this);
 
                             // This offets
-                            draw_box(".yp-selected", 'yp-selected-boxed');
+                            draw_box(".wyp-selected", 'wyp-selected-boxed');
 
                             var selfRW = self.outerWidth();
-                            var selfTop = Math.round(parseFloat(iframeBody.find(".yp-selected-boxed-top").css("top")));
-                            var selfLeft = Math.round(parseFloat(iframeBody.find(".yp-selected-boxed-left").css("left")));
-                            var selfRight = Math.round(parseFloat(iframeBody.find(".yp-selected-boxed-right").css("left")));
-                            var selfBottom = Math.round(parseFloat(iframeBody.find(".yp-selected-boxed-bottom").css("top")));
+                            var selfTop = Math.round(parseFloat(iframeBody.find(".wyp-selected-boxed-top").css("top")));
+                            var selfLeft = Math.round(parseFloat(iframeBody.find(".wyp-selected-boxed-left").css("left")));
+                            var selfRight = Math.round(parseFloat(iframeBody.find(".wyp-selected-boxed-right").css("left")));
+                            var selfBottom = Math.round(parseFloat(iframeBody.find(".wyp-selected-boxed-bottom").css("top")));
 
                             // sizes
                             var selfWidth = selfRight - selfLeft;
@@ -19428,8 +19428,8 @@
                             var selfLeftMargin = parseFloat(self.css("marginLeft"));
 
                             // Bottom
-                            var yBorder = iframeBody.find(".yp-y-distance-border");
-                            var xBorder = iframeBody.find(".yp-x-distance-border");
+                            var yBorder = iframeBody.find(".wyp-y-distance-border");
+                            var xBorder = iframeBody.find(".wyp-x-distance-border");
 
                             xBorder.css("display", "none");
                             yBorder.css("display", "none");
@@ -19440,18 +19440,18 @@
                             // bottom in bottom
                             // top in bottom
                             // bottom in top
-                            var axsisxEl = iframeBody.find(".yp-smart-guide-elements[data-yp-bottom-round='" + yp_round(selfBottom) + "']");
-                            axsisxEl = axsisxEl.add(iframeBody.find(".yp-smart-guide-elements[data-yp-top-round='" + yp_round(selfTop) + "']"));
-                            axsisxEl = axsisxEl.add(iframeBody.find(".yp-smart-guide-elements[data-yp-top-round='" + yp_round(selfBottom) + "']"));
-                            axsisxEl = axsisxEl.add(iframeBody.find(".yp-smart-guide-elements[data-yp-bottom-round='" + yp_round(selfTop) + "']"));
+                            var axsisxEl = iframeBody.find(".wyp-smart-guide-elements[data-wyp-bottom-round='" + wyp_round(selfBottom) + "']");
+                            axsisxEl = axsisxEl.add(iframeBody.find(".wyp-smart-guide-elements[data-wyp-top-round='" + wyp_round(selfTop) + "']"));
+                            axsisxEl = axsisxEl.add(iframeBody.find(".wyp-smart-guide-elements[data-wyp-top-round='" + wyp_round(selfBottom) + "']"));
+                            axsisxEl = axsisxEl.add(iframeBody.find(".wyp-smart-guide-elements[data-wyp-bottom-round='" + wyp_round(selfTop) + "']"));
 
                             if (axsisxEl.length > 0) {
 
                                 // Getting sizes
-                                otherTop = parseFloat(axsisxEl.attr("data-yp-top"));
-                                otherLeft = parseFloat(axsisxEl.attr("data-yp-left"));
-                                otherWidth = parseFloat(axsisxEl.attr("data-yp-width"));
-                                otherHeight = parseFloat(axsisxEl.attr("data-yp-height"));
+                                otherTop = parseFloat(axsisxEl.attr("data-wyp-top"));
+                                otherLeft = parseFloat(axsisxEl.attr("data-wyp-left"));
+                                otherWidth = parseFloat(axsisxEl.attr("data-wyp-width"));
+                                otherHeight = parseFloat(axsisxEl.attr("data-wyp-height"));
                                 otherBottom = parseFloat(otherTop + otherHeight);
                                 otherRight = parseFloat(otherLeft + otherWidth);
 
@@ -19465,22 +19465,22 @@
                                 }
 
                                 // TOP = TOP
-                                if (axsisxEl.attr("data-yp-top-round") == yp_round(selfTop)) {
+                                if (axsisxEl.attr("data-wyp-top-round") == wyp_round(selfTop)) {
                                     wTop = otherTop;
                                 }
 
                                 // BOTTOM = BOTTOM
-                                if (axsisxEl.attr("data-yp-bottom-round") == yp_round(selfBottom)) {
+                                if (axsisxEl.attr("data-wyp-bottom-round") == wyp_round(selfBottom)) {
                                     wTop = otherBottom;
                                 }
 
                                 // BOTTOM = TOP
-                                if (axsisxEl.attr("data-yp-bottom-round") == yp_round(selfTop)) {
+                                if (axsisxEl.attr("data-wyp-bottom-round") == wyp_round(selfTop)) {
                                     wTop = otherBottom;
                                 }
 
                                 // TOP = BOTTOM
-                                if (axsisxEl.attr("data-yp-top-round") == yp_round(selfBottom)) {
+                                if (axsisxEl.attr("data-wyp-top-round") == wyp_round(selfBottom)) {
                                     wTop = otherTop;
                                 }
 
@@ -19525,21 +19525,21 @@
                             // right in right
                             // left in right
                             // right in left
-                            var axsisyEl = iframeBody.find(".yp-smart-guide-elements[data-yp-right-round='" + yp_round(selfRight) + "']");
+                            var axsisyEl = iframeBody.find(".wyp-smart-guide-elements[data-wyp-right-round='" + wyp_round(selfRight) + "']");
 
-                            axsisyEl = axsisyEl.add(iframeBody.find(".yp-smart-guide-elements[data-yp-left-round='" + yp_round(selfLeft) + "']"));
+                            axsisyEl = axsisyEl.add(iframeBody.find(".wyp-smart-guide-elements[data-wyp-left-round='" + wyp_round(selfLeft) + "']"));
 
-                            axsisyEl = axsisyEl.add(iframeBody.find(".yp-smart-guide-elements[data-yp-left-round='" + yp_round(selfRight) + "']"));
+                            axsisyEl = axsisyEl.add(iframeBody.find(".wyp-smart-guide-elements[data-wyp-left-round='" + wyp_round(selfRight) + "']"));
 
-                            axsisyEl = axsisyEl.add(iframeBody.find(".yp-smart-guide-elements[data-yp-right-round='" + yp_round(selfLeft) + "']"));
+                            axsisyEl = axsisyEl.add(iframeBody.find(".wyp-smart-guide-elements[data-wyp-right-round='" + wyp_round(selfLeft) + "']"));
 
                             if (axsisyEl.length > 0) {
 
                                 // Getting sizes
-                                otherTop = parseFloat(axsisyEl.attr("data-yp-top"));
-                                otherLeft = parseFloat(axsisyEl.attr("data-yp-left"));
-                                otherWidth = parseFloat(axsisyEl.attr("data-yp-width"));
-                                otherHeight = parseFloat(axsisyEl.attr("data-yp-height"));
+                                otherTop = parseFloat(axsisyEl.attr("data-wyp-top"));
+                                otherLeft = parseFloat(axsisyEl.attr("data-wyp-left"));
+                                otherWidth = parseFloat(axsisyEl.attr("data-wyp-width"));
+                                otherHeight = parseFloat(axsisyEl.attr("data-wyp-height"));
                                 otherBottom = parseFloat(otherTop + otherHeight);
                                 otherRight = parseFloat(otherLeft + otherWidth);
 
@@ -19553,22 +19553,22 @@
                                 }
 
                                 // LEFT = LEFT
-                                if (axsisyEl.attr("data-yp-left-round") == yp_round(selfLeft)) {
+                                if (axsisyEl.attr("data-wyp-left-round") == wyp_round(selfLeft)) {
                                     wLeft = otherLeft;
                                 }
 
                                 // RIGHT = RIGHT
-                                if (axsisyEl.attr("data-yp-right-round") == yp_round(selfRight)) {
+                                if (axsisyEl.attr("data-wyp-right-round") == wyp_round(selfRight)) {
                                     wLeft = otherRight;
                                 }
 
                                 // RIGHT = LEFT
-                                if (axsisyEl.attr("data-yp-right-round") == yp_round(selfLeft)) {
+                                if (axsisyEl.attr("data-wyp-right-round") == wyp_round(selfLeft)) {
                                     wLeft = otherRight;
                                 }
 
                                 // LEFT = RIGHT
-                                if (axsisyEl.attr("data-yp-left-round") == yp_round(selfRight)) {
+                                if (axsisyEl.attr("data-wyp-left-round") == wyp_round(selfRight)) {
                                     wLeft = otherLeft;
                                 }
 
@@ -19625,12 +19625,12 @@
 
                             // Update helper tooltip
                             if (selfTop >= 60) {
-                                iframeBody.find(".yp-helper-tooltip").css({
+                                iframeBody.find(".wyp-helper-tooltip").css({
                                     'top': selfTop,
                                     'left': selfLeft
                                 }).html("X : " + parseInt(ui.position.left) + " px<br>Y : " + parseInt(ui.position.top) + " px");
                             } else {
-                                iframeBody.find(".yp-helper-tooltip").css({
+                                iframeBody.find(".wyp-helper-tooltip").css({
                                     'top': selfTop + selfHeight + 40 + 10,
                                     'left': selfLeft
                                 }).html("X : " + parseInt(ui.position.left) + " px<br>Y : " + parseInt(ui.position.top) + " px");
@@ -19644,7 +19644,7 @@
                             var delay = 1;
 
                             // CSS To Data.
-                            if (mainBody.hasClass("yp-need-to-process")) {
+                            if (mainBody.hasClass("wyp-need-to-process")) {
                                 process(false);
                                 delay = 70;
                             }
@@ -19661,7 +19661,7 @@
                                 var r = element.css("right");
 
                                 // Back To Orginal Style Attr.
-                                if(mainBody.hasClass("yp-position-added")){
+                                if(mainBody.hasClass("wyp-position-added")){
 
                                     if(window.styleAttr != ''){
                                         element.attr("style", window.styleAttr);
@@ -19670,7 +19670,7 @@
                                     }
 
                                     window.styleAttr = '';
-                                    mainBody.removeClass("yp-position-added");
+                                    mainBody.removeClass("wyp-position-added");
 
                                 }
 
@@ -19695,12 +19695,12 @@
                                 insert_default_options();
 
                                 // Remove
-                                iframe.find(".yp-selected,.yp-selected-others").removeClass("ui-draggable-handle ui-draggable-handle");
+                                iframe.find(".wyp-selected,.wyp-selected-others").removeClass("ui-draggable-handle ui-draggable-handle");
 
                                 // Update css.
                                 option_change();
 
-                                body.removeClass("yp-clean-look yp-dragging yp-hide-borders-now");
+                                body.removeClass("wyp-clean-look wyp-dragging wyp-hide-borders-now");
 
                                 draw();
 
@@ -19737,16 +19737,16 @@
                 // element
                 var element = get_selected_element();
 
-                var handle = iframe.find(".yp-selected-handle");
+                var handle = iframe.find(".wyp-selected-handle");
 
                 // Add new
                 if (element.height() > 20 && element.width() > 60 && handle.length === 0) {
-                    iframeBody.append("<span class='yp-selected-handle'></span>");
+                    iframeBody.append("<span class='wyp-selected-handle'></span>");
                 }
 
-                handle.css("left", iframe.find(".yp-selected-boxed-right").css("left"));
-                handle.css("top", iframe.find(".yp-selected-boxed-bottom").css("top"));
-                handle.css("opacity", iframe.find(".yp-selected-boxed-bottom").css("opacity"));
+                handle.css("left", iframe.find(".wyp-selected-boxed-right").css("left"));
+                handle.css("top", iframe.find(".wyp-selected-boxed-bottom").css("top"));
+                handle.css("opacity", iframe.find(".wyp-selected-boxed-bottom").css("opacity"));
 
             }
 
@@ -19788,12 +19788,12 @@
 
                 $(this).attr("target", "_self");
 
-                if(mainBody.hasClass("yp-metric-disable") === false){
+                if(mainBody.hasClass("wyp-metric-disable") === false){
                     return false;
                 }
 
                 // if aim mode disable.
-                if ($(".yp-selector-mode.active").length === 0) {
+                if ($(".wyp-selector-mode.active").length === 0) {
 
                     var href = $(this).attr("href");
 
@@ -19837,7 +19837,7 @@
                         }
 
                         // if selector mode not active and need to save.
-                        if ($(".yp-save-btn").hasClass("waiting-for-save")){
+                        if ($(".wyp-save-btn").hasClass("waiting-for-save")){
                             if (confirm(l18_sure) == true) {
                                 $(".waiting-for-save").removeClass("waiting-for-save");
                             } else {
@@ -19868,7 +19868,7 @@
 
                     $.get(newURL, function(data){
 
-                        mainBody.append("<div id='yp-load-test-admin'></div>");
+                        mainBody.append("<div id='wyp-load-test-admin'></div>");
 
                         newURL = newURL.replace(/.*?:\/\//g, ""); // delete protocol
                         newURL = newURL.replace("&yellow_pencil_frame=true", "").replace("?yellow_pencil_frame=true", "");
@@ -19898,7 +19898,7 @@
                 }
 
                 // Click options
-                if ($(".yp-selector-mode.active").length > 0 && mainBody.hasClass("yp-metric-disable")) {
+                if ($(".wyp-selector-mode.active").length > 0 && mainBody.hasClass("wyp-metric-disable")) {
 
                     if (evt.which == 1 || evt.which === undefined) {
                         evt.stopPropagation();
@@ -19906,41 +19906,41 @@
                     }
 
                     // Not clickable while animate playing
-                    if(body.hasClass("yp-animate-manager-playing")){
+                    if(body.hasClass("wyp-animate-manager-playing")){
                         return false;
                     }
 
                     // Visual Edited
-                    if(body.hasClass("yp-visual-edited")){
-                        body.removeClass("yp-visual-edited");
+                    if(body.hasClass("wyp-visual-edited")){
+                        body.removeClass("wyp-visual-edited");
                         return false;
                     }
 
                     // Resized
-                    if (body.hasClass("yp-element-resized") || body.hasClass("resize-time-delay")) {
-                        body.removeClass("yp-element-resized resize-time-delay");
+                    if (body.hasClass("wyp-element-resized") || body.hasClass("resize-time-delay")) {
+                        body.removeClass("wyp-element-resized resize-time-delay");
                         return false;
                     }
 
                     // Colorpicker for all elements.
-                    if (mainBody.hasClass("yp-element-picker-active")) {
+                    if (mainBody.hasClass("wyp-element-picker-active")) {
 
                         // CSS
                         iframe.find("#colorPickerLiveCSS").remove();
-                        var pickerCSSRule = $(".yp-element-picker.active").parents(".yp-option-group").attr("data-css");
+                        var pickerCSSRule = $(".wyp-element-picker.active").parents(".wyp-option-group").attr("data-css");
                         insert_rule(null, pickerCSSRule, window.pickerColor);
                         set_default_value(pickerCSSRule);
 
                         // Clean picker
-                        $(".yp-element-picker-active").removeClass("yp-element-picker-active");
-                        $(".yp-element-picker.active").removeClass("active");
+                        $(".wyp-element-picker-active").removeClass("wyp-element-picker-active");
+                        $(".wyp-element-picker.active").removeClass("active");
                         return false;
 
                     }
 
-                    if ($(".yp_flat_colors_area:visible").length !== 0) {
+                    if ($(".wyp_flat_colors_area:visible").length !== 0) {
 
-                        $(".yp-flat-colors.active").each(function() {
+                        $(".wyp-flat-colors.active").each(function() {
                             $(this).trigger("click");
                         });
 
@@ -19948,9 +19948,9 @@
 
                     }
 
-                    if ($(".yp_meterial_colors_area:visible").length !== 0) {
+                    if ($(".wyp_meterial_colors_area:visible").length !== 0) {
 
-                        $(".yp-meterial-colors.active").each(function() {
+                        $(".wyp-meterial-colors.active").each(function() {
                             $(this).trigger("click");
                         });
 
@@ -19958,9 +19958,9 @@
 
                     }
 
-                    if ($(".yp_nice_colors_area:visible").length !== 0) {
+                    if ($(".wyp_nice_colors_area:visible").length !== 0) {
 
-                        $(".yp-nice-colors.active").each(function() {
+                        $(".wyp-nice-colors.active").each(function() {
                             $(this).trigger("click");
                         });
 
@@ -19980,9 +19980,9 @@
 
                     }
 
-                    if ($(".yp_background_assets:visible").length !== 0) {
+                    if ($(".wyp_background_assets:visible").length !== 0) {
 
-                        $(".yp-bg-img-btn.active").each(function() {
+                        $(".wyp-bg-img-btn.active").each(function() {
                             $(this).trigger("click");
                         });
 
@@ -19990,9 +19990,9 @@
 
                     }
 
-                    if ($(".yp-gradient-section:visible").length !== 0) {
+                    if ($(".wyp-gradient-section:visible").length !== 0) {
 
-                        $(".yp-gradient-btn.active").each(function() {
+                        $(".wyp-gradient-btn.active").each(function() {
                             $(this).trigger("click");
                         });
 
@@ -20013,7 +20013,7 @@
                     if (is_content_selected() === true) {
 
                         // CSS To Data.
-                        if (mainBody.hasClass("yp-need-to-process")) {
+                        if (mainBody.hasClass("wyp-need-to-process")) {
                             process(false);
                         }
 
@@ -20031,7 +20031,7 @@
 
                         if (is_content_selected() === true) {
 
-                            if (element.hasClass("yp-edit-menu") && element.hasClass("yp-content-selected") === false) {
+                            if (element.hasClass("wyp-edit-menu") && element.hasClass("wyp-content-selected") === false) {
                                 element_offset = element.offset();
                                 var x = element_offset.left;
                                 if (x === 0) {
@@ -20045,18 +20045,18 @@
                                 return false;
                             }
 
-                            if (element.hasClass("yp-selected-tooltip")) {
-                                $(".yp-button-target").trigger("click");
+                            if (element.hasClass("wyp-selected-tooltip")) {
+                                $(".wyp-button-target").trigger("click");
                                 return false;
                             } else if (element.parent().length > 0) {
-                                if (element.parent().hasClass("yp-selected-tooltip")) {
-                                    $(".yp-button-target").trigger("click");
+                                if (element.parent().hasClass("wyp-selected-tooltip")) {
+                                    $(".wyp-button-target").trigger("click");
                                     return false;
                                 }
                             }
 
                             // click notting on visual margin/padding helper
-                            if(element.is("[class*=yp-selected-boxed-margin-],[class*=yp-selected-boxed-padding-]")){
+                            if(element.is("[class*=wyp-selected-boxed-margin-],[class*=wyp-selected-boxed-padding-]")){
                                 clearTimeout(window.visualEditDelay);
                                 return false;
                             }
@@ -20069,7 +20069,7 @@
                         return false;
                     }
 
-                    if (body.hasClass("yp-disable-disable-yp")) {
+                    if (body.hasClass("wyp-disable-disable-yp")) {
                         return false;
                     }
 
@@ -20081,9 +20081,9 @@
 
                     if (evt.which == 1 || evt.which === undefined) {
 
-                        if (element.hasClass("yp-selected") === false) {
+                        if (element.hasClass("wyp-selected") === false) {
 
-                            if (is_content_selected() === true && element.parents(".yp-selected").length != 1) {
+                            if (is_content_selected() === true && element.parents(".wyp-selected").length != 1) {
 
                                 if (is_animate_creator() && is_dragging() === false) {
 
@@ -20109,14 +20109,14 @@
                                 }
 
                                 // Multiable Selector
-                                if(is_content_selected() && mainBody.hasClass("yp-control-key-down")){
+                                if(is_content_selected() && mainBody.hasClass("wyp-control-key-down")){
 
-                                    if(element.hasClass("yp-selected-others-box") === false){
+                                    if(element.hasClass("wyp-selected-others-box") === false){
 
                                         var selectorCurrent = get_current_selector();
                                         var selectorNew = get_parents(element, "sharp");
-                                        iframe.find(".yp-selected-others-multiable-box").remove();
-                                        iframe.find(".yp-multiple-selected").addClass("yp-selected-others").removeClass("yp-multiple-selected");
+                                        iframe.find(".wyp-selected-others-multiable-box").remove();
+                                        iframe.find(".wyp-multiple-selected").addClass("wyp-selected-others").removeClass("wyp-multiple-selected");
                                         set_selector(selectorCurrent+","+selectorNew, get_selected_element(), true);
 
                                         // Disable focus style after clicked.
@@ -20142,7 +20142,7 @@
                             if (is_content_selected() === false){
 
                                 if (check_with_parents(element, "transform", "none", "!=") === true){
-                                    body.addClass("yp-has-transform");
+                                    body.addClass("wyp-has-transform");
                                 }
 
                                 // Set selector as  body attr.
@@ -20177,22 +20177,22 @@
                                 }
 
                                 // element selected
-                                body.addClass("yp-content-selected");
+                                body.addClass("wyp-content-selected");
 
                                 window.orginalHeight = parseFloat(element.css("height").replace(/px/g,''));
                                 window.orginalWidth = parseFloat(element.css("width").replace(/px/g,''));
 
                                 if(element.css("float") == 'right'){
-                                    body.addClass("yp-element-float");
+                                    body.addClass("wyp-element-float");
                                 }else{
-                                    body.removeClass("yp-element-float");
+                                    body.removeClass("wyp-element-float");
                                 }
 
                                 var ttag = element.prop("tagName").toLowerCase();
                                 if(ttag == 'ul' || ttag == 'ol' || ttag == 'li'){
-                                    body.addClass("yp-element-list");
+                                    body.addClass("wyp-element-list");
                                 }else{
-                                    body.removeClass("yp-element-list");
+                                    body.removeClass("wyp-element-list");
                                 }
 
                                 css_editor_toggle(true); // show if hide
@@ -20244,7 +20244,7 @@
             /* ---------------------------------------------------- */
             function create_smart_guides(){
 
-                if(body.hasClass("yp-smart-guide-disabled") || mainBody.hasClass("yp-has-transform")){
+                if(body.hasClass("wyp-smart-guide-disabled") || mainBody.hasClass("wyp-has-transform")){
                     return false;
                 }
 
@@ -20274,7 +20274,7 @@
                     }
 
 
-                    if(el.parents(".yp-selected").length <= 0 && el.parents(".yp-selected-others").length <= 0 && el.css("display") != 'none' && el.css("opacity") != "0" && el.css("visibility") != 'hidden' && el.height() >= 10){
+                    if(el.parents(".wyp-selected").length <= 0 && el.parents(".wyp-selected-others").length <= 0 && el.css("display") != 'none' && el.css("opacity") != "0" && el.css("visibility") != 'hidden' && el.height() >= 10){
 
                         var offset = el.offset();
 
@@ -20284,19 +20284,19 @@
                         var otherHeight = Math.round(el.outerHeight());
 
                             // don't add "inner" same size elements.
-                            if(iframeBody.find('[data-yp-top="'+otherTop+'"][data-yp-left="'+otherLeft+'"][data-yp-width="'+otherWidth+'"][data-yp-height="'+otherHeight+'"]').length <= 0){
+                            if(iframeBody.find('[data-wyp-top="'+otherTop+'"][data-wyp-left="'+otherLeft+'"][data-wyp-width="'+otherWidth+'"][data-wyp-height="'+otherHeight+'"]').length <= 0){
 
                                 // Saving for use on drag event.
                                 // faster performance.
-                                el.addClass("yp-smart-guide-elements")
-                                .attr("data-yp-top",otherTop)
-                                .attr("data-yp-left",otherLeft)
-                                .attr("data-yp-top-round",yp_round(otherTop))
-                                .attr("data-yp-bottom-round",yp_round(otherTop+otherHeight))
-                                .attr("data-yp-left-round",yp_round(otherLeft))
-                                .attr("data-yp-right-round",yp_round(otherLeft+otherWidth))
-                                .attr("data-yp-width",otherWidth)
-                                .attr("data-yp-height",otherHeight);
+                                el.addClass("wyp-smart-guide-elements")
+                                .attr("data-wyp-top",otherTop)
+                                .attr("data-wyp-left",otherLeft)
+                                .attr("data-wyp-top-round",wyp_round(otherTop))
+                                .attr("data-wyp-bottom-round",wyp_round(otherTop+otherHeight))
+                                .attr("data-wyp-left-round",wyp_round(otherLeft))
+                                .attr("data-wyp-right-round",wyp_round(otherLeft+otherWidth))
+                                .attr("data-wyp-width",otherWidth)
+                                .attr("data-wyp-height",otherHeight);
                             }
 
                         }
@@ -20314,7 +20314,7 @@
 
                         if(parseInt(Pleft) == parseInt(iframe.width()-Pright)){
 
-                            iframeBody.append("<div class='yp-page-border-left' style='left:"+Pleft+"px;'></div><div class='yp-page-border-right' style='left:"+Pright+"px;'></div>");
+                            iframeBody.append("<div class='wyp-page-border-left' style='left:"+Pleft+"px;'></div><div class='wyp-page-border-right' style='left:"+Pright+"px;'></div>");
 
                         }
 
@@ -20323,7 +20323,7 @@
                 }
 
                 // Adding distance borders
-                iframeBody.append("<div class='yp-x-distance-border'></div><div class='yp-y-distance-border'></div>");
+                iframeBody.append("<div class='wyp-x-distance-border'></div><div class='wyp-y-distance-border'></div>");
 
             }
 
@@ -20333,20 +20333,20 @@
             /* ---------------------------------------------------- */
             function clean_smart_guides(){
 
-                iframeBody.find(".yp-page-border-left,.yp-page-border-right").remove();
+                iframeBody.find(".wyp-page-border-left,.wyp-page-border-right").remove();
 
                 // Removing distance borders
-                iframeBody.find(".yp-x-distance-border,.yp-y-distance-border,.yp-helper-tooltip").remove();
+                iframeBody.find(".wyp-x-distance-border,.wyp-y-distance-border,.wyp-helper-tooltip").remove();
 
-                iframeBody.find(".yp-smart-guide-elements").removeClass("yp-smart-guide-elements")
-                    .removeAttr("data-yp-top")
-                    .removeAttr("data-yp-left")
-                    .removeAttr("data-yp-width")
-                    .removeAttr("data-yp-top-round")
-                    .removeAttr("data-yp-bottom-round")
-                    .removeAttr("data-yp-left-round")
-                    .removeAttr("data-yp-right-round")
-                    .removeAttr("data-yp-height");
+                iframeBody.find(".wyp-smart-guide-elements").removeClass("wyp-smart-guide-elements")
+                    .removeAttr("data-wyp-top")
+                    .removeAttr("data-wyp-left")
+                    .removeAttr("data-wyp-width")
+                    .removeAttr("data-wyp-top-round")
+                    .removeAttr("data-wyp-bottom-round")
+                    .removeAttr("data-wyp-left-round")
+                    .removeAttr("data-wyp-right-round")
+                    .removeAttr("data-wyp-height");
 
             }
 
@@ -20354,12 +20354,12 @@
             /* ---------------------------------------------------- */
             /* Resize Start : Width                                 */
             /* ---------------------------------------------------- */
-            iframe.on("mousedown", '.yp-selected-boxed-left,.yp-selected-boxed-right', function(event) {
+            iframe.on("mousedown", '.wyp-selected-boxed-left,.wyp-selected-boxed-right', function(event) {
 
             var element = $(this);
 
             // if float not right, left disable
-            if(body.hasClass("yp-element-float") == false && element.hasClass("yp-selected-boxed-left")){
+            if(body.hasClass("wyp-element-float") == false && element.hasClass("wyp-selected-boxed-left")){
                 return false;
             }
 
@@ -20382,7 +20382,7 @@
 
                 window.visualResizingType = 'width';
 
-                if (element.hasClass("yp-selected-boxed-left")) {
+                if (element.hasClass("wyp-selected-boxed-left")) {
                     window.ResizeSelectedBorder = "left";
                 } else {
                     window.ResizeSelectedBorder = "right";
@@ -20390,7 +20390,7 @@
 
                 window.mouseisDown = true;
 
-                var el = iframeBody.find(".yp-selected");
+                var el = iframeBody.find(".wyp-selected");
 
                 window.mouseDownX = el.offset().left;
                 window.exWidthX = parseFloat(el.css("width"));
@@ -20419,8 +20419,8 @@
 
                 }
 
-                iframe.find("html").addClass("yp-element-resizing");
-                body.addClass("yp-element-resizing yp-clean-look");
+                iframe.find("html").addClass("wyp-element-resizing");
+                body.addClass("wyp-element-resizing wyp-clean-look");
 
                 // Close contextmenu
                 if (iframe.find(".context-menu-active").length > 0) {
@@ -20428,7 +20428,7 @@
                 }
 
                 // show size tooltip
-                iframeBody.append("<div class='yp-helper-tooltip'></div>");
+                iframeBody.append("<div class='wyp-helper-tooltip'></div>");
 
                 create_smart_guides();
 
@@ -20440,7 +20440,7 @@
             /* ---------------------------------------------------- */
             /* Resize Start : Height                                */
             /* ---------------------------------------------------- */
-            iframe.on("mousedown", '.yp-selected-boxed-bottom', function(event) { // removed since 5.5.6 .yp-selected-boxed-top
+            iframe.on("mousedown", '.wyp-selected-boxed-bottom', function(event) { // removed since 5.5.6 .wyp-selected-boxed-top
 
             var element = $(this);
 
@@ -20458,13 +20458,13 @@
 
                 window.visualResizingType = 'height';
 
-                if (element.hasClass("yp-selected-boxed-top")) {
+                if (element.hasClass("wyp-selected-boxed-top")) {
                     window.ResizeSelectedBorder = "top";
                 } else {
                     window.ResizeSelectedBorder = "bottom";
                 }
 
-                var el = iframeBody.find(".yp-selected");
+                var el = iframeBody.find(".wyp-selected");
 
                 window.mouseDownY = el.offset().top;
                 window.exWidthY = parseFloat(el.css("height"));
@@ -20474,7 +20474,7 @@
                 window.maxData = {width: parseFloat(el.css("maxWidth")), height: parseFloat(el.css("maxHeight"))};
                 window.minData = {width: parseFloat(el.css("minWidth")), height: parseFloat(el.css("minHeight"))};
 
-                body.addClass("yp-element-resizing yp-clean-look");
+                body.addClass("wyp-element-resizing wyp-clean-look");
 
                 // Close contextmenu
                 if (iframe.find(".context-menu-active").length > 0) {
@@ -20482,10 +20482,10 @@
                 }
 
                 // Removing classes.
-                iframe.find(get_current_selector()).removeClass("yp_selected yp_onscreen yp_hover yp_focus yp_click");
+                iframe.find(get_current_selector()).removeClass("wyp_selected yp_onscreen yp_hover yp_focus yp_click");
 
                 // show size tooltip
-                iframeBody.append("<div class='yp-helper-tooltip'></div>");
+                iframeBody.append("<div class='wyp-helper-tooltip'></div>");
 
                 create_smart_guides();
 
@@ -20504,8 +20504,8 @@
 
                 if (window.mouseisDown === true) {
 
-                    var yBorder = iframeBody.find(".yp-y-distance-border");
-                    var xBorder = iframeBody.find(".yp-x-distance-border");
+                    var yBorder = iframeBody.find(".wyp-y-distance-border");
+                    var xBorder = iframeBody.find(".wyp-x-distance-border");
 
                     event = event || window.event;
 
@@ -20561,11 +20561,11 @@
 
                             }
 
-                            draw_box(".yp-selected", 'yp-selected-boxed');
+                            draw_box(".wyp-selected", 'wyp-selected-boxed');
 
                         }
 
-                        body.addClass("yp-element-resizing-width-" + window.ResizeSelectedBorder);
+                        body.addClass("wyp-element-resizing-width-" + window.ResizeSelectedBorder);
 
                     } else if (window.visualResizingType == "height") { // else height
 
@@ -20590,11 +20590,11 @@
                                 element.cssImportant("height", height + format);
                             }
 
-                            draw_box(".yp-selected", 'yp-selected-boxed');
+                            draw_box(".wyp-selected", 'wyp-selected-boxed');
 
                         }
 
-                        body.addClass("yp-element-resizing-height-" + window.ResizeSelectedBorder);
+                        body.addClass("wyp-element-resizing-height-" + window.ResizeSelectedBorder);
 
                     }
 
@@ -20626,10 +20626,10 @@
 
 
                     // offsets
-                    var selfTop = Math.round(parseFloat(iframeBody.find(".yp-selected-boxed-top").css("top")));
-                    var selfLeft = Math.round(parseFloat(iframeBody.find(".yp-selected-boxed-left").css("left")));
-                    var selfRight = Math.round(parseFloat(iframeBody.find(".yp-selected-boxed-right").css("left")));
-                    var selfBottom = Math.round(parseFloat(iframeBody.find(".yp-selected-boxed-bottom").css("top")));
+                    var selfTop = Math.round(parseFloat(iframeBody.find(".wyp-selected-boxed-top").css("top")));
+                    var selfLeft = Math.round(parseFloat(iframeBody.find(".wyp-selected-boxed-left").css("left")));
+                    var selfRight = Math.round(parseFloat(iframeBody.find(".wyp-selected-boxed-right").css("left")));
+                    var selfBottom = Math.round(parseFloat(iframeBody.find(".wyp-selected-boxed-bottom").css("top")));
 
                     // Variables
                     var wLeft,wWidth,wTop,forceH,wHeight,forceW,otherTop,otherLeft,otherWidth,otherHeight,otherBottom,otherRight;
@@ -20640,15 +20640,15 @@
                         xBorder.css("display","none");
                         window.wasLockY = false;
 
-                        var axsisxEl = iframeBody.find(".yp-smart-guide-elements[data-yp-top-round='"+yp_round(event.pageY)+"'],.yp-smart-guide-elements[data-yp-bottom-round='"+yp_round(event.pageY)+"']").first();
+                        var axsisxEl = iframeBody.find(".wyp-smart-guide-elements[data-wyp-top-round='"+wyp_round(event.pageY)+"'],.wyp-smart-guide-elements[data-wyp-bottom-round='"+wyp_round(event.pageY)+"']").first();
 
                         if(axsisxEl.length > 0){
 
                             // Getting sizes
-                            otherTop = parseFloat(axsisxEl.attr("data-yp-top"));
-                            otherLeft = parseFloat(axsisxEl.attr("data-yp-left"));
-                            otherWidth = parseFloat(axsisxEl.attr("data-yp-width"));
-                            otherHeight = parseFloat(axsisxEl.attr("data-yp-height"));
+                            otherTop = parseFloat(axsisxEl.attr("data-wyp-top"));
+                            otherLeft = parseFloat(axsisxEl.attr("data-wyp-left"));
+                            otherWidth = parseFloat(axsisxEl.attr("data-wyp-width"));
+                            otherHeight = parseFloat(axsisxEl.attr("data-wyp-height"));
                             otherBottom = parseFloat(otherTop+otherHeight);
                             otherRight = parseFloat(otherLeft+otherWidth);
 
@@ -20662,7 +20662,7 @@
                             }
 
                             // Find top or bottom.
-                            if(axsisxEl.attr("data-yp-top-round") == yp_round(event.pageY)){
+                            if(axsisxEl.attr("data-wyp-top-round") == wyp_round(event.pageY)){
                                 wTop = otherTop;
                                 forceH = otherTop-selfTop;
                             }else{
@@ -20699,15 +20699,15 @@
                         window.wasLockX = false;
                         yBorder.css("display","none");
 
-                        var axsisyEl = iframeBody.find(".yp-smart-guide-elements[data-yp-left-round='"+yp_round(event.pageX)+"'],.yp-smart-guide-elements[data-yp-right-round='"+yp_round(event.pageX)+"']").first();
+                        var axsisyEl = iframeBody.find(".wyp-smart-guide-elements[data-wyp-left-round='"+wyp_round(event.pageX)+"'],.wyp-smart-guide-elements[data-wyp-right-round='"+wyp_round(event.pageX)+"']").first();
 
                         if(axsisyEl.length > 0){
 
                             // Getting sizes
-                            otherTop = parseFloat(axsisyEl.attr("data-yp-top"));
-                            otherLeft = parseFloat(axsisyEl.attr("data-yp-left"));
-                            otherWidth = parseFloat(axsisyEl.attr("data-yp-width"));
-                            otherHeight = parseFloat(axsisyEl.attr("data-yp-height"));
+                            otherTop = parseFloat(axsisyEl.attr("data-wyp-top"));
+                            otherLeft = parseFloat(axsisyEl.attr("data-wyp-left"));
+                            otherWidth = parseFloat(axsisyEl.attr("data-wyp-width"));
+                            otherHeight = parseFloat(axsisyEl.attr("data-wyp-height"));
                             otherBottom = parseFloat(otherTop+otherHeight);
                             otherRight = parseFloat(otherLeft+otherWidth);
 
@@ -20721,7 +20721,7 @@
                             }
 
                             // Find top or bottom.
-                            if(axsisyEl.attr("data-yp-left-round") == yp_round(event.pageX)){
+                            if(axsisyEl.attr("data-wyp-left-round") == wyp_round(event.pageX)){
                                 wLeft = otherLeft;
                                 forceW = otherLeft-selfLeft;
                             }else{
@@ -20771,7 +20771,7 @@
                     }
 
                     // Update helper tooltip
-                    iframeBody.find(".yp-helper-tooltip").css({'top':event.pageY,'left':leftX}).html(tooltipContent);
+                    iframeBody.find(".wyp-helper-tooltip").css({'top':event.pageY,'left':leftX}).html(tooltipContent);
 
 
                 }
@@ -20885,14 +20885,14 @@
                     clean_smart_guides();
 
                     // show size tooltip
-                    iframeBody.find(".yp-helper-tooltip").remove();
+                    iframeBody.find(".wyp-helper-tooltip").remove();
 
-                    body.addClass("yp-element-resized");
+                    body.addClass("wyp-element-resized");
 
                     var delay = 1;
 
                     // CSS To Data.
-                    if (mainBody.hasClass("yp-need-to-process")) {
+                    if (mainBody.hasClass("wyp-need-to-process")) {
                         process(false);
                         delay = 70;
                     }
@@ -20968,8 +20968,8 @@
 
                         }
 
-                        iframe.find("html").removeClass("yp-element-resizing");
-                        body.removeClass("yp-element-resizing yp-clean-look yp-element-resizing-height-bottom yp-element-resizing-width-left yp-element-resizing-width-right yp-element-resizing-height-top");
+                        iframe.find("html").removeClass("wyp-element-resizing");
+                        body.removeClass("wyp-element-resizing wyp-clean-look wyp-element-resizing-height-bottom wyp-element-resizing-width-left wyp-element-resizing-width-right wyp-element-resizing-height-top");
 
 
                         // If width/height large than max width/height
@@ -21000,7 +21000,7 @@
                     }, delay);
 
                     setTimeout(function() {
-                        body.removeClass("yp-element-resized resize-time-delay");
+                        body.removeClass("wyp-element-resized resize-time-delay");
                     }, 100);
 
                 }
@@ -21011,7 +21011,7 @@
             /* ---------------------------------------------------- */
             /* Rounding numbers                                     */
             /* ---------------------------------------------------- */
-            function yp_round(x){
+            function wyp_round(x){
                 return Math.round(x / 6) * 6;
             }
 
@@ -21022,7 +21022,7 @@
             /* ---------------------------------------------------- */
             /* Visual Editing : Start                               */
             /* ---------------------------------------------------- */
-            iframe.on("mousedown", '.yp-selected-boxed-margin-left,.yp-selected-boxed-margin-right,.yp-selected-boxed-margin-top,.yp-selected-boxed-margin-bottom,.yp-selected-boxed-padding-left,.yp-selected-boxed-padding-right,.yp-selected-boxed-padding-top,.yp-selected-boxed-padding-bottom', function(event) {
+            iframe.on("mousedown", '.wyp-selected-boxed-margin-left,.wyp-selected-boxed-margin-right,.wyp-selected-boxed-margin-top,.wyp-selected-boxed-margin-bottom,.wyp-selected-boxed-padding-left,.wyp-selected-boxed-padding-right,.wyp-selected-boxed-padding-top,.wyp-selected-boxed-padding-bottom', function(event) {
 
             if(event.which == 2 || event.which == 3){
                 return false;
@@ -21040,9 +21040,9 @@
                 }
 
                 // margin/padding viewer element class
-                var classes = element.attr("class").replace(/yp-recent-hover-element/g,'').trim();
+                var classes = element.attr("class").replace(/wyp-recent-hover-element/g,'').trim();
 
-                element.addClass("yp-visual-active").removeClass("yp-zero-margin-w yp-zero-margin-h");
+                element.addClass("wyp-visual-active").removeClass("wyp-zero-margin-w wyp-zero-margin-h");
 
                 // Margin || Padding
                 window.visualEditType = classes.match(/boxed-[a-z]+/g).toString().replace("boxed-","");
@@ -21076,17 +21076,17 @@
                 }
 
                 // Add class
-                body.addClass("yp-visual-editing yp-clean-look");
+                body.addClass("wyp-visual-editing wyp-clean-look");
 
                 // X and Y
                 if(/(left|right)/g.test(window.visualEditPosition)){
-                    body.addClass("yp-visual-editing-x");
+                    body.addClass("wyp-visual-editing-x");
                 }else{
-                    body.addClass("yp-visual-editing-y");
+                    body.addClass("wyp-visual-editing-y");
                 }
 
                 // Use outline for performance
-                body.addClass("yp-has-transform");
+                body.addClass("wyp-has-transform");
 
                 window.currentLiveSelector = get_live_selector();
 
@@ -21160,22 +21160,22 @@
 
                     // Update Margin Right
                     if(window.visualEditType + "-" + window.visualEditPosition == 'margin-right'){
-                        style += ".yp-selected-boxed-margin-right{ top: "+elementTop+"px !important; height:"+elementHeight+"px !important;left:"+elementRight+"px !important; }";
+                        style += ".wyp-selected-boxed-margin-right{ top: "+elementTop+"px !important; height:"+elementHeight+"px !important;left:"+elementRight+"px !important; }";
                     }
 
                     // Update Padding Right
                     if(window.visualEditType + "-" + window.visualEditPosition == 'padding-right'){
-                        style += ".yp-selected-boxed-padding-right{ top: "+elementTop+"px !important; height:"+elementHeight+"px !important;left:"+(elementRight-dif)+"px !important; }";
+                        style += ".wyp-selected-boxed-padding-right{ top: "+elementTop+"px !important; height:"+elementHeight+"px !important;left:"+(elementRight-dif)+"px !important; }";
                     }
 
                     // Update Margin Left
                     if(window.visualEditType + "-" + window.visualEditPosition == 'margin-left'){
-                        style += ".yp-selected-boxed-margin-left{ top: "+elementTop+"px !important; height:"+elementHeight+"px !important;left:"+(elementLeft-dif)+"px !important; }";
+                        style += ".wyp-selected-boxed-margin-left{ top: "+elementTop+"px !important; height:"+elementHeight+"px !important;left:"+(elementLeft-dif)+"px !important; }";
                     }
 
                     // Update Padding Left
                     if(window.visualEditType + "-" + window.visualEditPosition == 'padding-left'){
-                        style += ".yp-selected-boxed-padding-left{ top: "+elementTop+"px !important; height:"+elementHeight+"px !important;left:"+elementLeft+"px !important; }";
+                        style += ".wyp-selected-boxed-padding-left{ top: "+elementTop+"px !important; height:"+elementHeight+"px !important;left:"+elementLeft+"px !important; }";
                     }
 
                     // Need marginLeft and MarginRight value for margin top and bottom
@@ -21188,22 +21188,22 @@
 
                     // Update Margin Top
                     if(window.visualEditType + "-" + window.visualEditPosition == 'margin-top'){
-                        style += ".yp-selected-boxed-margin-top{ top: "+(elementTop-dif)+"px !important; width:"+outlineWidth+"px !important;left:"+marginOutLeft+"px !important; }";
+                        style += ".wyp-selected-boxed-margin-top{ top: "+(elementTop-dif)+"px !important; width:"+outlineWidth+"px !important;left:"+marginOutLeft+"px !important; }";
                     }
 
                     // Update Padding Top
                     if(window.visualEditType + "-" + window.visualEditPosition == 'padding-top'){
-                        style += ".yp-selected-boxed-padding-top{ top: "+elementTop+"px !important; width:"+elementWidth+"px !important;left:"+elementLeft+"px !important; }";
+                        style += ".wyp-selected-boxed-padding-top{ top: "+elementTop+"px !important; width:"+elementWidth+"px !important;left:"+elementLeft+"px !important; }";
                     }
 
                     // Update Margin Bottom
                     if(window.visualEditType + "-" + window.visualEditPosition == 'margin-bottom'){
-                        style += ".yp-selected-boxed-margin-bottom{ top: "+elementBottom+"px !important; width:"+outlineWidth+"px !important;left:"+marginOutLeft+"px !important; }";
+                        style += ".wyp-selected-boxed-margin-bottom{ top: "+elementBottom+"px !important; width:"+outlineWidth+"px !important;left:"+marginOutLeft+"px !important; }";
                     }
 
                     // Update Padding Bottom
                     if(window.visualEditType + "-" + window.visualEditPosition == 'padding-bottom'){
-                        style += ".yp-selected-boxed-padding-bottom{ top: "+(elementBottom-dif)+"px !important; width:"+elementWidth+"px !important;left:"+elementLeft+"px !important; }";
+                        style += ".wyp-selected-boxed-padding-bottom{ top: "+(elementBottom-dif)+"px !important; width:"+elementWidth+"px !important;left:"+elementLeft+"px !important; }";
                     }
 
 
@@ -21211,27 +21211,27 @@
                     dif = parseInt(dif);
 
 
-                    // Ex .yp-selected-boxed-padding-top:15px;
-                    style += ".yp-selected-boxed-" + window.visualEditType + "-" + window.visualEditPosition + "{ " + format + " : " + dif + "px !important; }";
+                    // Ex .wyp-selected-boxed-padding-top:15px;
+                    style += ".wyp-selected-boxed-" + window.visualEditType + "-" + window.visualEditPosition + "{ " + format + " : " + dif + "px !important; }";
 
                     // Set the new value to the element
-                    style += "body.yp-content-selected .yp-selected," + window.currentLiveSelector + "{ " + rule + " : " + dif + "px !important; }";
+                    style += "body.wyp-content-selected .wyp-selected," + window.currentLiveSelector + "{ " + rule + " : " + dif + "px !important; }";
 
                     // Add & Update the live CSS
-                    if(iframe.find("#yp-visual-edit-css").length == 0){
+                    if(iframe.find("#wyp-visual-edit-css").length == 0){
 
                         // Add
-                        iframeBody.append("<style id='yp-visual-edit-css'>" + style + "</style>");
+                        iframeBody.append("<style id='wyp-visual-edit-css'>" + style + "</style>");
 
                     }else{
 
                         // Update
-                        iframe.find("#yp-visual-edit-css").html(style);
+                        iframe.find("#wyp-visual-edit-css").html(style);
 
                     }
 
                     // Show PX
-                    iframe.find(".yp-selected-boxed-"+window.visualEditType+"-"+window.visualEditPosition+"").html(dif+"px");
+                    iframe.find(".wyp-selected-boxed-"+window.visualEditType+"-"+window.visualEditPosition+"").html(dif+"px");
 
                 }
 
@@ -21250,25 +21250,25 @@
                     var delay = 1;
 
                     // CSS To Data.
-                    if (mainBody.hasClass("yp-need-to-process")) {
+                    if (mainBody.hasClass("wyp-need-to-process")) {
                         process(false);
                         delay = 70;
                     }
 
                     // Add
-                    body.addClass("yp-visual-edited");
+                    body.addClass("wyp-visual-edited");
 
                     // Wait for process
                     setTimeout(function(){
 
                         // Remove
-                        body.removeClass("yp-visual-editing yp-visual-editing-x yp-visual-editing-y yp-clean-look yp-has-transform");
+                        body.removeClass("wyp-visual-editing wyp-visual-editing-x wyp-visual-editing-y wyp-clean-look wyp-has-transform");
 
                         // CSS Remove
-                        iframe.find("#yp-visual-edit-css").remove();
+                        iframe.find("#wyp-visual-edit-css").remove();
 
                         // Element
-                        var element = iframe.find(".yp-selected-boxed-"+window.visualEditType+"-"+window.visualEditPosition+"");
+                        var element = iframe.find(".wyp-selected-boxed-"+window.visualEditType+"-"+window.visualEditPosition+"");
 
                         // Val
                         var value = element.text();
@@ -21299,10 +21299,10 @@
                     setTimeout(function(){
 
                         // remove active class
-                        iframe.find(".yp-visual-active").removeClass("yp-visual-active");
+                        iframe.find(".wyp-visual-active").removeClass("wyp-visual-active");
 
                         // Update
-                        body.removeClass("yp-visual-edited");
+                        body.removeClass("wyp-visual-edited");
 
                         // Draw
                         draw();
@@ -21329,7 +21329,7 @@
                     if (typeof data == typeof undefined || data === false) {
 
                         // Set default values
-                        $(this).find(".yp-option-group").each(function() {
+                        $(this).find(".wyp-option-group").each(function() {
                             set_default_value(get_option_id(this));
                         });
 
@@ -21346,7 +21346,7 @@
             /* ---------------------------------------------------- */
             /* ReDraw the element if hover                          */
             /* ---------------------------------------------------- */
-            iframe.on("mouseout mouseover", '.yp-selected', function() {
+            iframe.on("mouseout mouseover", '.wyp-selected', function() {
 
                 if (is_content_selected() == true && is_resizing() == false && is_dragging() == false && is_visual_editing() == false) {
 
@@ -21368,17 +21368,17 @@
                 var selector = '*';
 
                 var notSelectors = [
-                    ".yp-x-distance-border",
-                    ".yp-y-distance-border",
+                    ".wyp-x-distance-border",
+                    ".wyp-y-distance-border",
                     ".hover-info-box",
-                    ".yp-size-handle",
-                    ".yp-edit-tooltip",
-                    ".yp-edit-menu",
-                    ".yp-selected-tooltip",
-                    ".yp-tooltip-small",
-                    ".yp-helper-tooltip",
-                    "[class^='yp-selected-boxed-']",
-                    "[class^='yp-selected-others-box']",
+                    ".wyp-size-handle",
+                    ".wyp-edit-tooltip",
+                    ".wyp-edit-menu",
+                    ".wyp-selected-tooltip",
+                    ".wyp-tooltip-small",
+                    ".wyp-helper-tooltip",
+                    "[class^='wyp-selected-boxed-']",
+                    "[class^='wyp-selected-others-box']",
                     "link",
                     "style",
                     "script",
@@ -21398,7 +21398,7 @@
                     "scene-4",
                     "scene-5",
                     "scene-6",
-                    "yp-anim-scenes",
+                    "wyp-anim-scenes",
                     "animate-test-drive"
                 ];
 
@@ -21430,7 +21430,7 @@
             /* ---------------------------------------------------- */
             /* None / Disable Buttons API                           */
             /* ---------------------------------------------------- */
-            $(".yp-btn-action").click(function(e) {
+            $(".wyp-btn-action").click(function(e) {
 
                 // Default Variables
                 var value = '', prefix = '', id, elementPP, buttonText, inputText, inputPrefix;
@@ -21442,22 +21442,22 @@
                 id = get_option_id(elementPP);
 
                 // Getting button Text
-                buttonText = elementPP.find(".yp-none-btn").text();
+                buttonText = elementPP.find(".wyp-none-btn").text();
 
                 // Input Value
-                inputText = $("#yp-" + id).val();
+                inputText = $("#wyp-" + id).val();
 
                 // Input Prefix
                 inputPrefix = $("#" + id + "-after").val();
 
                 // If this is None Button, setting default value of CSS Rule
-                if ($(this).hasClass("yp-none-btn")) {
+                if ($(this).hasClass("wyp-none-btn")) {
 
                     // Shows reset icon if has value
-                    if (elementPP.find(".yp-disable-btn.active").length >= 0) {
+                    if (elementPP.find(".wyp-disable-btn.active").length >= 0) {
 
                         // Trigger click
-                        elementPP.find(".yp-disable-btn.active").trigger("click");
+                        elementPP.find(".wyp-disable-btn.active").trigger("click");
 
                         // Make it reset-able if orginalEvent
                         if (e.originalEvent) {
@@ -21467,7 +21467,7 @@
                     }
 
                     // If slider
-                    if (elementPP.hasClass("yp-slider-option")) {
+                    if (elementPP.hasClass("wyp-slider-option")) {
 
                         // If active
                         if ($(this).hasClass("active")) {
@@ -21476,10 +21476,10 @@
                             $(this).removeClass("active");
 
                             // Show
-                            elementPP.find(".yp-after").show();
+                            elementPP.find(".wyp-after").show();
 
                             // Is Enable
-                            elementPP.find(".yp-after-disable-disable").hide();
+                            elementPP.find(".wyp-after-disable-disable").hide();
 
                             // Value
                             value = inputText;
@@ -21490,10 +21490,10 @@
                             $(this).addClass("active");
 
                             // Hide
-                            elementPP.find(".yp-after").hide();
+                            elementPP.find(".wyp-after").hide();
 
                             // Is Disable
-                            elementPP.find(".yp-after-disable-disable").show();
+                            elementPP.find(".wyp-after-disable-disable").show();
 
                             // Value
                             value = buttonText;
@@ -21501,7 +21501,7 @@
                         }
 
                         // If is radio
-                    } else if (elementPP.find(".yp-radio-content").length > 0) {
+                    } else if (elementPP.find(".wyp-radio-content").length > 0) {
 
                         // If active
                         if ($(this).hasClass("active")) {
@@ -21521,7 +21521,7 @@
                             $(this).addClass("active");
 
                             // Remove Active class from active radios
-                            elementPP.find(".yp-radio.active").removeClass("active");
+                            elementPP.find(".wyp-radio.active").removeClass("active");
 
                             // Value
                             value = buttonText;
@@ -21621,7 +21621,7 @@
                 if (e.originalEvent) {
 
                     // disable functions
-                    if($(this).hasClass("yp-disable-btn")){
+                    if($(this).hasClass("wyp-disable-btn")){
 
                         // getting applied style size
                         var dynamicSize = get_applied_style_data(null, id, [false, false, true]);
@@ -21673,13 +21673,13 @@
             $(".editor-panel-list > li > h3").click(function() {
 
                 // Disable picker on color close.
-                mainBody.removeClass("yp-element-picker-active");
-                $(".yp-element-picker").removeClass("active");
+                mainBody.removeClass("wyp-element-picker-active");
+                $(".wyp-element-picker").removeClass("active");
 
                 // Getting Element
                 var element = $(this);
                 var elementParent = element.parent();
-                var closeBtn = $(".yp-close-btn");
+                var closeBtn = $(".wyp-close-btn");
                 var list = $(".editor-panel-list > li");
                 var lockBtn = $(".lock-btn");
 
@@ -21687,7 +21687,7 @@
                 lockBtn.removeClass("active");
                 list.not(elementParent).hide();
                 elementParent.toggleClass("active");
-                elementParent.find(".yp-this-content").toggle();
+                elementParent.find(".wyp-this-content").toggle();
 
                 // Toggle
                 if(elementParent.hasClass("active") == false){
@@ -21695,7 +21695,7 @@
                 }
 
                 // Update Menu
-                if ($(".yp-close-btn.dashicons-menu").length > 0) {
+                if ($(".wyp-close-btn.dashicons-menu").length > 0) {
                     closeBtn.removeClass("dashicons-menu").addClass("dashicons-no-alt");
                     closeBtn.tooltip('hide').attr('data-original-title', l18_close_editor).tooltip('fixTitle');
                 }else{
@@ -21707,7 +21707,7 @@
                 $('.editor-panel-inner').scrollTop(0);
 
                 // Hide Popovers
-                $(".yp-option-group,.yp-advanced-option").popover("hide");
+                $(".wyp-option-group,.wyp-advanced-option").popover("hide");
 
                 // Update GUI
                 gui_update();
@@ -21751,25 +21751,25 @@
                 if (typeof str !== "undefined" && str != '') {
 
                     // \^\#\+\$\(\)\[\]\=\*\-\:\.\>\,\~\@\/\! work in process.
-                    str = str.replace(/\:/g, "yp-sym-p")
-                    .replace(/\^/g, "yp-sym-a")
-                    .replace(/\#/g, "yp-sym-c")
-                    .replace(/\+/g, "yp-sym-o")
-                    .replace(/\$/g, "yp-sym-q")
-                    .replace(/\(/g, "yp-sym-e")
-                    .replace(/\)/g, "yp-sym-s")
-                    .replace(/\[/g, "yp-sym-g")
-                    .replace(/\]/g, "yp-sym-x")
-                    .replace(/\=/g, "yp-sym-k")
-                    .replace(/\*/g, "yp-sym-n")
-                    .replace(/\-/g, "yp-sym-t")
-                    .replace(/\./g, "yp-sym-u")
-                    .replace(/\>/g, "yp-sym-l")
-                    .replace(/\,/g, "yp-sym-b")
-                    .replace(/\~/g, "yp-sym-m")
-                    .replace(/\@/g, "yp-sym-i")
-                    .replace(/\//g, "yp-sym-y")
-                    .replace(/\!/g, "yp-sym-v")
+                    str = str.replace(/\:/g, "wyp-sym-p")
+                    .replace(/\^/g, "wyp-sym-a")
+                    .replace(/\#/g, "wyp-sym-c")
+                    .replace(/\+/g, "wyp-sym-o")
+                    .replace(/\$/g, "wyp-sym-q")
+                    .replace(/\(/g, "wyp-sym-e")
+                    .replace(/\)/g, "wyp-sym-s")
+                    .replace(/\[/g, "wyp-sym-g")
+                    .replace(/\]/g, "wyp-sym-x")
+                    .replace(/\=/g, "wyp-sym-k")
+                    .replace(/\*/g, "wyp-sym-n")
+                    .replace(/\-/g, "wyp-sym-t")
+                    .replace(/\./g, "wyp-sym-u")
+                    .replace(/\>/g, "wyp-sym-l")
+                    .replace(/\,/g, "wyp-sym-b")
+                    .replace(/\~/g, "wyp-sym-m")
+                    .replace(/\@/g, "wyp-sym-i")
+                    .replace(/\//g, "wyp-sym-y")
+                    .replace(/\!/g, "wyp-sym-v")
                     .replace(/[^a-zA-Z0-9_\^\#\+\$\(\)\[\]\=\*\-\:\.\>\,\~\@\/\!]/g, "");
                     return str;
                 } else {
@@ -22363,21 +22363,21 @@
             /* ---------------------------------------------------- */
             function option_change(){
 
-                clearTimeout(window.yp_insert_data_delay);
+                clearTimeout(window.wyp_insert_data_delay);
 
-                mainBody.addClass("yp-history-delay");
+                mainBody.addClass("wyp-history-delay");
 
                 if(window.option_changeType != 'auto'){
-                    $(".yp-save-btn").html(l18_save).removeClass("yp-disabled").addClass("waiting-for-save");
+                    $(".wyp-save-btn").html(l18_save).removeClass("wyp-disabled").addClass("waiting-for-save");
                 }
 
-                window.yp_insert_data_delay = setTimeout(function() {
+                window.wyp_insert_data_delay = setTimeout(function() {
 
                     var data = get_clean_css(true);
 
                     editor.setValue(data);
 
-                    mainBody.removeClass("yp-history-delay");
+                    mainBody.removeClass("wyp-history-delay");
 
                 }, 200);
 
@@ -22399,14 +22399,14 @@
                 // Add updated class to current data
                 if(window.option_changeType != 'auto'){
 
-                    the_editor_data().addClass("yp-data-updated");
+                    the_editor_data().addClass("wyp-data-updated");
                     $(".active-customizing-list").addClass("customizing-type-updated");
 
                     // Focus To Type
-                    if($(".yp-type-menu-link.done").length == 0){
-                        $(".yp-type-menu-link").addClass("focus").addClass("done");
+                    if($(".wyp-type-menu-link.done").length == 0){
+                        $(".wyp-type-menu-link").addClass("focus").addClass("done");
                         setTimeout(function(){
-                            $(".yp-type-menu-link").removeClass("focus");
+                            $(".wyp-type-menu-link").removeClass("focus");
                         }, 600);
                     }
 
@@ -22423,11 +22423,11 @@
                 // close css editor with process..
                 if (close === true) {
 
-                    the_editor_data().find(".yp-styles-area style[data-rule='a']").remove();
+                    the_editor_data().find(".wyp-styles-area style[data-rule='a']").remove();
 
                     $("#cssData,#cssEditorBar,#leftAreaEditor").hide();
                     iframeBody.trigger("scroll");
-                    mainBody.removeClass("yp-css-editor-active");
+                    mainBody.removeClass("wyp-css-editor-active");
 
                     $(".css-editor-btn").attr("data-original-title",$(".css-editor-btn").attr("data-title"));
 
@@ -22437,23 +22437,23 @@
                 }
 
                 // IF not need to process, stop here.
-                if (mainBody.hasClass("yp-need-to-process") === false || mainBody.hasClass("yp-processing-now")) {
+                if (mainBody.hasClass("wyp-need-to-process") === false || mainBody.hasClass("wyp-processing-now")) {
                     return false;
                 }
 
                 // Remove class.
-                mainBody.removeClass("yp-need-to-process");
+                mainBody.removeClass("wyp-need-to-process");
 
-                mainBody.addClass("yp-processing-now");
+                mainBody.addClass("wyp-processing-now");
 
                 // Processing.
-                if (mainBody.find(".yp-processing").length === 0) {
-                    mainBody.append("<div class='yp-processing'><span></span><p>" + l18_process + "</p></div>");
+                if (mainBody.find(".wyp-processing").length === 0) {
+                    mainBody.append("<div class='wyp-processing'><span></span><p>" + l18_process + "</p></div>");
                 } else {
                 }
 
                 if (editor.getValue().length > 800) {
-                    mainBody.find(".yp-processing").show();
+                    mainBody.find(".wyp-processing").show();
                 }
 
                 setTimeout(function() {
@@ -22476,15 +22476,15 @@
 
                     }
 
-                    iframe.find("#yp-css-data-full").remove();
+                    iframe.find("#wyp-css-data-full").remove();
 
                     // Added from css_to_data function. must remove.
                     mainBody.removeClass("process-by-code-editor");
 
                     setTimeout(function() {
 
-                        mainBody.removeClass("yp-processing-now");
-                        mainBody.find(".yp-processing").hide();
+                        mainBody.removeClass("wyp-processing-now");
+                        mainBody.find(".wyp-processing").hide();
 
                         // current
                         var a = get_minimized_css(editor.getValue()).replace(/\}(.*?)\{(\n+|\r+|\s+)?\}/g, '}').replace(/^(.*?)\{(\n+|\r+|\s+)?\}/g, '');

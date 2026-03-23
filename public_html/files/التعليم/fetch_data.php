@@ -139,7 +139,7 @@ if(isset($_POST["action"]))
 					? '<div class="ak-ocr-snippet">'
 				  . '<div class="ak-ocr-header">'
 				  . '<span class="ak-ocr-label">🔬 من نص الوثيقة</span>'
-				  . ($_ocr_base ? '<a href="' . htmlspecialchars("{$_ocr_base}/{$row['id']}.md", ENT_QUOTES, 'UTF-8') . '" target="_blank" class="ak-ocr-dl" title="تحميل ملف النص">⬇ النص الكامل</a>' : '')
+				  . ($_ocr_base ? '<a href="' . htmlspecialchars('/blog/ocr_viewer.php?src=' . urlencode($_ocr_base . '/' . $row['id'] . '.md') . '&title=' . urlencode($row['The_Title_of_Paper_Book']) . '&author=' . urlencode($row['The_number_of_the_Author']), ENT_QUOTES, 'UTF-8') . '" target="_blank" class="ak-ocr-dl" title="عرض النص الكامل">⬇ النص الكامل</a>' : '')
 				  . '</div>'
 				  . makeSnippet($row['ocr_text'], $snippet_term)
 				  . '</div>'

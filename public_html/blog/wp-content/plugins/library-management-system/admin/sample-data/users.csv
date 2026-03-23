@@ -1,0 +1,11 @@
+register_from,u_id,name,email,gender,branch_id,phone_no,profile_image,address_info
+admin,ABC123,John Doe,johndoe@example.com,male,1,123456789,,"123 Main St, City, Country"
+web,DEF456,Jane Smith,janesmith@example.com,female,2,987654321,,"456 Elm St, City, Country"
+admin,GHI789,Michael Johnson,michaeljohnson@example.com,male,3,111222333,,"789 Oak St, City, Country"
+web,JKL012,Alice Brown,alicebrown@example.com,female,4,444555666,,"321 Maple St, City, Country"
+admin,MNO345,David Lee,davidlee@example.com,male,5,777888999,,"654 Pine St, City, Country"
+web,PQR678,Emily Taylor,emilytaylor@example.com,female,1,888777666,,"987 Cedar St, City, Country"
+admin,STU901,Chris Wilson,chriswilson@example.com,male,2,333444555,,"234 Birch St, City, Country"
+web,VWX234,Samantha Clark,samanthaclark@example.com,female,3,666333222,,"567 Walnut St, City, Country"
+admin,YZ7890,Matthew Anderson,matthewanderson@example.com,male,4,222111000,,"432 Oak St, City, Country"
+web,123ABC,Sarah Martinez,sarahmartinez@example.com,female,5,555000111,,"876 Pine St, City, Country"

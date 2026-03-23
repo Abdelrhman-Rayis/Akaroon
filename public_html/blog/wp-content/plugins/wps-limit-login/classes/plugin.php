@@ -55,6 +55,10 @@ class Plugin {
 	 */
 	public $_errors = array();
 
+	private bool $network_mode;
+	private bool $allow_local_options;
+	private bool $use_local_options;
+
 	protected function init() {
 
 		if ( is_multisite() ) {

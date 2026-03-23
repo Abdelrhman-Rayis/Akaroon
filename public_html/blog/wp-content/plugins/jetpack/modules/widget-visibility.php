@@ -1,7 +1,17 @@
 <?php
 /**
+ * Module: Widget Visibility
+ *
+ * @package automattic/jetpack
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
+/**
  * Module Name: Widget Visibility
- * Module Description: Control where widgets appear on your site.
+ * Module Description: Choose which widgets appear on specific pages or posts with advanced controls.
  * First Introduced: 2.4
  * Requires Connection: No
  * Auto Activate: No
@@ -11,4 +21,4 @@
  * Additional Search Queries: widget visibility, logic, conditional, widgets, widget
  */
 
-include dirname( __FILE__ ) . "/widget-visibility/widget-conditions.php";
+require __DIR__ . '/widget-visibility/widget-conditions.php';

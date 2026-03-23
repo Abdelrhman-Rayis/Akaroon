@@ -30,7 +30,7 @@ function wpcf7_text_form_tag_handler( $tag ) {
 
 	$class = wpcf7_form_controls_class( $tag->type, 'wpcf7-text' );
 
-	if ( in_array( $tag->basetype, array( 'email', 'url', 'tel' ) ) ) {
+	if ( in_array( $tag->basetype, array( 'email', 'url', 'tel' ), true ) ) {
 		$class .= ' wpcf7-validates-as-' . $tag->basetype;
 	}
 
@@ -41,24 +41,22 @@ function wpcf7_text_form_tag_handler( $tag ) {
 	$atts = array();
 
 	$atts['size'] = $tag->get_size_option( '40' );
-	$atts['maxlength'] = $tag->get_maxlength_option();
+	$atts['maxlength'] = $tag->get_maxlength_option( '400' );
 	$atts['minlength'] = $tag->get_minlength_option();
 
-	if ( $atts['maxlength'] and $atts['minlength']
-	and $atts['maxlength'] < $atts['minlength'] ) {
+	if (
+		$atts['maxlength'] and $atts['minlength'] and
+		$atts['maxlength'] < $atts['minlength']
+	) {
 		unset( $atts['maxlength'], $atts['minlength'] );
 	}
 
 	$atts['class'] = $tag->get_class_option( $class );
 	$atts['id'] = $tag->get_id_option();
+	$atts['list'] = $tag->get_option( 'list', 'id', true );
 	$atts['tabindex'] = $tag->get_option( 'tabindex', 'signed_int', true );
-
-	$atts['autocomplete'] = $tag->get_option( 'autocomplete',
-		'[-0-9a-zA-Z]+', true );
-
-	if ( $tag->has_option( 'readonly' ) ) {
-		$atts['readonly'] = 'readonly';
-	}
+	$atts['readonly'] = $tag->has_option( 'readonly' );
+	$atts['autocomplete'] = $tag->get_autocomplete_option();
 
 	if ( $tag->is_required() ) {
 		$atts['aria-required'] = 'true';
@@ -75,8 +73,7 @@ function wpcf7_text_form_tag_handler( $tag ) {
 
 	$value = (string) reset( $tag->values );
 
-	if ( $tag->has_option( 'placeholder' )
-	or $tag->has_option( 'watermark' ) ) {
+	if ( $tag->has_option( 'placeholder' ) or $tag->has_option( 'watermark' ) ) {
 		$atts['placeholder'] = $value;
 		$value = '';
 	}
@@ -86,94 +83,88 @@ function wpcf7_text_form_tag_handler( $tag ) {
 	$value = wpcf7_get_hangover( $tag->name, $value );
 
 	$atts['value'] = $value;
-
-	if ( wpcf7_support_html5() ) {
-		$atts['type'] = $tag->basetype;
-	} else {
-		$atts['type'] = 'text';
-	}
-
+	$atts['type'] = $tag->basetype;
 	$atts['name'] = $tag->name;
 
-	$atts = wpcf7_format_atts( $atts );
-
 	$html = sprintf(
-		'<span class="wpcf7-form-control-wrap %1$s"><input %2$s />%3$s</span>',
-		sanitize_html_class( $tag->name ), $atts, $validation_error
+		'<span class="wpcf7-form-control-wrap" data-name="%1$s"><input %2$s />%3$s</span>',
+		esc_attr( $tag->name ),
+		wpcf7_format_atts( $atts ),
+		$validation_error
 	);
 
 	return $html;
 }
 
 
-/* Validation filter */
+add_action(
+	'wpcf7_swv_create_schema',
+	'wpcf7_swv_add_text_rules',
+	10, 2
+);
 
-add_filter( 'wpcf7_validate_text', 'wpcf7_text_validation_filter', 10, 2 );
-add_filter( 'wpcf7_validate_text*', 'wpcf7_text_validation_filter', 10, 2 );
-add_filter( 'wpcf7_validate_email', 'wpcf7_text_validation_filter', 10, 2 );
-add_filter( 'wpcf7_validate_email*', 'wpcf7_text_validation_filter', 10, 2 );
-add_filter( 'wpcf7_validate_url', 'wpcf7_text_validation_filter', 10, 2 );
-add_filter( 'wpcf7_validate_url*', 'wpcf7_text_validation_filter', 10, 2 );
-add_filter( 'wpcf7_validate_tel', 'wpcf7_text_validation_filter', 10, 2 );
-add_filter( 'wpcf7_validate_tel*', 'wpcf7_text_validation_filter', 10, 2 );
+function wpcf7_swv_add_text_rules( $schema, $contact_form ) {
+	$tags = $contact_form->scan_form_tags( array(
+		'basetype' => array( 'text', 'email', 'url', 'tel' ),
+	) );
 
-function wpcf7_text_validation_filter( $result, $tag ) {
-	$name = $tag->name;
+	foreach ( $tags as $tag ) {
+		if ( $tag->is_required() ) {
+			$schema->add_rule(
+				wpcf7_swv_create_rule( 'required', array(
+					'field' => $tag->name,
+					'error' => wpcf7_get_message( 'invalid_required' ),
+				) )
+			);
+		}
 
-	$value = isset( $_POST[$name] )
-		? trim( wp_unslash( strtr( (string) $_POST[$name], "\n", " " ) ) )
-		: '';
+		if ( 'email' === $tag->basetype ) {
+			$schema->add_rule(
+				wpcf7_swv_create_rule( 'email', array(
+					'field' => $tag->name,
+					'error' => wpcf7_get_message( 'invalid_email' ),
+				) )
+			);
+		}
 
-	if ( 'text' == $tag->basetype ) {
-		if ( $tag->is_required() and '' === $value ) {
-			$result->invalidate( $tag, wpcf7_get_message( 'invalid_required' ) );
+		if ( 'url' === $tag->basetype ) {
+			$schema->add_rule(
+				wpcf7_swv_create_rule( 'url', array(
+					'field' => $tag->name,
+					'error' => wpcf7_get_message( 'invalid_url' ),
+				) )
+			);
+		}
+
+		if ( 'tel' === $tag->basetype ) {
+			$schema->add_rule(
+				wpcf7_swv_create_rule( 'tel', array(
+					'field' => $tag->name,
+					'error' => wpcf7_get_message( 'invalid_tel' ),
+				) )
+			);
+		}
+
+		if ( $minlength = $tag->get_minlength_option() ) {
+			$schema->add_rule(
+				wpcf7_swv_create_rule( 'minlength', array(
+					'field' => $tag->name,
+					'threshold' => absint( $minlength ),
+					'error' => wpcf7_get_message( 'invalid_too_short' ),
+				) )
+			);
+		}
+
+		if ( $maxlength = $tag->get_maxlength_option( '400' ) ) {
+			$schema->add_rule(
+				wpcf7_swv_create_rule( 'maxlength', array(
+					'field' => $tag->name,
+					'threshold' => absint( $maxlength ),
+					'error' => wpcf7_get_message( 'invalid_too_long' ),
+				) )
+			);
 		}
 	}
-
-	if ( 'email' == $tag->basetype ) {
-		if ( $tag->is_required() and '' === $value ) {
-			$result->invalidate( $tag, wpcf7_get_message( 'invalid_required' ) );
-		} elseif ( '' !== $value and ! wpcf7_is_email( $value ) ) {
-			$result->invalidate( $tag, wpcf7_get_message( 'invalid_email' ) );
-		}
-	}
-
-	if ( 'url' == $tag->basetype ) {
-		if ( $tag->is_required() and '' === $value ) {
-			$result->invalidate( $tag, wpcf7_get_message( 'invalid_required' ) );
-		} elseif ( '' !== $value and ! wpcf7_is_url( $value ) ) {
-			$result->invalidate( $tag, wpcf7_get_message( 'invalid_url' ) );
-		}
-	}
-
-	if ( 'tel' == $tag->basetype ) {
-		if ( $tag->is_required() and '' === $value ) {
-			$result->invalidate( $tag, wpcf7_get_message( 'invalid_required' ) );
-		} elseif ( '' !== $value and ! wpcf7_is_tel( $value ) ) {
-			$result->invalidate( $tag, wpcf7_get_message( 'invalid_tel' ) );
-		}
-	}
-
-	if ( '' !== $value ) {
-		$maxlength = $tag->get_maxlength_option();
-		$minlength = $tag->get_minlength_option();
-
-		if ( $maxlength and $minlength and $maxlength < $minlength ) {
-			$maxlength = $minlength = null;
-		}
-
-		$code_units = wpcf7_count_code_units( stripslashes( $value ) );
-
-		if ( false !== $code_units ) {
-			if ( $maxlength and $maxlength < $code_units ) {
-				$result->invalidate( $tag, wpcf7_get_message( 'invalid_too_long' ) );
-			} elseif ( $minlength and $code_units < $minlength ) {
-				$result->invalidate( $tag, wpcf7_get_message( 'invalid_too_short' ) );
-			}
-		}
-	}
-
-	return $result;
 }
 
 
@@ -185,23 +176,23 @@ function wpcf7_text_messages( $messages ) {
 	$messages = array_merge( $messages, array(
 		'invalid_email' => array(
 			'description' =>
-				__( "Email address that the sender entered is invalid", 'contact-form-7' ),
+				__( 'Email address that the sender entered is invalid', 'contact-form-7' ),
 			'default' =>
-				__( "The e-mail address entered is invalid.", 'contact-form-7' ),
+				__( 'Please enter an email address.', 'contact-form-7' ),
 		),
 
 		'invalid_url' => array(
 			'description' =>
-				__( "URL that the sender entered is invalid", 'contact-form-7' ),
+				__( 'URL that the sender entered is invalid', 'contact-form-7' ),
 			'default' =>
-				__( "The URL is invalid.", 'contact-form-7' ),
+				__( 'Please enter a URL.', 'contact-form-7' ),
 		),
 
 		'invalid_tel' => array(
 			'description' =>
-				__( "Telephone number that the sender entered is invalid", 'contact-form-7' ),
+				__( 'Telephone number that the sender entered is invalid', 'contact-form-7' ),
 			'default' =>
-				__( "The telephone number is invalid.", 'contact-form-7' ),
+				__( 'Please enter a telephone number.', 'contact-form-7' ),
 		),
 	) );
 
@@ -215,118 +206,120 @@ add_action( 'wpcf7_admin_init', 'wpcf7_add_tag_generator_text', 15, 0 );
 
 function wpcf7_add_tag_generator_text() {
 	$tag_generator = WPCF7_TagGenerator::get_instance();
-	$tag_generator->add( 'text', __( 'text', 'contact-form-7' ),
-		'wpcf7_tag_generator_text' );
-	$tag_generator->add( 'email', __( 'email', 'contact-form-7' ),
-		'wpcf7_tag_generator_text' );
-	$tag_generator->add( 'url', __( 'URL', 'contact-form-7' ),
-		'wpcf7_tag_generator_text' );
-	$tag_generator->add( 'tel', __( 'tel', 'contact-form-7' ),
-		'wpcf7_tag_generator_text' );
+
+	$basetypes = array(
+		'text' => __( 'text', 'contact-form-7' ),
+		'email' => __( 'email', 'contact-form-7' ),
+		'url' => __( 'URL', 'contact-form-7' ),
+		'tel' => __( 'tel', 'contact-form-7' ),
+	);
+
+	foreach ( $basetypes as $id => $title ) {
+		$tag_generator->add( $id, $title,
+			'wpcf7_tag_generator_text',
+			array( 'version' => '2' )
+		);
+	}
 }
 
-function wpcf7_tag_generator_text( $contact_form, $args = '' ) {
-	$args = wp_parse_args( $args, array() );
-	$type = $args['id'];
+function wpcf7_tag_generator_text( $contact_form, $options ) {
+	$field_types = array(
+		'text' => array(
+			'display_name' => __( 'Text field', 'contact-form-7' ),
+			'heading' => __( 'Text field form-tag generator', 'contact-form-7' ),
+			'description' => __( 'Generates a form-tag for a <a href="https://contactform7.com/text-fields/">single-line plain text input field</a>.', 'contact-form-7' ),
+			'maybe_purpose' => 'author_name',
+		),
+		'email' => array(
+			'display_name' => __( 'Email address field', 'contact-form-7' ),
+			'heading' => __( 'Email address field form-tag generator', 'contact-form-7' ),
+			'description' => __( 'Generates a form-tag for an <a href="https://contactform7.com/text-fields/">email address input field</a>.', 'contact-form-7' ),
+			'maybe_purpose' => 'author_email',
+		),
+		'url' => array(
+			'display_name' => __( 'URL field', 'contact-form-7' ),
+			'heading' => __( 'URL field form-tag generator', 'contact-form-7' ),
+			'description' => __( 'Generates a form-tag for a <a href="https://contactform7.com/text-fields/">URL input field</a>.', 'contact-form-7' ),
+			'maybe_purpose' => 'author_url',
+		),
+		'tel' => array(
+			'display_name' => __( 'Telephone number field', 'contact-form-7' ),
+			'heading' => __( 'Telephone number field form-tag generator', 'contact-form-7' ),
+			'description' => __( 'Generates a form-tag for a <a href="https://contactform7.com/text-fields/">telephone number input field</a>.', 'contact-form-7' ),
+			'maybe_purpose' => 'author_tel',
+		),
+	);
 
-	if ( ! in_array( $type, array( 'email', 'url', 'tel' ) ) ) {
-		$type = 'text';
+	$basetype = $options['id'];
+
+	if ( ! in_array( $basetype, array_keys( $field_types ), true ) ) {
+		$basetype = 'text';
 	}
 
-	if ( 'text' == $type ) {
-		$description = __( "Generate a form-tag for a single-line plain text input field. For more details, see %s.", 'contact-form-7' );
-	} elseif ( 'email' == $type ) {
-		$description = __( "Generate a form-tag for a single-line email address input field. For more details, see %s.", 'contact-form-7' );
-	} elseif ( 'url' == $type ) {
-		$description = __( "Generate a form-tag for a single-line URL input field. For more details, see %s.", 'contact-form-7' );
-	} elseif ( 'tel' == $type ) {
-		$description = __( "Generate a form-tag for a single-line telephone number input field. For more details, see %s.", 'contact-form-7' );
-	}
+	$tgg = new WPCF7_TagGeneratorGenerator( $options['content'] );
 
-	$desc_link = wpcf7_link( __( 'https://contactform7.com/text-fields/', 'contact-form-7' ), __( 'Text fields', 'contact-form-7' ) );
+	$formatter = new WPCF7_HTMLFormatter();
 
-?>
-<div class="control-box">
-<fieldset>
-<legend><?php echo sprintf( esc_html( $description ), $desc_link ); ?></legend>
+	$formatter->append_start_tag( 'header', array(
+		'class' => 'description-box',
+	) );
 
-<table class="form-table">
-<tbody>
-	<tr>
-	<th scope="row"><?php echo esc_html( __( 'Field type', 'contact-form-7' ) ); ?></th>
-	<td>
-		<fieldset>
-		<legend class="screen-reader-text"><?php echo esc_html( __( 'Field type', 'contact-form-7' ) ); ?></legend>
-		<label><input type="checkbox" name="required" /> <?php echo esc_html( __( 'Required field', 'contact-form-7' ) ); ?></label>
-		</fieldset>
-	</td>
-	</tr>
+	$formatter->append_start_tag( 'h3' );
 
-	<tr>
-	<th scope="row"><label for="<?php echo esc_attr( $args['content'] . '-name' ); ?>"><?php echo esc_html( __( 'Name', 'contact-form-7' ) ); ?></label></th>
-	<td><input type="text" name="name" class="tg-name oneline" id="<?php echo esc_attr( $args['content'] . '-name' ); ?>" /></td>
-	</tr>
+	$formatter->append_preformatted(
+		esc_html( $field_types[$basetype]['heading'] )
+	);
 
-	<tr>
-	<th scope="row"><label for="<?php echo esc_attr( $args['content'] . '-values' ); ?>"><?php echo esc_html( __( 'Default value', 'contact-form-7' ) ); ?></label></th>
-	<td><input type="text" name="values" class="oneline" id="<?php echo esc_attr( $args['content'] . '-values' ); ?>" /><br />
-	<label><input type="checkbox" name="placeholder" class="option" /> <?php echo esc_html( __( 'Use this text as the placeholder of the field', 'contact-form-7' ) ); ?></label></td>
-	</tr>
+	$formatter->end_tag( 'h3' );
 
-<?php if ( in_array( $type, array( 'text', 'email', 'url' ) ) ) : ?>
-	<tr>
-	<th scope="row"><?php echo esc_html( __( 'Akismet', 'contact-form-7' ) ); ?></th>
-	<td>
-		<fieldset>
-		<legend class="screen-reader-text"><?php echo esc_html( __( 'Akismet', 'contact-form-7' ) ); ?></legend>
+	$formatter->append_start_tag( 'p' );
 
-<?php if ( 'text' == $type ) : ?>
-		<label>
-			<input type="checkbox" name="akismet:author" class="option" />
-			<?php echo esc_html( __( "This field requires author's name", 'contact-form-7' ) ); ?>
-		</label>
-<?php elseif ( 'email' == $type ) : ?>
-		<label>
-			<input type="checkbox" name="akismet:author_email" class="option" />
-			<?php echo esc_html( __( "This field requires author's email address", 'contact-form-7' ) ); ?>
-		</label>
-<?php elseif ( 'url' == $type ) : ?>
-		<label>
-			<input type="checkbox" name="akismet:author_url" class="option" />
-			<?php echo esc_html( __( "This field requires author's URL", 'contact-form-7' ) ); ?>
-		</label>
-<?php endif; ?>
+	$formatter->append_preformatted(
+		wp_kses_data( $field_types[$basetype]['description'] )
+	);
 
-		</fieldset>
-	</td>
-	</tr>
-<?php endif; ?>
+	$formatter->end_tag( 'header' );
 
-	<tr>
-	<th scope="row"><label for="<?php echo esc_attr( $args['content'] . '-id' ); ?>"><?php echo esc_html( __( 'Id attribute', 'contact-form-7' ) ); ?></label></th>
-	<td><input type="text" name="id" class="idvalue oneline option" id="<?php echo esc_attr( $args['content'] . '-id' ); ?>" /></td>
-	</tr>
+	$formatter->append_start_tag( 'div', array(
+		'class' => 'control-box',
+	) );
 
-	<tr>
-	<th scope="row"><label for="<?php echo esc_attr( $args['content'] . '-class' ); ?>"><?php echo esc_html( __( 'Class attribute', 'contact-form-7' ) ); ?></label></th>
-	<td><input type="text" name="class" class="classvalue oneline option" id="<?php echo esc_attr( $args['content'] . '-class' ); ?>" /></td>
-	</tr>
+	$formatter->call_user_func( static function () use ( $tgg, $field_types, $basetype ) {
+		$tgg->print( 'field_type', array(
+			'with_required' => true,
+			'select_options' => array(
+				$basetype => $field_types[$basetype]['display_name'],
+			),
+		) );
 
-</tbody>
-</table>
-</fieldset>
-</div>
+		$tgg->print( 'field_name', array(
+			'ask_if' => $field_types[$basetype]['maybe_purpose']
+		) );
 
-<div class="insert-box">
-	<input type="text" name="<?php echo $type; ?>" class="tag code" readonly="readonly" onfocus="this.select()" />
+		$tgg->print( 'class_attr' );
 
-	<div class="submitbox">
-	<input type="button" class="button button-primary insert-tag" value="<?php echo esc_attr( __( 'Insert Tag', 'contact-form-7' ) ); ?>" />
-	</div>
+		$tgg->print( 'min_max', array(
+			'title' => __( 'Length', 'contact-form-7' ),
+			'min_option' => 'minlength:',
+			'max_option' => 'maxlength:',
+		) );
 
-	<br class="clear" />
+		$tgg->print( 'default_value', array(
+			'with_placeholder' => true,
+		) );
+	} );
 
-	<p class="description mail-tag"><label for="<?php echo esc_attr( $args['content'] . '-mailtag' ); ?>"><?php echo sprintf( esc_html( __( "To use the value input through this field in a mail field, you need to insert the corresponding mail-tag (%s) into the field on the Mail tab.", 'contact-form-7' ) ), '<strong><span class="mail-tag"></span></strong>' ); ?><input type="text" class="mail-tag code hidden" readonly="readonly" id="<?php echo esc_attr( $args['content'] . '-mailtag' ); ?>" /></label></p>
-</div>
-<?php
+	$formatter->end_tag( 'div' );
+
+	$formatter->append_start_tag( 'footer', array(
+		'class' => 'insert-box',
+	) );
+
+	$formatter->call_user_func( static function () use ( $tgg, $field_types ) {
+		$tgg->print( 'insert_box_content' );
+
+		$tgg->print( 'mail_tag_tip' );
+	} );
+
+	$formatter->print();
 }

@@ -7,6 +7,10 @@
 
 use Automattic\Jetpack\Assets;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 /**
  * Class Milestone_Widget
  */
@@ -48,12 +52,12 @@ class Milestone_Widget extends WP_Widget {
 			$widget
 		);
 
-		add_action( 'wp_enqueue_scripts', array( __class__, 'enqueue_template' ) );
-		add_action( 'admin_enqueue_scripts', array( __class__, 'enqueue_admin' ) );
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_template' ) );
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_admin' ) );
 		add_action( 'wp_footer', array( $this, 'localize_script' ) );
 
 		if ( is_active_widget( false, false, $this->id_base, true ) || is_active_widget( false, false, 'monster', true ) || is_customize_preview() ) {
-			add_action( 'wp_head', array( __class__, 'styles_template' ) );
+			add_action( 'wp_head', array( __CLASS__, 'styles_template' ) );
 		}
 	}
 
@@ -114,45 +118,9 @@ class Milestone_Widget extends WP_Widget {
 		?>
 <style>
 .milestone-widget {
-	margin-bottom: 1em;
-}
-.milestone-content {
-	line-height: 2;
-	margin-top: 5px;
-	max-width: 100%;
-	padding: 0;
-	text-align: center;
-}
-.milestone-header {
-	background-color: <?php echo self::sanitize_color_hex( $colors['text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>;
-	color: <?php echo self::sanitize_color_hex( $colors['bg'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>;
-	line-height: 1.3;
-	margin: 0;
-	padding: .8em;
-}
-.milestone-header .event,
-.milestone-header .date {
-	display: block;
-}
-.milestone-header .event {
-	font-size: 120%;
-}
-.milestone-countdown .difference {
-	display: block;
-	font-size: 500%;
-	font-weight: bold;
-	line-height: 1.2;
-}
-.milestone-countdown,
-.milestone-message {
-	background-color: <?php echo self::sanitize_color_hex( $colors['bg'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>;
-	border: 1px solid <?php echo self::sanitize_color_hex( $colors['border'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>;
-	border-top: 0;
-	color: <?php echo self::sanitize_color_hex( $colors['text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>;
-	padding-bottom: 1em;
-}
-.milestone-message {
-	padding-top: 1em
+	--milestone-text-color: <?php echo self::sanitize_color_hex( $colors['text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>;
+	--milestone-bg-color: <?php echo self::sanitize_color_hex( $colors['bg'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>;
+	--milestone-border-color:<?php echo self::sanitize_color_hex( $colors['border'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>;
 }
 </style>
 		<?php
@@ -171,9 +139,9 @@ class Milestone_Widget extends WP_Widget {
 		$hex = trim( $hex );
 
 		/* Strip recognized prefixes. */
-		if ( 0 === strpos( $hex, '#' ) ) {
+		if ( str_starts_with( $hex, '#' ) ) {
 			$hex = substr( $hex, 1 );
-		} elseif ( 0 === strpos( $hex, '%23' ) ) {
+		} elseif ( str_starts_with( $hex, '%23' ) ) {
 			$hex = substr( $hex, 3 );
 		}
 
@@ -208,23 +176,53 @@ class Milestone_Widget extends WP_Widget {
 	}
 
 	/**
+	 * Return an associative array of default values
+	 *
+	 * These values are used in new widgets.
+	 *
+	 * @return array Array of default values for the Widget's options.
+	 */
+	public function defaults() {
+		$now           = current_datetime();
+		$now_timestamp = $now->getTimestamp();
+
+		return array(
+			'title'   => '',
+			'event'   => __( 'The Big Day', 'jetpack' ),
+			'unit'    => 'automatic',
+			'type'    => 'until',
+			'message' => __( 'The big day is here.', 'jetpack' ),
+			'day'     => gmdate( 'd', $now_timestamp ),
+			'month'   => gmdate( 'm', $now_timestamp ),
+			'year'    => gmdate( 'Y', $now_timestamp ),
+			'hour'    => 0,
+			'min'     => 0,
+		);
+	}
+
+	/**
 	 * Widget
 	 *
 	 * @param array $args Widget args.
 	 * @param array $instance Widget instance.
 	 */
 	public function widget( $args, $instance ) {
+		$instance = wp_parse_args( $instance, $this->defaults() );
+
+		$this->enqueue_scripts();
+
 		echo $args['before_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
 		$title = apply_filters( 'widget_title', $instance['title'] );
 		if ( ! empty( $title ) ) {
-			echo $args['before_title'] . esc_html( $title ) . $args['after_title']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $args['before_title'] . $title . $args['after_title']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
-		$data   = $this->get_widget_data( $instance );
-		$config = array(
-			'id'      => $args['widget_id'],
+		$widget_id = ! empty( $args['widget_id'] ) ? $args['widget_id'] : 'milestone_widget';
+		$data      = $this->get_widget_data( $instance );
+		$config    = array(
+			'id'      => $widget_id,
 			'message' => $data['message'],
 			'refresh' => $data['refresh'],
 		);
@@ -234,11 +232,11 @@ class Milestone_Widget extends WP_Widget {
 		 *
 		 * We need our own unique identifier.
 		 */
-		$config['content_id'] = $args['widget_id'] . '-content';
+		$config['content_id'] = $widget_id . '-content';
 
 		self::$config_js['instances'][] = $config;
 
-		echo sprintf( '<div id="%s" class="milestone-content">', esc_html( $config['content_id'] ) );
+		printf( '<div id="%s" class="milestone-content">', esc_html( $config['content_id'] ) );
 
 		echo '<div class="milestone-header">';
 		echo '<strong class="event">' . esc_html( $instance['event'] ) . '</strong>';
@@ -253,6 +251,18 @@ class Milestone_Widget extends WP_Widget {
 
 		/** This action is documented in modules/widgets/gravatar-profile.php */
 		do_action( 'jetpack_stats_extra', 'widget_view', 'milestone' );
+	}
+
+	/**
+	 * Enqueue widget styles
+	 */
+	public function enqueue_scripts() {
+		wp_enqueue_style(
+			'milestone-widget',
+			plugins_url( 'milestone-widget.css', __FILE__ ),
+			array(),
+			JETPACK__VERSION
+		);
 	}
 
 	/**
@@ -590,22 +600,9 @@ class Milestone_Widget extends WP_Widget {
 	 * @return array Santized data.
 	 */
 	public function sanitize_instance( $dirty ) {
-		$now = (int) current_time( 'timestamp' ); // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested
-
 		$dirty = wp_parse_args(
 			$dirty,
-			array(
-				'title'   => '',
-				'event'   => __( 'The Big Day', 'jetpack' ),
-				'unit'    => 'automatic',
-				'type'    => 'until',
-				'message' => __( 'The big day is here.', 'jetpack' ),
-				'day'     => gmdate( 'd', $now ),
-				'month'   => gmdate( 'm', $now ),
-				'year'    => gmdate( 'Y', $now ),
-				'hour'    => 0,
-				'min'     => 0,
-			)
+			$this->defaults()
 		);
 
 		$allowed_tags = array(
@@ -639,6 +636,7 @@ class Milestone_Widget extends WP_Widget {
 	 * Form
 	 *
 	 * @param array $instance Widget instance.
+	 * @return string|void
 	 */
 	public function form( $instance ) {
 		$instance = $this->sanitize_instance( $instance );

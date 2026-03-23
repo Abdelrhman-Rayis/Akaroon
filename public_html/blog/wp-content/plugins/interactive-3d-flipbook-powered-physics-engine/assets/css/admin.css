@@ -1,3 +1,17 @@
+.fb3d {
+  font-size: 13px;
+  line-height: 1.4em;
+}
+
+.fb3d .disabled {
+  opacity: .75;
+  pointer-events: none;
+}
+
+.fb3d .li-text {
+  font-size: 14px;
+}
+
 .fb3d .manual a {
   color: #f00;
   text-decoration: underline;
@@ -6,18 +20,6 @@
 .fb3d .manual a:hover {
   color: #0073aa;
   text-decoration: underline;
-}
-
-.fb3d .show-advanced {
-  text-align: right;
-}
-
-.fb3d .show-advanced .checkbox {
-  margin: 0;
-}
-
-.fb3d>.tabs {
-
 }
 
 .fb3d .clearfix::after, .fb3d.clearfix::after {
@@ -35,6 +37,17 @@
   padding-top: 15px;
 }
 
+.fb3d input, .fb3d select, .fb3d textarea {
+  transition: outline .15s ease-in-out;
+}
+
+.fb3d input:focus, .fb3d select:focus, .fb3d textarea:focus {
+  border-color:#66afe9;
+  outline:0;
+  -webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+  box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+}
+
 .fb3d .left {
   text-align: left;
 }
@@ -43,6 +56,9 @@
   text-align: right;
 }
 
+.fb3d>.tabs {
+
+}
 .fb3d>.tabs .content>div {
   display: none;
 }
@@ -71,23 +87,19 @@
 .fb3d>.tabs .nav li.hidden {
   display: none;
 }
-
 .fb3d>.tabs .nav .disabled a {
   color: gray;
   cursor: default;
 }
-
 .fb3d>.tabs .nav .disabled:hover {
   background-color: #fff;
 }
-
 .fb3d>.tabs .nav .active {
   border: 1px solid #ccc;
   border-bottom: 0;
   border-radius: 5px 5px 0px 0px;
   position: relative;
 }
-
 .fb3d>.tabs .nav .active::after {
   content: ' ';
   position: absolute;
@@ -97,13 +109,11 @@
   background-color: #fff;
   display: block;
 }
-
 .fb3d>.tabs .nav .active a {
   background-color: #fff;
   border-radius: 5px 5px 0px 0px;
   cursor: default;
 }
-
 .fb3d #poststuff .tab h2 {
   font-size: 23px;
   padding: 0;
@@ -174,6 +184,7 @@
   max-width: 100%;
   margin-bottom: 5px;
   font-weight: 700;
+  cursor: pointer;
 }
 
 .fb3d textarea.form-control {
@@ -195,9 +206,7 @@
   border-radius: 4px;
   -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-  -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
-  -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s,outline .15s ease-in-out;
 }
 
 .fb3d .input-group {
@@ -252,6 +261,7 @@
 .fb3d a {
   color: #337ab7;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .fb3d .input-group .form-control:not(:first-child):not(:last-child), .fb3d .input-group-addon:not(:first-child):not(:last-child), .fb3d .input-group-btn:not(:first-child):not(:last-child) {
@@ -512,4 +522,10 @@
 
 .fb3d .hidden {
   display: none;
+}
+
+body.fb3d-disable-scroll {
+  margin: 0;
+  height: 100%;
+  overflow: hidden
 }

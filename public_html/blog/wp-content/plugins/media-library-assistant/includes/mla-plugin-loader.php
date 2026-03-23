@@ -56,18 +56,18 @@ function mla_plugin_loader_reporting_action () {
 require_once( MLA_PLUGIN_PATH . 'tests/class-mla-tests.php' );
 
 $mla_plugin_loader_error_messages .= MLATest::min_php_version( '5.3' );
-$mla_plugin_loader_error_messages .= MLATest::min_WordPress_version( '3.5.0' );
+$mla_plugin_loader_error_messages .= MLATest::min_WordPress_version( '4.7' );
 
 if ( ! empty( $mla_plugin_loader_error_messages ) ) {
 	add_action( 'admin_notices', 'mla_plugin_loader_reporting_action' );
 } else {
 	// MLATest is loaded above
-	add_action( 'init', 'MLATest::initialize', 0x7FFFFFFF );
+	add_action( 'init', 'MLATest::initialize', 0x800 ); // 0x7FFFFFFF );
 
 	// Minimum support functions required by all other components
 	require_once( MLA_PLUGIN_PATH . 'includes/class-mla-core.php' );
 	add_action( 'plugins_loaded', 'MLACore::mla_plugins_loaded_action', 0x7FFFFFFF );
-	add_action( 'init', 'MLACore::initialize', 0x7FFFFFFF );
+	add_action( 'init', 'MLACore::initialize', 0x800 ); // 0x7FFFFFFF );
 
 	// WP/LR Sync plugin has its own protocol to process uploads
 	$is_wplr_sync = isset( $_SERVER['REQUEST_URI'] ) && false !== strpos( $_SERVER['REQUEST_URI'], '/?wplr-sync-api' ); // phpcs:ignore
@@ -94,7 +94,7 @@ if ( ! empty( $mla_plugin_loader_error_messages ) ) {
 		// Front end posts/pages only need shortcode support; load the interface shims.
 		if ( $front_end_only ) {
 			require_once( MLA_PLUGIN_PATH . 'includes/class-mla-shortcodes.php' );
-			add_action( 'init', 'MLAShortcodes::initialize', 0x7FFFFFFF );
+			add_action( 'init', 'MLAShortcodes::initialize', 0x800 ); // 0x7FFFFFFF );
 			return;
 		}
 	}
@@ -108,14 +108,14 @@ if ( ! empty( $mla_plugin_loader_error_messages ) ) {
 
 		// Ajax handlers
 		require_once( MLA_PLUGIN_PATH . 'includes/class-mla-ajax.php' );
-		add_action( 'init', 'MLA_Ajax::initialize', 0x7FFFFFFF );
+		add_action( 'init', 'MLA_Ajax::initialize', 0x800 ); // 0x7FFFFFFF );
 
 		/*
 		 * Quick and Bulk Edit requires full support for content templates, etc.
-		 * IPTC/EXIF and Custom Field mapping require full support, too.
+		 * IPTC/EXIF/WP and Custom Field mapping require full support, too.
 		 * NOTE: AJAX upload_attachment is no longer used - see /wp-admin/asynch-upload.php
 		 */
-		$ajax_exceptions = array( MLACore::JAVASCRIPT_INLINE_EDIT_SLUG, 'mla-inline-mapping-iptc-exif-scripts', 'mla-inline-mapping-custom-scripts', 'mla-polylang-quick-translate', 'mla-inline-edit-upload-scripts', 'mla-inline-edit-view-scripts', 'mla-inline-edit-custom-scripts', 'mla-inline-edit-iptc-exif-scripts', 'upload-attachment' );
+		$ajax_exceptions = array( MLACore::JAVASCRIPT_INLINE_EDIT_SLUG, 'mla-inline-mapping-iptc-exif-scripts', 'mla-inline-mapping-custom-scripts', 'mla-polylang-quick-translate', 'mla-inline-edit-image-scripts', 'mla-inline-edit-view-scripts', 'mla-inline-edit-upload-scripts', 'mla-inline-edit-custom-scripts', 'mla-inline-edit-iptc-exif-scripts', 'upload-attachment', 'mla-export-presets' );
 
  		$ajax_only = true;
 		if ( MLA_AJAX_EXCEPTIONS ) {
@@ -143,17 +143,19 @@ if ( ! empty( $mla_plugin_loader_error_messages ) ) {
 				if ( is_object( $sitepress ) ) {
 					$ajax_only = false;
 				}
+			} elseif ( 'image-editor' == $_REQUEST['action'] ) {
+				$ajax_only = false;
 			}
 		}
 
 		MLA_Ajax::$ajax_only = $ajax_only; // for debug logging
 		if ( $ajax_only ) {
 			require_once( MLA_PLUGIN_PATH . 'includes/class-mla-data-query.php' );
-			add_action( 'init', 'MLAQuery::initialize', 0x7FFFFFFF );
+			add_action( 'init', 'MLAQuery::initialize', 0x800 ); // 0x7FFFFFFF );
 
 			// Other plugins such as "No Cache AJAX Widgets" might need shortcodes
 			require_once( MLA_PLUGIN_PATH . 'includes/class-mla-shortcodes.php' );
-			add_action( 'init', 'MLAShortcodes::initialize', 0x7FFFFFFF );
+			add_action( 'init', 'MLAShortcodes::initialize', 0x800 ); // 0x7FFFFFFF );
 
 			return;
 		}
@@ -161,14 +163,14 @@ if ( ! empty( $mla_plugin_loader_error_messages ) ) {
 
 	// Template file and database access functions.
 	require_once( MLA_PLUGIN_PATH . 'includes/class-mla-data-query.php' );
-	add_action( 'init', 'MLAQuery::initialize', 0x7FFFFFFF );
+	add_action( 'init', 'MLAQuery::initialize', 0x800 ); // 0x7FFFFFFF );
 
 	require_once( MLA_PLUGIN_PATH . 'includes/class-mla-data.php' );
-	add_action( 'init', 'MLAData::initialize', 0x7FFFFFFF );
+	add_action( 'init', 'MLAData::initialize', 0x800 ); // 0x7FFFFFFF );
 
 	// Shortcode shim functions
 	require_once( MLA_PLUGIN_PATH . 'includes/class-mla-shortcodes.php' );
-	add_action( 'init', 'MLAShortcodes::initialize', 0x7FFFFFFF );
+	add_action( 'init', 'MLAShortcodes::initialize', 0x800 ); // 0x7FFFFFFF );
 
 	require_once( MLA_PLUGIN_PATH . 'includes/class-mla-shortcode-support.php' );
 
@@ -178,24 +180,24 @@ if ( ! empty( $mla_plugin_loader_error_messages ) ) {
 		// WP/LR Sync runs in the plugin's "init" action, so we must set our hooks before that
 		add_action( 'init', 'MLAOptions::initialize', 9 );
 	} else {
-		add_action( 'init', 'MLAOptions::initialize', 0x7FFFFFFF );
+		add_action( 'init', 'MLAOptions::initialize', 0x800 ); // 0x7FFFFFFF );
 	}
 
 	// Plugin settings management page
 	require_once( MLA_PLUGIN_PATH . 'includes/class-mla-settings.php' );
-	add_action( 'init', 'MLASettings::initialize', 0x7FFFFFFF );
+	add_action( 'init', 'MLASettings::initialize', 0x800 ); // 0x7FFFFFFF );
 
 	// Main program
 	require_once( MLA_PLUGIN_PATH . 'includes/class-mla-main.php' );
-	add_action( 'init', 'MLA::initialize', 0x7FFFFFFF );
+	add_action( 'init', 'MLA::initialize', 0x800 ); // 0x7FFFFFFF );
 
 	// Edit Media screen additions, e.g., meta boxes
 	require_once( MLA_PLUGIN_PATH . 'includes/class-mla-edit-media.php' );
-	add_action( 'init', 'MLAEdit::initialize', 0x7FFFFFFF );
+	add_action( 'init', 'MLAEdit::initialize', 0x800 ); // 0x7FFFFFFF );
 
 	// Media Manager (Modal window) additions
 	require_once( MLA_PLUGIN_PATH . 'includes/class-mla-media-modal.php' );
-	add_action( 'init', 'MLAModal::initialize', 0x7FFFFFFF );
+	add_action( 'init', 'MLAModal::initialize', 0x800 ); // 0x7FFFFFFF );
 
 	/*
 	 * Custom list table package that extends the core WP_List_Table class.

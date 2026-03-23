@@ -1,5 +1,12 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
+/**
+ * JSON API plugins get endpoint.
+ */
 new Jetpack_JSON_API_Plugins_Get_Endpoint(
 	array(
 		'description'             => 'Get the Plugin data.',
@@ -22,8 +29,21 @@ new Jetpack_JSON_API_Plugins_Get_Endpoint(
 		'example_request'         => 'https://public-api.wordpress.com/rest/v1/sites/example.wordpress.org/plugins/hello-dolly%20hello',
 	)
 );
-// no v1.2 version since it is .com only
+
+/**
+ * Plugins get endpoint class.
+ *
+ * GET  /sites/%s/plugins/%s
+ *
+ * No v1.2 version since it is .com only
+ *
+ * @phan-constructor-used-for-side-effects
+ */
 class Jetpack_JSON_API_Plugins_Get_Endpoint extends Jetpack_JSON_API_Plugins_Endpoint {
-	// GET  /sites/%s/plugins/%s
+	/**
+	 * Needed capabilities.
+	 *
+	 * @var string
+	 */
 	protected $needed_capabilities = 'activate_plugins';
 }

@@ -6,6 +6,8 @@
  */
 
 use Automattic\Jetpack\Connection\Client;
+use Automattic\Jetpack\Publicize\Publicize;
+use Automattic\Jetpack\Stats\WPCOM_Stats;
 
 /**
  * This is the endpoint class for `/site` endpoints.
@@ -149,18 +151,17 @@ class Jetpack_Core_API_Site_Endpoint {
 		 * - Followers (only if subs module is active)
 		 * - Sharing counts (not currently supported in Jetpack -- https://github.com/Automattic/jetpack/issues/844 )
 		 */
-		$stats = null;
-		if ( function_exists( 'stats_get_from_restapi' ) ) {
-			$stats = stats_get_from_restapi( array( 'fields' => 'stats' ) );
-		}
-
-		$has_stats = null !== $stats && ! is_wp_error( $stats );
+		$wpcom_stats = new WPCOM_Stats();
+		$stats       = $wpcom_stats->convert_stats_array_to_object(
+			$wpcom_stats->get_stats( array( 'fields' => 'stats' ) )
+		);
+		$has_stats   = null !== $stats && ! is_wp_error( $stats );
 
 		// Yearly visitors.
 		if ( $has_stats && $stats->stats->visitors > 0 ) {
 			$benefits[] = array(
 				'name'        => 'jetpack-stats',
-				'title'       => esc_html__( 'Site Stats', 'jetpack' ),
+				'title'       => esc_html__( 'Jetpack Stats', 'jetpack' ),
 				'description' => esc_html__( 'Visitors tracked by Jetpack', 'jetpack' ),
 				'value'       => absint( $stats->stats->visitors ),
 			);
@@ -221,7 +222,7 @@ class Jetpack_Core_API_Site_Endpoint {
 		// Number of images in the library if Photon is active.
 		if ( Jetpack::is_module_active( 'photon' ) ) {
 			$photon_count = array_reduce(
-				get_object_vars( wp_count_attachments( array( 'image/jpeg', 'image/png', 'image/gif', 'image/bmp' ) ) ),
+				get_object_vars( wp_count_attachments( array( 'image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/webp' ) ) ),
 				function ( $i, $j ) {
 					return $i + $j;
 				}
@@ -237,21 +238,23 @@ class Jetpack_Core_API_Site_Endpoint {
 		}
 
 		// Number of VideoPress videos on the site.
-		$videopress_attachments = wp_count_attachments( 'video/videopress' );
-		if (
-			isset( $videopress_attachments->{'video/videopress'} )
-			&& $videopress_attachments->{'video/videopress'} > 0
-		) {
-			$benefits[] = array(
-				'name'        => 'video-hosting',
-				'title'       => esc_html__( 'Video Hosting', 'jetpack' ),
-				'description' => esc_html__( 'Ad-free, lightning-fast videos delivered by Jetpack', 'jetpack' ),
-				'value'       => absint( $videopress_attachments->{'video/videopress'} ),
-			);
+		if ( Jetpack::is_module_active( 'videopress' ) ) {
+			$videopress_attachments = wp_count_attachments( 'video/videopress' );
+			if (
+				isset( $videopress_attachments->{'video/videopress'} )
+				&& $videopress_attachments->{'video/videopress'} > 0
+			) {
+				$benefits[] = array(
+					'name'        => 'video-hosting',
+					'title'       => esc_html__( 'Video Hosting', 'jetpack' ),
+					'description' => esc_html__( 'Ad-free, lightning-fast videos delivered by Jetpack', 'jetpack' ),
+					'value'       => absint( $videopress_attachments->{'video/videopress'} ),
+				);
+			}
 		}
 
 		// Number of active Publicize connections.
-		if ( Jetpack::is_module_active( 'publicize' ) && class_exists( 'Publicize' ) ) {
+		if ( Jetpack::is_module_active( 'publicize' ) && class_exists( Publicize::class ) ) {
 			$publicize   = new Publicize();
 			$connections = $publicize->get_all_connections();
 
@@ -263,7 +266,7 @@ class Jetpack_Core_API_Site_Endpoint {
 			if ( $number_of_connections > 0 ) {
 				$benefits[] = array(
 					'name'        => 'publicize',
-					'title'       => esc_html__( 'Publicize', 'jetpack' ),
+					'title'       => esc_html__( 'Jetpack Social', 'jetpack' ),
 					'description' => esc_html__( 'Live social media site connections, powered by Jetpack', 'jetpack' ),
 					'value'       => absint( $number_of_connections ),
 				);
@@ -280,12 +283,20 @@ class Jetpack_Core_API_Site_Endpoint {
 			);
 		}
 
+		if ( Jetpack::is_module_active( 'search' ) && ! class_exists( 'Automattic\\Jetpack\\Search_Plugin\\Jetpack_Search_Plugin' ) ) {
+			$benefits[] = array(
+				'name'        => 'search',
+				'title'       => esc_html__( 'Search', 'jetpack' ),
+				'description' => esc_html__( 'Help your visitors find exactly what they are looking for, fast', 'jetpack' ),
+			);
+		}
+
 		// Finally, return the whole list of benefits.
 		return rest_ensure_response(
 			array(
 				'code'    => 'success',
 				'message' => esc_html__( 'Site benefits correctly received.', 'jetpack' ),
-				'data'    => wp_json_encode( $benefits ),
+				'data'    => wp_json_encode( $benefits, JSON_UNESCAPED_SLASHES ),
 			)
 		);
 	}

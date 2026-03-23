@@ -12,7 +12,7 @@
 		/**
 		 * Utility get related posts JSON endpoint from URLs
 		 *
-		 * @param  {string} URL (optional)
+		 * @param {string} URL (optional)
 		 * @return {string} Endpoint URL
 		 */
 		getEndpointURL: function ( URL ) {
@@ -40,6 +40,10 @@
 			var args = 'relatedposts=1';
 			var relatedPosts = document.querySelector( '#jp-relatedposts' );
 
+			if ( ! relatedPosts ) {
+				return false;
+			}
+
 			if ( relatedPosts.hasAttribute( 'data-exclude' ) ) {
 				args += '&relatedposts_exclude=' + relatedPosts.getAttribute( 'data-exclude' );
 			}
@@ -55,9 +59,8 @@
 
 			if ( '' === locationObject.search ) {
 				return pathname + '?' + args;
-			} else {
-				return pathname + locationObject.search + '&' + args;
 			}
+			return pathname + locationObject.search + '&' + args;
 		},
 
 		getAnchor: function ( post, classNames ) {
@@ -161,12 +164,14 @@
 				if ( post.img.src ) {
 					html +=
 						anchor[ 0 ] +
-						'<img class="jp-relatedposts-post-img" src="' +
+						'<img class="jp-relatedposts-post-img" loading="lazy" src="' +
 						post.img.src +
 						'" width="' +
 						post.img.width +
 						'" height="' +
 						post.img.height +
+						( post.img.srcset ? '" srcset="' + post.img.srcset : '' ) +
+						( post.img.sizes ? '" sizes="' + post.img.sizes : '' ) +
 						'" alt="' +
 						post.img.alt_text +
 						'" />' +
@@ -249,9 +254,8 @@
 
 			if ( '' === anchor.search ) {
 				return pathname + '?' + args;
-			} else {
-				return pathname + anchor.search + '&' + args;
 			}
+			return pathname + anchor.search + '&' + args;
 		},
 
 		cleanupTrackedUrl: function () {
@@ -290,13 +294,17 @@
 		jprp.cleanupTrackedUrl();
 
 		var endpointURL = jprp.getEndpointURL();
-		var relatedPosts = document.querySelector( '#jp-relatedposts' );
+
+		if ( ! endpointURL ) {
+			return;
+		}
 
 		if ( document.querySelectorAll( '#jp-relatedposts .jp-relatedposts-post' ).length ) {
 			afterPostsHaveLoaded();
 			return;
 		}
 
+		var relatedPosts = document.querySelector( '#jp-relatedposts' );
 		var request = new XMLHttpRequest();
 		request.open( 'GET', endpointURL, true );
 		request.setRequestHeader( 'x-requested-with', 'XMLHttpRequest' );
@@ -348,7 +356,7 @@
 
 					relatedPosts.style.display = 'block';
 					afterPostsHaveLoaded();
-				} catch ( error ) {
+				} catch {
 					// Do nothing
 				}
 			}

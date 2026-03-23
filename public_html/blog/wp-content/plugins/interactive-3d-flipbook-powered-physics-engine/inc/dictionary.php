@@ -19,7 +19,24 @@
       $fb3d['dictionary'][$keys[$i]] = $values[$i];
     }
   }
-  add_action('plugins_loaded', '\iberezansky\fb3d\load_textdomain');
+  add_action('init', '\iberezansky\fb3d\load_textdomain');
+
+  function get_client_dictionary() {
+    global $fb3d;
+    $us = [];
+    foreach($fb3d['templates'] as $t) {
+      $us[$t['html']] = 1;
+    }
+    $d = [];
+    foreach($us as $u=>$v) {
+      $html = file_get_contents(template_url_to_path($u));
+      preg_match_all('/<\$tr>(.*?)<\/\$tr>/', $html, $matches);
+      foreach ($matches[1] as $t) {
+        $d[$t] = aa($fb3d['dictionary'], $t, $t);
+      }
+    }
+    return $d;
+  }
 
   function load_dictionary() {
     return array(
@@ -82,7 +99,6 @@
       __('binder texture', POST_ID),
       __('Deep linking URL parameter name', POST_ID),
       __('items pre page', POST_ID),
-      __('3D Flip Book', POST_ID),
       __('View mode', POST_ID),
       __('Advanced', POST_ID),
       __('Thumbnail', POST_ID),
@@ -90,7 +106,7 @@
       __('Lightbox activation link', POST_ID),
       __('Fullscreen', POST_ID),
       __('Inline on page (fullscreen)', POST_ID),
-      __('Select skin', POST_ID),
+      __('Skin of controls', POST_ID),
       __('3D FlipBook container CSS classes', POST_ID),
       __('Lightbox theme', POST_ID),
       __('Light', POST_ID),
@@ -194,6 +210,7 @@
       __('Print', POST_ID),
       __('Full screen', POST_ID),
       __('Settings', POST_ID),
+      __('More', POST_ID),
       __('Smart pan', POST_ID),
       __('Single page', POST_ID),
       __('Sounds', POST_ID),
@@ -241,7 +258,9 @@
       __('http://example.com?fb3d-page=1', POST_ID),
       __('Thumbnail URL', POST_ID),
       __('Volumetric', POST_ID),
+      __('Volumetric & unrolling flip', POST_ID),
       __('Volumetric with paddings', POST_ID),
+      __('Volumetric with paddings & unrolling flip', POST_ID),
       __('Flat', POST_ID),
       __('License', POST_ID),
       __('License Key', POST_ID),
@@ -267,7 +286,61 @@
       __('Email', POST_ID),
       __('We wanted you to see this book', POST_ID),
       __('Check out this site', POST_ID),
-      __('show share link', POST_ID)
+      __('show share link', POST_ID),
+      __('page turn animation style', POST_ID),
+      __('symmetrical inflection', POST_ID),
+      __('asymmetrical unrolling', POST_ID),
+      __('auto thumbnail height, auto - WordPress thumbnail height', POST_ID),
+      __('track user actions using Google Analytics (GA should be plugged to your WordPress)', POST_ID),
+      __('Book template', POST_ID),
+      __('default book template', POST_ID),
+      __('default page slug, enter "none" to disable default page', POST_ID),
+      __('auto turning pages', POST_ID),
+      __('show table of contents', POST_ID),
+      __('show/hide the toolbar', POST_ID),
+      __('table of contents default tab', POST_ID),
+      __('defaultTab', POST_ID),
+      __('Saved', POST_ID),
+      __('Template book cannot have a template', POST_ID),
+      __('Cannot save the template', POST_ID),
+      __('Name cannot be empty, "default", "none", "auto" or contain "', POST_ID),
+      __('Auto', POST_ID),
+      __('Default', POST_ID),
+      __('Save this book as Template', POST_ID),
+      __('time in ms between two auto page turns when autoplay is active', POST_ID),
+      __('Add', POST_ID),
+      __('URL / Page number', POST_ID),
+      __('background color', POST_ID),
+      __('background image', POST_ID),
+      __('background css style', POST_ID),
+      __('goto last book page', POST_ID),
+      __('goto first book page', POST_ID),
+      __('AdSense', POST_ID),
+      __('ad client id', POST_ID),
+      __('ad slot id', POST_ID),
+      __('ad format', POST_ID),
+      __('full width responsive', POST_ID),
+      __('highlight pdf links', POST_ID),
+      __('max book thickness, limit cover and pages depth', POST_ID),
+      __('ambient', POST_ID),
+      __('mixed', POST_ID),
+      __('color', POST_ID),
+      __('transparent', POST_ID),
+      __('3d lighting', POST_ID),
+      __('Goto first page', POST_ID),
+      __('Goto last page', POST_ID),
+      __('of', POST_ID),
+      __('Set all pages interactive', POST_ID),
+      __('Book templates', POST_ID),
+      __('start pdf search', POST_ID),
+      __('how to display the book in the single page mode', POST_ID),
+      __('focus current page', POST_ID),
+      __('just single page', POST_ID),
+      __('Trigger', POST_ID),
+      __('coma separated CSS classes of any elements that can launch lightbox', POST_ID),
+      __('open book on page', POST_ID),
+      __('stretch source images / pdf pages / htmls on book pages', POST_ID),
+      __('Item is not found', POST_ID)
     );
   }
 ?>

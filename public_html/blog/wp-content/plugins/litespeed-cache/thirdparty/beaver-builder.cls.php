@@ -2,29 +2,36 @@
 /**
  * The Third Party integration with the Beaver Builder plugin.
  *
- * @since		3.0
+ * @since      3.0
+ * @package    LiteSpeed
+ * @subpackage LiteSpeed_Cache/thirdparty
  */
+
 namespace LiteSpeed\Thirdparty;
 
 defined( 'WPINC' ) || exit;
 
-class Beaver_Builder
-{
+/**
+ * Integration for Beaver Builder cache handling and purging.
+ */
+class Beaver_Builder {
+
 	/**
 	 * Detects if Beaver_Builder is active.
 	 *
-	 *@since 3.0
-	 *@access public
+	 * @since 3.0
+	 * @access public
+	 * @return void
 	 */
-	public static function detect()
-	{
+	public static function detect() {
 		if ( ! defined( 'FL_BUILDER_VERSION' ) ) {
 			return;
 		}
 
 		/**
-		 * Purge All hooks
-		 * @see  beaver-builder/extensions/fi-builder-cache-helper/classes/class-fi-builder-cache-helper.php
+		 * Purge All hooks.
+		 *
+		 * @see beaver-builder/extensions/fi-builder-cache-helper/classes/class-fi-builder-cache-helper.php
 		 */
 		$actions = array(
 			'fl_builder_cache_cleared',
@@ -43,9 +50,9 @@ class Beaver_Builder
 	 *
 	 * @since 3.0
 	 * @access public
+	 * @return void
 	 */
-	public static function purge()
-	{
+	public static function purge() {
 		do_action( 'litespeed_purge_all', '3rd Beaver_Builder' );
 	}
 }

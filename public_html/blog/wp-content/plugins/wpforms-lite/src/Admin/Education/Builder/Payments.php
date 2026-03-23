@@ -35,6 +35,18 @@ class Payments extends Education\Builder\Panel {
 	}
 
 	/**
+	 * Get addons for the Payments panel.
+	 *
+	 * @since 1.7.7.2
+	 *
+	 * @return array
+	 */
+	protected function get_addons() {
+
+		return $this->addons->get_by_path( 'form_builder.category', $this->get_name() );
+	}
+
+	/**
 	 * Template name for rendering single addon item.
 	 *
 	 * @since 1.6.6

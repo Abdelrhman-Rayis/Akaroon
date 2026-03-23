@@ -45,7 +45,7 @@ class MLASettings_View {
 			'notitle' => '(' . __( 'no slug', 'media-library-assistant' ) . ')',
 			'comma' => _x( ',', 'tag_delimiter', 'media-library-assistant' ),
 			'useSpinnerClass' => false,
-			'ajax_nonce' => wp_create_nonce( MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME ),
+			'ajax_nonce' => wp_create_nonce( MLASettings::JAVASCRIPT_INLINE_EDIT_VIEW_SLUG, MLACore::MLA_ADMIN_NONCE_NAME ),
 			'tab' => 'view',
 			'fields' => array( 'original_slug', 'slug', 'singular', 'plural', 'specification', 'menu_order' ),
 			'checkboxes' => array( 'post_mime_type', 'table_view' ),
@@ -60,7 +60,7 @@ class MLASettings_View {
 
 		wp_enqueue_script( MLASettings::JAVASCRIPT_INLINE_EDIT_VIEW_SLUG,
 			MLA_PLUGIN_URL . "js/mla-inline-edit-settings-scripts{$suffix}.js", 
-			array( 'wp-lists', 'suggest', 'jquery' ), MLACore::CURRENT_MLA_VERSION, false );
+			array( 'wp-lists', 'suggest', 'jquery' ), MLACore::mla_script_version(), false );
 
 		wp_localize_script( MLASettings::JAVASCRIPT_INLINE_EDIT_VIEW_SLUG,
 			self::JAVASCRIPT_INLINE_EDIT_VIEW_OBJECT, $script_variables );
@@ -70,8 +70,6 @@ class MLASettings_View {
 	 * Save View settings to the options table
  	 *
 	 * @since 1.40
-	 *
-	 * @uses $_REQUEST
 	 *
 	 * @return	array	Message(s) reflecting the results of the operation
 	 */
@@ -290,10 +288,10 @@ class MLASettings_View {
 							$page_content = self::_compose_edit_view_tab( $mla_view_item, $page_template_array['single-item-edit'] );
 							$page_content['message'] = $message;
 						}
-			} else {
+					} else {
 						$page_content = array(
 							/* translators: 1: view name/slug */
-							'message' => sprintf( __( 'Edit view "%1$s" cancelled.', 'media-library-assistant' ), $mla_view_item['mla_view_item']['original_slug'] ),
+							'message' => sprintf( __( 'Edit view "%1$s" cancelled.', 'media-library-assistant' ), $mla_view_item['original_slug'] ),
 							'body' => '' 
 						);
 					}
@@ -392,7 +390,7 @@ class MLASettings_View {
 			'The description can' => __( 'The description can contain any documentation or notes you need to understand or use the item.', 'media-library-assistant' ),
 			'Add View' => __( 'Add View', 'media-library-assistant' ),
 			'colspan' => $MLAListViewTable->get_column_count(),
-			'Quick Edit' => __( '<strong>Quick Edit</strong>', 'media-library-assistant' ),
+			'Quick Edit' => '<strong>' . __( 'Quick Edit', 'media-library-assistant' ) . '</strong>',
 			'Cancel' => __( 'Cancel', 'media-library-assistant' ),
 			'Update' => __( 'Update', 'media-library-assistant' ),
 			'Bulk Edit' => __( 'Bulk Edit', 'media-library-assistant' ),
@@ -432,7 +430,7 @@ class MLASettings_View {
 			set_current_screen( sanitize_text_field( wp_unslash( $_REQUEST['screen'] ) ) );
 		}
 
-		check_ajax_referer( MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME );
+		check_ajax_referer( MLASettings::JAVASCRIPT_INLINE_EDIT_VIEW_SLUG, MLACore::MLA_ADMIN_NONCE_NAME );
 
 		if ( empty( $_REQUEST['original_slug'] ) ) {
 			echo esc_html__( 'ERROR', 'media-library-assistant' ) . ': ' . esc_html__( 'No view slug found', 'media-library-assistant' );

@@ -1,0 +1,11 @@
+book_id,bookcase_id,bookcase_section_id,category_id,name,author_name,publication_name,publication_year,publication_location,amount,cover_image,isbn,book_url,stock_quantity,book_language,book_pages,description
+ABC123,1,,1,The Great Gatsby,F. Scott Fitzgerald,Scribner,1925,New York,15.99,,9780743273565,https://example.com/great-gatsby,100,English,180,A novel depicting the glitz and glamour of the Jazz Age.
+DEF456,2,,2,To Kill a Mockingbird,Harper Lee,J.B. Lippincott & Co.,1960,Philadelphia,12.99,,9780061120084,https://example.com/to-kill-a-mockingbird,120,English,281,A powerful story addressing racial injustice in the American South.
+GHI789,3,,3,Pride and Prejudice,Jane Austen,T. Egerton,1813,London,10.99,,9780486284736,https://example.com/pride-and-prejudice,80,English,279,A timeless romance novel set in Regency-era England.
+JKL012,4,,4,1984,George Orwell,Secker & Warburg,1949,London,14.99,,9780451524935,https://example.com/1984,150,English,328,A dystopian novel exploring themes of totalitarianism and surveillance.
+MNO345,5,,5,The Catcher in the Rye,J.D. Salinger,Little, Brown and Company,1951,Boston,11.99,,9780316769488,https://example.com/catcher-in-the-rye,90,English,277,A coming-of-age novel following the adventures of Holden Caulfield.
+PQR678,1,,1,Harry Potter and the Sorcerer's Stone,J.K. Rowling,Bloomsbury Publishing,1997,London,19.99,,9780747532743,https://example.com/harry-potter,200,English,320,The first book in the beloved Harry Potter series.
+STU901,2,,2,The Hobbit,J.R.R. Tolkien,Allen & Unwin,1937,London,18.99,,9780547928227,https://example.com/the-hobbit,180,English,310,A fantasy novel about the adventures of Bilbo Baggins.
+VWX234,3,,3,The Lord of the Rings,J.R.R. Tolkien,Allen & Unwin,1954,London,24.99,,9780544003415,https://example.com/lord-of-the-rings,250,English,1178,A high-fantasy epic following the quest to destroy the One Ring.
+YZA567,4,,4,The Alchemist,Paulo Coelho,Rocco,1988,Rio de Janeiro,13.99,,9780061122415,https://example.com/the-alchemist,110,Portuguese,208,A philosophical novel about pursuing one's dreams and destiny.
+BCD890,5,,5,The Great Gatsby,F. Scott Fitzgerald,Scribner,1925,New York,15.99,,9780743273565,https://example.com/great-gatsby,100,English,180,A novel depicting the glitz and glamour of the Jazz Age.

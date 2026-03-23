@@ -6,7 +6,7 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @since      1.0.0
+ * @since      1.0
  *
  */
 
@@ -18,42 +18,42 @@
  * Also maintains the unique identifier of this plugin as well as the current
  * version of the plugin.
  *
- * @since      1.0.0
+ * @since      1.0
  */
 class Sassy_Social_Share {
 
 	/**
 	 * The unique identifier of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	protected $plugin_slug;
 
 	/**
 	 * Current version of the plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	protected $version;
 
 	/**
 	 * Options saved in database.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	public $options;
 
 	/**
 	 * Member to assign object of Sassy_Social_Share_Public Class.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	public $plugin_public;
 
 	/**
 	 * Define the core functionality of the plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	public function __construct( $version ) {
 
@@ -74,7 +74,7 @@ class Sassy_Social_Share {
 	/**
 	 * Load the required dependencies for this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	private function load_dependencies() {
 
@@ -108,7 +108,7 @@ class Sassy_Social_Share {
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	private function set_locale() {
 
@@ -119,7 +119,7 @@ class Sassy_Social_Share {
 	/**
 	 * Register all of the hooks related to the admin area functionality of the plugin
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	private function call_admin_hooks() {
 
@@ -129,12 +129,14 @@ class Sassy_Social_Share {
 		add_action( 'plugins_loaded', array( $plugin_admin, 'update_db_check' ) );
 		// save GDPR notification flag in DB
 		add_action( 'wp_ajax_heateor_sss_gdpr_notification_read', array( $plugin_admin, 'gdpr_notification_read' ) );
-		// save FB share count notification flag in DB
-		add_action( 'wp_ajax_heateor_sss_fb_count_notification_read', array( $plugin_admin, 'fb_count_notification_read' ) );
 		// save Twitter share count notification flag in DB
 		add_action( 'wp_ajax_heateor_sss_twitter_share_notification_read', array( $plugin_admin, 'twitter_share_notification_read' ) );
 		// save Twitcount notification flag in DB
 		add_action( 'wp_ajax_heateor_sss_twitcount_notification_read', array( $plugin_admin, 'twitcount_notification_read' ) );
+		// ajax function to export plugin configuration
+		add_action( 'wp_ajax_heateor_sss_export_config', array( $plugin_admin, 'export_config' ) );
+		// ajax function to import plugin configuration
+		add_action( 'wp_ajax_heateor_sss_import_config', array( $plugin_admin, 'import_config' ) );
 		// create admin menu
 		add_action( 'admin_menu', array( $plugin_admin, 'create_admin_menu' ) );
 		// set sanitization callback for plugin options
@@ -162,7 +164,7 @@ class Sassy_Social_Share {
 	/**
 	 * Register all of the hooks related to the front-end functionality of the plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	private function call_public_hooks() {
 
@@ -172,8 +174,6 @@ class Sassy_Social_Share {
 
 		// hook the plugin functions on 'init' event.
 		add_action( 'init', array( $plugin_public, 'init' ) );
-		// remove render sharing action from Excerpts, as it gets nasty due to strip_tags()
-		add_filter( 'get_the_excerpt', array( $plugin_public, 'remove_render_sharing' ), 9 );
 		// hooks to enable sharing interface
 		add_filter( 'the_content', array( $plugin_public, 'render_sharing' ), 99 );
 		add_filter( 'the_excerpt', array( $plugin_public, 'render_sharing' ), 99 );
@@ -213,12 +213,15 @@ class Sassy_Social_Share {
 			add_filter( 'heateor_sss_target_share_url_filter', array( $plugin_public, 'append_mycred_referral_id' ), 10, 3 );
 		}
 
+		add_filter( 'safe_style_css', array( $plugin_public, 'add_safe_styles' ), 10, 1 );
+		add_filter( 'parse_request', array( $plugin_public, 'mastodon_share_amp' ) );
+
 	}
 
 	/**
 	 * Define widgets
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	private function define_widgets() {
 
@@ -234,7 +237,7 @@ class Sassy_Social_Share {
 	/**
 	 * Define shortcodes
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	private function define_shortcodes() {
 
@@ -253,7 +256,7 @@ class Sassy_Social_Share {
 	/**
 	 * Returns the plugin slug
 	 *
-	 * @since     1.0.0
+	 * @since     1.0
 	 * @return    string    The plugin slug.
 	 */
 	public function get_plugin_slug() {
@@ -265,7 +268,7 @@ class Sassy_Social_Share {
 	/**
 	 * Retrieve the version number of the plugin
 	 *
-	 * @since     1.0.0
+	 * @since     1.0
 	 * @return    string    The version number of the plugin.
 	 */
 	public function get_version() {

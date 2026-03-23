@@ -38,14 +38,15 @@ class Community {
 	public function hooks() {
 
 		// Check what page we are on.
-		$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.CSRF.NonceVerification
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
 
 		// Only load if we are actually on the Community page.
 		if ( self::SLUG !== $page ) {
 			return;
 		}
 
-		add_action( 'wpforms_admin_page', array( $this, 'output' ) );
+		add_action( 'wpforms_admin_page', [ $this, 'output' ] );
 
 		// Hook for addons.
 		do_action( 'wpforms_admin_community_init' );
@@ -58,10 +59,10 @@ class Community {
 	 */
 	public function get_blocks_data() {
 
-		$type = wpforms()->pro ? 'plugin' : 'liteplugin';
+		$type = wpforms()->is_pro() ? 'plugin' : 'liteplugin';
 		$data = [];
 
-		$data['vip_circle'] = array(
+		$data['vip_circle'] = [
 			'title'          => esc_html__( 'WPForms VIP Circle Facebook Group', 'wpforms-lite' ),
 			'description'    => esc_html__( 'Powered by the community, for the community. Anything and everything WPForms: Discussions. Questions. Tutorials. Insights and sneak peaks. Also, exclusive giveaways!', 'wpforms-lite' ),
 			'button_text'    => esc_html__( 'Join WPForms VIP Circle', 'wpforms-lite' ),
@@ -69,9 +70,29 @@ class Community {
 			'cover_bg_color' => '#E4F0F6',
 			'cover_img'      => 'vip-circle.png',
 			'cover_img2x'    => 'vip-circle@2x.png',
-		);
+		];
 
-		$data['dev_docs'] = array(
+		$data['announcements'] = [
+			'title'          => esc_html__( 'WPForms Announcements', 'wpforms-lite' ),
+			'description'    => esc_html__( 'Check out the latest releases from WPForms. Our team is always innovating to bring you powerful features and functionality that are simple to use. Every release is designed with you in mind!', 'wpforms-lite' ),
+			'button_text'    => esc_html__( 'View WPForms Announcements', 'wpforms-lite' ),
+			'button_link'    => 'https://wpforms.com/blog/?utm_source=WordPress&amp;utm_medium=Community&amp;utm_campaign=' . esc_attr( $type ) . '&amp;utm_content=Announcements',
+			'cover_bg_color' => '#EFF8E9',
+			'cover_img'      => 'announcements.png',
+			'cover_img2x'    => 'announcements@2x.png',
+		];
+
+		$data['youtube'] = [
+			'title'          => esc_html__( 'WPForms YouTube Channel', 'wpforms-lite' ),
+			'description'    => esc_html__( 'Take a visual dive into everything WPForms has to offer. From simple contact forms to advanced payment forms and email marketing integrations, our extensive video collection covers it all.', 'wpforms-lite' ),
+			'button_text'    => esc_html__( 'Visit WPForms YouTube Channel', 'wpforms-lite' ),
+			'button_link'    => 'https://www.youtube.com/c/wpformsplugin',
+			'cover_bg_color' => '#FFE6E6',
+			'cover_img'      => 'youtube.png',
+			'cover_img2x'    => 'youtube@2x.png',
+		];
+
+		$data['dev_docs'] = [
 			'title'          => esc_html__( 'WPForms Developer Documentation', 'wpforms-lite' ),
 			'description'    => esc_html__( 'Customize and extend WPForms with code. Our comprehensive developer resources include tutorials, snippets, and documentation on core actions, filters, functions, and more.', 'wpforms-lite' ),
 			'button_text'    => esc_html__( 'View WPForms Dev Docs', 'wpforms-lite' ),
@@ -79,29 +100,19 @@ class Community {
 			'cover_bg_color' => '#EBEBEB',
 			'cover_img'      => 'dev-docs.png',
 			'cover_img2x'    => 'dev-docs@2x.png',
-		);
+		];
 
-		$data['wpbeginner'] = array(
+		$data['wpbeginner'] = [
 			'title'          => esc_html__( 'WPBeginner Engage Facebook Group', 'wpforms-lite' ),
 			'description'    => esc_html__( 'Hang out with other WordPress experts and like minded website owners such as yourself! Hosted by WPBeginner, the largest free WordPress site for beginners.', 'wpforms-lite' ),
 			'button_text'    => esc_html__( 'Join WPBeginner Engage', 'wpforms-lite' ),
 			'button_link'    => 'https://www.facebook.com/groups/wpbeginner/',
-			'cover_bg_color' => '#FCEBDF',
+			'cover_bg_color' => '#FCEDE4',
 			'cover_img'      => 'wpbeginner.png',
 			'cover_img2x'    => 'wpbeginner@2x.png',
-		);
+		];
 
-		$data['translators'] = array(
-			'title'          => esc_html__( 'WPForms Translators Community', 'wpforms-lite' ),
-			'description'    => esc_html__( 'We\'re building a community of translators and i18n experts to translate WPForms. Sign up to our translator community newsletter to learn more and get information on how you can contribute!', 'wpforms-lite' ),
-			'button_text'    => esc_html__( 'Join Translators Community', 'wpforms-lite' ),
-			'button_link'    => 'https://wpforms.com/translator-community-signup/?utm_source=WordPress&amp;utm_medium=Community&amp;utm_campaign=' . esc_attr( $type ) . '&amp;utm_content=Translators',
-			'cover_bg_color' => '#F2FAED',
-			'cover_img'      => 'translators.png',
-			'cover_img2x'    => 'translators@2x.png',
-		);
-
-		$data['suggest'] = array(
+		$data['suggest'] = [
 			'title'          => esc_html__( 'Suggest a Feature', 'wpforms-lite' ),
 			'description'    => esc_html__( 'Do you have an idea or suggestion for WPForms? If you have thoughts on features, integrations, addons, or improvements - we want to hear it! We appreciate all feedback and insight from our users.', 'wpforms-lite' ),
 			'button_text'    => esc_html__( 'Suggest a Feature', 'wpforms-lite' ),
@@ -109,7 +120,7 @@ class Community {
 			'cover_bg_color' => '#FFF9EF',
 			'cover_img'      => 'suggest.png',
 			'cover_img2x'    => 'suggest@2x.png',
-		);
+		];
 
 		return $data;
 	}
@@ -127,6 +138,7 @@ class Community {
 			<div class="items">
 				<?php
 				$data = $this->get_blocks_data();
+
 				foreach ( $data as $item ) {
 					printf(
 						'<div class="item">
@@ -134,7 +146,7 @@ class Community {
 							<h3 class="item-title">%s</h3>
 							<p class="item-description">%s</p>
 							<div class="item-footer">
-								<a class="button-primary" href="%s" target="_blank" rel="noopener noreferrer">%s</a>
+								<a class="wpforms-btn button-primary wpforms-btn-blue" href="%s" target="_blank" rel="noopener noreferrer">%s</a>
 							</div>
 						</div>',
 						esc_attr( $item['cover_bg_color'] ),

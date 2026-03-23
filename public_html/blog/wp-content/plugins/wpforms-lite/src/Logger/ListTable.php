@@ -2,6 +2,10 @@
 
 namespace WPForms\Logger;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 use WP_List_Table;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
@@ -20,7 +24,7 @@ class ListTable extends WP_List_Table {
 	 *
 	 * @since 1.6.3
 	 *
-	 * @var \WPForms\Logger\Repository
+	 * @var Repository
 	 */
 	private $repository;
 
@@ -29,25 +33,59 @@ class ListTable extends WP_List_Table {
 	 *
 	 * @since 1.6.3
 	 *
-	 * @param \WPForms\Logger\Repository $repository Repository.
+	 * @param Repository $repository Repository.
 	 */
 	public function __construct( $repository ) {
 
 		$this->repository = $repository;
+
 		parent::__construct(
 			[
 				'plural'   => esc_html__( 'Logs', 'wpforms-lite' ),
 				'singular' => esc_html__( 'Log', 'wpforms-lite' ),
 			]
 		);
+
+		$this->hooks();
+
+		add_screen_option(
+			'per_page',
+			[ 'default' => $this->get_items_per_page( $this->get_per_page_option_name() ) ]
+		);
+		set_screen_options();
 	}
 
 	/**
-	 * Items per page.
+	 * Hooks.
 	 *
-	 * @since 1.6.3
+	 * @since 1.7.5
 	 */
-	const PER_PAGE = 10;
+	private function hooks() {
+
+		add_filter(
+			'set_screen_option_' . $this->get_per_page_option_name(),
+			[ $this, 'set_items_per_page_option' ],
+			10,
+			3
+		);
+	}
+
+	/**
+	 * Handles setting the items_per_page option for this screen.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @param mixed  $status Default false (to skip saving the current option).
+	 * @param string $option Screen option name.
+	 * @param int    $value  Screen option value.
+	 *
+	 * @return int
+	 * @noinspection PhpUnusedParameterInspection
+	 */
+	public function set_items_per_page_option( $status, $option, $value ) {
+
+		return $value;
+	}
 
 	/**
 	 * Whether the table has items to display or not.
@@ -58,12 +96,12 @@ class ListTable extends WP_List_Table {
 	 */
 	public function has_items() {
 
-		// We can't use the empty function because it doesn't work with Countable object.
+		// We can't use the empty function because it doesn't work with the Countable object.
 		return (bool) count( $this->items );
 	}
 
 	/**
-	 * Prepares the data to feed WP_Table_List.
+	 * Prepares the list of items for displaying.
 	 *
 	 * @since 1.6.3
 	 */
@@ -72,20 +110,21 @@ class ListTable extends WP_List_Table {
 		$offset      = $this->get_items_offset();
 		$search      = $this->get_request_search_query();
 		$types       = $this->get_items_type();
-		$this->items = $this->repository->records( self::PER_PAGE, $offset, $search, $types );
+		$per_page    = $this->get_items_per_page( $this->get_per_page_option_name() );
+		$this->items = $this->repository->records( $per_page, $offset, $search, $types );
 		$total_items = $this->get_total();
+
 		$this->set_pagination_args(
 			[
 				'total_items' => $total_items,
-				'per_page'    => self::PER_PAGE,
-				'total_pages' => ceil( $total_items / self::PER_PAGE ),
+				'per_page'    => $per_page,
+				'total_pages' => (int) ceil( $total_items / $per_page ),
 			]
 		);
 	}
 
-
 	/**
-	 * Return the type of records
+	 * Return the type of records.
 	 *
 	 * @since 1.6.3
 	 *
@@ -93,11 +132,11 @@ class ListTable extends WP_List_Table {
 	 */
 	private function get_items_type() {
 
-		return filter_input( INPUT_GET, 'log_type', FILTER_SANITIZE_STRING );
+		return filter_input( INPUT_GET, 'log_type', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 	}
 
 	/**
-	 * Returns the number of items to offset/skip for this current view.
+	 * Return the number of items to offset/skip for this current view.
 	 *
 	 * @since 1.6.3
 	 *
@@ -105,9 +144,7 @@ class ListTable extends WP_List_Table {
 	 */
 	private function get_items_offset() {
 
-		$current_page = $this->get_pagenum();
-
-		return 1 < $current_page ? self::PER_PAGE * ( $current_page - 1 ) : 0;
+		return $this->get_items_per_page( $this->get_per_page_option_name() ) * ( $this->get_pagenum() - 1 );
 	}
 
 	/**
@@ -119,34 +156,18 @@ class ListTable extends WP_List_Table {
 	 */
 	private function get_request_search_query() {
 
-		return filter_input( INPUT_GET, 's', FILTER_SANITIZE_STRING );
+		return filter_input( INPUT_GET, 's', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 	}
 
 	/**
-	 * Column log_id.
+	 * Column title.
 	 *
 	 * @since 1.6.3
 	 *
-	 * @param \WPForms\Logger\Record $item List table item.
+	 * @param Record $item List table item.
 	 *
-	 * @return int|string
-	 */
-	public function column_log_id( $item ) {
-
-		return sprintf(
-			'<a href="#" class="js-single-log-target" data-log-id="%1$d"><strong>%1$d</strong></a>',
-			absint( $item->get_id() )
-		);
-	}
-
-	/**
-	 * Column log_title.
-	 *
-	 * @since 1.6.3
-	 *
-	 * @param \WPForms\Logger\Record $item List table item.
-	 *
-	 * @return int|string
+	 * @return string
+	 * @noinspection PhpUnused
 	 */
 	public function column_log_title( $item ) {
 
@@ -162,23 +183,35 @@ class ListTable extends WP_List_Table {
 	 *
 	 * @since 1.6.3
 	 *
-	 * @param \WPForms\Logger\Record $item List table item.
+	 * @param Record $item List table item.
 	 *
-	 * @return int|string
+	 * @return string
+	 * @noinspection PhpUnused
 	 */
 	public function column_message( $item ) {
 
-		return esc_html( $this->crop_message( $item->get_message() ) );
+		$message = $item->get_message();
+
+		if ( preg_match( '/\[body].+{"error":"(.+)"}/i', $message, $m ) ) {
+			$message = $m[1];
+		}
+
+		if ( preg_match( '/\[error] =&gt; (.+)/i', $message, $m ) ) {
+			$message = $m[1];
+		}
+
+		return esc_html( $this->crop_message( $message ) );
 	}
 
 	/**
-	 * Column form_id.
+	 * Column form ID.
 	 *
 	 * @since 1.6.3
 	 *
-	 * @param \WPForms\Logger\Record $item List table item.
+	 * @param Record $item List table item.
 	 *
-	 * @return int|string
+	 * @return int
+	 * @noinspection PhpUnused
 	 */
 	public function column_form_id( $item ) {
 
@@ -190,9 +223,10 @@ class ListTable extends WP_List_Table {
 	 *
 	 * @since 1.6.3
 	 *
-	 * @param \WPForms\Logger\Record $item List table item.
+	 * @param Record $item List table item.
 	 *
-	 * @return int|string
+	 * @return string
+	 * @noinspection PhpUnused
 	 */
 	public function column_types( $item ) {
 
@@ -204,13 +238,14 @@ class ListTable extends WP_List_Table {
 	 *
 	 * @since 1.6.3
 	 *
-	 * @param \WPForms\Logger\Record $item List table item.
+	 * @param Record $item List table item.
 	 *
-	 * @return int|string
+	 * @return string
+	 * @noinspection PhpUnused
 	 */
 	public function column_date( $item ) {
 
-		return esc_html( $item->get_date() );
+		return esc_html( $item->get_date( 'sql-local' ) );
 	}
 
 	/**
@@ -237,13 +272,13 @@ class ListTable extends WP_List_Table {
 
 		$this->_column_headers = [
 			$this->get_columns(),
-			[],
+			get_hidden_columns( $this->screen ),
 			[],
 		];
 	}
 
 	/**
-	 * Returns the columns names for rendering.
+	 * Return the columns' names for rendering.
 	 *
 	 * @since 1.6.3
 	 *
@@ -252,7 +287,6 @@ class ListTable extends WP_List_Table {
 	public function get_columns() {
 
 		return [
-			'log_id'    => __( 'Log ID', 'wpforms-lite' ),
 			'log_title' => __( 'Log Title', 'wpforms-lite' ),
 			'message'   => __( 'Message', 'wpforms-lite' ),
 			'form_id'   => __( 'Form ID', 'wpforms-lite' ),
@@ -270,18 +304,18 @@ class ListTable extends WP_List_Table {
 
 		?>
 		<div class="wpforms-admin-content-header">
-			<h3 class="wp-heading-inline"><?php esc_html_e( 'View Logs', 'wpforms-lite' ); ?>
+			<h4 class="wp-heading-inline"><?php esc_html_e( 'View Logs', 'wpforms-lite' ); ?>
 				<?php if ( $this->get_request_search_query() ) { ?>
 					<span class="subtitle">
 				<?php
-				echo sprintf( /* translators: %s: search query */
-					esc_attr__( 'Search results for "%s"', 'wpforms-lite' ),
+				printf( /* translators: %s - search query. */
+					esc_html__( 'Search results for "%s"', 'wpforms-lite' ),
 					esc_html( $this->get_request_search_query() )
 				);
 				?>
 			</span>
 				<?php } ?>
-			</h3>
+			</h4>
 			<?php
 			$this->hidden_fields();
 			$this->search_box( esc_html__( 'Search Logs', 'wpforms-lite' ), 'plugin' );
@@ -303,7 +337,7 @@ class ListTable extends WP_List_Table {
 		<div class="tablenav <?php echo esc_attr( $which ); ?>">
 
 			<?php
-			if ( 'top' === $which ) {
+			if ( $which === 'top' ) {
 				$this->extra_tablenav( $which );
 			}
 			$this->pagination( $which );
@@ -326,6 +360,7 @@ class ListTable extends WP_List_Table {
 		if ( ! $this->get_total() ) {
 			return;
 		}
+
 		$this->log_type_select();
 		$this->clear_all();
 	}
@@ -338,11 +373,7 @@ class ListTable extends WP_List_Table {
 	private function clear_all() {
 
 		?>
-		<button
-			name="clear-all"
-			type="submit"
-			class="button"
-			value="1"><?php esc_html_e( 'Delete All Logs', 'wpforms-lite' ); ?></button>
+		<button name="clear-all" type="submit" class="button" value="1"><?php esc_html_e( 'Delete All Logs', 'wpforms-lite' ); ?></button>
 		<?php
 	}
 
@@ -354,25 +385,34 @@ class ListTable extends WP_List_Table {
 	 */
 	public function process_admin_ui() {
 
-		$uri = isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
-		//phpcs:disable WordPress.Security.NonceVerification.Recommended
-		if ( ! empty( $_REQUEST['_wp_http_referer'] ) || ! empty( $_REQUEST['clear-all'] ) ) {
-			if ( ! empty( $_REQUEST['clear-all'] ) ) {
-				$this->repository->clear_all();
-			}
-			wp_safe_redirect(
-				remove_query_arg(
-					[ '_wp_http_referer', '_wpnonce', 'clear-all' ],
-					$uri
-				)
-			);
-			exit;
+		$nonce = isset( $_REQUEST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ) : '';
+
+		if ( ! wp_verify_nonce( $nonce, 'wpforms-table-' . $this->_args['plural'] ) ) {
+			return;
 		}
-		//phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+		if ( empty( $_REQUEST['_wp_http_referer'] ) && empty( $_REQUEST['clear-all'] ) ) {
+			return;
+		}
+
+		if ( ! empty( $_REQUEST['clear-all'] ) ) {
+			$this->repository->clear_all();
+		}
+
+		$uri = isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
+
+		wp_safe_redirect(
+			remove_query_arg(
+				[ '_wp_http_referer', '_wpnonce', 'clear-all' ],
+				$uri
+			)
+		);
+
+		exit;
 	}
 
 	/**
-	 * No items text.
+	 * Message to be displayed when there are no items.
 	 *
 	 * @since 1.6.3
 	 */
@@ -381,7 +421,6 @@ class ListTable extends WP_List_Table {
 		esc_html_e( 'No logs found.', 'wpforms-lite' );
 	}
 
-
 	/**
 	 * Print all hidden fields.
 	 *
@@ -389,11 +428,13 @@ class ListTable extends WP_List_Table {
 	 */
 	private function hidden_fields() {
 
-		//phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		foreach ( $_GET as $key => $value ) {
-			if ( '_' === $key[0] || 'paged' === $key || 'ID' === $key ) {
+
+			if ( $key[0] === '_' || $key === 'paged' || $key === 'ID' ) {
 				continue;
 			}
+
 			echo '<input type="hidden" name="' . esc_attr( $key ) . '" value="' . esc_attr( $value ) . '" />';
 		}
 	}
@@ -405,7 +446,7 @@ class ListTable extends WP_List_Table {
 	 */
 	private function log_type_select() {
 
-		//phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$current_type = ! empty( $_GET['log_type'] ) ? sanitize_text_field( wp_unslash( $_GET['log_type'] ) ) : '';
 		?>
 		<select name="log_type">
@@ -418,7 +459,7 @@ class ListTable extends WP_List_Table {
 				</option>
 			<?php } ?>
 		</select>
-		<input type="submit" class="button" value="<?php esc_html_e( 'Apply', 'wpforms-lite' ); ?>">
+		<input type="submit" class="button" value="<?php esc_attr_e( 'Apply', 'wpforms-lite' ); ?>">
 		<?php
 	}
 
@@ -434,7 +475,7 @@ class ListTable extends WP_List_Table {
 			<div class="wpforms-log-popup">
 				<div class="wpforms-log-popup-block">
 					<div class="wpforms-log-popup-label"><?php esc_html_e( 'Log Title', 'wpforms-lite' ); ?></div>
-					<div class="wpforms-log-popup-title">{{ data.title }}</div>
+					<div class="wpforms-log-popup-title">{{{ data.title }}}</div>
 				</div>
 				<div class="wpforms-log-popup-block">
 					<div class="wpforms-log-popup-label"><?php esc_html_e( 'Message', 'wpforms-lite' ); ?></div>
@@ -482,7 +523,7 @@ class ListTable extends WP_List_Table {
 					<div>
 						<div class="wpforms-log-popup-label"><?php esc_html_e( 'User ID', 'wpforms-lite' ); ?></div>
 						<div class="wpforms-log-popup-user-id">
-							<# if (data.user_id ) { #>
+							<# if ( data.user_id ) { #>
 							<a href="{{ data.user_url }}">
 								<# } #>
 								{{ data.user_id }}
@@ -506,24 +547,16 @@ class ListTable extends WP_List_Table {
 
 		$this->prepare_column_headers();
 		$this->prepare_items();
+
+		$slug = $this->_args['plural'];
+
 		echo '<div class="wpforms-list-table wpforms-list-table--logs">';
-		echo '<form id="' . esc_attr( $this->_args['plural'] ) . '-filter" method="get">';
-		$this->header();
-		parent::display();
-		echo '</form>';
+			echo '<form id="' . esc_attr( $slug ) . '-filter" method="get">';
+				wp_nonce_field( 'wpforms-table-' . $slug );
+				$this->header();
+				$this->display();
+			echo '</form>';
 		echo '</div>';
-	}
-
-	/**
-	 * Check if the database table exist.
-	 *
-	 * @since 1.6.4
-	 *
-	 * @return bool
-	 */
-	public function table_exists() {
-
-		return $this->repository->table_exists();
 	}
 
 	/**
@@ -536,5 +569,17 @@ class ListTable extends WP_List_Table {
 	public function get_total() {
 
 		return $this->repository->get_total();
+	}
+
+	/**
+	 * Gets the screen per_page option name.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @return string
+	 */
+	private function get_per_page_option_name() {
+
+		return str_replace( '-', '_', $this->screen->id ) . '_per_page';
 	}
 }

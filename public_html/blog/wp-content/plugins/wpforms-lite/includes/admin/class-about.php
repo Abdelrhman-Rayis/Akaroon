@@ -1,5 +1,14 @@
 <?php
 
+use WPForms\Requirements\Requirements;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+// phpcs:ignore Generic.Commenting.DocComment.MissingShort
+/** @noinspection AutoloadingIssuesInspection */
+
 /**
  * About WPForms admin page class.
  *
@@ -14,7 +23,7 @@ class WPForms_About {
 	 *
 	 * @var string
 	 */
-	const SLUG = 'wpforms-about';
+	public const SLUG = 'wpforms-about';
 
 	/**
 	 * Default view for a page.
@@ -23,16 +32,16 @@ class WPForms_About {
 	 *
 	 * @var string
 	 */
-	const DEFAULT_TAB = 'about';
+	private const DEFAULT_TAB = 'about';
 
 	/**
-	 * Array of license types, that are considered being top level and has no features difference.
+	 * Array of license types that are considered being pro + top level and has no features difference.
 	 *
 	 * @since 1.5.0
 	 *
 	 * @var array
 	 */
-	public static $licenses_top = array( 'pro', 'agency', 'ultimate', 'elite' );
+	public static $licenses_pro_and_top = [ 'pro', 'agency', 'ultimate', 'elite' ];
 
 	/**
 	 * List of features that licenses are different with.
@@ -41,7 +50,7 @@ class WPForms_About {
 	 *
 	 * @var array
 	 */
-	public static $licenses_features = array();
+	public static $licenses_features = [];
 
 	/**
 	 * The current active tab.
@@ -59,7 +68,7 @@ class WPForms_About {
 	 *
 	 * @var array
 	 */
-	public $views = array();
+	public $views = [];
 
 	/**
 	 * Primary class constructor.
@@ -68,51 +77,55 @@ class WPForms_About {
 	 */
 	public function __construct() {
 
-		// In old PHP we can't define this elsewhere.
-		self::$licenses_features = array(
-			'entries'      => esc_html__( 'Form Entries', 'wpforms-lite' ),
-			'fields'       => esc_html__( 'Form Fields', 'wpforms-lite' ),
-			'templates'    => esc_html__( 'Form Templates', 'wpforms-lite' ),
-			'conditionals' => esc_html__( 'Smart Conditional Logic', 'wpforms-lite' ),
-			'marketing'    => esc_html__( 'Marketing Integrations', 'wpforms-lite' ),
-			'payments'     => esc_html__( 'Payment Forms', 'wpforms-lite' ),
-			'surveys'      => esc_html__( 'Surveys & Polls', 'wpforms-lite' ),
-			'advanced'     => esc_html__( 'Advanced Form Features', 'wpforms-lite' ),
-			'addons'       => esc_html__( 'WPForms Addons', 'wpforms-lite' ),
-			'support'      => esc_html__( 'Customer Support', 'wpforms-lite' ),
-			'sites'        => esc_html__( 'Number of Sites', 'wpforms-lite' ),
-		);
-
-		// Maybe load tools page.
-		add_action( 'admin_init', array( $this, 'init' ) );
+		$this->hooks();
 	}
 
 	/**
-	 * Determining if the user is viewing the our page, if so, party on.
+	 * Register hooks.
+	 *
+	 * @since 1.8.2.3
+	 */
+	private function hooks(): void {
+
+		// Maybe load tools page.
+		add_action( 'admin_init', [ $this, 'init' ] );
+	}
+
+	/**
+	 * Determining if the user is viewing our page, if so, party on.
 	 *
 	 * @since 1.5.0
 	 */
-	public function init() {
+	public function init(): void { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
 
 		// Check what page we are on.
-		$page = isset( $_GET['page'] ) ? $_GET['page'] : '';
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
 
 		// Only load if we are actually on the settings page.
-		if ( self::SLUG !== $page ) {
+		if ( $page !== self::SLUG ) {
 			return;
 		}
 
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueues' ) );
-
 		/*
-		 * Define the core views for the our tab.
+		 * Define the core views for our tab.
 		 */
-		$this->views = apply_filters(
+		$about_us        = esc_html__( 'About Us', 'wpforms-lite' );
+		$getting_started = esc_html__( 'Getting Started', 'wpforms-lite' );
+
+		/**
+		 * Filter the views for the About Us tab.
+		 *
+		 * @since 1.5.0
+		 *
+		 * @param array $views Array of views.
+		 */
+		$this->views = apply_filters( // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 			'wpforms_admin_about_views',
-			array(
-				esc_html__( 'About Us', 'wpforms-lite' )        => array( 'about' ),
-				esc_html__( 'Getting Started', 'wpforms-lite' ) => array( 'getting-started' ),
-			)
+			[
+				$about_us        => [ 'about' ],
+				$getting_started => [ 'getting-started' ],
+			]
 		);
 
 		$license = $this->get_license_type();
@@ -120,80 +133,74 @@ class WPForms_About {
 		if (
 			(
 				$license === 'pro' ||
-				! in_array( $license, self::$licenses_top, true )
+				! in_array( $license, self::$licenses_pro_and_top, true )
 			) ||
 			wpforms_debug()
 		) {
-			$vs_tab_name = sprintf( /* translators: %1$s - current license type; %2$s - suggested license type. */
+			$vs_tab_name = sprintf( /* translators: %1$s - current license type, %2$s - suggested license type. */
 				esc_html__( '%1$s vs %2$s', 'wpforms-lite' ),
 				ucfirst( $license ),
 				$this->get_next_license( $license )
 			);
 
-			$this->views[ $vs_tab_name ] = array( 'versus' );
+			$this->views[ $vs_tab_name ] = [ 'versus' ];
 		}
 
 		// Determine the current active settings tab.
-		$this->view = ! empty( $_GET['view'] ) ? esc_html( $_GET['view'] ) : self::DEFAULT_TAB;
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$this->view = ! empty( $_GET['view'] ) ? sanitize_text_field( wp_unslash( $_GET['view'] ) ) : self::DEFAULT_TAB;
 
 		// If the user tries to load an invalid view - fallback to About Us.
 		if (
-			! in_array( $this->view, call_user_func_array( 'array_merge', $this->views ), true ) &&
-			! has_action( 'wpforms_admin_about_display_tab_' . sanitize_key( $this->view ) )
+			! has_action( 'wpforms_admin_about_display_tab_' . sanitize_key( $this->view ) ) &&
+			! in_array( $this->view, array_merge( ...array_values( $this->views ) ), true )
 		) {
 			$this->view = self::DEFAULT_TAB;
 		}
 
-		add_action( 'wpforms_admin_page', array( $this, 'output' ) );
+		add_action( 'wpforms_admin_page', [ $this, 'output' ] );
 
-		// Hook for addons.
-		do_action( 'wpforms_admin_about_init' );
-	}
-
-	/**
-	 * Enqueue assets for the the page.
-	 *
-	 * @since 1.5.0
-	 */
-	public function enqueues() {
-
-		wp_enqueue_script(
-			'jquery-matchheight',
-			WPFORMS_PLUGIN_URL . 'assets/js/jquery.matchHeight-min.js',
-			array( 'jquery' ),
-			'0.7.0',
-			false
-		);
+		/**
+		 * Fires on the About WPForms admin page init after main classes/methods initiation.
+		 *
+		 * Used by addons to hook into About page initialization.
+		 *
+		 * @since 1.5.0
+		 */
+		do_action( 'wpforms_admin_about_init' ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 	}
 
 	/**
 	 * Output the basic page structure.
 	 *
 	 * @since 1.5.0
+	 *
+	 * @noinspection HtmlUnknownTarget
 	 */
-	public function output() {
+	public function output(): void {
 
 		$show_nav = false;
+
 		foreach ( $this->views as $view ) {
 			if ( in_array( $this->view, (array) $view, true ) ) {
 				$show_nav = true;
+
 				break;
 			}
 		}
+
 		?>
-
 		<div id="wpforms-admin-about" class="wrap wpforms-admin-wrap">
-
 			<?php
+
 			if ( $show_nav ) {
-				$license      = $this->get_license_type();
-				$next_license = $this->get_next_license( $license );
 				echo '<ul class="wpforms-admin-tabs">';
 				foreach ( $this->views as $label => $view ) {
 					$class = in_array( $this->view, $view, true ) ? 'active' : '';
+
 					echo '<li>';
 					printf(
-						'<a href="%s" class="%s">%s</a>',
+						'<a href="%1$s" class="%2$s">%3$s</a>',
 						esc_url( admin_url( 'admin.php?page=' . self::SLUG . '&view=' . sanitize_key( $view[0] ) ) ),
 						esc_attr( $class ),
 						esc_html( $label )
@@ -202,29 +209,37 @@ class WPForms_About {
 				}
 				echo '</ul>';
 			}
+
 			?>
-
 			<h1 class="wpforms-h1-placeholder"></h1>
-
 			<?php
+
 			switch ( $this->view ) {
 				case 'about':
 					$this->output_about();
 					break;
+
 				case 'getting-started':
 					$this->output_getting_started();
 					break;
+
 				case 'versus':
 					$this->output_versus();
 					break;
+
 				default:
-					do_action( 'wpforms_admin_about_display_tab_' . sanitize_key( $this->view ) );
+					/**
+					 * Display custom tab content in the About WPForms admin page.
+					 * The variable part of the hook name is the current tab view being displayed.
+					 *
+					 * @since 1.5.0
+					 */
+					do_action( 'wpforms_admin_about_display_tab_' . sanitize_key( $this->view ) ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 					break;
 			}
+
 			?>
-
 		</div>
-
 		<?php
 	}
 
@@ -233,23 +248,23 @@ class WPForms_About {
 	 *
 	 * @since 1.5.0
 	 */
-	protected function output_about() {
+	protected function output_about(): void {
 
 		$this->output_about_info();
 		$this->output_about_addons();
 	}
 
 	/**
-	 * Display the General Info section of About tab.
+	 * Display the General Info section of the About tab.
 	 *
 	 * @since 1.5.8
+	 *
+	 * @noinspection HtmlUnknownTarget
 	 */
-	protected function output_about_info() {
+	protected function output_about_info(): void {
 
 		?>
-
 		<div class="wpforms-admin-about-section wpforms-admin-columns">
-
 			<div class="wpforms-admin-column-60">
 				<h3>
 					<?php esc_html_e( 'Hello and welcome to WPForms, the most beginner friendly drag & drop WordPress forms plugin. At WPForms, we build software that helps you create beautiful responsive online forms for your website in minutes.', 'wpforms-lite' ); ?>
@@ -263,9 +278,8 @@ class WPForms_About {
 				<p>
 					<?php
 					printf(
-						wp_kses(
-						    /* translators: %1$s - WPBeginner URL; %2$s - OptinMonster URL; %3$s - MonsterInsights URL. */
-							__( 'WPForms is brought to you by the same team that’s behind the largest WordPress resource site, <a href="%1$s" target="_blank" rel="noopener noreferrer">WPBeginner</a>, the most popular lead-generation software, <a href="%2$s" target="_blank" rel="noopener noreferrer">OptinMonster</a>, the best WordPress analytics plugin, <a href="%3$s" target="_blank" rel="noopener noreferrer">MonsterInsights</a>, and the more!', 'wpforms-lite' ),
+						wp_kses( /* translators: %1$s - WPBeginner URL, %2$s - OptinMonster URL, %3$s - MonsterInsights URL. */
+							__( 'WPForms is brought to you by the same team that’s behind the largest WordPress resource site, <a href="%1$s" target="_blank" rel="noopener noreferrer">WPBeginner</a>, the most popular lead-generation software, <a href="%2$s" target="_blank" rel="noopener noreferrer">OptinMonster</a>, the best WordPress analytics plugin, <a href="%3$s" target="_blank" rel="noopener noreferrer">MonsterInsights</a>, and more!', 'wpforms-lite' ),
 							[
 								'a' => [
 									'href'   => [],
@@ -287,45 +301,49 @@ class WPForms_About {
 
 			<div class="wpforms-admin-column-40 wpforms-admin-column-last">
 				<figure>
-					<img src="<?php echo WPFORMS_PLUGIN_URL; ?>assets/images/about/team.jpg" alt="<?php esc_attr_e( 'The WPForms Team photo', 'wpforms-lite' ); ?>">
+					<img src="<?php echo esc_url( WPFORMS_PLUGIN_URL . 'assets/images/about/team.jpg' ); ?>" alt="<?php esc_attr_e( 'The WPForms Team photo', 'wpforms-lite' ); ?>">
 					<figcaption>
 						<?php esc_html_e( 'The WPForms Team', 'wpforms-lite' ); ?><br>
 					</figcaption>
 				</figure>
 			</div>
-
 		</div>
 		<?php
 	}
 
 	/**
-	 * Display the Addons section of About tab.
+	 * Display the Addons section of the About tab.
 	 *
 	 * @since 1.5.8
 	 */
-	protected function output_about_addons() {
+	protected function output_about_addons(): void {
 
 		if ( ! wpforms_current_user_can() ) {
 			return;
 		}
 
-		$all_plugins         = get_plugins();
-		$am_plugins          = $this->get_am_plugins();
-		$can_install_plugins = wpforms_can_install( 'plugin' );
+		$all_plugins          = get_plugins();
+		$am_plugins           = $this->get_am_plugins();
+		$can_install_plugins  = wpforms_can_install( 'plugin' );
+		$can_activate_plugins = wpforms_can_activate( 'plugin' );
 
 		?>
 		<div id="wpforms-admin-addons">
 			<div class="addons-container">
 				<?php
 				foreach ( $am_plugins as $plugin => $details ) :
-
-					$plugin_data = $this->get_plugin_data( $plugin, $details, $all_plugins );
+					$plugin_data              = $this->get_plugin_data( $plugin, $details, $all_plugins );
+					$plugin_ready_to_activate = $can_activate_plugins
+						&& isset( $plugin_data['status_class'] )
+						&& $plugin_data['status_class'] === 'status-installed';
+					$plugin_not_activated     = ! isset( $plugin_data['status_class'] )
+						|| $plugin_data['status_class'] !== 'status-active';
 
 					?>
 					<div class="addon-container">
 						<div class="addon-item">
 							<div class="details wpforms-clear">
-								<img src="<?php echo esc_url( $plugin_data['details']['icon'] ); ?>">
+								<img src="<?php echo esc_url( $plugin_data['details']['icon'] ); ?>" alt="<?php echo esc_attr( $plugin_data['details']['name'] ); ?>">
 								<h5 class="addon-name">
 									<?php echo esc_html( $plugin_data['details']['name'] ); ?>
 								</h5>
@@ -337,8 +355,7 @@ class WPForms_About {
 								<div class="status">
 									<strong>
 										<?php
-										printf(
-										/* translators: %s - addon status label. */
+										printf( /* translators: %s - status label. */
 											esc_html__( 'Status: %s', 'wpforms-lite' ),
 											'<span class="status-label ' . esc_attr( $plugin_data['status_class'] ) . '">' . wp_kses_post( $plugin_data['status_text'] ) . '</span>'
 										);
@@ -346,11 +363,11 @@ class WPForms_About {
 									</strong>
 								</div>
 								<div class="action-button">
-									<?php if ( $can_install_plugins ) { ?>
+									<?php if ( $can_install_plugins || $plugin_ready_to_activate || ! $details['wporg'] ) { ?>
 										<button class="<?php echo esc_attr( $plugin_data['action_class'] ); ?>" data-plugin="<?php echo esc_attr( $plugin_data['plugin_src'] ); ?>" data-type="plugin">
 											<?php echo wp_kses_post( $plugin_data['action_text'] ); ?>
 										</button>
-									<?php } else { ?>
+									<?php } elseif ( $plugin_not_activated ) { ?>
 										<a href="<?php echo esc_url( $details['wporg'] ); ?>" target="_blank" rel="noopener noreferrer">
 											<?php esc_html_e( 'WordPress.org', 'wpforms-lite' ); ?>
 											<span aria-hidden="true" class="dashicons dashicons-external"></span>
@@ -367,7 +384,7 @@ class WPForms_About {
 	}
 
 	/**
-	 * Get AM plugin data to display in the Addons section of About tab.
+	 * Get AM plugin data to display in the Addons section of the About tab.
 	 *
 	 * @since 1.5.8
 	 *
@@ -377,22 +394,22 @@ class WPForms_About {
 	 *
 	 * @return array
 	 */
-	protected function get_plugin_data( $plugin, $details, $all_plugins ) {
+	protected function get_plugin_data( string $plugin, array $details, array $all_plugins ): array {
 
 		$have_pro = ( ! empty( $details['pro'] ) && ! empty( $details['pro']['plug'] ) );
 		$show_pro = false;
 
-		$plugin_data = array();
+		$plugin_data = [];
 
 		if ( $have_pro ) {
-			if ( array_key_exists( $plugin, $all_plugins ) ) {
-				if ( is_plugin_active( $plugin ) ) {
-					$show_pro = true;
-				}
+			if ( array_key_exists( $plugin, $all_plugins ) && is_plugin_active( $plugin ) ) {
+				$show_pro = true;
 			}
+
 			if ( array_key_exists( $details['pro']['plug'], $all_plugins ) ) {
 				$show_pro = true;
 			}
+
 			if ( $show_pro ) {
 				$plugin  = $details['pro']['plug'];
 				$details = $details['pro'];
@@ -422,10 +439,12 @@ class WPForms_About {
 			// Status text/status.
 			$plugin_data['status_class'] = 'status-missing';
 
-			if ( isset( $details['act'] ) && 'go-to-url' === $details['act'] ) {
+			if ( isset( $details['act'] ) && $details['act'] === 'go-to-url' ) {
 				$plugin_data['status_class'] = 'status-go-to-url';
 			}
+
 			$plugin_data['status_text'] = esc_html__( 'Not Installed', 'wpforms-lite' );
+
 			// Button text/status.
 			$plugin_data['action_class'] = $plugin_data['status_class'] . ' button button-primary';
 			$plugin_data['action_text']  = esc_html__( 'Install Plugin', 'wpforms-lite' );
@@ -441,10 +460,23 @@ class WPForms_About {
 	 * Display the Getting Started tab content.
 	 *
 	 * @since 1.5.0
+	 *
+	 * @noinspection HtmlUnknownTarget
 	 */
-	protected function output_getting_started() {
+	protected function output_getting_started(): void {
 
-		$license = $this->get_license_type();
+		$license      = $this->get_license_type();
+		$utm_campaign = $license === 'lite' ? 'liteplugin' : 'plugin';
+
+		$links = [
+			'add-new'                 => "https://wpforms.com/docs/creating-first-form/?utm_source=WordPress&utm_medium=wpforms-about-page&utm_campaign={$utm_campaign}&utm_content=How to Add a New Form#add-new",
+			'customize-fields'        => "https://wpforms.com/docs/creating-first-form/?utm_source=WordPress&utm_medium=wpforms-about-page&utm_campaign={$utm_campaign}&utm_content=How to Customize Form Fields#customize-fields",
+			'display-form'            => "https://wpforms.com/docs/creating-first-form/?utm_source=WordPress&utm_medium=wpforms-about-page&utm_campaign={$utm_campaign}&utm_content=How to Display Forms on Your Site#display-form",
+			'right-form-field'        => "https://wpforms.com/docs/how-to-choose-the-right-form-field-for-your-forms/?utm_source=WordPress&utm_medium=wpforms-about-page&utm_campaign={$utm_campaign}&utm_content=How to Choose the Right Form Field",
+			'complete-guide'          => "https://wpforms.com/docs/a-complete-guide-to-wpforms-settings/?utm_source=WordPress&utm_medium=wpforms-about-page&utm_campaign={$utm_campaign}&utm_content=A Complete Guide to WPForms Settings",
+			'gdpr-compliant'          => "https://wpforms.com/docs/how-to-create-gdpr-compliant-forms/?utm_source=WordPress&utm_medium=wpforms-about-page&utm_campaign={$utm_campaign}&utm_content=How to Create GDPR Complaint Forms",
+			'install-activate-addons' => "https://wpforms.com/docs/install-activate-wpforms-addons/?utm_source=WordPress&utm_medium=wpforms-about-page&utm_campaign={$utm_campaign}&utm_content=How to Install and Activate WPForms Addons",
+		];
 		?>
 
 		<div class="wpforms-admin-about-section wpforms-admin-about-section-first-form" style="display:flex;">
@@ -460,7 +492,7 @@ class WPForms_About {
 				</p>
 
 				<p>
-					<?php esc_html_e( 'To begin, you’ll need to be logged into the WordPress admin area. Once there, click on WPForms in the admin sidebar to go the Forms Overview page.', 'wpforms-lite' ); ?>
+					<?php esc_html_e( 'To begin, you’ll need to be logged into the WordPress admin area. Once there, click on WPForms in the admin sidebar to go to the Forms Overview page.', 'wpforms-lite' ); ?>
 				</p>
 
 				<p>
@@ -469,17 +501,17 @@ class WPForms_About {
 
 				<ul class="list-plain">
 					<li>
-						<a href="https://wpforms.com/docs/creating-first-form/?utm_source=WordPress&utm_medium=wpforms-about-page&utm_campaign=gettingstarted#add-new" target="_blank" rel="noopener noreferrer">
+						<a href="<?php echo esc_url( $links['add-new'] ); ?>" target="_blank" rel="noopener noreferrer">
 							<?php esc_html_e( 'How to Add a New Form', 'wpforms-lite' ); ?>
 						</a>
 					</li>
 					<li>
-						<a href="https://wpforms.com/docs/creating-first-form/?utm_source=WordPress&utm_medium=wpforms-about-page&utm_campaign=gettingstarted#customize-fields" target="_blank" rel="noopener noreferrer">
+						<a href="<?php echo esc_url( $links['customize-fields'] ); ?>" target="_blank" rel="noopener noreferrer">
 							<?php esc_html_e( 'How to Customize Form Fields', 'wpforms-lite' ); ?>
 						</a>
 					</li>
 					<li>
-						<a href="https://wpforms.com/docs/creating-first-form/?utm_source=WordPress&utm_medium=wpforms-about-page&utm_campaign=gettingstarted#display-form" target="_blank" rel="noopener noreferrer">
+						<a href="<?php echo esc_url( $links['display-form'] ); ?>" target="_blank" rel="noopener noreferrer">
 							<?php esc_html_e( 'How to Display Forms on Your Site', 'wpforms-lite' ); ?>
 						</a>
 					</li>
@@ -488,12 +520,12 @@ class WPForms_About {
 			</div>
 
 			<div class="wpforms-admin-about-section-first-form-video">
-				<iframe src="https://www.youtube-nocookie.com/embed/o2nE1P74WxQ?rel=0" width="540" height="304" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+				<iframe src="https://www.youtube-nocookie.com/embed/SQ9kV9SKz5k?rel=0" width="540" height="304" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 			</div>
 
 		</div>
 
-		<?php if ( ! in_array( $license, self::$licenses_top, true ) ) { ?>
+		<?php if ( ! in_array( $license, self::$licenses_pro_and_top, true ) ) { ?>
 			<div class="wpforms-admin-about-section wpforms-admin-about-section-hero">
 
 				<div class="wpforms-admin-about-section-hero-main">
@@ -505,10 +537,10 @@ class WPForms_About {
 						<?php
 						echo wp_kses(
 							__( 'Thanks for being a loyal WPForms Lite user. <strong>Upgrade to WPForms Pro</strong> to unlock all the awesome features and experience<br>why WPForms is consistently rated the best WordPress form builder.', 'wpforms-lite' ),
-							array(
-								'br'     => array(),
-								'strong' => array(),
-							)
+							[
+								'br'     => [],
+								'strong' => [],
+							]
 						);
 						?>
 					</p>
@@ -516,12 +548,11 @@ class WPForms_About {
 					<p>
 						<?php
 						printf(
-							wp_kses(
-							/* translators: %s - stars. */
-								__( 'We know that you will truly love WPForms. It has over <strong>7000+ five star ratings</strong> (%s) and is active on over 4 million websites.', 'wpforms-lite' ),
-								array(
-									'strong' => array(),
-								)
+							wp_kses( /* translators: %s - stars. */
+								__( 'We know that you will truly love WPForms. It has over <strong>13,000+ five star ratings</strong> (%s) and is active on over 6 million websites.', 'wpforms-lite' ),
+								[
+									'strong' => [],
+								]
 							),
 							'<i class="fa fa-star" aria-hidden="true"></i>' .
 							'<i class="fa fa-star" aria-hidden="true"></i>' .
@@ -539,23 +570,32 @@ class WPForms_About {
 							<ul class="list-features list-plain">
 								<li>
 									<i class="fa fa-check" aria-hidden="true"></i>
-									<?php esc_html_e( 'Entry Management - view all leads in one place.', 'wpforms-lite' ); ?>
+									<?php
+									printf( /* translators: %s - number of templates. */
+										esc_html__( '%s customizable form templates', 'wpforms-lite' ),
+										'2000+'
+									);
+									?>
 								</li>
 								<li>
 									<i class="fa fa-check" aria-hidden="true"></i>
-									<?php esc_html_e( 'All form features like file upload, pagination, etc.', 'wpforms-lite' ); ?>
+									<?php esc_html_e( 'Store and manage form entries in WordPress', 'wpforms-lite' ); ?>
 								</li>
 								<li>
 									<i class="fa fa-check" aria-hidden="true"></i>
-									<?php esc_html_e( 'Create surveys & polls with the surveys addon.', 'wpforms-lite' ); ?>
+									<?php esc_html_e( 'Unlock all fields & features, including smart conditional logic', 'wpforms-lite' ); ?>
 								</li>
 								<li>
 									<i class="fa fa-check" aria-hidden="true"></i>
-									<?php esc_html_e( 'WordPress user registration and login forms.', 'wpforms-lite' ); ?>
+									<?php esc_html_e( 'Create powerful custom calculation forms', 'wpforms-lite' ); ?>
 								</li>
 								<li>
 									<i class="fa fa-check" aria-hidden="true"></i>
-									<?php esc_html_e( 'Create payment forms with Stripe, PayPal, and Authorize.Net.', 'wpforms-lite' ); ?>
+									<?php esc_html_e( 'Make surveys and generate reports', 'wpforms-lite' ); ?>
+								</li>
+								<li>
+									<i class="fa fa-check" aria-hidden="true"></i>
+									<?php esc_html_e( 'Accept user-submitted content with the Post Submissions addon', 'wpforms-lite' ); ?>
 								</li>
 							</ul>
 						</div>
@@ -563,23 +603,27 @@ class WPForms_About {
 							<ul class="list-features list-plain">
 								<li>
 									<i class="fa fa-check" aria-hidden="true"></i>
-									<?php esc_html_e( 'Powerful Conditional Logic so you can create smart forms.', 'wpforms-lite' ); ?>
+									<?php esc_html_e( '9000+ integrations with marketing and payment services', 'wpforms-lite' ); ?>
 								</li>
 								<li>
 									<i class="fa fa-check" aria-hidden="true"></i>
-									<?php esc_html_e( '500+ integrations with different marketing & payment services.', 'wpforms-lite' ); ?>
+									<?php esc_html_e( 'Let users save & resume submissions to prevent abandonment', 'wpforms-lite' ); ?>
 								</li>
 								<li>
 									<i class="fa fa-check" aria-hidden="true"></i>
-									<?php esc_html_e( 'Collect signatures, geo-location data, and more.', 'wpforms-lite' ); ?>
+									<?php esc_html_e( 'Take payments with Stripe, PayPal, Square, & Authorize.Net', 'wpforms-lite' ); ?>
 								</li>
 								<li>
 									<i class="fa fa-check" aria-hidden="true"></i>
-									<?php esc_html_e( 'Accept user submitted content with Post Submissions addon.', 'wpforms-lite' ); ?>
+									<?php esc_html_e( 'Export entries to Google Sheets, Excel, and CSV', 'wpforms-lite' ); ?>
 								</li>
 								<li>
 									<i class="fa fa-check" aria-hidden="true"></i>
-									<?php esc_html_e( 'Bonus form templates, form abandonment, and more.', 'wpforms-lite' ); ?>
+									<?php esc_html_e( 'Collect signatures, geolocation data, and file uploads', 'wpforms-lite' ); ?>
+								</li>
+								<li>
+									<i class="fa fa-check" aria-hidden="true"></i>
+									<?php esc_html_e( 'Create user registration and login forms', 'wpforms-lite' ); ?>
 								</li>
 							</ul>
 						</div>
@@ -589,26 +633,25 @@ class WPForms_About {
 
 					<h3 class="call-to-action">
 						<?php
-						if ( 'lite' === $license ) {
-							echo '<a href="' . wpforms_admin_upgrade_link( 'wpforms-about-page' ) . '" target="_blank" rel="noopener noreferrer">';
-						} else {
-							echo '<a href="https://wpforms.com/pricing?utm_source=WordPress&utm_medium=wpforms-about-page&utm_campaign=gettingstarted" target="_blank" rel="noopener noreferrer">';
-						}
-						esc_html_e( 'Get WPForms Pro Today and Unlock all the Powerful Features', 'wpforms-lite' );
+						printf(
+							'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+							esc_url( wpforms_admin_upgrade_link( 'wpforms-about-page', 'Get WPForms Pro Today' ) ),
+							esc_html__( 'Get WPForms Pro Today and Unlock all the Powerful Features', 'wpforms-lite' )
+						);
+
 						?>
-						</a>
 					</h3>
 
-					<?php if ( 'lite' === $license ) { ?>
+					<?php if ( $license === 'lite' ) { ?>
 						<p>
 							<?php
 							echo wp_kses(
 								__( 'Bonus: WPForms Lite users get <span class="price-20-off">50% off regular price</span>, automatically applied at checkout.', 'wpforms-lite' ),
-								array(
-									'span' => array(
-										'class' => array(),
-									),
-								)
+								[
+									'span' => [
+										'class' => [],
+									],
+								]
 							);
 							?>
 						</p>
@@ -620,7 +663,7 @@ class WPForms_About {
 
 		<div class="wpforms-admin-about-section wpforms-admin-about-section-squashed wpforms-admin-about-section-post wpforms-admin-columns">
 			<div class="wpforms-admin-column-20">
-				<img src="<?php echo WPFORMS_PLUGIN_URL; ?>assets/images/about/how-choose-right-form-field.png" alt="">
+				<img src="<?php echo esc_url( WPFORMS_PLUGIN_URL . 'assets/images/about/how-choose-right-form-field.png' ); ?>" alt="">
 			</div>
 			<div class="wpforms-admin-column-80">
 				<h2>
@@ -631,7 +674,7 @@ class WPForms_About {
 					<?php esc_html_e( 'Are you wondering which form fields you have access to in WPForms and what each field does? WPForms has lots of field types to make creating and filling out forms easy. In this tutorial, we’ll cover all of the fields available in WPForms.', 'wpforms-lite' ); ?>
 				</p>
 
-				<a href="https://wpforms.com/docs/how-to-choose-the-right-form-field-for-your-forms/?utm_source=WordPress&utm_medium=wpforms-about-page&utm_campaign=gettingstarted" target="_blank" rel="noopener noreferrer" class="wpforms-admin-about-section-post-link">
+				<a href="<?php echo esc_url( $links['right-form-field'] ); ?>" target="_blank" rel="noopener noreferrer" class="wpforms-admin-about-section-post-link">
 					<?php esc_html_e( 'Read Documentation', 'wpforms-lite' ); ?><i class="fa fa-external-link" aria-hidden="true"></i>
 				</a>
 			</div>
@@ -639,7 +682,7 @@ class WPForms_About {
 
 		<div class="wpforms-admin-about-section wpforms-admin-about-section-squashed wpforms-admin-about-section-post wpforms-admin-columns">
 			<div class="wpforms-admin-column-20">
-				<img src="<?php echo WPFORMS_PLUGIN_URL; ?>assets/images/about/complete-guide-to-wpforms-settings.png" alt="">
+				<img src="<?php echo esc_url( WPFORMS_PLUGIN_URL . 'assets/images/about/complete-guide-to-wpforms-settings.png' ); ?>" alt="">
 			</div>
 			<div class="wpforms-admin-column-80">
 				<h2>
@@ -650,7 +693,7 @@ class WPForms_About {
 					<?php esc_html_e( 'Would you like to learn more about all of the settings available in WPForms? In addition to tons of customization options within the form builder, WPForms has an extensive list of plugin-wide options available. This includes choosing your currency, adding GDPR enhancements, setting up integrations.', 'wpforms-lite' ); ?>
 				</p>
 
-				<a href="https://wpforms.com/docs/a-complete-guide-to-wpforms-settings/?utm_source=WordPress&utm_medium=wpforms-about-page&utm_campaign=gettingstarted" target="_blank" rel="noopener noreferrer" class="wpforms-admin-about-section-post-link">
+				<a href="<?php echo esc_url( $links['complete-guide'] ); ?>" target="_blank" rel="noopener noreferrer" class="wpforms-admin-about-section-post-link">
 					<?php esc_html_e( 'Read Documentation', 'wpforms-lite' ); ?><i class="fa fa-external-link" aria-hidden="true"></i>
 				</a>
 			</div>
@@ -658,7 +701,7 @@ class WPForms_About {
 
 		<div class="wpforms-admin-about-section wpforms-admin-about-section-squashed wpforms-admin-about-section-post wpforms-admin-columns">
 			<div class="wpforms-admin-column-20">
-				<img src="<?php echo WPFORMS_PLUGIN_URL; ?>assets/images/about/how-create-gdpr-compliant-forms.png" alt="">
+				<img src="<?php echo esc_url( WPFORMS_PLUGIN_URL . 'assets/images/about/how-create-gdpr-compliant-forms.png' ); ?>" alt="">
 			</div>
 			<div class="wpforms-admin-column-80">
 				<h2>
@@ -669,7 +712,7 @@ class WPForms_About {
 					<?php esc_html_e( 'Do you need to check that your forms are compliant with the European Union’s General Data Protection Regulation? The best way to ensure GDPR compliance for your specific site is always to consult legal counsel. In this guide, we’ll discuss general considerations for GDPR compliance in your WordPress forms.', 'wpforms-lite' ); ?>
 				</p>
 
-				<a href="https://wpforms.com/docs/how-to-create-gdpr-compliant-forms/?utm_source=WordPress&utm_medium=wpforms-about-page&utm_campaign=gettingstarted" target="_blank" rel="noopener noreferrer" class="wpforms-admin-about-section-post-link">
+				<a href="<?php echo esc_url( $links['gdpr-compliant'] ); ?>" target="_blank" rel="noopener noreferrer" class="wpforms-admin-about-section-post-link">
 					<?php esc_html_e( 'Read Documentation', 'wpforms-lite' ); ?><i class="fa fa-external-link" aria-hidden="true"></i>
 				</a>
 			</div>
@@ -677,7 +720,7 @@ class WPForms_About {
 
 		<div class="wpforms-admin-about-section wpforms-admin-about-section-squashed wpforms-admin-about-section-post wpforms-admin-columns">
 			<div class="wpforms-admin-column-20">
-				<img src="<?php echo WPFORMS_PLUGIN_URL; ?>assets/images/about/how-install-activate-wpforms-addons.png" alt="">
+				<img src="<?php echo esc_url( WPFORMS_PLUGIN_URL . 'assets/images/about/how-install-activate-wpforms-addons.png' ); ?>" alt="">
 			</div>
 			<div class="wpforms-admin-column-80">
 				<h2>
@@ -688,7 +731,7 @@ class WPForms_About {
 					<?php esc_html_e( 'Would you like to access WPForms addons to extend the functionality of your forms? The first thing you need to do is install WPForms. Once that’s done, let’s go ahead and look at the process of activating addons.', 'wpforms-lite' ); ?>
 				</p>
 
-				<a href="https://wpforms.com/docs/install-activate-wpforms-addons/?utm_source=WordPress&utm_medium=wpforms-about-page&utm_campaign=gettingstarted" target="_blank" rel="noopener noreferrer" class="wpforms-admin-about-section-post-link">
+				<a href="<?php echo esc_url( $links['install-activate-addons'] ); ?>" target="_blank" rel="noopener noreferrer" class="wpforms-admin-about-section-post-link">
 					<?php esc_html_e( 'Read Documentation', 'wpforms-lite' ); ?><i class="fa fa-external-link" aria-hidden="true"></i>
 				</a>
 			</div>
@@ -706,30 +749,32 @@ class WPForms_About {
 	 *
 	 * @return string Next license type slug.
 	 */
-	protected function get_next_license( $current ) {
+	protected function get_next_license( string $current ): string {
 
 		$current       = ucfirst( $current );
-		$license_pairs = array(
+		$license_pairs = [
 			'Lite'  => 'Pro',
 			'Basic' => 'Pro',
 			'Plus'  => 'Pro',
 			'Pro'   => 'Elite',
-		);
+		];
 
-		return ! empty( $license_pairs[ $current ] ) ? $license_pairs[ $current ] : 'Elite';
+		return $license_pairs[ $current ] ?? 'Elite';
 	}
 
 	/**
 	 * Display the Versus tab content.
 	 *
 	 * @since 1.5.0
+	 *
+	 * @noinspection HtmlUnknownTarget
 	 */
-	protected function output_versus() {
+	protected function output_versus(): void {
 
 		$license      = $this->get_license_type();
 		$next_license = $this->get_next_license( $license );
-		?>
 
+		?>
 		<div class="wpforms-admin-about-section wpforms-admin-about-section-squashed">
 			<h1 class="centered">
 				<strong><?php echo esc_html( ucfirst( $license ) ); ?></strong> vs <strong><?php echo esc_html( $next_license ); ?></strong>
@@ -741,8 +786,7 @@ class WPForms_About {
 		</div>
 
 		<div class="wpforms-admin-about-section wpforms-admin-about-section-squashed wpforms-admin-about-section-hero wpforms-admin-about-section-table">
-
-			<div class="wpforms-admin-about-section-hero-main wpforms-admin-columns">
+			<div class="wpforms-admin-about-section-hero-main no-border wpforms-admin-columns">
 				<div class="wpforms-admin-column-33">
 					<h3 class="no-margin">
 						<?php esc_html_e( 'Feature', 'wpforms-lite' ); ?>
@@ -760,10 +804,9 @@ class WPForms_About {
 				</div>
 			</div>
 			<div class="wpforms-admin-about-section-hero-extra no-padding wpforms-admin-columns">
-
 				<table>
 					<?php
-					foreach ( self::$licenses_features as $slug => $name ) {
+					foreach ( $this->get_licenses_features_list() as $slug => $name ) {
 						$current = $this->get_license_data( $slug, $license );
 						$next    = $this->get_license_data( $slug, strtolower( $next_license ) );
 
@@ -772,6 +815,7 @@ class WPForms_About {
 						}
 
 						$current_status = $current['status'];
+
 						if ( $current['text'] !== $next['text'] && $current_status === 'full' ) {
 							$current_status = 'partial';
 						}
@@ -799,45 +843,40 @@ class WPForms_About {
 					}
 					?>
 				</table>
-
 			</div>
-
 		</div>
 
 		<div class="wpforms-admin-about-section wpforms-admin-about-section-hero">
 			<div class="wpforms-admin-about-section-hero-main no-border">
 				<h3 class="call-to-action centered">
 					<?php
-					if ( 'lite' === $license ) {
-						echo '<a href="' . esc_url( wpforms_admin_upgrade_link( 'wpforms-about-page' ) ) . '" target="_blank" rel="noopener noreferrer">';
-					} else {
-						echo '<a href="https://wpforms.com/pricing?utm_source=WordPress&utm_medium=wpforms-about-page&utm_campaign=gettingstarted" target="_blank" rel="noopener noreferrer">';
-					}
-					printf( /* translators: %s - next license level. */
-						esc_html__( 'Get WPForms %s Today and Unlock all the Powerful Features', 'wpforms-lite' ),
-						esc_html( $next_license )
+					printf(
+						'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+						esc_url( wpforms_admin_upgrade_link( 'wpforms-about-page', 'Get WPForms Pro Today' ) ),
+						sprintf( /* translators: %s - next license level. */
+							esc_html__( 'Get WPForms %s Today and Unlock all the Powerful Features', 'wpforms-lite' ),
+							esc_html( $next_license )
+						)
 					);
 					?>
-					</a>
 				</h3>
 
-				<?php if ( 'lite' === $license ) { ?>
+				<?php if ( $license === 'lite' ) { ?>
 					<p class="centered">
 						<?php
 						echo wp_kses(
 							__( 'Bonus: WPForms Lite users get <span class="price-20-off">50% off regular price</span>, automatically applied at checkout.', 'wpforms-lite' ),
-							array(
-								'span' => array(
-									'class' => array(),
-								),
-							)
+							[
+								'span' => [
+									'class' => [],
+								],
+							]
 						);
 						?>
 					</p>
 				<?php } ?>
 			</div>
 		</div>
-
 		<?php
 	}
 
@@ -848,12 +887,11 @@ class WPForms_About {
 	 *
 	 * @return array
 	 */
-	protected function get_am_plugins() {
+	protected function get_am_plugins(): array {
 
 		$images_url = WPFORMS_PLUGIN_URL . 'assets/images/about/';
 
 		return [
-
 			'optinmonster/optin-monster-wp-api.php'        => [
 				'icon'  => $images_url . 'plugin-om.png',
 				'name'  => esc_html__( 'OptinMonster', 'wpforms-lite' ),
@@ -881,14 +919,14 @@ class WPForms_About {
 			'wp-mail-smtp/wp_mail_smtp.php'                => [
 				'icon'  => $images_url . 'plugin-smtp.png',
 				'name'  => esc_html__( 'WP Mail SMTP', 'wpforms-lite' ),
-				'desc'  => esc_html__( "Improve your WordPress email deliverability and make sure that your website emails reach user's inbox with the #1 SMTP plugin for WordPress. Over 2 million websites use it to fix WordPress email issues.", 'wpforms-lite' ),
+				'desc'  => esc_html__( "Improve your WordPress email deliverability and make sure that your website emails reach user's inbox with the #1 SMTP plugin for WordPress. Over 3 million websites use it to fix WordPress email issues.", 'wpforms-lite' ),
 				'wporg' => 'https://wordpress.org/plugins/wp-mail-smtp/',
 				'url'   => 'https://downloads.wordpress.org/plugin/wp-mail-smtp.zip',
 				'pro'   => [
 					'plug' => 'wp-mail-smtp-pro/wp_mail_smtp.php',
 					'icon' => $images_url . 'plugin-smtp.png',
 					'name' => esc_html__( 'WP Mail SMTP Pro', 'wpforms-lite' ),
-					'desc' => esc_html__( "Improve your WordPress email deliverability and make sure that your website emails reach user's inbox with the #1 SMTP plugin for WordPress. Over 2 million websites use it to fix WordPress email issues.", 'wpforms-lite' ),
+					'desc' => esc_html__( "Improve your WordPress email deliverability and make sure that your website emails reach user's inbox with the #1 SMTP plugin for WordPress. Over 3 million websites use it to fix WordPress email issues.", 'wpforms-lite' ),
 					'url'  => 'https://wpmailsmtp.com/?utm_source=wpformsplugin&utm_medium=link&utm_campaign=About%20WPForms',
 					'act'  => 'go-to-url',
 				],
@@ -945,7 +983,7 @@ class WPForms_About {
 			'pushengage/main.php'                          => [
 				'icon'  => $images_url . 'plugin-pushengage.png',
 				'name'  => esc_html__( 'PushEngage', 'wpforms-lite' ),
-				'desc'  => esc_html__( 'Connect with your visitors after they leave your website with the leading web push notification software. Over 10,000+ businesses worldwide use PushEngage to send 9 billion notifications each month.', 'wpforms-lite' ),
+				'desc'  => esc_html__( 'Connect with your visitors after they leave your website with the leading web push notification software. Over 10,000+ businesses worldwide use PushEngage to send 15 billion notifications each month.', 'wpforms-lite' ),
 				'wporg' => 'https://wordpress.org/plugins/pushengage/',
 				'url'   => 'https://downloads.wordpress.org/plugin/pushengage.zip',
 			],
@@ -1021,6 +1059,85 @@ class WPForms_About {
 				'wporg' => 'https://wordpress.org/plugins/trustpulse-api/',
 				'url'   => 'https://downloads.wordpress.org/plugin/trustpulse-api.zip',
 			],
+
+			'searchwp/index.php'                           => [
+				'icon'  => $images_url . 'plugin-searchwp.png',
+				'name'  => esc_html__( 'SearchWP', 'wpforms-lite' ),
+				'desc'  => esc_html__( 'The most advanced WordPress search plugin. Customize your WordPress search algorithm, reorder search results, track search metrics, and everything you need to leverage search to grow your business.', 'wpforms-lite' ),
+				'wporg' => false,
+				'url'   => 'https://searchwp.com/?utm_source=wpformsplugin&utm_medium=link&utm_campaign=About%20WPForms',
+				'act'   => 'go-to-url',
+			],
+
+			'affiliate-wp/affiliate-wp.php'                => [
+				'icon'  => $images_url . 'plugin-affwp.png',
+				'name'  => esc_html__( 'AffiliateWP', 'wpforms-lite' ),
+				'desc'  => esc_html__( 'The #1 affiliate management plugin for WordPress. Easily create an affiliate program for your eCommerce store or membership site within minutes and start growing your sales with the power of referral marketing.', 'wpforms-lite' ),
+				'wporg' => false,
+				'url'   => 'https://affiliatewp.com/?utm_source=wpformsplugin&utm_medium=link&utm_campaign=About%20WPForms',
+				'act'   => 'go-to-url',
+			],
+
+			'stripe/stripe-checkout.php'                   => [
+				'icon'  => $images_url . 'plugin-wp-simple-pay.png',
+				'name'  => esc_html__( 'WP Simple Pay', 'wpforms-lite' ),
+				'desc'  => esc_html__( 'The #1 Stripe payments plugin for WordPress. Start accepting one-time and recurring payments on your WordPress site without setting up a shopping cart. No code required.', 'wpforms-lite' ),
+				'wporg' => 'https://wordpress.org/plugins/stripe/',
+				'url'   => 'https://downloads.wordpress.org/plugin/stripe.zip',
+				'pro'   => [
+					'plug' => 'wp-simple-pay-pro-3/simple-pay.php',
+					'icon' => $images_url . 'plugin-wp-simple-pay.png',
+					'name' => esc_html__( 'WP Simple Pay Pro', 'wpforms-lite' ),
+					'desc' => esc_html__( 'The #1 Stripe payments plugin for WordPress. Start accepting one-time and recurring payments on your WordPress site without setting up a shopping cart. No code required.', 'wpforms-lite' ),
+					'url'  => 'https://wpsimplepay.com/?utm_source=wpformsplugin&utm_medium=link&utm_campaign=About%20WPForms',
+					'act'  => 'go-to-url',
+				],
+			],
+
+			'easy-digital-downloads/easy-digital-downloads.php' => [
+				'icon'  => $images_url . 'plugin-edd.png',
+				'name'  => esc_html__( 'Easy Digital Downloads', 'wpforms-lite' ),
+				'desc'  => esc_html__( 'The best WordPress eCommerce plugin for selling digital downloads. Start selling eBooks, software, music, digital art, and more within minutes. Accept payments, manage subscriptions, advanced access control, and more.', 'wpforms-lite' ),
+				'wporg' => 'https://wordpress.org/plugins/easy-digital-downloads/',
+				'url'   => 'https://downloads.wordpress.org/plugin/easy-digital-downloads.zip',
+			],
+
+			'sugar-calendar-lite/sugar-calendar-lite.php'  => [
+				'icon'  => $images_url . 'plugin-sugarcalendar.png',
+				'name'  => esc_html__( 'Sugar Calendar', 'wpforms-lite' ),
+				'desc'  => esc_html__( 'A simple & powerful event calendar plugin for WordPress that comes with all the event management features including payments, scheduling, timezones, ticketing, recurring events, and more.', 'wpforms-lite' ),
+				'wporg' => 'https://wordpress.org/plugins/sugar-calendar-lite/',
+				'url'   => 'https://downloads.wordpress.org/plugin/sugar-calendar-lite.zip',
+				'pro'   => [
+					'plug' => 'sugar-calendar/sugar-calendar.php',
+					'icon' => $images_url . 'plugin-sugarcalendar.png',
+					'name' => esc_html__( 'Sugar Calendar Pro', 'wpforms-lite' ),
+					'desc' => esc_html__( 'A simple & powerful event calendar plugin for WordPress that comes with all the event management features including payments, scheduling, timezones, ticketing, recurring events, and more.', 'wpforms-lite' ),
+					'url'  => 'https://sugarcalendar.com/?utm_source=wpformsplugin&utm_medium=link&utm_campaign=About%20WPForms',
+					'act'  => 'go-to-url',
+				],
+			],
+			'charitable/charitable.php'                    => [
+				'icon'  => $images_url . 'plugin-charitable.png',
+				'name'  => esc_html__( 'Charitable', 'wpforms-lite' ),
+				'desc'  => esc_html__( 'Top-rated WordPress donation and fundraising plugin. Over 10,000+ non-profit organizations and website owners use Charitable to create fundraising campaigns and raise more money online.', 'wpforms-lite' ),
+				'wporg' => 'https://wordpress.org/plugins/charitable/',
+				'url'   => 'https://downloads.wordpress.org/plugin/charitable.zip',
+			],
+			'insert-headers-and-footers/ihaf.php'          => [
+				'icon'  => $images_url . 'plugin-wpcode.png',
+				'name'  => esc_html__( 'WPCode', 'wpforms-lite' ),
+				'desc'  => esc_html__( 'Future proof your WordPress customizations with the most popular code snippet management plugin for WordPress. Trusted by over 1,500,000+ websites for easily adding code to WordPress right from the admin area.', 'wpforms-lite' ),
+				'wporg' => 'https://wordpress.org/plugins/insert-headers-and-footers/',
+				'url'   => 'https://downloads.wordpress.org/plugin/insert-headers-and-footers.zip',
+			],
+			'duplicator/duplicator.php'                    => [
+				'icon'  => $images_url . 'plugin-duplicator.png',
+				'name'  => esc_html__( 'Duplicator', 'wpforms-lite' ),
+				'desc'  => esc_html__( 'Leading WordPress backup & site migration plugin. Over 1,500,000+ smart website owners use Duplicator to make reliable and secure WordPress backups to protect their websites. It also makes website migration really easy.', 'wpforms-lite' ),
+				'wporg' => 'https://wordpress.org/plugins/duplicator/',
+				'url'   => 'https://downloads.wordpress.org/plugin/duplicator.zip',
+			],
 		];
 	}
 
@@ -1034,7 +1151,7 @@ class WPForms_About {
 	 *
 	 * @return array|false
 	 */
-	protected function get_license_data( $feature, $license ) {
+	protected function get_license_data( string $feature, string $license ) {
 
 		$data = [
 			'entries'      => [
@@ -1067,29 +1184,29 @@ class WPForms_About {
 				'lite'  => [
 					'status' => 'partial',
 					'text'   => [
-						'<strong>' . esc_html__( 'Standard Fields Only', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'Name, Email, Single Line Text, Paragraph Text, Dropdown, Multiple Choice, Checkboxes, Numbers, and Number Slider', 'wpforms-lite' ),
+						'<strong>' . esc_html__( 'Standard and Payment Fields', 'wpforms-lite' ) . '</strong>',
+						esc_html__( 'Name, Email, Single Line Text, Paragraph Text, Dropdown, Multiple Choice, Checkboxes, Numbers, Number Slider, and Payment Fields (Single Item, Total, etc.)', 'wpforms-lite' ),
 					],
 				],
 				'basic' => [
 					'status' => 'full',
 					'text'   => [
-						'<strong>' . esc_html__( 'Access to all Standard and Fancy Fields', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'Address, Phone, Website / URL, Date / Time, Password, File Upload, HTML, Pagebreaks, Section Dividers, Ratings, and Hidden Field', 'wpforms-lite' ),
+						'<strong>' . esc_html__( 'Access to all Standard, Fancy, and Payment Fields', 'wpforms-lite' ) . '</strong>',
+						esc_html__( 'Address, Phone, Website / URL, Date / Time, Password, File Upload, Layout, Rich Text, Content, HTML, Pagebreaks, Entry Preview, Section Dividers, Ratings, and Hidden Field', 'wpforms-lite' ),
 					],
 				],
 				'plus'  => [
 					'status' => 'full',
 					'text'   => [
-						'<strong>' . esc_html__( 'Access to all Standard and Fancy Fields', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'Address, Phone, Website URL, Date/Time, Password, File Upload, HTML, Pagebreaks, Section Dividers, Ratings, and Hidden Field', 'wpforms-lite' ),
+						'<strong>' . esc_html__( 'Access to all Standard, Fancy, and Payment Fields', 'wpforms-lite' ) . '</strong>',
+						esc_html__( 'Address, Phone, Website / URL, Date / Time, Password, File Upload, Layout, Rich Text, Content, HTML, Pagebreaks, Entry Preview, Section Dividers, Ratings, and Hidden Field', 'wpforms-lite' ),
 					],
 				],
 				'pro'   => [
 					'status' => 'full',
 					'text'   => [
-						'<strong>' . esc_html__( 'Access to all Standard and Fancy Fields', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'Address, Phone, Website URL, Date/Time, Password, File Upload, HTML, Pagebreaks, Section Dividers, Ratings, and Hidden Field', 'wpforms-lite' ),
+						'<strong>' . esc_html__( 'Access to all Standard, Fancy, and Payment Fields', 'wpforms-lite' ) . '</strong>',
+						esc_html__( 'Address, Phone, Website / URL, Date / Time, Password, File Upload, Layout, Rich Text, Content, HTML, Pagebreaks, Entry Preview, Section Dividers, Ratings, and Hidden Field', 'wpforms-lite' ),
 					],
 				],
 			],
@@ -1141,7 +1258,42 @@ class WPForms_About {
 				'pro'   => [
 					'status' => 'full',
 					'text'   => [
-						'<strong>' . esc_html__( 'All Form Templates including Bonus 100+ pre-made form templates', 'wpforms-lite' ) . '</strong>',
+						'<strong>' .
+						sprintf( /* translators: %s - number of templates. */
+							esc_html__( 'All Form Templates including Bonus %s pre-made form templates', 'wpforms-lite' ),
+							'2000+'
+						) .
+						'</strong>',
+					],
+				],
+			],
+			'antispam'     => [
+				'lite'  => [
+					'status' => 'partial',
+					'text'   => [
+						'<strong>' . esc_html__( 'Basic Anti-Spam Settings', 'wpforms-lite' ) . '</strong>',
+						esc_html__( 'Basic Protection, reCAPTCHA, hCaptcha, Cloudflare Turnstile and Akismet', 'wpforms-lite' ),
+					],
+				],
+				'basic' => [
+					'status' => 'full',
+					'text'   => [
+						'<strong>' . esc_html__( 'Additional Anti-Spam Settings', 'wpforms-lite' ) . '</strong>',
+						esc_html__( 'Basic Protection, reCAPTCHA, hCaptcha, Cloudflare Turnstile, Akismet, Country Filter, Keyword Filter, and Custom Captcha', 'wpforms-lite' ),
+					],
+				],
+				'plus'  => [
+					'status' => 'full',
+					'text'   => [
+						'<strong>' . esc_html__( 'Additional Anti-Spam Settings', 'wpforms-lite' ) . '</strong>',
+						esc_html__( 'Basic Protection, reCAPTCHA, hCaptcha, Cloudflare Turnstile, Akismet, Country Filter, Keyword Filter, and Custom Captcha', 'wpforms-lite' ),
+					],
+				],
+				'pro'   => [
+					'status' => 'full',
+					'text'   => [
+						'<strong>' . esc_html__( 'Additional Anti-Spam Settings', 'wpforms-lite' ) . '</strong>',
+						esc_html__( 'Basic Protection, reCAPTCHA, hCaptcha, Cloudflare Turnstile, Akismet, Country Filter, Keyword Filter, and Custom Captcha', 'wpforms-lite' ),
 					],
 				],
 			],
@@ -1164,17 +1316,49 @@ class WPForms_About {
 					'status' => 'partial',
 					'text'   => [
 						'<strong>' . esc_html__( 'Additional Marketing Integrations', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'Constant Contact, Mailchimp, AWeber, GetResponse, Campaign Monitor, Sendinblue, and Drip', 'wpforms-lite' ),
+						wpforms_list_array(
+							[
+								'Constant Contact',
+								'Mailchimp',
+								'AWeber',
+								'GetResponse',
+								'Campaign Monitor',
+								'Brevo',
+								'Drip',
+								'MailerLite',
+								'MailPoet',
+								'Kit',
+								'Slack',
+								'Twilio',
+							]
+						),
 					],
 				],
 				'pro'      => [
 					'status' => 'full',
 					'text'   => [
 						'<strong>' . esc_html__( 'Additional Marketing Integrations', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'Constant Contact, Mailchimp, AWeber, GetResponse, Campaign Monitor, Sendinblue, and Drip', 'wpforms-lite' ),
+						wpforms_list_array(
+							[
+								'Constant Contact',
+								'Mailchimp',
+								'AWeber',
+								'GetResponse',
+								'Campaign Monitor',
+								'Brevo',
+								'Drip',
+								'MailerLite',
+								'MailPoet',
+								'Kit',
+								'Slack',
+								'Twilio',
+								'Make',
+								'n8n',
+							]
+						),
 						'',
 						wp_kses(
-							__( '<strong>Bonus:</strong> 500+ integrations with Zapier.', 'wpforms-lite' ),
+							__( '<strong>Bonus:</strong> 9000+ integrations with Zapier.', 'wpforms-lite' ),
 							[
 								'strong' => [],
 							]
@@ -1185,10 +1369,32 @@ class WPForms_About {
 					'status' => 'full',
 					'text'   => [
 						'<strong>' . esc_html__( 'All Marketing Integrations', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'ActiveCampaign, Constant Contact, Mailchimp, AWeber, GetResponse, Campaign Monitor, Salesforce, Sendinblue, and Drip', 'wpforms-lite' ),
+						wpforms_list_array(
+							[
+								'ActiveCampaign',
+								'Constant Contact',
+								'Mailchimp',
+								'AWeber',
+								'GetResponse',
+								'Campaign Monitor',
+								'Salesforce',
+								'Brevo',
+								'HubSpot',
+								'Drip',
+								'MailerLite',
+								'MailPoet',
+								'Kit',
+								'Slack',
+								'Twilio',
+								'Pipedrive',
+								'Make',
+								'Zoho CRM',
+								'n8n',
+							]
+						),
 						'',
 						wp_kses(
-							__( '<strong>Bonus:</strong> 500+ integrations with Zapier.', 'wpforms-lite' ),
+							__( '<strong>Bonus:</strong> 9000+ integrations with Zapier.', 'wpforms-lite' ),
 							[
 								'strong' => [],
 							]
@@ -1199,10 +1405,32 @@ class WPForms_About {
 					'status' => 'full',
 					'text'   => [
 						'<strong>' . esc_html__( 'All Marketing Integrations', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'ActiveCampaign, Constant Contact, Mailchimp, AWeber, GetResponse, Campaign Monitor, Salesforce, Sendinblue, and Drip', 'wpforms-lite' ),
+						wpforms_list_array(
+							[
+								'ActiveCampaign',
+								'Constant Contact',
+								'Mailchimp',
+								'AWeber',
+								'GetResponse',
+								'Campaign Monitor',
+								'Salesforce',
+								'Brevo',
+								'HubSpot',
+								'Drip',
+								'MailerLite',
+								'MailPoet',
+								'Kit',
+								'Slack',
+								'Twilio',
+								'Pipedrive',
+								'Make',
+								'Zoho CRM',
+								'n8n',
+							]
+						),
 						'',
 						wp_kses(
-							__( '<strong>Bonus:</strong> 500+ integrations with Zapier.', 'wpforms-lite' ),
+							__( '<strong>Bonus:</strong> 9000+ integrations with Zapier.', 'wpforms-lite' ),
 							[
 								'strong' => [],
 							]
@@ -1213,10 +1441,32 @@ class WPForms_About {
 					'status' => 'full',
 					'text'   => [
 						'<strong>' . esc_html__( 'All Marketing Integrations', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'ActiveCampaign, Constant Contact, Mailchimp, AWeber, GetResponse, Campaign Monitor, Salesforce, Sendinblue, and Drip', 'wpforms-lite' ),
+						wpforms_list_array(
+							[
+								'ActiveCampaign',
+								'Constant Contact',
+								'Mailchimp',
+								'AWeber',
+								'GetResponse',
+								'Campaign Monitor',
+								'Salesforce',
+								'Brevo',
+								'HubSpot',
+								'Drip',
+								'MailerLite',
+								'MailPoet',
+								'Kit',
+								'Slack',
+								'Twilio',
+								'Pipedrive',
+								'Make',
+								'Zoho CRM',
+								'n8n',
+							]
+						),
 						'',
 						wp_kses(
-							__( '<strong>Bonus:</strong> 500+ integrations with Zapier.', 'wpforms-lite' ),
+							__( '<strong>Bonus:</strong> 9000+ integrations with Zapier.', 'wpforms-lite' ),
 							[
 								'strong' => [],
 							]
@@ -1226,49 +1476,52 @@ class WPForms_About {
 			],
 			'payments'     => [
 				'lite'     => [
-					'status' => 'none',
+					'status' => 'partial',
 					'text'   => [
-						'<strong>' . esc_html__( 'Not Available', 'wpforms-lite' ) . '</strong>',
+						'<strong>' . esc_html__( 'Limited Payment Forms', 'wpforms-lite' ) . '</strong>',
+						esc_html__( 'Accept payments using Stripe and Square only', 'wpforms-lite' ),
 					],
 				],
 				'basic'    => [
-					'status' => 'none',
+					'status' => 'partial',
 					'text'   => [
-						'<strong>' . esc_html__( 'Not Available', 'wpforms-lite' ) . '</strong>',
+						'<strong>' . esc_html__( 'Limited Payment Forms', 'wpforms-lite' ) . '</strong>',
+						esc_html__( 'Accept payments using Stripe and Square only', 'wpforms-lite' ),
 					],
 				],
 				'plus'     => [
-					'status' => 'none',
+					'status' => 'partial',
 					'text'   => [
-						'<strong>' . esc_html__( 'Not Available', 'wpforms-lite' ) . '</strong>',
+						'<strong>' . esc_html__( 'Limited Payment Forms', 'wpforms-lite' ) . '</strong>',
+						esc_html__( 'Accept payments using Stripe and Square only', 'wpforms-lite' ),
 					],
 				],
 				'pro'      => [
-					'status' => 'full',
+					'status' => 'partial',
 					'text'   => [
 						'<strong>' . esc_html__( 'Create Payment Forms', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'Accept payments using Stripe (credit card) and PayPal', 'wpforms-lite' ),
+						esc_html__( 'Accept payments using PayPal Commerce, Stripe, Square, and PayPal Standard', 'wpforms-lite' ),
 					],
 				],
 				'elite'    => [
 					'status' => 'full',
 					'text'   => [
 						'<strong>' . esc_html__( 'Create Payment Forms', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'Accept payments using Stripe, PayPal, and Authorize.Net', 'wpforms-lite' ),
+						esc_html__( 'Accept payments using PayPal Commerce, Stripe, Square, PayPal Standard, and Authorize.Net', 'wpforms-lite' ),
 					],
 				],
 				'agency'   => [
 					'status' => 'full',
 					'text'   => [
 						'<strong>' . esc_html__( 'Create Payment Forms', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'Accept payments using Stripe, PayPal, and Authorize.Net', 'wpforms-lite' ),
+						esc_html__( 'Accept payments using PayPal Commerce, Stripe, Square, PayPal Standard, and Authorize.Net', 'wpforms-lite' ),
 					],
 				],
 				'ultimate' => [
 					'status' => 'full',
 					'text'   => [
 						'<strong>' . esc_html__( 'Create Payment Forms', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'Accept payments using Stripe, PayPal, and Authorize.Net', 'wpforms-lite' ),
+						esc_html__( 'Accept payments using PayPal Commerce, Stripe, Square, PayPal Standard, and Authorize.Net', 'wpforms-lite' ),
 					],
 				],
 			],
@@ -1294,7 +1547,7 @@ class WPForms_About {
 				'pro'   => [
 					'status' => 'full',
 					'text'   => [
-						'<strong>' . esc_html__( 'Create interactive Surveys and Polls with beautiful reports', 'wpforms-lite' ) . '</strong>',
+						'<strong>' . esc_html__( 'Create interactive Surveys, Polls, and Quizzes with beautiful reports', 'wpforms-lite' ) . '</strong>',
 					],
 				],
 			],
@@ -1309,21 +1562,21 @@ class WPForms_About {
 					'status' => 'partial',
 					'text'   => [
 						'<strong>' . esc_html__( 'Limited Advanced Features', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'Multi-page Forms, File Upload Forms, Multiple Form Notifications, Conditional Form Confirmation', 'wpforms-lite' ),
+						esc_html__( 'Multi-page Forms, File Upload Forms, Multiple Form Notifications, File Upload and CSV Attachments, Conditional Form Confirmation', 'wpforms-lite' ),
 					],
 				],
 				'plus'  => [
 					'status' => 'partial',
 					'text'   => [
 						'<strong>' . esc_html__( 'Limited Advanced Features', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'Multi-page Forms, File Upload Forms, Multiple Form Notifications, Conditional Form Confirmation', 'wpforms-lite' ),
+						esc_html__( 'Multi-page Forms, File Upload Forms, Multiple Form Notifications, File Upload and CSV Attachments, Conditional Form Confirmation, Save and Resume Form', 'wpforms-lite' ),
 					],
 				],
 				'pro'   => [
 					'status' => 'full',
 					'text'   => [
 						'<strong>' . esc_html__( 'All Advanced Features', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'Multi-page Forms, File Upload Forms, Multiple Form Notifications, Conditional Form Confirmation, Custom CAPTCHA, Offline Forms, Signature Forms', 'wpforms-lite' ),
+						esc_html__( 'Multi-page Forms, File Upload Forms, Multiple Form Notifications, File Upload and CSV Attachments, Conditional Form Confirmation, Custom CAPTCHA, Offline Forms, Signature Forms, Save and Resume Form, Coupons', 'wpforms-lite' ),
 					],
 				],
 			],
@@ -1335,9 +1588,9 @@ class WPForms_About {
 					],
 				],
 				'basic'    => [
-					'status' => 'partial',
+					'status' => 'none',
 					'text'   => [
-						'<strong>' . esc_html__( 'Custom Captcha Addon included', 'wpforms-lite' ) . '</strong>',
+						'<strong>' . esc_html__( 'No Addons Included', 'wpforms-lite' ) . '</strong>',
 					],
 				],
 				'plus'     => [
@@ -1350,28 +1603,28 @@ class WPForms_About {
 					'status' => 'full',
 					'text'   => [
 						'<strong>' . esc_html__( 'Pro Addons Included', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'Form Abandonment, Conversational Forms, Frontend Post Submission, User Registration, Geolocation, and more (23 total)', 'wpforms-lite' ),
+						$this->get_pro_addon_list(),
 					],
 				],
 				'elite'    => [
 					'status' => 'full',
 					'text'   => [
 						'<strong>' . esc_html__( 'All Addons Included', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'Form Abandonment, Conversational Forms, Frontend Post Submission, User Registration, Geolocation, and more (27 total)', 'wpforms-lite' ),
+						self::get_top_addons_list(),
 					],
 				],
 				'ultimate' => [
 					'status' => 'full',
 					'text'   => [
 						'<strong>' . esc_html__( 'All Addons Included', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'Form Abandonment, Conversational Forms, Frontend Post Submission, User Registration, Geolocation, and more (27 total)', 'wpforms-lite' ),
+						self::get_top_addons_list(),
 					],
 				],
 				'agency'   => [
 					'status' => 'full',
 					'text'   => [
 						'<strong>' . esc_html__( 'All Addons Included', 'wpforms-lite' ) . '</strong>',
-						esc_html__( 'Form Abandonment, Conversational Forms, Frontend Post Submission, User Registration, Geolocation, and more (27 total)', 'wpforms-lite' ),
+						self::get_top_addons_list(),
 					],
 				],
 			],
@@ -1465,20 +1718,15 @@ class WPForms_About {
 		}
 
 		// Is a top level license?
-		$is_licenses_top = in_array( $license, self::$licenses_top, true );
+		$is_licenses_pro_and_top = in_array( $license, self::$licenses_pro_and_top, true );
 
 		// Wrong license type?
-		if ( ! isset( $data[ $feature ][ $license ] ) && ! $is_licenses_top ) {
+		if ( ! isset( $data[ $feature ][ $license ] ) && ! $is_licenses_pro_and_top ) {
 			return false;
 		}
 
 		// Some licenses have partial data.
-		if ( isset( $data[ $feature ][ $license ] ) ) {
-			return $data[ $feature ][ $license ];
-		}
-
-		// Top level plans has no feature difference with `pro` plan in most cases.
-		return $is_licenses_top ? $data[ $feature ]['pro'] : $data[ $feature ][ $license ];
+		return $data[ $feature ][ $license ] ?? ( $is_licenses_pro_and_top ? $data[ $feature ]['pro'] : $data[ $feature ][ $license ] );
 	}
 
 	/**
@@ -1488,15 +1736,84 @@ class WPForms_About {
 	 *
 	 * @return string
 	 */
-	protected function get_license_type() {
+	protected function get_license_type(): string {
 
 		$type = wpforms_get_license_type();
 
-		if ( empty( $type ) ) {
-			$type = 'lite';
+		return $type ? $type : 'lite';
+	}
+
+	/**
+	 * Get the list of features for the licenses.
+	 *
+	 * @since 1.8.2.3
+	 *
+	 * @return array
+	 */
+	private function get_licenses_features_list(): array {
+
+		self::$licenses_features = [
+			'entries'      => esc_html__( 'Form Entries', 'wpforms-lite' ),
+			'fields'       => esc_html__( 'Form Fields', 'wpforms-lite' ),
+			'templates'    => esc_html__( 'Form Templates', 'wpforms-lite' ),
+			'antispam'     => esc_html__( 'Spam Protection and Security', 'wpforms-lite' ),
+			'conditionals' => esc_html__( 'Smart Conditional Logic', 'wpforms-lite' ),
+			'marketing'    => esc_html__( 'Marketing Integrations', 'wpforms-lite' ),
+			'payments'     => esc_html__( 'Payment Forms', 'wpforms-lite' ),
+			'surveys'      => esc_html__( 'Surveys, Polls, and Quizzes', 'wpforms-lite' ),
+			'advanced'     => esc_html__( 'Advanced Form Features', 'wpforms-lite' ),
+			'addons'       => esc_html__( 'WPForms Addons', 'wpforms-lite' ),
+			'support'      => esc_html__( 'Customer Support', 'wpforms-lite' ),
+			'sites'        => esc_html__( 'Number of Sites', 'wpforms-lite' ),
+		];
+
+		return self::$licenses_features;
+	}
+
+	/**
+	 * Get the list of addons included in Pro license.
+	 *
+	 * @since 1.9.8.3
+	 *
+	 * @return string
+	 */
+	private function get_pro_addon_list(): string {
+
+		static $pro_addons_list = null;
+
+		if ( $pro_addons_list === null ) {
+			$pro_addons      = Requirements::get_instance()->get_addons_by_license( 'basic, plus, pro' );
+			$pro_addons_list = sprintf(
+				/* translators: %s - number of addons. */
+				esc_html__( 'PDF, Calculations, Form Abandonment, Conversational Forms, Lead Forms, Frontend Post Submission, User Registration, Geolocation, Google Sheets, Coupons, Dropbox, Google Calendar, Google Drive, Airtable, Notion, and more (%1$s+ total)', 'wpforms-lite' ),
+				count( $pro_addons )
+			);
 		}
 
-		return $type;
+		return $pro_addons_list;
+	}
+
+	/**
+	 * Get the list of addons included in Elite, Ultimate, and Agency licenses.
+	 *
+	 * @since 1.9.8.3
+	 *
+	 * @return string
+	 */
+	private static function get_top_addons_list(): string {
+
+		static $top_addons_list = null;
+
+		if ( $top_addons_list === null ) {
+			$pro_addons      = Requirements::get_instance()->get_addons_by_license( Requirements::BASIC_PLUS_PRO_AND_TOP );
+			$top_addons_list = sprintf(
+			/* translators: %s - number of addons. */
+				esc_html__( 'PDF, Calculations, Form Abandonment, Conversational Forms, Lead Forms, Frontend Post Submission, User Registration, Geolocation, Webhooks, Google Sheets, Coupons, Dropbox, Google Calendar, Google Drive, Entry Automation, Airtable, Notion, and more (%1$s+ total)', 'wpforms-lite' ),
+				count( $pro_addons )
+			);
+		}
+
+		return $top_addons_list;
 	}
 }
 

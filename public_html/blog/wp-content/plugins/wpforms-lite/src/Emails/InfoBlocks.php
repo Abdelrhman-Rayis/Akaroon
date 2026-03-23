@@ -13,7 +13,7 @@ class InfoBlocks {
 	 *
 	 * @since 1.5.4
 	 */
-	const SOURCE_URL = 'https://wpforms.com/wp-content/email-summaries.json';
+	const SOURCE_URL = 'https://wpformsapi.com/feeds/v1/email-summaries/%s';
 
 	/**
 	 * Get info blocks info from the cache file or remote.
@@ -26,10 +26,11 @@ class InfoBlocks {
 
 		$cache_file = $this->get_cache_file_path();
 
-		if ( empty( $cache_file ) || ! file_exists( $cache_file ) ) {
+		if ( empty( $cache_file ) || ! is_readable( $cache_file ) ) {
 			return $this->fetch_all();
 		}
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 		$contents = file_get_contents( $cache_file );
 		$contents = json_decode( $contents, true );
 
@@ -45,21 +46,27 @@ class InfoBlocks {
 	 */
 	public function fetch_all() {
 
-		$info = array();
+		$info = [];
 
-		$res = \wp_remote_get( self::SOURCE_URL );
+		$res = wp_remote_get(
+			$this->get_remote_source(),
+			[
+				'timeout'    => 10,
+				'user-agent' => wpforms_get_default_user_agent(),
+			]
+		);
 
-		if ( \is_wp_error( $res ) ) {
+		if ( is_wp_error( $res ) ) {
 			return $info;
 		}
 
-		$body = \wp_remote_retrieve_body( $res );
+		$body = wp_remote_retrieve_body( $res );
 
 		if ( empty( $body ) ) {
 			return $info;
 		}
 
-		$body = \json_decode( $body, true );
+		$body = json_decode( $body, true );
 
 		return $this->verify_fetched( $body );
 	}
@@ -75,7 +82,7 @@ class InfoBlocks {
 	 */
 	protected function verify_fetched( $fetched ) {
 
-		$info = array();
+		$info = [];
 
 		if ( ! \is_array( $fetched ) ) {
 			return $info;
@@ -109,13 +116,15 @@ class InfoBlocks {
 	protected function get_by_license() {
 
 		$data     = $this->get_all();
-		$filtered = array();
+		$filtered = [];
 
 		if ( empty( $data ) || ! \is_array( $data ) ) {
 			return $filtered;
 		}
 
-		$license_type = \wpforms_setting( 'type', false, 'wpforms_license' );
+		// When there is no license, we assume it's a Lite version.
+		// This is needed to show blocks for Lite users, as they don't have a license type.
+		$license_type = wpforms_setting( 'type', 'lite', 'wpforms_license' );
 
 		foreach ( $data as $key => $item ) {
 
@@ -146,7 +155,7 @@ class InfoBlocks {
 	protected function get_first_with_id( $data ) {
 
 		if ( empty( $data ) || ! \is_array( $data ) ) {
-			return array();
+			return [];
 		}
 
 		foreach ( $data as $item ) {
@@ -156,7 +165,7 @@ class InfoBlocks {
 			}
 		}
 
-		return array();
+		return [];
 	}
 
 	/**
@@ -169,7 +178,7 @@ class InfoBlocks {
 	public function get_next() {
 
 		$data  = $this->get_by_license();
-		$block = array();
+		$block = [];
 
 		if ( empty( $data ) || ! \is_array( $data ) ) {
 			return $block;
@@ -198,27 +207,28 @@ class InfoBlocks {
 	 */
 	public function register_sent( $info_block ) {
 
-		$block_id = isset( $info_block['id'] ) ? \absint( $info_block['id'] ) : false;
+		$block_id = isset( $info_block['id'] ) ? absint( $info_block['id'] ) : false;
 
 		if ( empty( $block_id ) ) {
 			return;
 		}
 
 		$option_name = 'wpforms_email_summaries_info_blocks_sent';
-		$blocks      = \get_option( $option_name );
+		$blocks      = get_option( $option_name );
 
-		if ( empty( $blocks ) || ! \is_array( $blocks ) ) {
-			\update_option( $option_name, array( $block_id ) );
+		if ( empty( $blocks ) || ! is_array( $blocks ) ) {
+			update_option( $option_name, [ $block_id ] );
+
 			return;
 		}
 
-		if ( \in_array( $block_id, $blocks, true ) ) {
+		if ( in_array( $block_id, $blocks, true ) ) {
 			return;
 		}
 
 		$blocks[] = $block_id;
 
-		\update_option( $option_name, $blocks );
+		update_option( $option_name, $blocks );
 	}
 
 	/**
@@ -265,6 +275,21 @@ class InfoBlocks {
 
 		$info_blocks = $this->fetch_all();
 
-		file_put_contents( $file_path, wp_json_encode( $info_blocks ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+		file_put_contents( $file_path, wp_json_encode( $info_blocks ) );
+	}
+
+	/**
+	 * Retrieve the source URL.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @return string
+	 */
+	protected function get_remote_source(): string {
+
+		$license_type = wpforms()->is_pro() ? wpforms_get_license_type() : 'lite';
+
+		return sprintf( self::SOURCE_URL, $license_type );
 	}
 }

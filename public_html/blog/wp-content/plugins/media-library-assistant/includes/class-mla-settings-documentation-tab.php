@@ -53,7 +53,7 @@ class MLASettings_Documentation {
 
 		wp_enqueue_script( self::JAVASCRIPT_DOCUMENTATION_TAB_SLUG,
 			MLA_PLUGIN_URL . "js/mla-settings-shortcodes-tab-scripts{$suffix}.js", 
-			array( 'jquery' ), MLACore::CURRENT_MLA_VERSION, false );
+			array( 'jquery' ), MLACore::mla_script_version(), false );
 
 		wp_localize_script( self::JAVASCRIPT_DOCUMENTATION_TAB_SLUG,
 			self::JAVASCRIPT_DOCUMENTATION_TAB_OBJECT, $script_variables );
@@ -232,7 +232,6 @@ class MLASettings_Documentation {
 	 * Compose the Documentation tab content for the Settings subpage
 	 *
 	 * @since 0.80
-	 * @uses $page_template_array contains tab content template(s)
  	 *
 	 * @return	array	'message' => status/error messages, 'body' => tab content
 	 */
@@ -340,8 +339,9 @@ class MLASettings_Documentation {
 
 		// Display the Documentation tab
 		$page_values = array(
+			'example_style' => 'style="display:block"',
 			'example_url' => MLACore::mla_nonce_url( '?page=mla-settings-menu-documentation&mla_tab=documentation&mla-example-search=Search', MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME ),
-			'translate_url' => MLA_PLUGIN_URL . 'languages/MLA Internationalization Guide.pdf',
+			'translate_url' => MLA_PLUGIN_URL . 'languages/MLA%20Internationalization%20Guide.pdf',
 			'phpDocs_url' => 'http://davidlingren.com/assets/phpDocs/index.html',
 		);
 
@@ -670,7 +670,7 @@ class MLA_Example_List_Table extends WP_List_Table {
 				'page' => MLACore::ADMIN_PAGE_SLUG,
 				'mla_download_example_plugin' => urlencode( $item->file ),
 			);
-			$actions['download'] = '<a href="' . add_query_arg( $args, MLACore::mla_nonce_url( 'upload.php', MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME ) ) . '" title="' . __( 'Download', 'media-library-assistant' ) . ' &#8220;' . esc_attr( $item->file ) . '&#8221;">' . __( 'Download', 'media-library-assistant' ) . '</a>';
+			$actions['download'] = '<a href="' . add_query_arg( $args, MLACore::mla_nonce_url( 'upload.php', MLACore::MLA_DOWNLOAD_EXAMPLE_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME ) ) . '" title="' . __( 'Download', 'media-library-assistant' ) . ' &#8220;' . esc_attr( $item->file ) . '&#8221;">' . __( 'Download', 'media-library-assistant' ) . '</a>';
 		}
 
 		$actions['view'] = '<a href="' . add_query_arg( $view_args, MLACore::mla_nonce_url( '?mla_admin_action=' . MLACore::MLA_ADMIN_SINGLE_EDIT_DISPLAY, MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME ) ) . '" title="' . __( 'View this item', 'media-library-assistant' ) . '">' . __( 'View', 'media-library-assistant' ) . '</a>';
@@ -1128,9 +1128,7 @@ class MLA_Example_List_Table extends WP_List_Table {
 			return true;
 		}
 
-		/*
-		 * Begin code adapted from /wp-admin/includes/plugin.php function get_plugins()
-		 */
+		// Begin code adapted from /wp-admin/includes/plugin.php function get_plugins()
 		$wp_plugins = array ();
 		$plugin_root = MLA_PLUGIN_PATH . 'examples/plugins';
 
@@ -1186,15 +1184,11 @@ class MLA_Example_List_Table extends WP_List_Table {
 			$wp_plugins[plugin_basename( $plugin_file )] = $plugin_data;
 		}
 
-		uasort( $wp_plugins, 'self::_sort_uname_callback' );
+		uasort( $wp_plugins, 'MLA_Example_List_Table::_sort_uname_callback' );
 
-		/*
-		 * End code adapted from /wp-admin/includes/plugin.php function get_plugins()
-		 */
+		// End code adapted from /wp-admin/includes/plugin.php function get_plugins()
 
-		/*
-		 * Compose the array
-		 */
+		// Compose the array
 		$example_plugins = array();
 		foreach( $wp_plugins as $file => $metadata ) {
 			$plugin_status = validate_plugin( $file );
@@ -1246,9 +1240,7 @@ class MLA_Example_List_Table extends WP_List_Table {
 		self::$_example_plugin_items = array();
 		self::$_example_plugin_highest_ID = 0;
 
-		/*
-		 * Load and number the entries
-		 */
+		// Load and number the entries
 		foreach ( $example_plugins as $slug => $value ) {
 			self::$_example_plugin_items[ $slug ] = $value;
 			self::$_example_plugin_items[ $slug ]['post_ID'] = ++self::$_example_plugin_highest_ID;
@@ -1542,28 +1534,28 @@ class MLA_Example_List_Table extends WP_List_Table {
 
 		$example_items = array(
 			'all' => array(
-				'singular' => _x( 'All', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'All', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'All', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'All', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 			'installed' => array(
-				'singular' => _x( 'Installed', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'Installed', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'Installed', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'Installed', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 			'active' => array(
-				'singular' => _x( 'Active', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'Active', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'Active', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'Active', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 			'inactive' => array(
-				'singular' => _x( 'Inactive', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'Inactive', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'Inactive', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'Inactive', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 			'network' => array(
-				'singular' => _x( 'Network', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'Network', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'Network', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'Network', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 			'uninstalled' => array(
-				'singular' => _x( 'Uninstalled', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'Uninstalled', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'Uninstalled', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'Uninstalled', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 		);
 

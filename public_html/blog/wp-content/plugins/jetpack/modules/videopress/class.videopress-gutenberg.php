@@ -7,6 +7,12 @@
 
 use Automattic\Jetpack\Assets;
 use Automattic\Jetpack\Blocks;
+use Automattic\Jetpack\Current_Plan as Jetpack_Plan;
+use Automattic\Jetpack\VideoPress\Block_Replacement;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
 
 /**
  * Register a VideoPress extension to replace the default Core Video block.
@@ -32,9 +38,13 @@ class VideoPress_Gutenberg {
 	 * Initialize the VideoPress Gutenberg extension
 	 */
 	private function __construct() {
-		add_action( 'init', array( $this, 'register_video_block_with_videopress' ) );
+		// Run late to avoid race condition with other plugins that register the video block
+		// Jetpack's jetpack_register_block function bails if the block is already registered
+		add_action( 'init', array( $this, 'register_video_block_with_videopress' ), 99 );
 		add_action( 'jetpack_register_gutenberg_extensions', array( $this, 'set_extension_availability' ) );
 		add_action( 'enqueue_block_editor_assets', array( $this, 'override_video_upload' ) );
+		add_action( 'enqueue_block_editor_assets', array( $this, 'add_resumable_upload_support' ) );
+		Block_Replacement::init();
 	}
 
 	/**
@@ -69,58 +79,30 @@ class VideoPress_Gutenberg {
 	 * unavailable (key `unavailable_reason`)
 	 */
 	public function check_videopress_availability() {
-		if (
-			defined( 'IS_WPCOM' ) && IS_WPCOM &&
-			function_exists( 'require_lib' )
-		) {
-			require_lib( 'wpforteams' );
-
-			if ( WPForTeams\Workspace\is_part_of_active_workspace( self::get_blog_id() ) ) {
-				return array( 'available' => true );
-			}
+		if ( ! Jetpack_Plan::supports( 'videopress' ) ) {
+			return array(
+				'available'          => false,
+				'unavailable_reason' => 'missing_plan',
+			);
 		}
 
-		// It is available on Simple Sites having the appropriate a plan.
-		if (
-			defined( 'IS_WPCOM' ) && IS_WPCOM
-			&& method_exists( 'Store_Product_List', 'get_site_specific_features_data' )
-		) {
-			$features = Store_Product_List::get_site_specific_features_data();
-			if ( in_array( 'videopress', $features['active'], true ) ) {
-				return array( 'available' => true );
+		if ( ! defined( 'IS_WPCOM' ) || ! IS_WPCOM ) {
+			if ( Jetpack::is_connection_ready() ) {
+				if ( ! Jetpack::is_module_active( 'videopress' ) ) {
+					return array(
+						'available'          => false,
+						'unavailable_reason' => 'missing_module',
+					);
+				}
 			} else {
 				return array(
 					'available'          => false,
-					'unavailable_reason' => 'missing_plan',
+					'unavailable_reason' => 'unknown',
 				);
 			}
 		}
 
-		// It is available on Jetpack Sites having the module active.
-		if (
-			method_exists( 'Jetpack', 'is_connection_ready' ) && Jetpack::is_connection_ready()
-			&& method_exists( 'Jetpack', 'is_module_active' )
-			&& method_exists( 'Jetpack_Plan', 'supports' )
-		) {
-			if ( Jetpack::is_module_active( 'videopress' ) ) {
-				return array( 'available' => true );
-			} elseif ( ! Jetpack_Plan::supports( 'videopress' ) ) {
-				return array(
-					'available'          => false,
-					'unavailable_reason' => 'missing_plan',
-				);
-			} else {
-				return array(
-					'available'          => false,
-					'unavailable_reason' => 'missing_module',
-				);
-			}
-		}
-
-		return array(
-			'available'          => false,
-			'unavailable_reason' => 'unknown',
-		);
+		return array( 'available' => true );
 	}
 
 	/**
@@ -129,9 +111,9 @@ class VideoPress_Gutenberg {
 	public function set_extension_availability() {
 		$availability = $this->check_videopress_availability();
 		if ( $availability['available'] ) {
-			Jetpack_Gutenberg::set_extension_available( 'jetpack/videopress' );
+			Jetpack_Gutenberg::set_extension_available( 'videopress' );
 		} else {
-			Jetpack_Gutenberg::set_extension_unavailable( 'jetpack/videopress', $availability['unavailable_reason'] );
+			Jetpack_Gutenberg::set_extension_unavailable( 'videopress', $availability['unavailable_reason'] );
 		}
 	}
 
@@ -192,6 +174,19 @@ class VideoPress_Gutenberg {
 	}
 
 	/**
+	 * Temporary method to enable resumable uploads for testing by Automatticians
+	 */
+	public function add_resumable_upload_support() {
+		wp_enqueue_script(
+			'videopress-add-resumable-upload-support',
+			plugins_url( 'js/videopress-add-resumable-upload-support.js', __FILE__ ),
+			null,
+			'1',
+			false
+		);
+	}
+
+	/**
 	 * Replaces the video uploaded in the block editor.
 	 *
 	 * Enqueues a script that registers an API fetch middleware replacing the video uploads in Gutenberg so they are
@@ -209,7 +204,7 @@ class VideoPress_Gutenberg {
 				'_inc/build/videopress/js/gutenberg-video-upload.min.js',
 				'modules/videopress/js/gutenberg-video-upload.js'
 			),
-			array( 'wp-api-fetch', 'wp-polyfill', 'lodash' ),
+			array( 'wp-api-fetch', 'wp-polyfill' ),
 			JETPACK__VERSION,
 			false
 		);

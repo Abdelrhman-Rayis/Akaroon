@@ -32,6 +32,8 @@ class MLAObjects {
 	 * @return	void
 	 */
 	public static function mla_build_taxonomies( ) {
+		// error_log( __LINE__ . ' DEBUG: MLAObjects::mla_build_taxonomies', 0 );
+
 		if ( MLACore::mla_taxonomy_support('attachment_category') ) {
 			$object_type = apply_filters( 'mla_attachment_category_types', array(
 				'attachment',
@@ -59,7 +61,10 @@ class MLAObjects {
 				'show_admin_column' => true,
 				'query_var' => true,
 				'rewrite' => true,
-				'update_count_callback' => '_update_generic_term_count'
+				'update_count_callback' => '_update_generic_term_count',
+				'show_in_rest'          => true,
+				'rest_base'             => 'attachment_category',
+				'rest_controller_class' => 'WP_REST_Terms_Controller',
 			) );
 
 			register_taxonomy( 'attachment_category', $object_type, $args );
@@ -92,7 +97,10 @@ class MLAObjects {
 				'show_admin_column' => true,
 				'query_var' => true,
 				'rewrite' => true,
-				'update_count_callback' => '_update_generic_term_count'
+				'update_count_callback' => '_update_generic_term_count',
+				'show_in_rest'          => true,
+				'rest_base'             => 'attachment_tag',
+				'rest_controller_class' => 'WP_REST_Terms_Controller',
 			) );
 
 			register_taxonomy( 'attachment_tag', $object_type, $args );
@@ -107,6 +115,8 @@ class MLAObjects {
 	 * @return	void
 	 */
 	private static function _add_taxonomy_support( ) {
+		//error_log( __LINE__ . ' DEBUG: MLAObjects::_add_taxonomy_support', 0 );
+		
 		MLACore::mla_initialize_tax_checked_on_top();
 		$taxonomies = get_taxonomies( array ( 'show_ui' => true ), 'names' );
 		foreach ( $taxonomies as $tax_name ) {
@@ -153,6 +163,12 @@ class MLAObjects {
 			}
 
 			$columns[ 'attachments' ] = __( 'Attachments', 'media-library-assistant' );
+
+			if ( 'checked' === MLACore::mla_get_option( MLACoreOptions::MLA_DEBUG_ADD_TAXONOMY_COLUMNS ) ) {
+				$columns[ 'parent' ] = __( 'Parent', 'media-library-assistant' );
+				$columns[ 'termid' ] = __( 'Term ID', 'media-library-assistant' );
+				$columns[ 'ttid' ] = __( 'Term-Tax ID', 'media-library-assistant' );
+			}
 		}
 
 		return $columns;
@@ -190,11 +206,26 @@ class MLAObjects {
 			return $filter_content;
 		}
 
-		if ( 'attachments' !== $column_name ) {
+		if ( !in_array( $column_name, array( 'attachments', 'parent', 'termid', 'ttid' ) ) ) {
 			return $current_value;
 		}
 
-		// Do setup tasks once per page load
+		if ( isset( $terms[ $term_id ] ) ) {
+			$term = $terms[ $term_id ];
+		} else {
+			$term = $terms[ $term_id ] = get_term( $term_id, $taxonomy );
+		}
+
+		switch ( $column_name ) {
+			case 'parent':
+				return (string) $term->parent;
+			case 'termid':
+				return (string) $term_id;
+			case 'ttid':
+				return (string) $term->term_taxonomy_id;
+		}
+		
+		// Do "attachments" setup tasks once per page load
 		if ( NULL == $tax_object ) {
 			// Adding or inline-editing a tag is done with AJAX, and there's no current screen object
 			if ( defined('DOING_AJAX') && DOING_AJAX ) {
@@ -218,12 +249,13 @@ class MLAObjects {
 		
 					$cloud = MLAShortcodes::mla_get_terms( array(
 						'taxonomy' => $taxonomy,
-						'fields' => 't.term_id, tt.term_taxonomy_id, t.name, t.slug, COUNT(p.ID) AS `count`',
+						'fields' => 't.term_id, tt.term_taxonomy_id, t.name, t.slug, tt.parent, COUNT(p.ID) AS `count`',
 						'number' => 0,
 						'no_orderby' => true
 					) );
 
 					unset( $cloud['found_rows'] );
+					$terms = array();
 					foreach( $cloud as $term ) {
 						$terms[ $term->term_id ] = $term;
 					}
@@ -342,13 +374,13 @@ class MLATextWidget extends WP_Widget {
 	 */
 	function form( $instance ) {
 		$instance = wp_parse_args( (array) $instance, array( 'title' => '', 'text' => '' ) );
-		$title = strip_tags( $instance['title'] );
+		$title = wp_strip_all_tags( $instance['title'] );
 		$text = esc_textarea( $instance['text'] );
 ?>
 		<p><label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php echo esc_html__( 'Title', 'media-library-assistant' ) . ':'; ?></label>
 		<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" /></p>
 
-		<textarea class="widefat" rows="16" cols="20" id="<?php echo esc_attr( $this->get_field_id( 'text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'text' ) ); ?>"><?php echo esc_textarea( $text ); ?></textarea>
+		<textarea class="widefat" rows="16" cols="20" id="<?php echo esc_attr( $this->get_field_id( 'text' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'text' ) ); ?>"><?php echo $text; // phpcs:ignore ?></textarea>
 
 		<p><input id="<?php echo esc_attr( $this->get_field_id( 'filter' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'filter' ) ); ?>" type="checkbox" <?php checked( isset( $instance['filter'] ) ? $instance['filter'] : 0 ); ?> />&nbsp;<label for="<?php echo esc_attr( $this->get_field_id( 'filter' ) ); ?>"><?php esc_html_e( 'Automatically add paragraphs', 'media-library-assistant' ); ?></label></p>
 		<p><input id="<?php echo esc_attr( $this->get_field_id( 'textwidget_div' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'textwidget_div' ) ); ?>" type="checkbox" <?php checked( isset( $instance['textwidget_div'] ) ? $instance['textwidget_div'] : 1 ); ?> />&nbsp;<label for="<?php echo esc_attr( $this->get_field_id( 'textwidget_div' ) ); ?>"><?php esc_html_e( 'Add .textwidget div tags', 'media-library-assistant' ); ?></label></p>
@@ -367,7 +399,7 @@ class MLATextWidget extends WP_Widget {
 	 */
 	function update( $new_instance, $old_instance ) {
 		$instance = $old_instance;
-		$instance['title'] = strip_tags( $new_instance['title'] );
+		$instance['title'] = wp_strip_all_tags( $new_instance['title'] );
 		if ( current_user_can( 'unfiltered_html' ) ) {
 			$instance['text'] =  $new_instance['text'];
 		} else {

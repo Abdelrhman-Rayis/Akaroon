@@ -6,6 +6,10 @@
  * @since 8.4.0
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 /**
  * Fetch podcast feeds and parse data for the Podcast Player block.
  *
@@ -17,7 +21,7 @@ class WPCOM_REST_API_V2_Endpoint_Podcast_Player extends WP_REST_Controller {
 	 */
 	public function __construct() {
 		if ( ! class_exists( 'Jetpack_Podcast_Helper' ) ) {
-			jetpack_require_lib( 'class-jetpack-podcast-helper' );
+			require_once JETPACK__PLUGIN_DIR . '/_inc/lib/class-jetpack-podcast-helper.php';
 		}
 
 		$this->namespace = 'wpcom/v2';
@@ -71,10 +75,34 @@ class WPCOM_REST_API_V2_Endpoint_Podcast_Player extends WP_REST_Controller {
 				),
 			)
 		);
+
+		// GET /sites/<blog_id>/podcast-player/track-quantity - Returns number of tracks.
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/track-quantity',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_tracks_quantity' ),
+					'permission_callback' => function () {
+						return current_user_can( 'edit_posts' );
+					},
+				),
+			)
+		);
 	}
 
 	/**
-	 * Retreives data needed to display a podcast player from RSS feed.
+	 * Retrieves tracks quantity
+	 *
+	 * @return Integer number of tracks.
+	 * */
+	public function get_tracks_quantity() {
+		return rest_ensure_response( Jetpack_Podcast_Helper::get_tracks_quantity() );
+	}
+
+	/**
+	 * Retrieves data needed to display a podcast player from RSS feed.
 	 *
 	 * @param WP_REST_Request $request The REST API request data.
 	 * @return WP_REST_Response The REST API response.

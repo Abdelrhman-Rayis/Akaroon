@@ -15,6 +15,10 @@
   border-color: #ebccd1;
 }
 
+.fb3d-default-page {
+  z-index: 1;
+}
+
 .fb3d-button {
   display: inline-block;
   font-size: 13px;
@@ -60,6 +64,22 @@ a.fb3d-button, a.fb3d-button:visited {
 	color: #fff
 }
 
+table.fb3d-categories td {
+  text-align: center;
+}
+table.fb3d-categories h3 {
+  text-align: left;
+}
+@media (max-width: 599px) {
+  table.fb3d-categories .fb3d-categories tr, .fb3d-categories td {
+    display: block;
+  }
+}
+
+._3d-flip-book a, .fb3d-link-lightbox-mode {
+  cursor: pointer;
+}
+
 .fb3d-thumbnail-lightbox-mode, .fb3d-thumbnail-mode {
   position: relative;
   display: inline-block;
@@ -67,10 +87,18 @@ a.fb3d-button, a.fb3d-button:visited {
 }
 
 ._3d-flip-book .book-thumbnail {
-  perspective: 1200px;
-  transform-style: preserve-3d;
   display: inline-block;
   transition: box-shadow .25s ease-in-out;
+}
+
+._3d-flip-book .book-thumbnail>a {
+  -webkit-transform-style: flat;
+  -moz-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-perspective: 1200px;
+  -moz-perspective: 1200px;
+  perspective: 1200px;
+  display: inline-block;
 }
 
 ._3d-flip-book:hover .book-thumbnail {
@@ -84,16 +112,23 @@ a.fb3d-button, a.fb3d-button:visited {
 
 ._3d-flip-book .book-thumbnail img {
   border-radius: 0;
+  -webkit-transform-origin: left;
   transform-origin: left;
   transition: transform .25s;
 }
 
 ._3d-flip-book:hover .book-thumbnail img {
-  transform: rotateY(-20deg);
+  -webkit-transform: rotateY(-20deg) rotateZ(0deg);
+  -moz-transform: rotateY(-20deg) rotateZ(0deg);
+  -ms-transform: rotateY(-20deg) rotateZ(0deg);
+  transform: rotateY(-20deg) rotateZ(0deg);
 }
 
 ._3d-flip-book:active .book-thumbnail img {
-  transform: rotateY(-17deg);
+  -webkit-transform: rotateY(-17deg) rotateZ(0deg);
+  -moz-transform: rotateY(-17deg) rotateZ(0deg);
+  -ms-transform: rotateY(-17deg) rotateZ(0deg);
+  transform: rotateY(-17deg) rotateZ(0deg);
   transition: transform .15s;
 }
 
@@ -195,116 +230,84 @@ a.fb3d-button, a.fb3d-button:visited {
   overflow: hidden;
 }
 
-body::before {
-  position: fixed;
-  content: ' ';
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #000;
-
-  z-index: -10;
-  opacity: 0;
-  transition: opacity 0.5s, z-index 0.5s step-end;
-}
-
-.fb3d-modal-shadow::before {
-  z-index: 500000;
-  opacity: 0.5;
-  transition: opacity 0.5s;
-}
-
 .fb3d-modal {
   position: fixed;
-  width: 95%;
-  height: 95%;
-  left: calc(5vw / 2);
-  top: calc(5vh / 2);
-  box-shadow: 0 0 5px #fff;
-
-  z-index: -9;
-  opacity: 0;
-  transition: opacity 0.5s, z-index 0.5s step-end;
-}
-
-.fb3d-modal.visible {
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background-color: rgba(0,0,0,.5);
   z-index: 500001;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.5s, visibility 0.5s step-end;
+}
+.fb3d-modal.visible {
+  pointer-events: all;
+  visibility: visible;
   opacity: 1;
   transition: opacity 0.5s;
 }
 
-.fb3d-modal::before {
+.fb3d-modal .mount-container {
   position: absolute;
-  content: ' ';
-  width: 100%;
-  height: 100%;
-  opacity: 0.5;
-  z-index: -1;
-}
-
-.fb3d-modal.light::before {
-  background-color: #fff;
-}
-
-.fb3d-modal.dark::before {
-  background-color: #000;
-}
-
-.fb3d-modal .cmd-close {
-  font-size: 16pt;
-  color: #ccc;
-  position: absolute;
-  right: 10px;
-  top: 10px;
   z-index: 1;
 }
-
-.fb3d-modal.light .cmd-close {
-  color: #555;
+.fb3d-modal.dark .mount-container, .fb3d-modal.light .mount-container {
+  width: 95%;
+  height: 95%;
+  left: calc(5% / 2);
+  top: calc(5% / 2);
+  box-shadow: 0 0 5px rgba(255,255,255,.5);
 }
-
-.fb3d-modal .mount-container {
-  width: 100%;
-  height: 100%;
-}
-
-.fb3d-modal .cmd-close:hover {
-  font-size: 16pt;
-  color: #eee;
-}
-
-.fb3d-modal.light .cmd-close:hover {
-  color: #111;
-}
-
-.fb3d-modal .cmd-close:active {
-  font-size: 14pt;
-  padding-top: 2px;
-  padding-right: 2px;
-}
-
-.fb3d-modal.dark-shadow {
+.fb3d-modal.dark-shadow .mount-container, .fb3d-modal.light-shadow .mount-container {
   width: 100%;
   height: 100%;
   left: 0;
   top: 0;
-  box-shadow: none;
-
 }
-
-.fb3d-modal.dark-shadow::before {
-  background-color: #000;
+.fb3d-modal.dark .mount-container, .fb3d-modal.dark-shadow .mount-container {
+  background-color: rgba(0,0,0,.5);
 }
-
-.dark-shadow .mount-container.fullscreen {
-  background-image: url('../images/texture.jpg');
+.fb3d-modal.light .mount-container, .fb3d-modal.light-shadow .mount-container {
+  background-color: rgba(255,255,255,.5);
 }
-
-.light .mount-container.fullscreen {
+.light .mount-container.fullscreen, .light-shadow .mount-container.fullscreen {
   background-image: url('../images/inverse-texture.jpg');
 }
-
-.dark .mount-container.fullscreen {
+.dark .mount-container.fullscreen, .dark-shadow .mount-container.fullscreen {
   background-image: url('../images/texture.jpg');
+}
+
+.fb3d-modal .cmd-close {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 24px;
+  font-weight: bolder;
+  color: #ccc;
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  z-index: 2;
+  cursor: pointer;
+  transition: color .15s ease-in;
+}
+.fb3d-modal.dark .cmd-close, .fb3d-modal.light .cmd-close {
+  right: calc(5% / 2 + 10px);
+  top: calc(5% / 2 + 8px);
+}
+.fb3d-modal.light .cmd-close, .fb3d-modal.light-shadow .cmd-close {
+  color: #555;
+}
+.fb3d-modal .cmd-close:hover {
+  color: #eee;
+  transition: color .15s ease-out;
+}
+.fb3d-modal.light .cmd-close:hover, .fb3d-modal.light-shadow .cmd-close:hover {
+  color: #111;
+}
+.fb3d-modal .cmd-close:active {
+  font-size: 22px;
+  padding-top: 1px;
+  padding-right: 1px;
 }

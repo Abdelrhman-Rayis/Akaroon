@@ -1,17 +1,19 @@
-﻿=== Salat Times ===
+=== Salat Times ===
 Contributors: imran2w
-Developer link: http://facebook.com/imran2w
-Donate link: https://paypal.me/imran2p
+Developer link: https://imran.link
+Donate link: https://imran.link
 Tags: Salat, Namaz, Prayer, Muslim, Islam, Time, Bengali, Bangla, Bangladesh
 Requires at least: 3.0
-Tested up to: 5.3
-Stable tag: trunk
-License: GNU General Public License
+Tested up to: 6.9
+Stable tag: 3.7
+Requires PHP: 5.6
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Salat (Namaz) timetable for any location around the world!
 
 == Description == 
-Displays Salat (Namaz) timetable on your site for any location around the world, based on a variety of calculation methods currently used in muslim communities. You
+Displays Salat (Namaz) timetable on your site for any location around the world, based on a variety of calculation methods currently used in muslim communities.
 
 = Usage =
 - Install and activate the plugin.
@@ -28,15 +30,12 @@ Displays Salat (Namaz) timetable on your site for any location around the world,
 - Different calculation methods for different region.
 
 = Need more features or customization? =
-- Just send a mail to imran2w@gmail.com
+- Just send a mail to imran4ev@gmail.com
 
 = Credits =
-* Developer: [M.A. IMRAN](http://facebook.com/imran2w)
-* E-Mail: imran2w@gmail.com
-* Website: [www.i-onlinemedia.net](http://www.i-onlinemedia.net)
-* Donate to this plugin: https://paypal.me/imran2p
-
-A project of [Islamic Online Media](http://www.i-onlinemedia.net) - An extra-ordinary Islamic website of Bangladesh based on pure tawheed and sahih sunnah.
+* Developer: [ALI IMRAN](http://facebook.com/imran2w)
+* E-Mail: imran4dev@gmail.com
+* Website: [imran.link](https://imran.link)
 
 == Installation ==
 
@@ -80,35 +79,18 @@ After upgrading to version 2.0 from version 1.3 or older, click on "Restore Defa
 2. Widget preview (Bengali).
 3. Manual Time Widget preview (English).
 4. Appearance > Widget.
-4. Salat Times Settings 3.0.1.
 
 == Changelog ==
 
-= 3.2 =
-* Added adjustment option for locations at higher latitude.
-* Tested compatibility with WP 5.3.
-* Latest php compatibility issue fixed.
+= 3.7 =
+* Ongoing improvements
+* Bug fixes.
 
-= 3.1.3 =
-* Latest php compatibility problem fixed.
-* Tested compatibility with WP 5.0.
+= 3.6 =
+* Ongoing improvements
+* Bug fixes.
 
-= 3.1.2 =
-* Ongoing improvements.
-
-= 3.1.1 =
-* Ongoing improvements.
-
-= 3.1 =
-* Hijri date added.
-* Ongoing improvements.
-
-= 3.0 =
-* New feature! Manual timetabe option added.
-* Screenshots updated.
-* Tested compatibility with WP 4.7.
-
-= 1.1 - 2.2 =
+= 1.1 - 3.5 =
 * ‍Many changes and improvements.
 
 = 1.0 (13-Dec-2014) = 

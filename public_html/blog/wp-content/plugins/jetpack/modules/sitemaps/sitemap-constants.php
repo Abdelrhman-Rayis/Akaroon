@@ -7,6 +7,10 @@
  * @author Automattic
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 /**
  * Number of seconds between sitemap and news sitemap updates in development code.
  * In production, sitemaps are cached for 12 hours.
@@ -15,10 +19,10 @@
  * @since 7.7.0
  */
 if ( defined( 'JETPACK_DEV_DEBUG' ) && JETPACK_DEV_DEBUG ) {
-	if ( ! defined( 'JP_SITEMAP_INTERVAL') ) {
+	if ( ! defined( 'JP_SITEMAP_INTERVAL' ) ) {
 		define( 'JP_SITEMAP_INTERVAL', 60 );
 	}
-	if ( ! defined( 'JP_NEWS_SITEMAP_INTERVAL') ) {
+	if ( ! defined( 'JP_NEWS_SITEMAP_INTERVAL' ) ) {
 		define( 'JP_NEWS_SITEMAP_INTERVAL', 60 );
 	}
 }
@@ -42,7 +46,7 @@ if ( ! defined( 'JP_SITEMAP_MAX_BYTES' ) ) {
  * @since 4.8.0
  */
 if ( ! defined( 'JP_SITEMAP_MAX_ITEMS' ) ) {
-	define( 'JP_SITEMAP_MAX_ITEMS', 2000 );
+	define( 'JP_SITEMAP_MAX_ITEMS', 1000 );
 }
 
 /**
@@ -147,8 +151,8 @@ if ( ! defined( 'JP_VIDEO_SITEMAP_INDEX_TYPE' ) ) {
  * @return string The filename.
  */
 function jp_sitemap_filename( $type, $number = null ) {
-	if ( is_null( $number ) ) {
-		return "error-not-int-$type-$number.xml";
+	if ( $number === null ) {
+		return "error-not-int-$type-null.xml";
 	} elseif ( JP_MASTER_SITEMAP_TYPE === $type ) {
 		return 'sitemap.xml';
 	} elseif ( JP_PAGE_SITEMAP_TYPE === $type ) {

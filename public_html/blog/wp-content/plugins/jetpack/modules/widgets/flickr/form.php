@@ -1,3 +1,18 @@
+<?php
+/**
+ * Jetpack_Flickr_Widget settings form output.
+ *
+ * @html-template Jetpack_Flickr_Widget::form
+ * @package automattic/jetpack
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
+// phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable -- HTML template, let Phan handle it.
+
+?>
 <p>
 	<label>
 		<?php esc_html_e( 'Title:', 'jetpack' ); ?>
@@ -28,10 +43,21 @@
 </p>
 <p>
 	<small>
-		<?php printf(
-			__( 'Leave the Flickr RSS URL field blank to display <a target="_blank" href="%s">interesting</a> Flickr photos.', 'jetpack' ),
+		<?php
+		printf(
+			wp_kses(
+				/* Translators: %s is the URL to an example Flickr RSS feed. */
+				__( 'Leave the Flickr RSS URL field blank to display <a target="_blank" href="%s">interesting</a> Flickr photos.', 'jetpack' ),
+				array(
+					'a' => array(
+						'href'   => array(),
+						'target' => array(),
+					),
+				)
+			),
 			'https://www.flickr.com/explore/interesting'
-		); ?>
+		);
+		?>
 	</small>
 </p>
 
@@ -43,9 +69,9 @@
 		<?php for ( $i = 1; $i <= 10; ++$i ) { ?>
 			<option
 				<?php selected( $instance['items'], $i ); ?>
-				value="<?php echo $i; ?>"
+				value="<?php echo esc_attr( $i ); ?>"
 			>
-				<?php echo $i; ?>
+				<?php echo esc_html( $i ); ?>
 			</option>
 		<?php } ?>
 	</select>

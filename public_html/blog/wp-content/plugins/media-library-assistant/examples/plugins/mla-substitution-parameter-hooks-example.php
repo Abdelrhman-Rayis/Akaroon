@@ -3,16 +3,13 @@
  * Provides examples of the filters provided for Field-level Substitution Parameters
  *
  * In this example:
- *     - a "parent_terms:" prefix accesses taxonomy terms assigned to an item's parent post/page
- *     - a "page_terms:" prefix accesses taxonomy terms assigned to the current post/page
- *     - a "parent:" prefix accesses all of the WP_Post properties, custom fields and the permalink for an item's parent
  *     - a "page:" prefix accesses the featured image ID of the parent page/post, i.e. [+page:featured+]
- *     - an "author:" prefix accesses all of the WP_User properties for an item's author
  *     - an "conditional:" prefix returns a value when a condition is true, e.g., during the upload process
  *     - a "wp_query_vars:" prefix accesses all of the "global $wp_query->query_vars" properties
  *     - a "current_term:" prefix accesses the term named in a $_REQUEST variable
  *         e.g. {+current_term:taxonomy.default_value(term_field)+}
  *     - a "ucwords" custom format value uppercases the first character of each word in a string
+ *     - a "computed_orientation" custom data source derives "Landscape" or "Portrait" from image height and width values
  *
  * Created for support topic "Parent category tag"
  * opened on 5/20/2016 by "Levy":
@@ -50,8 +47,16 @@
  * opened on 8/1/2020 by "perchera":
  * https://wordpress.org/support/topic/auto-alt-text-from-field-in-exif-or-iptc/
  *
+ * Enhanced for support topic "Perform Comparison (If Then Else Logic) when Mapping Metadata to Custom Field"
+ * opened on 2/27/2022  by "tplunkett87":
+ * https://wordpress.org/support/topic/perform-calculation-when-mapping-metadata-to-custom-field/
+ *
+ * Enhanced for support topic "how to extract from the parameters field"
+ * opened on 3/25/2023 by "reassure".
+ * https://wordpress.org/support/topic/how-to-extract-from-the-parameters/
+ *
  * @package MLA Substitution Parameter Hooks Example
- * @version 1.13
+ * @version 1.16
  */
 
 /*
@@ -59,10 +64,10 @@ Plugin Name: MLA Substitution Parameter Hooks Example
 Plugin URI: http://davidlingren.com/
 Description: Adds "parent_terms:", "page_terms:", "parent:", "author:", "conditional:", "wp_query_vars" and "current_term" Field-level Substitution Parameters and "ucwords" custom format value
 Author: David Lingren
-Version: 1.13
+Version: 1.16
 Author URI: http://davidlingren.com/
 
-Copyright 2016-2020 David Lingren
+Copyright 2016-2023 David Lingren
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -101,12 +106,16 @@ class MLASubstitutionParameterExample {
 	 */
 	public static function initialize() {
 		// Defined in /media-library-assistant/includes/class-mla-data.php
-		//add_filter( 'mla_expand_custom_data_source', 'MLASubstitutionParameterExample::mla_expand_custom_data_source', 10, 9 );
+		add_filter( 'mla_expand_custom_data_source', 'MLASubstitutionParameterExample::mla_expand_custom_data_source', 10, 9 );
 		add_filter( 'mla_expand_custom_prefix', 'MLASubstitutionParameterExample::mla_expand_custom_prefix', 10, 8 );
 		add_filter( 'mla_apply_custom_format', 'MLASubstitutionParameterExample::mla_apply_custom_format', 10, 2 );
 
+		add_filter( 'mla_fetch_attachment_image_metadata_raw', 'MLASubstitutionParameterExample::mla_fetch_attachment_image_metadata_raw', 10, 3 );
+		add_filter( 'mla_fetch_attachment_image_metadata_final', 'MLASubstitutionParameterExample::mla_fetch_attachment_image_metadata_final', 10, 3 );
+
 		// Defined in /media-library-assistant/includes/class-mla-data-source.php
-		//add_filter( 'mla_evaluate_custom_data_source', 'MLASubstitutionParameterExample::mla_evaluate_custom_data_source', 10, 5 );
+		add_filter( 'mla_evaluate_custom_data_source', 'MLASubstitutionParameterExample::mla_evaluate_custom_data_source', 10, 5 );
+
 
 		/*
 		 * Additional hooks defined in "MLA Custom Field and IPTC/EXIF Mapping Actions and Filters (Hooks)".
@@ -183,71 +192,14 @@ class MLASubstitutionParameterExample {
 		//error_log( __LINE__ . " MLASubstitutionParameterExample::mla_expand_custom_data_source( {$candidate}, {$post_id} ) query = " . var_export( $query, true ), 0 );
 		//error_log( __LINE__ . " MLASubstitutionParameterExample::mla_expand_custom_data_source( {$candidate}, {$post_id} ) markup_values = " . var_export( $markup_values, true ), 0 );
 
-		return $custom_value;
-	} // mla_expand_custom_data_source
-
-	/**
-	 * Evaluate parent_terms: or page_terms: values
-	 *
-	 * @since 1.03
-	 *
-	 * @param	mixed	String or array - initial value
-	 * @param	integer	The Post ID of the new/updated attachment
-	 * @param	string	Taxonomy slug
-	 * @param	string	Field name in term object
-	 * @param	string	Format/option; text,single,export,unpack,array
-	 *
-	 * @return	mixed	String or array 
-	 */
-	private static function _evaluate_terms( $custom_value, $post_id, $taxonomy, $qualifier, $option ) {
-		if ( 0 == $post_id ) {
-			return $custom_value;
-		}
-
-		if ( empty( $qualifier ) ) {
-			$qualifier = 'name';
-		}
-
-		$terms = get_object_term_cache( $post_id, $taxonomy );
-		if ( false === $terms ) {
-			$terms = wp_get_object_terms( $post_id, $taxonomy );
-			wp_cache_add( $post_id, $terms, $taxonomy . '_relationships' );
-		}
-
-		if ( 'array' == $option ) {
-			$custom_value = array();
-		} else {
-			$custom_value = '';
-		}
-
-		if ( is_wp_error( $terms ) ) {
-			$custom_value = implode( ',', $terms->get_error_messages() );
-		} elseif ( ! empty( $terms ) ) {
-			if ( 'single' == $option || 1 == count( $terms ) ) {
-				reset( $terms );
-				$term = current( $terms );
-				$fields = get_object_vars( $term );
-				$custom_value = isset( $fields[ $qualifier ] ) ? $fields[ $qualifier ] : $fields['name'];
-				$custom_value = sanitize_term_field( $qualifier, $custom_value, $term->term_id, $taxonomy, 'display' );
-			} elseif ( ( 'export' == $option ) || ( 'unpack' == $option ) ) {
-				$custom_value = sanitize_text_field( var_export( $terms, true ) );
-			} else {
-				foreach ( $terms as $term ) {
-					$fields = get_object_vars( $term );
-					$field_value = isset( $fields[ $qualifier ] ) ? $fields[ $qualifier ] : $fields['name'];
-					$field_value = sanitize_term_field( $qualifier, $field_value, $term->term_id, $taxonomy, 'display' );
-
-					if ( 'array' == $option ) {
-						$custom_value[] = $field_value;
-					} else {
-						$custom_value .= strlen( $custom_value ) ? ', ' . $field_value : $field_value;
-					}
-				}
+		if ( 'computed_orientation' === $candidate ) {
+			if ( isset( $markup_values['width'] ) && isset( $markup_values['height'] ) && 0 < $markup_values['height'] ) {
+				return ( ( $markup_values['width'] / $markup_values['height'] ) > 1.0 ) ? 'Landscape' : 'Portrait';
 			}
 		}
-
+		
 		return $custom_value;
-	} // _evaluate_terms
+	} // mla_expand_custom_data_source
 
 	/**
 	 * MLA Expand Custom Prefix Filter
@@ -257,8 +209,8 @@ class MLASubstitutionParameterExample {
 	 * @since 1.00
 	 *
 	 * @param	string	NULL, indicating that by default, no custom value is available
-	 * @param	string	the data-source name 
-	 * @param	array	data-source components; prefix (empty), value, option, format and args (if present)
+	 * @param	string	the data-source name, as entered, including prefix
+	 * @param	array	data-source components; prefix, value, qualifier (if present), option, format and args (if present)
 	 * @param	array	values from the query, if any, e.g. shortcode parameters
 	 * @param	array	item-level markup template values, if any
 	 * @param	integer	attachment ID for attachment-specific values
@@ -266,7 +218,7 @@ class MLASubstitutionParameterExample {
 	 * @param	string	default option value
 	 */
 	public static function mla_expand_custom_prefix( $custom_value, $key, $value, $query, $markup_values, $post_id, $keep_existing, $default_option ) {
-		static $parent_cache = array(), $author_cache = array();
+		static $author_cache = array();
 
 		//error_log( __LINE__ . " MLASubstitutionParameterExample::mla_expand_custom_prefix( {$key}, {$post_id}, {$keep_existing}, {$default_option} ) value = " . var_export( $value, true ), 0 );
 		//error_log( __LINE__ . " MLASubstitutionParameterExample::mla_expand_custom_prefix( {$key}, {$post_id} ) query = " . var_export( $query, true ), 0 );
@@ -292,28 +244,14 @@ class MLASubstitutionParameterExample {
 			MLACore::mla_debug_add( __LINE__ . " MLASubstitutionParameterExample::mla_expand_custom_prefix() \$markup_values = " . var_export( $markup_values, true ) );
 		}
 
-		if ( 'page_terms' == $value['prefix'] ) {
-			if ( isset( $markup_values['page_ID'] ) ) {
-				$post_id = absint( $markup_values['page_ID'] );
-			} else {
-				global $post;
-
-				if ( isset( $post ) && !empty( $post->ID ) ) {
-					$post_id = absint( $post->ID );
-				} else {
-					$post_id = 0;
-				}
-			}
-
-			$custom_value = self::_evaluate_terms( $custom_value, $post_id, $field, $qualifier, $value['option'] );
-		} elseif ( 'page' == $value['prefix'] ) {
-			if ( 'featured' == $value['value'] ) {
+		if ( 'page' === $value['prefix'] ) {
+			if ( 'featured' === $value['value'] ) {
 				$featured = absint( get_post_thumbnail_id( absint( $markup_values['page_ID'] ) ) ); 
 				if ( 0 < $featured ) {
 					$custom_value = (string) $featured;
 				}
 			}
-		} elseif ( 'current_term' == $value['prefix'] ) {
+		} elseif ( 'current_term' === $value['prefix'] ) {
 			// Look for compound names, e.g., taxonomy.default_value
 			$key_array = explode( '.', $field );
 			if ( 1 < count( $key_array ) ) {
@@ -373,134 +311,11 @@ class MLASubstitutionParameterExample {
 			MLACore::mla_debug_mode( $old_mode );
 		}
 		
-		if ( 0 == absint( $post_id ) ) {
+		if ( 0 === absint( $post_id ) ) {
 			return $custom_value;
 		}
 
-		if ( 'parent_terms' == $value['prefix'] ) {
-			if ( isset( $markup_values['parent'] ) ) {
-				$post_parent = absint( $markup_values['parent'] );
-			} else {
-				$item = get_post( $post_id );
-				$post_parent = absint( $item->post_parent );
-			}
-
-			$custom_value = self::_evaluate_terms( $custom_value, $post_parent, $field, $qualifier, $value['option'] );
-		} elseif ( 'parent' == $value['prefix'] ) {
-			if ( isset( $markup_values['parent'] ) ) {
-				$parent_id = absint( $markup_values['parent'] );
-			} else {
-				$item = get_post( $post_id );
-				$parent_id = absint( $item->post_parent );
-			}
-
-			if ( 0 == $parent_id ) {
-				return $custom_value;
-			}
-
-			if ( isset( $parent_cache[ $parent_id ] ) ) {
-				$parent = $parent_cache[ $parent_id ];
-			} else {
-				$parent = get_post( $parent_id );
-
-				if ( $parent instanceof WP_Post && $parent->ID == $parent_id ) {
-					$parent_cache[ $parent_id ] = $parent;
-				} else {
-					return $custom_value;
-				}
-			}
-
-			if ( property_exists( $parent, $value['value'] ) ) {
-				$custom_value = $parent->{$value['value']};
-			} elseif ( 'permalink' == $value['value'] ) {
-				$custom_value = get_permalink( $parent );
-			} else {
-				// Look for a custom field match
-				$meta_value = get_metadata( 'post', $parent_id, $value['value'], false );
-				if ( !empty( $meta_value ) ) {
-					$custom_value = $meta_value;
-				}
-			}
-
-			if ( is_array( $custom_value ) ) {
-				if ( 'single' == $value['option'] || 1 == count( $custom_value ) ) {
-					$custom_value = sanitize_text_field( reset( $custom_value ) );
-				} elseif ( ( 'export' == $value['option'] ) || ( 'unpack' == $value['option'] ) ) {
-					$custom_value = sanitize_text_field( var_export( $custom_value, true ) );
-				} else {
-					if ( 'array' == $value['option'] ) {
-						$new_value = array();
-					} else {
-						$new_value = '';
-					}
-
-					foreach ( $custom_value as $element ) {
-						$field_value = sanitize_text_field( $element );
-
-						if ( 'array' == $value['option'] ) {
-							$new_value[] = $field_value;
-						} else {
-							$new_value .= strlen( $custom_value ) ? ', ' . $field_value : $field_value;
-						}
-					}
-
-					$custom_value = $new_value;
-				}
-			}
-		} elseif ( 'author' == $value['prefix'] ) {
-			if ( isset( $markup_values['author_id'] ) ) {
-				$item_author = absint( $markup_values['author_id'] );
-			} else {
-				$item = get_post( $post_id );
-				$item_author = absint( $item->post_author );
-			}
-
-			if ( isset( $author_cache[ $item_author ] ) ) {
-				$author = $author_cache[ $item_author ];
-			} else {
-				$author = new WP_User( $item_author );
-//error_log( __LINE__ . " MLASubstitutionParameterExample::mla_expand_custom_prefix( {$key}, {$post_id} ) author = " . var_export( $author, true ), 0 );
-				if ( $author instanceof WP_User && $author->ID == $item_author ) {
-					$author_cache[ $item_author ] = $author;
-				} else {
-					return $custom_value;
-				}
-			}
-
-			if ( property_exists( $author, $value['value'] ) ) {
-				$custom_value = $author->{$value['value']};
-			} else {
-				$custom_value = $author->get( $value['value'] );
-			}
-
-//error_log( __LINE__ . " MLASubstitutionParameterExample::mla_expand_custom_prefix( {$key}, {$post_id} ) custom_value = " . var_export( $custom_value, true ), 0 );
-
-			if ( is_array( $custom_value ) ) {
-				if ( 'single' == $value['option'] || 1 == count( $custom_value ) ) {
-					$custom_value = sanitize_text_field( reset( $custom_value ) );
-				} elseif ( ( 'export' == $value['option'] ) || ( 'unpack' == $value['option'] ) ) {
-					$custom_value = sanitize_text_field( var_export( $custom_value, true ) );
-				} else {
-					if ( 'array' == $value['option'] ) {
-						$new_value = array();
-					} else {
-						$new_value = '';
-					}
-
-					foreach ( $custom_value as $element ) {
-						$field_value = sanitize_text_field( $element );
-
-						if ( 'array' == $value['option'] ) {
-							$new_value[] = $field_value;
-						} else {
-							$new_value .= strlen( $custom_value ) ? ', ' . $field_value : $field_value;
-						}
-					}
-
-					$custom_value = $new_value;
-				}
-			}
-		} elseif ( 'conditional' == $value['prefix'] ) {
+		if ( 'conditional' === $value['prefix'] ) {
 			if ( empty( $value['args'] ) ) {
 				return $custom_value;
 			}
@@ -540,7 +355,7 @@ class MLASubstitutionParameterExample {
 				default:
 					// ignore anything else
 			}
-		} elseif ( 'wp_query_vars' == $value['prefix'] ) {
+		} elseif ( 'wp_query_vars' === $value['prefix'] ) {
 			global $wp_query;
 			//error_log( __LINE__ . " MLASubstitutionParameterExample::mla_expand_custom_prefix( {$key}, {$post_id} ) wp_query->query_vars = " . var_export( $wp_query->query_vars , true ), 0 );
 
@@ -597,15 +412,62 @@ class MLASubstitutionParameterExample {
 	 * @param	array 	_wp_attachment_metadata, default NULL (use current postmeta database value)
 	 */
 	public static function mla_evaluate_custom_data_source( $custom_value, $post_id, $category, $data_value, $attachment_metadata ) {
-		//error_log( __LINE__ . " MLASubstitutionParameterExample::mla_expand_custom_data_source( {$post_id}, {$category} ) data_value = " . var_export( $data_value, true ), 0 );
-		//error_log( __LINE__ . " MLASubstitutionParameterExample::mla_expand_custom_data_source( {$post_id}, {$category} ) attachment_metadata = " . var_export( $attachment_metadata, true ), 0 );
+		//error_log( __LINE__ . " MLASubstitutionParameterExample::mla_evaluate_custom_data_source( {$post_id}, {$category} ) data_value = " . var_export( $data_value, true ), 0 );
+		//error_log( __LINE__ . " MLASubstitutionParameterExample::mla_evaluate_custom_data_source( {$post_id} ) attachment_metadata = " . var_export( $attachment_metadata, true ), 0 );
+
+		if ( 'computed_orientation' === $data_value['data_source'] ) {
+			if ( !is_array( $attachment_metadata ) ) {
+				if ( 0 < $post_id ) {
+					$attachment_metadata = get_metadata( 'post', $post_id, '_wp_attachment_metadata', true );
+				} else {
+					$attachment_metadata = array();
+				}
+			}
+			//error_log( __LINE__ . " MLASubstitutionParameterExample::mla_evaluate_custom_data_source( {$post_id} ) attachment_metadata = " . var_export( $attachment_metadata, true ), 0 );
+
+			if ( isset( $attachment_metadata['width'] ) && isset( $attachment_metadata['height'] ) && 0 < $attachment_metadata['height'] ) {
+				return ( ( $attachment_metadata['width'] / $attachment_metadata['height'] ) > 1.0 ) ? 'Landscape' : 'Portrait';
+			}
+		}
 
 		return $custom_value;
 	} // mla_evaluate_custom_data_source
+
+	/**
+	 * MLA Fetch Attachment Image Metadata Raw
+	 *
+	 * For metadata extraction, gives you an opportunity to add or modify elements before MLA's EXIF CAMERA and GPS enhancementws are added.
+	 *
+	 * @since 1.15
+	 *
+	 * @param array $metadata The metadata MLA extracted from the attached file
+	 * @param array $post_id The ID of the attachment representing the file
+	 * @param array $path The location of the attached file
+	 */
+	public static function mla_fetch_attachment_image_metadata_raw( $metadata, $post_id, $path ) {
+		//error_log( __LINE__ . " MLASubstitutionParameterExample::mla_fetch_attachment_image_metadata_raw( {$post_id}, {$path} ) metadata = " . var_export( $metadata, true ), 0 );
+
+		return $metadata;
+	} // mla_fetch_attachment_image_metadata_raw
+
+	/**
+	 * MLA Fetch Attachment Image Metadata Final
+	 *
+	 * For metadata extraction, gives you an opportunity to add or modify elements after MLA's EXIF CAMERA and GPS enhancementws are added.
+	 *
+	 * @since 1.15
+	 *
+	 * @param array $metadata The metadata MLA extracted from the attached file
+	 * @param array $post_id The ID of the attachment representing the file
+	 * @param array $path The location of the attached file
+	 */
+	public static function mla_fetch_attachment_image_metadata_final( $metadata, $post_id, $path ) {
+		error_log( __LINE__ . " MLASubstitutionParameterExample::mla_fetch_attachment_image_metadata_final( {$post_id}, {$path} ) metadata = " . var_export( $metadata, true ), 0 );
+
+		return $metadata;
+	} // mla_fetch_attachment_image_metadata_final
 } //MLASubstitutionParameterExample
 
-/*
- * Install the filters at an early opportunity
- */
+// Install the filters at an early opportunity
 add_action('init', 'MLASubstitutionParameterExample::initialize');
 ?>

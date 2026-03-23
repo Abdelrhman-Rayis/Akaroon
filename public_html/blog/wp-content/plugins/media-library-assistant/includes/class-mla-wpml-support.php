@@ -22,8 +22,6 @@ class MLA_WPML {
 	 * This function contains add_action and add_filter calls.
 	 *
 	 * @since 2.11
-	 *
-	 * @return	void
 	 */
 	public static function initialize() {
 		// These filters are only useful for the admin section; exit in the front-end posts/pages
@@ -47,7 +45,15 @@ class MLA_WPML {
 		add_action( 'mla_updated_single_item', 'MLA_WPML::mla_updated_single_item', 10, 2 );
 
 		// Defined in /media-library-assistant/includes/class-mla-edit-media.php
-		add_filter( 'mla_upload_bulk_edit_form_values', 'MLA_WPML::mla_upload_bulk_edit_form_values', 10, 1 );
+		add_filter( 'mla_get_bulk_edit_form_presets', 'MLA_WPML::mla_get_bulk_edit_form_presets', 10, 3 );
+
+		add_filter( 'mla_upload_bulk_edit_form_blank_fieldset_values', 'MLA_WPML::mla_upload_bulk_edit_fieldset_values', 10, 2 );
+		add_filter( 'mla_upload_bulk_edit_form_initial_fieldset_values', 'MLA_WPML::mla_upload_bulk_edit_fieldset_values', 10, 2 );
+		add_filter( 'mla_upload_bulk_edit_form_preset_fieldset_values', 'MLA_WPML::mla_upload_bulk_edit_fieldset_values', 10, 2 );
+
+		add_filter( 'mla_upload_bulk_edit_form_blank_values', 'MLA_WPML::mla_upload_bulk_edit_values', 10, 1 );
+		add_filter( 'mla_upload_bulk_edit_form_initial_values', 'MLA_WPML::mla_upload_bulk_edit_values', 10, 1 );
+		add_filter( 'mla_upload_bulk_edit_form_preset_values', 'MLA_WPML::mla_upload_bulk_edit_values', 10, 1 );
 
 		// Defined in /media-library-assistant/includes/class-mla-media-modal.php
 		add_action( 'mla_media_modal_begin_update_compat_fields', 'MLA_WPML::mla_media_modal_begin_update_compat_fields', 10, 1 );
@@ -74,13 +80,11 @@ class MLA_WPML {
 		// Defined in /wpml-media/inc/wpml-media-class.php
 		add_action( 'wpml_media_create_duplicate_attachment', 'MLA_WPML::wpml_media_create_duplicate_attachment', 10, 2 );
 	}
-	
+
 	/**
 	 * Add the plugin's admin-mode filter/action handlers
 	 *
 	 * @since 2.11
-	 *
-	 * @return	void
 	 */
 	public static function admin_init() {
 		// Add styles for the language management column
@@ -121,7 +125,7 @@ class MLA_WPML {
 
 		// Localize $mla_language_option_definitions array
 		self::mla_localize_language_option_definitions();
-		
+
 		// Apply the "Always Translate Media" override
 		if ( ! empty( $_REQUEST['mlaAddNewBulkEditFormString'] ) && class_exists( 'WPML_Media' ) && ( 'checked' == MLACore::mla_get_option( MLACoreOptions::MLA_ADD_NEW_BULK_EDIT ) ) ) {
 			$content_defaults = WPML_Media::get_setting( 'new_content_settings' );
@@ -160,7 +164,7 @@ class MLA_WPML {
 	 */
 	public static function mla_taxonomy_column_final( $filter_content, $tax_object, $term, $column_text, $count_terms ) {
 		global $sitepress;
-		
+
 		$details = $sitepress->get_element_language_details( $term->term_taxonomy_id, 'tax_' . $tax_object->name );
 		if ( !empty( $details ) ) {
 			$language_code = $details->language_code;
@@ -266,8 +270,8 @@ class MLA_WPML {
 		}
 
 		self::_build_existing_terms( $post_id );
-		if ( isset( $_REQUEST['action'] ) && 'mla-inline-edit-scripts' === $_REQUEST['action'] && isset( $_REQUEST['tax_input'] ) ) {
-			MLACore::mla_debug_add( __LINE__ . " MLA_WPML::mla_list_table_inline_action( {$post_id} ) Quick Edit initial \$_REQUEST['tax_input'] = " . var_export( $_REQUEST['tax_input'], true ), MLACore::MLA_DEBUG_CATEGORY_AJAX ); // phpcs:ignore
+		if ( isset( $_REQUEST['action'] ) && MLACore::JAVASCRIPT_INLINE_EDIT_SLUG === $_REQUEST['action'] && isset( $_REQUEST['tax_input'] ) ) {
+			MLACore::mla_debug_add( __LINE__ . " MLA_WPML::mla_list_table_inline_action( {$post_id} ) Quick Edit initial \$_REQUEST['tax_input'] = " . var_export( $_REQUEST['tax_input'], true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE ); // phpcs:ignore
 
 			if ( 'checked' == MLACore::mla_get_option( 'term_assignment', false, false, MLA_WPML::$mla_language_option_definitions ) ) {
 				// Quick Edit calls update_single_item right after this filter
@@ -289,7 +293,7 @@ class MLA_WPML {
 				$_REQUEST['tax_input'] = self::_apply_tax_input( $post_id );
 			}
 
-			MLACore::mla_debug_add( __LINE__ . " MLA_WPML::mla_list_table_inline_action( {$post_id} ) Quick Edit final \$_REQUEST['tax_input'] = " . var_export( $_REQUEST['tax_input'], true ), MLACore::MLA_DEBUG_CATEGORY_AJAX ); // phpcs:ignore
+			MLACore::mla_debug_add( __LINE__ . " MLA_WPML::mla_list_table_inline_action( {$post_id} ) Quick Edit final \$_REQUEST['tax_input'] = " . var_export( $_REQUEST['tax_input'], true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE ); // phpcs:ignore
 		}
 
 		return $item_content;
@@ -309,9 +313,7 @@ class MLA_WPML {
 	public static function mla_list_table_bulk_action_initial_request( $request, $bulk_action, $custom_field_map ) {
 		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::mla_list_table_bulk_action_initial_request( {$bulk_action} ) request = " . var_export( $request, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 
-		/*
-		 * Check for Bulk Edit processing during Upload New Media
-		 */
+		// Check for Bulk Edit processing during Upload New Media
 		if ( ! empty( $_REQUEST['mlaAddNewBulkEditFormString'] ) ) {
 			/*
 			 * It is now safe to restore the WPML option settings if they have been
@@ -320,7 +322,7 @@ class MLA_WPML {
 			if ( ! empty( self::$wpml_content_defaults ) ) {
 				WPML_Media::update_setting( 'new_content_settings', self::$wpml_content_defaults );
 			}
-						
+
 			/*
 			 * Suppress WPML processing in wpml-media.class.php function save_attachment_actions,
 			 * which wipes out attachment meta data.
@@ -331,6 +333,8 @@ class MLA_WPML {
 
 		self::$bulk_edit_request = $request;
 		self::$bulk_edit_map = $custom_field_map;
+
+		add_filter( 'wpml_disable_term_adjust_id', 'MLA_WPML::wpml_disable_term_adjust_id', 10, 2 );
 
 		return $request;
 	} // mla_list_table_bulk_action_initial_request
@@ -368,9 +372,7 @@ class MLA_WPML {
 	public static function mla_list_table_bulk_action_item_request( $request, $bulk_action, $post_id, $custom_field_map ) {
 		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::mla_list_table_bulk_action_item_request( {$post_id} ) request = " . var_export( $request, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 
-		/*
-		 * Note that $request may be modified by previous items, so we must return to the initial vlues
-		 */
+		// Note that $request may be modified by previous items, so we must return to the initial vlues
 		if ( 'edit' == $bulk_action && ( ! empty( self::$bulk_edit_request['tax_input'] ) ) && ( 'checked' == MLACore::mla_get_option( 'term_assignment', false, false, MLA_WPML::$mla_language_option_definitions ) ) ) {
 			self::_build_existing_terms( $post_id );
 			self::_build_tax_input( $post_id, self::$bulk_edit_request['tax_input'], self::$bulk_edit_request['tax_action'], true );
@@ -384,15 +386,15 @@ class MLA_WPML {
 		}
 
 		if ( isset( $request['tax_input'] ) ) {
-			MLACore::mla_debug_add( __LINE__ . " MLA_WPML::bulk_action_item_request( {$bulk_action}, {$post_id} ) \$request['tax_input'] = " . var_export( $request['tax_input'], true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
+			MLACore::mla_debug_add( __LINE__ . " MLA_WPML::bulk_action_item_request( {$bulk_action}, {$post_id} ) \$request['tax_input'] = " . var_export( $request['tax_input'], true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 		} else {
-			MLACore::mla_debug_add( __LINE__ . " MLA_WPML::bulk_action_item_request( {$bulk_action}, {$post_id} ) \$request['tax_input'] NOT SET", MLACore::MLA_DEBUG_CATEGORY_AJAX );
+			MLACore::mla_debug_add( __LINE__ . " MLA_WPML::bulk_action_item_request( {$bulk_action}, {$post_id} ) \$request['tax_input'] NOT SET", MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 		}
 
 		if ( isset( $request['tax_action'] ) ) {
-			MLACore::mla_debug_add( __LINE__ . " MLA_WPML::bulk_action_item_request( {$bulk_action}, {$post_id} ) \$request['tax_action'] = " . var_export( $request['tax_action'], true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
+			MLACore::mla_debug_add( __LINE__ . " MLA_WPML::bulk_action_item_request( {$bulk_action}, {$post_id} ) \$request['tax_action'] = " . var_export( $request['tax_action'], true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 		} else {
-			MLACore::mla_debug_add( __LINE__ . " MLA_WPML::bulk_action_item_request( {$bulk_action}, {$post_id} ) \$request['tax_action'] NOT SET", MLACore::MLA_DEBUG_CATEGORY_AJAX );
+			MLACore::mla_debug_add( __LINE__ . " MLA_WPML::bulk_action_item_request( {$bulk_action}, {$post_id} ) \$request['tax_action'] NOT SET", MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 		}
 
 		return $request;
@@ -415,18 +417,30 @@ class MLA_WPML {
 				$new_item = WPML_Media::create_duplicate_attachment( $mla_item_ID, $mla_parent_ID, $lang );
 			} else {
 				global $sitepress, $wpdb, $wpml_language_resolution;
-				$media_attachment_duplication = new WPML_Media_Attachments_Duplication(
-					$sitepress,
-					new WPML_Model_Attachments( $sitepress, wpml_get_post_status_helper() ),
-					$wpdb,
-					$wpml_language_resolution
-				);
-	
+
+				if ( version_compare( WPML_VERSION, '4.8.0', '>=' ) ) {
+					$media_attachment_duplication = new WPML_Media_Attachments_Duplication(
+						$sitepress,
+						new WPML_Model_Attachments( $sitepress, wpml_get_post_status_helper() ),
+						$wpdb,
+						$wpml_language_resolution,
+						new \WPML\MediaTranslation\PostWithMediaFilesFactory(),
+						WPML\Container\make( WPML\Core\BackgroundTask\Service\BackgroundTaskService::class )
+					);
+				} else {
+					$media_attachment_duplication = new WPML_Media_Attachments_Duplication(
+						$sitepress,
+						new WPML_Model_Attachments( $sitepress, wpml_get_post_status_helper() ),
+						$wpdb,
+						$wpml_language_resolution
+					);
+				}
+
 				$new_item = $media_attachment_duplication->create_duplicate_attachment( $mla_item_ID, $mla_parent_ID, $lang );
 			}
-			
+
 			$view_args = isset( $_REQUEST['mla_source'] ) ? array( 'mla_source' => sanitize_text_field( wp_unslash( $_REQUEST['mla_source'] ) ) ) : array();
-			wp_redirect( add_query_arg( $view_args, admin_url( 'post.php' ) . '?action=edit&post=' . $new_item . '&message=201' ), 302 );
+			wp_safe_redirect( add_query_arg( $view_args, admin_url( 'post.php' ) . '?action=edit&post=' . $new_item . '&message=201' ), 302 );
 			exit;
 		}
 	} // mla_list_table_custom_admin_action
@@ -449,7 +463,7 @@ class MLA_WPML {
 	} // mla_post_updated_messages_filter
 
 	/**
-	 * Force "All languages" mode for IPTC/EXIF mapping, which uses mla_get_shortcode_attachments
+	 * Force "All languages" mode for IPTC/EXIF/WP mapping, which uses mla_get_shortcode_attachments
 	 *
 	 * @since 2.20
 	 *
@@ -461,7 +475,7 @@ class MLA_WPML {
 	}
 
 	/**
-	 * Force "All languages" mode for IPTC/EXIF mapping, which uses mla_get_shortcode_attachments
+	 * Force "All languages" mode for IPTC/EXIF/WP mapping, which uses mla_get_shortcode_attachments
 	 *
 	 * @since 2.20
 	 *
@@ -533,7 +547,7 @@ class MLA_WPML {
 			$other_languages = $sitepress->get_active_languages();
 			unset( $other_languages[ $current_language ] );
 		}
-		
+
 		if ( ( ! empty( $new_text ) ) && in_array( $setting_key, $taxonomies ) ) {
 			$language_details = $sitepress->get_element_language_details( $post_id, 'post_attachment' );
 			$item_language = $language_details->language_code;
@@ -546,7 +560,7 @@ class MLA_WPML {
 			} else {
 				$parent_term = 0;
 			}
-			
+
 			$new_terms = array();
 			foreach( $new_text as $new_name ) {
 				$relevant_term = self::_get_relevant_term( 'name', $new_name, $setting_key );
@@ -611,7 +625,7 @@ class MLA_WPML {
 				} // new term
 			} // foreach new_name
 
-			MLACore::mla_debug_add( __LINE__ . " MLA_WPML::mla_mapping_new_text( {$setting_key}, {$post_id} ) \$new_terms = " . var_export( $new_terms, true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
+			MLACore::mla_debug_add( __LINE__ . " MLA_WPML::mla_mapping_new_text( {$setting_key}, {$post_id} ) \$new_terms = " . var_export( $new_terms, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 			return $new_terms;
 		} // translated taxonomy
 
@@ -673,7 +687,7 @@ class MLA_WPML {
 	 */
 	private static function _create_relevant_translation( $relevant_term, $language ) {
 		global $sitepress;
-		
+
 		$details = $sitepress->get_element_language_details( $relevant_term['term']->term_taxonomy_id, 'tax_' . $relevant_term['term']->taxonomy );
 		$args = array( 
 				'trid' => $details->trid,
@@ -737,9 +751,8 @@ class MLA_WPML {
 	 * @param	boolean	Ignore the Sitepress terms cache; optional
 	 */
 	private static function _get_relevant_term( $field, $value, $taxonomy, $language = NULL, $test_only = false, $skip_cache = false ) {
-		/*
-		 * WordPress encodes special characters, e.g., "&" as HTML entities in term names
-		 */
+
+		// WordPress encodes special characters, e.g., "&" as HTML entities in term names
 		if ( 'name' == $field ) {
 			$value = _wp_specialchars( $value );
 		}
@@ -838,7 +851,7 @@ class MLA_WPML {
 		}
 
 		$language_details = (array) $sitepress->get_element_language_details( $post_id, 'post_attachment' );
-		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_build_existing_terms( {$post_id} ) \$sitepress->get_element_language_details = " . var_export( $language_details, true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
+		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_build_existing_terms( {$post_id} ) \$sitepress->get_element_language_details = " . var_export( $language_details, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 
 		// WPML doesn't fill in $language_details if WPML Media is not installed
 		if ( ( ! is_array( $language_details ) ) || empty( $language_details ) ) {
@@ -846,26 +859,24 @@ class MLA_WPML {
 		}
 
 		$element_translations = $sitepress->get_element_translations( $language_details['trid'], 'post_attachment' );
-		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_build_existing_terms( {$post_id} ) \$sitepress->get_element_translations() = " . var_export( $element_translations, true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
-		
+		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_build_existing_terms( {$post_id} ) \$sitepress->get_element_translations() = " . var_export( $element_translations, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
+
 		$translations = array();
 		if ( $language_details['trid'] ) {
 			foreach ( $element_translations as $language_code => $translation ) {
 				$translations[ $language_code ] = (array) $translation;
 			}
 		}
-		
+
 		if ( empty( $translations ) ) {
 			$translations[ $language_details['language_code'] ] = array( 'element_id' => $post_id );
 		}
 
 		self::$existing_terms = array_merge( array( 'element_id' => $post_id ), $language_details, $translations );
 		$taxonomies = $sitepress->get_translatable_taxonomies( true, 'attachment' );
-		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_build_existing_terms( {$post_id} ) \$sitepress->get_translatable_taxonomies() = " . var_export( $taxonomies, true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
+		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_build_existing_terms( {$post_id} ) \$sitepress->get_translatable_taxonomies() = " . var_export( $taxonomies, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 
-		/*
-		 * Find all assigned terms and build term_master array
-		 */
+		// Find all assigned terms and build term_master array
 		$current_language = $sitepress->get_current_language();
 		foreach ( $translations as $language_code => $translation ) {
 			$sitepress->switch_lang( $language_code, true );
@@ -881,9 +892,7 @@ class MLA_WPML {
 			} // taxonomy
 		} // translation
 
-		/*
-		 * Add missing translated terms to the term_master array
-		 */		
+		// Add missing translated terms to the term_master array
 		foreach ( self::$relevant_terms as $term ) {
 			foreach ( $term['translations'] as $translation ) {
 				if ( array_key_exists( $translation->element_id, self::$relevant_terms ) ) {
@@ -897,8 +906,8 @@ class MLA_WPML {
 		} // term
 		$sitepress->switch_lang( $current_language, true );
 
-		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_build_existing_terms( {$post_id} ) self::\$existing_terms = " . var_export( self::$existing_terms, true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
-		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_build_existing_terms( {$post_id} ) self::\$relevant_terms = " . var_export( self::$relevant_terms, true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
+		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_build_existing_terms( {$post_id} ) self::\$existing_terms = " . var_export( self::$existing_terms, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
+		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_build_existing_terms( {$post_id} ) self::\$relevant_terms = " . var_export( self::$relevant_terms, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 		return;
 	}
 
@@ -919,26 +928,27 @@ class MLA_WPML {
 	 */
 	private static function _update_existing_terms( $post_id ) {
 		global $sitepress;
-		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_update_existing_terms( {$post_id} ) initial self::\$existing_terms = " . var_export( self::$existing_terms, true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
-		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_update_existing_terms( {$post_id} ) initial self::\$relevant_terms = " . var_export( self::$relevant_terms, true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
+		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_update_existing_terms( {$post_id} ) initial self::\$existing_terms = " . var_export( self::$existing_terms, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
+		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_update_existing_terms( {$post_id} ) initial self::\$relevant_terms = " . var_export( self::$relevant_terms, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 
 		if ( $post_id != self::$existing_terms['element_id'] ) {
 			return false;
 		}
 
+		//$current_language = $sitepress->get_current_language();
 		$language_code = self::$existing_terms['language_code'];
+		//$sitepress->switch_lang( $language_code, true );
 
 		if ( isset( self::$existing_terms[ $language_code ] ) ) {
 			$translation = self::$existing_terms[ $language_code ];
 		} else {
 			$translation = array();
 		}
+		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_update_existing_terms( {$post_id}, {$language_code} ) \$translation = " . var_export( $translation, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 
 		$terms_before = array();
 
-		/*
-		 * Find all assigned terms and update the array
-		 */		
+		// Find all assigned terms and update the array
 		$taxonomies = $sitepress->get_translatable_taxonomies( true, 'attachment' );
 		foreach ( $taxonomies as $taxonomy_name ) {
 			$terms_before[ $taxonomy_name ] = isset( $translation[ $taxonomy_name ] ) ? $translation[ $taxonomy_name ] : array();
@@ -950,12 +960,12 @@ class MLA_WPML {
 				} // term
 			}
 		} // taxonomy
+		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_update_existing_terms( {$post_id} ) \$terms_before = " . var_export( $terms_before, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
+		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_update_existing_terms( {$post_id} ) {$language_code} \$translation = " . var_export( $translation, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 
 		self::$existing_terms[ $language_code ] = $translation;
 
-		/*
-		 * Add missing translated terms to the term_master array
-		 */		
+		// Add missing translated terms to the term_master array
 		foreach ( self::$relevant_terms as $term ) {
 			foreach ( $term['translations'] as $translation ) {
 				if ( array_key_exists( $translation->element_id, self::$relevant_terms ) ) {
@@ -967,8 +977,10 @@ class MLA_WPML {
 			} // translation
 		} // term
 
-		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_update_existing_terms( {$post_id} ) final self::\$existing_terms = " . var_export( self::$existing_terms, true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
-		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_update_existing_terms( {$post_id} ) final self::\$relevant_terms = " . var_export( self::$relevant_terms, true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
+		//$sitepress->switch_lang( $current_language, true );
+
+		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_update_existing_terms( {$post_id} ) final self::\$existing_terms = " . var_export( self::$existing_terms, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
+		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_update_existing_terms( {$post_id} ) final self::\$relevant_terms = " . var_export( self::$relevant_terms, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 		return $terms_before;
 	}
 
@@ -1006,6 +1018,8 @@ class MLA_WPML {
 			return;
 		}
 
+		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_build_tax_input( {$post_id} ) \$tax_actions = " . var_export( $tax_actions, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
+		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_build_tax_input( {$post_id} ) \$tax_inputs = " . var_export( $tax_inputs, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 		self::$tax_input = array( 'tax_input_post_id' => $post_id );
 		$active_languages = $sitepress->get_active_languages();
 
@@ -1050,7 +1064,7 @@ class MLA_WPML {
 						continue;
 					}
 
-					$relevant_term = self::_get_relevant_term( 'term_id', $term, $taxonomy );
+					$relevant_term = self::_get_relevant_term( 'id', $term, $taxonomy );
 					if ( isset( $relevant_term['translations'] ) ) {
 						foreach ( $relevant_term['translations'] as $language => $translation ) {
 							if ($translated_term = self::_get_relevant_term( 'term_taxonomy_id', $translation->element_id, $taxonomy ) ) {
@@ -1092,9 +1106,7 @@ class MLA_WPML {
 			} // flat taxonomy
 
 			foreach( $active_languages as $language => $language_details ) {
-				/*
-				 * Apply the tax_action to the terms_before to find the terms_after
-				 */
+				// Apply the tax_action to the terms_before to find the terms_after
 				$term_changes = isset( $input_terms[ $language ] ) ? $input_terms[ $language ] : array();
 				if ( 'replace' == $tax_action ) {
 					$terms_after = $term_changes;
@@ -1110,9 +1122,7 @@ class MLA_WPML {
 					} // input_term
 				}
 
-				/*
-				 * Convert terms_after to tax_input format
-				 */
+				// Convert terms_after to tax_input format
 				$term_changes = array();
 				foreach( $terms_after as $input_term ) {
 					$term_changes[] = $input_term->term_id;
@@ -1122,8 +1132,8 @@ class MLA_WPML {
 			} // language
 		} // foreach taxonomy
 
-		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_build_tax_input( {$post_id} ) self::\$tax_input = " . var_export( self::$tax_input, true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
-		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_build_tax_input( {$post_id} ) self::\$relevant_terms = " . var_export( self::$relevant_terms, true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
+		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_build_tax_input( {$post_id} ) self::\$tax_input = " . var_export( self::$tax_input, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
+		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_build_tax_input( {$post_id} ) self::\$relevant_terms = " . var_export( self::$relevant_terms, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 	} // _build_tax_input
 
 	/**
@@ -1150,8 +1160,8 @@ class MLA_WPML {
 			}
 		}
 
-		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_apply_tax_input( {$post_id} ) \$post_language = " . var_export( $post_language, true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
-		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_apply_tax_input( {$post_id} ) self::\$tax_input[ \$post_language ] = " . var_export( self::$tax_input[ $post_language ], true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
+		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_apply_tax_input( {$post_id} ) \$post_language = " . var_export( $post_language, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
+		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_apply_tax_input( {$post_id} ) self::\$tax_input[ \$post_language ] = " . var_export( self::$tax_input[ $post_language ], true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 		return self::$tax_input[ $post_language ];
 	} // _apply_tax_input
 
@@ -1179,9 +1189,7 @@ class MLA_WPML {
 		$source_language = self::$existing_terms['language_code'];
 		$taxonomies = $sitepress->get_translatable_taxonomies( true, 'attachment' );
 
-		/*
-		 * Find all source terms with a destination equivalent, record destination equivalent
-		 */
+		// Find all source terms with a destination equivalent, record destination equivalent
 		$new_terms = array();
 		foreach ( $taxonomies as $taxonomy ) {
 			$new_terms[ $taxonomy ] = array();
@@ -1194,9 +1202,7 @@ class MLA_WPML {
 			}
 		}
 
-		/*
-		 * Find all destination terms with a source equivalent, record destination equivalent
-		 */
+		// Find all destination terms with a source equivalent, record destination equivalent
 		$old_terms = array();
 		foreach ( $taxonomies as $taxonomy ) {
 			$old_terms[ $taxonomy ] = array();
@@ -1209,9 +1215,10 @@ class MLA_WPML {
 			}
 		}
 
-		/*
-		 * Remove terms in common, leaving new_terms => add, old_terms => remove
-		 */
+		//MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_apply_synch_input( {$language} ) \$new_terms = " . var_export( $new_terms, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
+		//MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_apply_synch_input( {$language} ) \$old_terms = " . var_export( $old_terms, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
+
+		// Remove terms in common, leaving new_terms => add, old_terms => remove
 		foreach ( $old_terms as $taxonomy => $terms ) {
 			foreach ( $terms as $ttid => $term ) {
 				if ( isset( $new_terms[ $taxonomy ][ $ttid ] ) ) {
@@ -1221,9 +1228,7 @@ class MLA_WPML {
 			} // terms
 		} // taxonomies
 
-		/*
-		 * Compute "replace" tax_inputs for the target translation
-		 */
+		// Compute "replace" tax_inputs for the target translation
 		$translation = self::$existing_terms[ $language ];
 		$synch_inputs = array();
 
@@ -1259,12 +1264,9 @@ class MLA_WPML {
 			}
 		} // taxonomies
 
-		/*
-		 * Convert synch terms to $tax_inputs format
-		 */
+		// Convert synch terms to $tax_inputs format
 		$tax_inputs = array();
 		foreach ( $synch_inputs as $taxonomy_name => $terms ) {
-			$taxonomy = get_taxonomy( $taxonomy_name );
 			$input_terms = array();
 			foreach ( $terms as $term ) {
 				$input_terms[] = $term->term_id;
@@ -1274,11 +1276,25 @@ class MLA_WPML {
 		} // synch_inputs
 
 		$post_id = self::$existing_terms[ $language ]['element_id'];
-		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_apply_synch_input( {$post_id} ) \$language = " . var_export( $language, true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
-		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_apply_synch_input( {$post_id} ) \$tax_inputs = " . var_export( $tax_inputs, true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
+		//MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_apply_synch_input( {$post_id}, {$language} ) \$tax_inputs = " . var_export( $tax_inputs, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 		return $tax_inputs;		
 	} // _apply_synch_input
 
+	/**
+	 * Disable the WPML 4.5+ automatic translation of terms during MLA synchronization
+	 *
+	 * @since 3.08
+	 *
+	 * @param bool    $icl_adjust_id_url_filter_off
+	 * @param WP_Term $term
+	 */
+	public static function wpml_disable_term_adjust_id( $icl_adjust_id_url_filter_off, $term ) {
+		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::wpml_disable_term_adjust_id icl_adjust_id_url_filter_off = " . var_export( $icl_adjust_id_url_filter_off, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
+		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::wpml_disable_term_adjust_id term = " . var_export( $term, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
+
+		return true; // $icl_adjust_id_url_filter_off;
+	}
+	
 	/**
 	 * Apply Term Synchronization
 	 *
@@ -1286,25 +1302,22 @@ class MLA_WPML {
 	 * @uses MLA_WPML::$existing_terms
 	 *
 	 * @param	integer	$post_id the item we're synchronizing to
-	 *
-	 * @return	array	$tax_inputs for Term Synchronization
 	 */
 	private static function _apply_term_synchronization( $post_id ) {
 		global $sitepress;
 
 		if ( 'checked' == MLACore::mla_get_option( 'term_synchronization', false, false, MLA_WPML::$mla_language_option_definitions ) ) {
+			add_filter( 'wpml_disable_term_adjust_id', 'MLA_WPML::wpml_disable_term_adjust_id', 10, 2 );
 
-			/*
-			 * Update terms because they have changed
-			 */
+			// Update terms because they have changed
 			$terms_before = self::_update_existing_terms( $post_id );
+			MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_apply_term_synchronization( {$post_id} ) terms_before = " . var_export( $terms_before, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 
-			// $tax_input is a convenient source of language codes; ignore $tax_inputs
 			$current_language = $sitepress->get_current_language();
-			foreach( self::$tax_input as $language => $tax_inputs ) {
-				/*
-				 * Skip the language we've already updated
-				 */
+			$active_languages = $sitepress->get_active_languages();
+			foreach( $active_languages as $language => $tax_inputs ) {
+				MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_apply_term_synchronization( {$post_id}, {$language} ) active language = " . var_export( $tax_inputs, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
+				// Skip the language we've already updated
 				if ( ( ! isset( self::$existing_terms[ $language ] ) ) || ( self::$existing_terms[ 'language_code' ] == $language ) ) {
 					continue;
 				}
@@ -1313,10 +1326,13 @@ class MLA_WPML {
 				$tax_inputs = self::_apply_synch_input( $language );
 				if ( ! empty( $tax_inputs ) ) {
 					$translation = self::$existing_terms[ $language ]['element_id'];
+					MLACore::mla_debug_add( __LINE__ . " MLA_WPML::_apply_term_synchronization( {$post_id}, {$language}, {$translation} ) updated tax_inputs = " . var_export( $tax_inputs, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 					MLAData::mla_update_single_item( $translation, array(), $tax_inputs );
 				}
 			} // translation
+
 			$sitepress->switch_lang( $current_language, true );
+			remove_filter( 'wpml_disable_term_adjust_id', 'MLA_WPML::wpml_disable_term_adjust_id', 10 );
 		} // do synchronization
 	}
 
@@ -1331,10 +1347,15 @@ class MLA_WPML {
 	public static function mla_updated_single_item( $post_id, $result ) {
 		MLACore::mla_debug_add( __LINE__ . " MLA_WPML::mla_updated_single_item( {$post_id}, {$result} )", MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 
+		// Existing terms might have changed, e.g., during uploads
+		if ( self::$existing_terms['element_id'] == 0 ) {
+			MLACore::mla_debug_add( __LINE__ . " MLA_WPML::mla_updated_single_item( {$post_id}, {$result} ) _build_existing_terms", MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
+			self::_build_existing_terms( $post_id );
+		}
+
 		if ( self::$existing_terms['element_id'] == $post_id ) {
-			/*
-			 * Synchronize the changes to all other translations
-			 */
+			// Synchronize the changes to all other translations
+			MLACore::mla_debug_add( __LINE__ . " MLA_WPML::mla_updated_single_item( {$post_id}, {$result} ) _apply_term_synchronization", MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 			self::_apply_term_synchronization( $post_id );
 		}
 	}
@@ -1453,14 +1474,14 @@ class MLA_WPML {
 			 */
 			if ( ! empty( self::$duplicate_attachments ) ) {
 				self::$updating_duplicates = true;
-				
+
 				foreach( self::$duplicate_attachments as $id => $language ) {
 					$meta = get_post_meta( $id, '_wp_attachment_metadata', true );
 					MLACore::mla_debug_add( __LINE__ . " MLA_WPML::mla_update_attachment_metadata_postfilter( {$id}, {$language} ) attachment_metadata = " . var_export( $meta, true ), MLACore::MLA_DEBUG_CATEGORY_LANGUAGE );
 					if ( is_array( $meta ) ) {
 						continue;
 					}
-					
+
 					/*
 					 * update_post_meta is required twice; first to set it for mapping rules,
 					 * second to repair the damage done by WPML synchronize_attachment_metadata
@@ -1477,7 +1498,7 @@ class MLA_WPML {
 				self::$updating_duplicates = false;
 			}
 		}
-		
+
 		return $data;
 	}
 
@@ -1570,26 +1591,99 @@ class MLA_WPML {
 	} // edit_attachment
 
 	/**
-	 * Modify and extend the substitution values used for the Bulk Edit on Upload form.
+	 * MLA_List_Table item bulk edit form preset values
 	 *
-	 * @since 2.20
+	 * This filter gives you a chance to modify or extend the presets used to populate
+	 * the Bulk Edit on Upload form.
 	 *
-	 * @param	array	$page_values [ parameter_name => parameter_value ] pairs
+	 * @since 3.02
+	 *
+	 * @param	array	$option_value data values to populate the form presets
+	 * @param	string	$option 'mla_bulk_edit_presets' or 'mla_bulk_edit_presets_per_user'
+	 * @param	boolean	$get_default True to ignore current setting and return default values
 	 */
-	public static function mla_upload_bulk_edit_form_values( $page_values ) {
+	public static function mla_get_bulk_edit_form_presets( $option_value, $option, $get_default ) {
+
+		if ( class_exists( 'WPML_Media', false ) ) {
+			if ( $get_default || empty( $option_value['mla_always_translate_media'] ) ) {
+				$content_defaults = WPML_Media::get_setting( 'new_content_settings' );
+				if ( isset( $content_defaults['always_translate_media'] ) && $content_defaults['always_translate_media'] ) {
+					$option_value['mla_always_translate_media'] = 'true';
+				} else {
+					$option_value['mla_always_translate_media'] = 'false';
+				}
+			}
+		} else {
+			unset( $option_value['mla_always_translate_media'] );
+		}
+
+		return $option_value;
+	} // mla_get_bulk_edit_form_presets
+	
+	/**
+	 * MLA_List_Table item bulk edit fieldset values
+	 *
+	 * This filter gives you a chance to modify the data values that populate the Bulk Edit form.
+	 *
+	 * @since 3.02
+	 *
+	 * @param	array	$fieldset_values data values to populate the form
+	 * @param	string	$filter_root identify the blank, initial and preset fieldsets
+	 */
+	public static function mla_upload_bulk_edit_fieldset_values( $fieldset_values, $filter_root ) {
 		/*
-		 * Add markup to the $page_values ['custom_fields'] element for the "Always translate" checkbox
+		 * You can use the 'filter_root' argument to distinguish among :
+		 *     mla_upload_bulk_edit_form_blank,
+		 *     mla_upload_bulk_edit_form_initial,
+		 *     mla_upload_bulk_edit_form_preset
 		 */
+
+		if ( empty( $fieldset_values['mla_always_translate_media'] ) ) {
+			$fieldset_values['mla_always_translate_media'] = 'true';
+		}
+
+		self::$_upload_bulk_edit_fieldset_values = $fieldset_values;
+		
+		return $fieldset_values;
+	} // mla_upload_bulk_edit_fieldset_values
+
+	/**
+	 * Share fieldset values between mla_upload_bulk_edit_fieldset_values() and mla_upload_bulk_edit_values()
+	 *
+	 * @since 3.02
+	 *
+	 * @var	array	fieldset values
+	 */
+	private static $_upload_bulk_edit_fieldset_values = array( 'mla_always_translate_media' => 'true' );
+
+	/**
+	 * MLA_List_Table item bulk edit values
+	 *
+	 * This filter gives you a chance to modify the substitution parameters used to populate
+	 * the Bulk Edit on Upload form.
+	 *
+	 * @since 3.02
+	 *
+	 * @param	array	$page_values subsitiution parameter values to populate the form
+	 */
+	public static function mla_upload_bulk_edit_values( $page_values ) {
+		/*
+		 * You can use the 'filter_root' argument to distinguish among :
+		 *     mla_upload_bulk_edit_form_blank,
+		 *     mla_upload_bulk_edit_form_initial,
+		 *     mla_upload_bulk_edit_form_preset
+		 */
+
+		// Add markup to the $fieldset_values ['custom_fields'] element for the "Always translate" checkbox
 		if ( class_exists( 'WPML_Media' ) ) {
-			$content_defaults = WPML_Media::get_setting( 'new_content_settings' );
-			if ( isset( $content_defaults['always_translate_media'] ) && $content_defaults['always_translate_media'] ) {
-				$true_selected = 'selected="selected"';
-				$false_selected = '';
-			} else {
+			if ( isset( self::$_upload_bulk_edit_fieldset_values['mla_always_translate_media'] ) && ( 'false' === self::$_upload_bulk_edit_fieldset_values['mla_always_translate_media'] ) ) {
 				$true_selected = '';
 				$false_selected = 'selected="selected"';
+			} else {
+				$true_selected = 'selected="selected"';
+				$false_selected = '';
 			}
-			
+
 			$page_values['custom_fields'] .= '      <label class="inline-edit-c_0 clear"><span class="title">WPML</span><span class="input-text-wrap">' . "\n";
 			$page_values['custom_fields'] .= '      <select name="mla_always_translate_media">' . "\n";
 			$page_values['custom_fields'] .= '        <option ' . $true_selected . ' value="true">' . __( 'Yes', 'media-library-assistant' ) . '&nbsp;</option>' . "\n";
@@ -1597,9 +1691,9 @@ class MLA_WPML {
 			$page_values['custom_fields'] .= '      </select><span>&nbsp;' . __( 'Make media available in all languages', 'media-library-assistant' ) . '</span>' . "\n";
 			$page_values['custom_fields'] .= '      </span></label>' . "\n";
 		}
-		
- 		return $page_values;
-	} // mla_upload_bulk_edit_form_values
+
+		return $page_values;
+	} // mla_upload_bulk_edit_values
 
 	/**
 	 * Adds the "Language" tab to the Settings/Media Library Assistant list
@@ -1650,7 +1744,7 @@ class MLA_WPML {
 			'media_assistant_table_header' =>
 				array('tab' => 'language',
 					'name' => __( 'Media/Assistant submenu table', 'media-library-assistant' ),
-					'type' => 'header'),
+					'type' => 'header', 'help' => ''),
 
 			'language_column' =>
 				array('tab' => 'language',
@@ -1669,7 +1763,7 @@ class MLA_WPML {
 			'term_translation_header' =>
 				array('tab' => 'language',
 					'name' => __( 'Term Management', 'media-library-assistant' ),
-					'type' => 'header'),
+					'type' => 'header', 'help' => ''),
 
 			'term_assignment' =>
 				array('tab' => 'language',
@@ -1690,7 +1784,7 @@ class MLA_WPML {
 					'name' => __( 'Term Mapping Replication', 'media-library-assistant' ),
 					'type' => 'checkbox',
 					'std' => 'checked',
-					'help' => __( 'When mapping IPTC/EXIF metadata to taxonomy terms, make them available in all languages.'), 'media-library-assistant' ),
+					'help' => __( 'When mapping IPTC/EXIF/WP metadata to taxonomy terms, make them available in all languages.'), 'media-library-assistant' ),
 		);
 	}
 
@@ -1728,9 +1822,7 @@ class MLA_WPML {
 			return $page_content;
 		}
 
-		/*
-		 * Find WPML Media plugin status
-		 */
+		// Find WPML Media plugin status
 		$installed = false;
 		$active = false;
 		$wpml_media = SitePress::get_installed_plugins();
@@ -1741,14 +1833,14 @@ class MLA_WPML {
 				$active = isset( $wpml_media['file'] ) && is_plugin_active( $wpml_media['file'] );
 			}
 		}
-		
+
 		$wpml_media = '';
 		if ( ! $installed ) {
 			$wpml_media = '<p><strong>' . __( 'WARNING:', 'media-library-assistant' ) . __( ' WPML Media is not installed.', 'media-library-assistant' ) . '</strong></p>';
 		} elseif ( ! $active ) {
 			$wpml_media = '<p><strong>' . __( 'WARNING:', 'media-library-assistant' ) . __( ' WPML Media is not active.', 'media-library-assistant' ) . '</strong></p>';
 		}
-		
+
 		$page_values = array(
 			'Language Options' => __( 'Language Options', 'media-library-assistant' ),
 			/* translators: 1: - 4: page subheader values */
@@ -1783,8 +1875,6 @@ class MLA_WPML {
 	 * Save Language settings to the options table
  	 *
 	 * @since 2.11
-	 *
-	 * @uses $_REQUEST
 	 *
 	 * @return	array	Message(s) reflecting the results of the operation
 	 */
@@ -1898,28 +1988,23 @@ class MLA_WPML_Table {
 	 * @return	void
 	 */
 	function __construct( $table ) {
-		/*
-		 * Save a reference to the parent MLA_List_Table object
-		 */
+		// Save a reference to the parent MLA_List_Table object
 		$this->mla_list_table = $table;
 
-		/*
-		 * Defined in /wp-admin/includes/class-wp-list-table.php
-		 */
+		// Defined in /wp-admin/includes/class-wp-list-table.php
 		// filter "views_{$this->screen->id}"
 		add_filter( 'views_media_page_mla-menu', 'MLA_WPML_Table::mla_views_media_page_mla_menu_filter', 10, 1 );
 
-		 /*
-		  * Defined in /media-library-assistant/includes/class-mla-list-table.php
-		  */
+		// Defined in /media-library-assistant/includes/class-mla-list-table.php
 		add_filter( 'mla_list_table_submenu_arguments', array( $this, 'mla_list_table_submenu_arguments' ), 10, 2 );
 		add_filter( 'mla_list_table_get_columns', array( $this, 'mla_list_table_get_columns' ), 10, 1 );
 		add_filter( 'mla_list_table_column_default', array( $this, 'mla_list_table_column_default' ), 10, 3 );
 		//add_filter( 'mla_list_table_build_inline_data', array( $this, 'mla_list_table_build_inline_data' ), 10, 2 );
 
-		/*
-		 * Defined in /plugins/wpml-media/inc/wpml-media.class.php
-		 */
+		// Defined in various /media-library-assistant/includes/class-mla-settings-*-tab.php
+		add_filter( 'mla_setting_table_submenu_arguments', array( $this, 'mla_list_table_submenu_arguments' ), 10, 2 );
+
+		// Defined in /plugins/wpml-media/inc/wpml-media.class.php
 		add_filter( 'wpml-media_view-upload-sql', array( $this, 'mla_wpml_media_view_upload_sql_filter' ), 10, 2 );
 		add_filter( 'wpml-media_view-upload-count', array( $this, 'mla_wpml_media_view_upload_count_filter' ), 10, 4 );
 		add_filter( 'wpml-media_view-upload-page-sql', array( $this, 'mla_wpml_media_view_upload_page_sql_filter' ), 10, 2 );
@@ -1946,7 +2031,7 @@ class MLA_WPML_Table {
 		if ( false === strpos( $views['all'], 'page=mla-menu' ) ) {
 			$views['all'] = str_replace( 'upload.php?', 'upload.php?page=mla-menu&', $views['all'] );
 		}
-		
+
 		return $views;
 	}
 
@@ -2144,7 +2229,7 @@ class MLA_WPML_Table {
 					$table_language = $query['lang'];
 				}
 			}
-				
+
 			if ( empty( $table_language ) && method_exists( $sitepress, 'get_admin_language_cookie' ) ) {
 				$table_language = $sitepress->get_admin_language_cookie();
 			}
@@ -2153,7 +2238,7 @@ class MLA_WPML_Table {
 				$table_language = $sitepress->get_default_language();
 			}
 		}
-		
+
 		return $table_language;
 	}
 
@@ -2200,11 +2285,12 @@ class MLA_WPML_Table {
 					}
 				}
 
-				$results = $wpdb->get_results( $wpdb->prepare("
+				$query = $wpdb->prepare("
 					SELECT f.lang_code, f.flag, f.from_template, l.name
 					FROM {$wpdb->prefix}icl_flags f
 						JOIN {$wpdb->prefix}icl_languages_translations l ON f.lang_code = l.language_code
-					WHERE l.display_language_code = %s AND f.lang_code IN(" . wpml_prepare_in( $language_codes ) . ")", $sitepress->get_admin_language() ) );
+					WHERE l.display_language_code = %s AND f.lang_code IN( " . wpml_prepare_in( $language_codes ) . " )", $sitepress->get_admin_language() );
+				$results = $wpdb->get_results( $query ); // phpcs:ignore
 
 				$wp_upload_dir = wp_upload_dir();
 				foreach ( $results as $result ) {
@@ -2303,18 +2389,21 @@ class MLA_WPML_Table {
 				if ( isset( $translations[ $language['code'] ] ) && $translations[ $language['code'] ]->element_id == $item->ID ) {
 					// The item's own language
 					$img = 'yes.png';
+					/* translators: 1: language display name */
 					$alt = sprintf( __( 'Edit the %s translation', 'sitepress' ), $language['display_name'] );
 
 					$link = 'post.php?action=edit&amp;mla_source=edit&amp;post=' . $translations[ $language['code'] ]->element_id . '&amp;lang=' . $language['code'];
 				} elseif ( isset( $translations[ $language['code'] ] ) && $translations[ $language['code'] ]->element_id ) {
 					// Translation exists
 					$img = 'edit_translation.png';
+					/* translators: 1: language display name */
 					$alt = sprintf( __( 'Edit the %s translation', 'sitepress' ), $language['display_name'] );
 
 					$link = 'post.php?action=edit&amp;mla_source=edit&amp;post=' . $translations[ $language['code'] ]->element_id . '&amp;lang=' . $language['code'];
 				} else {
 					// Translation does not exist
 					$img = 'add_translation.png';
+					/* translators: 1: language display name */
 					$alt = sprintf( __( 'Add translation to %s', 'sitepress' ), $language['display_name'] );
 					$src_lang = $current_language;
 

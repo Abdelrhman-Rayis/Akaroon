@@ -1,736 +1,449 @@
 <?php
-
 /**
- * Fired during plugin activation
- *
- * @link       http://onlinewebtutorhub.blogspot.in/
- * @since      1.0.0
- *
+ * @link       https://onlinewebtutorblog.com
+ * @since      3.3
  * @package    Library_Management_System
  * @subpackage Library_Management_System/includes
- */
-
-/**
- * Fired during plugin activation.
- *
- * This class defines all code necessary to run during the plugin's activation.
- *
- * @since      1.0.0
- * @package    Library_Management_System
- * @subpackage Library_Management_System/includes
- * @author     Online Web Tutor <onlinewebtutorhub@gmail.com>
+ * @copyright  Copyright (c) 2026, Online Web Tutor
+ * @license    GPL-2.0+ https://www.gnu.org/licenses/gpl-2.0.html
+ * @author     Online Web Tutor
  */
 class Library_Management_System_Activator {
 
+    public function activate() {
+        $this->owt7_library_generate_plugin_tables();
+        $this->owt7_library_update_tables_for_multilingual();
+        $this->owt7_library_insert_default_data();
+        $this->owt7_library_options();
+        $this->owt7_library_shortcodes();
+    }
+
+    private function owt7_library_generate_plugin_tables() {
+
+        global $wpdb;
+
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+
+        $tables = [
+            'users' => [
+                'name' => $this->owt7_library_tbl_users(),
+                'sql' => "CREATE TABLE %s (
+                    id INT NOT NULL AUTO_INCREMENT,
+                    register_from ENUM('web', 'admin') DEFAULT 'admin',
+                    u_id VARCHAR(20) DEFAULT NULL,
+                    name VARCHAR(255) DEFAULT NULL,
+                    email VARCHAR(80) DEFAULT NULL,
+                    gender ENUM('male', 'female', 'other') DEFAULT NULL,
+                    branch_id INT(5) DEFAULT NULL,
+                    phone_no VARCHAR(20) DEFAULT NULL,
+                    profile_image VARCHAR(220) DEFAULT NULL,
+                    address_info TEXT,
+                    status INT NOT NULL DEFAULT '1',
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (id)
+                ) %s;"
+            ],
+            'books' => [
+                'name' => $this->owt7_library_tbl_books(),
+                'sql' => "CREATE TABLE %s (
+                    id INT NOT NULL AUTO_INCREMENT,
+                    book_id VARCHAR(20) DEFAULT NULL,
+                    bookcase_id INT(5) DEFAULT NULL,
+                    bookcase_section_id INT(5) DEFAULT NULL,
+                    category_id INT(5) DEFAULT NULL,
+                    name VARCHAR(255) DEFAULT NULL,
+                    author_name VARCHAR(255) DEFAULT NULL,
+                    publication_name VARCHAR(255) DEFAULT NULL,
+                    publication_year VARCHAR(10) DEFAULT NULL,
+                    publication_location VARCHAR(255) DEFAULT NULL,
+                    amount VARCHAR(10) DEFAULT NULL,
+                    cover_image VARCHAR(200) DEFAULT NULL,
+                    isbn VARCHAR(20) DEFAULT NULL,
+                    book_url VARCHAR(220) DEFAULT NULL,
+                    stock_quantity INT(5) DEFAULT NULL,
+                    book_language VARCHAR(50) DEFAULT NULL,
+                    book_pages INT(5) DEFAULT NULL,
+                    description TEXT,
+                    status INT NOT NULL DEFAULT '1',
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (id)
+                ) %s;"
+            ],
+            'bookcase' => [
+                'name' => $this->owt7_library_tbl_bookcase(),
+                'sql' => "CREATE TABLE %s (
+                    id INT NOT NULL AUTO_INCREMENT,
+                    name VARCHAR(255) DEFAULT NULL,
+                    status ENUM('1', '0') NOT NULL DEFAULT '1',
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (id)
+                ) %s;"
+            ],
+            'bookcase_sections' => [
+                'name' => $this->owt7_library_tbl_bookcase_sections(),
+                'sql' => "CREATE TABLE %s (
+                    id INT NOT NULL AUTO_INCREMENT,
+                    name VARCHAR(255) DEFAULT NULL,
+                    bookcase_id INT(5) DEFAULT NULL,
+                    status ENUM('1', '0') NOT NULL DEFAULT '1',
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (id)
+                ) %s;"
+            ],
+            'branch' => [
+                'name' => $this->owt7_library_tbl_branch(),
+                'sql' => "CREATE TABLE %s (
+                    id INT NOT NULL AUTO_INCREMENT,
+                    name VARCHAR(255) DEFAULT NULL,
+                    status ENUM('1', '0') NOT NULL DEFAULT '1',
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (id)
+                ) %s;"
+            ],
+            'category' => [
+                'name' => $this->owt7_library_tbl_category(),
+                'sql' => "CREATE TABLE %s (
+                    id INT NOT NULL AUTO_INCREMENT,
+                    name VARCHAR(255) DEFAULT NULL,
+                    status ENUM('1', '0') NOT NULL DEFAULT '1',
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (id)
+                ) %s;"
+            ],
+            'book_borrow' => [
+                'name' => $this->owt7_library_tbl_book_borrow(),
+                'sql' => "CREATE TABLE %s (
+                    id INT NOT NULL AUTO_INCREMENT,
+                    borrow_id VARCHAR(11) DEFAULT NULL,
+                    category_id INT(5) DEFAULT NULL,
+                    book_id INT(5) DEFAULT NULL,
+                    branch_id INT(5) DEFAULT NULL,
+                    u_id INT(5) DEFAULT NULL,
+                    borrows_days INT(5) DEFAULT NULL,
+                    return_date VARCHAR(20) DEFAULT NULL,
+                    status ENUM('1', '0') NOT NULL DEFAULT '1',
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (id)
+                ) %s;"
+            ],
+            'book_return' => [
+                'name' => $this->owt7_library_tbl_book_return(),
+                'sql' => "CREATE TABLE %s (
+                    id INT NOT NULL AUTO_INCREMENT,
+                    borrow_id VARCHAR(11) DEFAULT NULL,
+                    category_id INT(5) DEFAULT NULL,
+                    book_id INT(5) DEFAULT NULL,
+                    branch_id INT(5) DEFAULT NULL,
+                    u_id INT(5) DEFAULT NULL,
+                    has_fine_status ENUM('1', '0') NOT NULL DEFAULT '0',
+                    status ENUM('1', '0') NOT NULL DEFAULT '1',
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (id)
+                ) %s;"
+            ],
+            'book_late_fine' => [
+                'name' => $this->owt7_library_tbl_book_late_fine(),
+                'sql' => "CREATE TABLE %s (
+                    id INT NOT NULL AUTO_INCREMENT,
+                    return_id INT(5) DEFAULT NULL,
+                    book_id INT(5) DEFAULT NULL,
+                    u_id INT(5) DEFAULT NULL,
+                    extra_days INT(5) DEFAULT NULL,
+                    fine_amount INT(5) DEFAULT NULL,
+                    has_paid ENUM('1', '2') NOT NULL DEFAULT '1' COMMENT '1 - Not Paid, 2 - Paid',
+                    status ENUM('1', '0') NOT NULL DEFAULT '1',
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (id)
+                ) %s;"
+            ],
+        ];
+
+        foreach ($tables as $table) {
+            $cache_key = 'table_exists_' . md5($table['name']);
+            $table_exists = wp_cache_get($cache_key);
+            if (false === $table_exists) {
+                $table_exists = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table['name'])) == $table['name'];
+                wp_cache_set($cache_key, $table_exists);
+            }
+
+            if (!$table_exists) {
+                dbDelta(sprintf($table['sql'], $table['name'], $wpdb->get_charset_collate()));
+                wp_cache_delete($cache_key);
+            }
+        }
+
+    }
+
     /**
-     * Short Description. (use period)
+     * Update existing tables for multilingual support
      *
-     * Long Description.
-     *
-     * @since    1.0.0
+     * @since 3.4
      */
-    public function owt_library_tables_activate() {
-
+    private function owt7_library_update_tables_for_multilingual() {
         global $wpdb;
 
-        // table to store students
-        if ($wpdb->get_var("show tables like '" . $this->owt_library_tbl_students() . "'") != $this->owt_library_tbl_students()) {
-
-            $sql_student = 'CREATE TABLE `' . $this->owt_library_tbl_students() . '` (
-                                `id` int(11) NOT NULL AUTO_INCREMENT,
-                                `registration_type` ENUM("web","admin") NOT NULL,
-                                `name` varchar(300) NOT NULL,
-                                `student_id` varchar(15) NOT NULL,
-                                `email` varchar(200) NOT NULL,
-                                `branch_id` int(11) DEFAULT NULL,
-                                `phone_no` varchar(20) DEFAULT NULL,
-                                `profile_image` varchar(500) DEFAULT NULL,
-                                `father_name` varchar(300) DEFAULT NULL,
-                                `mother_name` varchar(300) DEFAULT NULL,
-                                `parent_phone_no` varchar(20) DEFAULT NULL,
-                                `address_info` text,
-                                `city` varchar(200) DEFAULT NULL,
-                                `state` varchar(200) DEFAULT NULL,
-                                `country_id` int(11) DEFAULT NULL,
-                                `status` int(11) NOT NULL DEFAULT "1",
-                                `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                PRIMARY KEY (`id`)
-                              ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1';
-
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql_student);
+        $charset_collate = $wpdb->get_charset_collate();
+        
+        // If charset_collate is empty, default to utf8mb4
+        if (empty($charset_collate)) {
+            $charset_collate = 'DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
         }
+        
+        // Define column updates for each table
+        $table_updates = [
+            $this->owt7_library_tbl_users() => [
+                'name' => 'VARCHAR(255)',
+            ],
+            $this->owt7_library_tbl_books() => [
+                'name' => 'VARCHAR(255)',
+                'author_name' => 'VARCHAR(255)',
+                'publication_name' => 'VARCHAR(255)',
+                'publication_location' => 'VARCHAR(255)',
+            ],
+            $this->owt7_library_tbl_bookcase() => [
+                'name' => 'VARCHAR(255)',
+            ],
+            $this->owt7_library_tbl_bookcase_sections() => [
+                'name' => 'VARCHAR(255)',
+            ],
+            $this->owt7_library_tbl_branch() => [
+                'name' => 'VARCHAR(255)',
+            ],
+            $this->owt7_library_tbl_category() => [
+                'name' => 'VARCHAR(255)',
+            ],
+        ];
 
-        // table to store teachers / staff
-        if ($wpdb->get_var("show tables like '" . $this->owt_library_tbl_teachers_staff() . "'") != $this->owt_library_tbl_teachers_staff()) {
-
-            $sql_staff = 'CREATE TABLE `' . $this->owt_library_tbl_teachers_staff() . '` (
-                                `id` int(11) NOT NULL AUTO_INCREMENT,
-                                `staff_id` varchar(300) NOT NULL,
-                                `name` varchar(300) NOT NULL,
-                                `staff_type_id` int(11) NOT NULL,
-                                `email` varchar(300) NOT NULL,
-                                `phone_no` varchar(20) DEFAULT NULL,
-                                `address_info` text,
-                                `city` varchar(200) DEFAULT NULL,
-                                `state` varchar(200) DEFAULT NULL,
-                                `country_id` int(11) DEFAULT NULL,
-                                `profile_image` varchar(500) DEFAULT NULL,
-                                `status` int(11) NOT NULL DEFAULT "1",
-                                `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                PRIMARY KEY (`id`)
-                              ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1';
-
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql_staff);
+        foreach ($table_updates as $table_name => $columns) {
+            // Check if table exists
+            $table_exists = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table_name)) == $table_name;
+            
+            if ($table_exists) {
+                // Update table charset/collation to utf8mb4 if not already set
+                $table_info = $wpdb->get_row($wpdb->prepare(
+                    "SELECT table_collation FROM information_schema.tables WHERE table_schema = %s AND table_name = %s",
+                    $wpdb->dbname,
+                    $table_name
+                ));
+                
+                if ($table_info && strpos($table_info->table_collation, 'utf8mb4') === false) {
+                    $wpdb->query("ALTER TABLE `{$table_name}` CONVERT TO {$charset_collate}");
+                }
+                
+                // Update each column
+                foreach ($columns as $column_name => $column_definition) {
+                    // Check if column exists and get current definition
+                    $current_col = $wpdb->get_row(
+                        $wpdb->prepare(
+                            "SHOW COLUMNS FROM `{$table_name}` WHERE Field = %s",
+                            $column_name
+                        )
+                    );
+                    
+                    if ($current_col) {
+                        // Check if column needs updating (size is smaller than 255)
+                        $needs_update = false;
+                        if (preg_match('/VARCHAR\((\d+)\)/', $current_col->Type, $matches)) {
+                            $current_size = (int)$matches[1];
+                            if ($current_size < 255) {
+                                $needs_update = true;
+                            }
+                        } elseif (strpos($current_col->Type, 'VARCHAR') !== false && strpos($current_col->Type, '255') === false) {
+                            $needs_update = true;
+                        }
+                        
+                        if ($needs_update) {
+                            // Build ALTER statement preserving NULL, DEFAULT, etc.
+                            $null_attr = $current_col->Null === 'YES' ? 'NULL' : 'NOT NULL';
+                            $default_attr = '';
+                            if ($current_col->Default !== null) {
+                                $default_attr = "DEFAULT " . ($current_col->Default === 'CURRENT_TIMESTAMP' 
+                                    ? 'CURRENT_TIMESTAMP' 
+                                    : "'" . esc_sql($current_col->Default) . "'");
+                            } elseif ($current_col->Null === 'YES') {
+                                $default_attr = 'DEFAULT NULL';
+                            }
+                            
+                            $alter_sql = sprintf(
+                                "ALTER TABLE `%s` MODIFY `%s` %s %s %s",
+                                $table_name,
+                                $column_name,
+                                $column_definition,
+                                $null_attr,
+                                $default_attr
+                            );
+                            
+                            $wpdb->query($alter_sql);
+                        }
+                    }
+                }
+            }
         }
+    }
 
-        // table to store branch
-        if ($wpdb->get_var("show tables like '" . $this->owt_library_tbl_branch() . "'") != $this->owt_library_tbl_branch()) {
+    /**
+     * Insert default data.
+     *
+     * @since 3.0
+     */
+    private function owt7_library_insert_default_data() {
+        // Implementation to insert default data
+    }
 
-            $sql_branch = 'CREATE TABLE `' . $this->owt_library_tbl_branch() . '` (
-                                `id` int(11) NOT NULL AUTO_INCREMENT,
-                                `name` varchar(200) NOT NULL,
-                                `status` int(11) NOT NULL DEFAULT "1",
-                                `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                PRIMARY KEY (`id`)
-                              ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1';
+    private function owt7_library_shortcodes() {
+        global $wpdb;
 
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql_branch);
-        }
+        // Array of pages to create
+        $pages = [
+            [
+                'title'   => "Library Books",
+                'content' => "[owt7_library_books]"
+            ]
+        ];
 
-        // table to store country
-        if ($wpdb->get_var("show tables like '" . $this->owt_library_tbl_country() . "'") != $this->owt_library_tbl_country()) {
+        // Create pages
+        foreach ($pages as $page) {
 
-            $sql_branch = 'CREATE TABLE `' . $this->owt_library_tbl_country() . '` (
-                                `id` int(11) NOT NULL AUTO_INCREMENT,
-                                `code` varchar(3) NOT NULL,
-                                `name` varchar(150) NOT NULL,
-                                `phonecode` int(11) NOT NULL,
-                                `status` int(11) NOT NULL DEFAULT "1",
-                                PRIMARY KEY (`id`)
-                              ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1';
+            // Generate a consistent slug
+            $slug = "wp-" . sanitize_title($page['title']);
 
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql_branch);
-
-            $sqlCountryInsert = "INSERT INTO `" . $this->owt_library_tbl_country() . "` (`id`,`code`,`name`,`phonecode`)VALUES 
-                                (1, 'AF', 'Afghanistan', 93),
-                                (2, 'AL', 'Albania', 355),
-                                (3, 'DZ', 'Algeria', 213),
-                                (4, 'AS', 'American Samoa', 1684),
-                                (5, 'AD', 'Andorra', 376),
-                                (6, 'AO', 'Angola', 244),
-                                (7, 'AI', 'Anguilla', 1264),
-                                (8, 'AQ', 'Antarctica', 0),
-                                (9, 'AG', 'Antigua And Barbuda', 1268),
-                                (10, 'AR', 'Argentina', 54),
-                                (11, 'AM', 'Armenia', 374),
-                                (12, 'AW', 'Aruba', 297),
-                                (13, 'AU', 'Australia', 61),
-                                (14, 'AT', 'Austria', 43),
-                                (15, 'AZ', 'Azerbaijan', 994),
-                                (16, 'BS', 'Bahamas The', 1242),
-                                (17, 'BH', 'Bahrain', 973),
-                                (18, 'BD', 'Bangladesh', 880),
-                                (19, 'BB', 'Barbados', 1246),
-                                (20, 'BY', 'Belarus', 375),
-                                (21, 'BE', 'Belgium', 32),
-                                (22, 'BZ', 'Belize', 501),
-                                (23, 'BJ', 'Benin', 229),
-                                (24, 'BM', 'Bermuda', 1441),
-                                (25, 'BT', 'Bhutan', 975),
-                                (26, 'BO', 'Bolivia', 591),
-                                (27, 'BA', 'Bosnia and Herzegovina', 387),
-                                (28, 'BW', 'Botswana', 267),
-                                (29, 'BV', 'Bouvet Island', 0),
-                                (30, 'BR', 'Brazil', 55),
-                                (31, 'IO', 'British Indian Ocean Territory', 246),
-                                (32, 'BN', 'Brunei', 673),
-                                (33, 'BG', 'Bulgaria', 359),
-                                (34, 'BF', 'Burkina Faso', 226),
-                                (35, 'BI', 'Burundi', 257),
-                                (36, 'KH', 'Cambodia', 855),
-                                (37, 'CM', 'Cameroon', 237),
-                                (38, 'CA', 'Canada', 1),
-                                (39, 'CV', 'Cape Verde', 238),
-                                (40, 'KY', 'Cayman Islands', 1345),
-                                (41, 'CF', 'Central African Republic', 236),
-                                (42, 'TD', 'Chad', 235),
-                                (43, 'CL', 'Chile', 56),
-                                (44, 'CN', 'China', 86),
-                                (45, 'CX', 'Christmas Island', 61),
-                                (46, 'CC', 'Cocos (Keeling) Islands', 672),
-                                (47, 'CO', 'Colombia', 57),
-                                (48, 'KM', 'Comoros', 269),
-                                (49, 'CG', 'Republic Of The Congo', 242),
-                                (50, 'CD', 'Democratic Republic Of The Congo', 242),
-                                (51, 'CK', 'Cook Islands', 682),
-                                (52, 'CR', 'Costa Rica', 506),
-                                (53, 'CI', 'Cote D''Ivoire (Ivory Coast)', 225),
-                                (54, 'HR', 'Croatia (Hrvatska)', 385),
-                                (55, 'CU', 'Cuba', 53),
-                                (56, 'CY', 'Cyprus', 357),
-                                (57, 'CZ', 'Czech Republic', 420),
-                                (58, 'DK', 'Denmark', 45),
-                                (59, 'DJ', 'Djibouti', 253),
-                                (60, 'DM', 'Dominica', 1767),
-                                (61, 'DO', 'Dominican Republic', 1809),
-                                (62, 'TP', 'East Timor', 670),
-                                (63, 'EC', 'Ecuador', 593),
-                                (64, 'EG', 'Egypt', 20),
-                                (65, 'SV', 'El Salvador', 503),
-                                (66, 'GQ', 'Equatorial Guinea', 240),
-                                (67, 'ER', 'Eritrea', 291),
-                                (68, 'EE', 'Estonia', 372),
-                                (69, 'ET', 'Ethiopia', 251),
-                                (70, 'XA', 'External Territories of Australia', 61),
-                                (71, 'FK', 'Falkland Islands', 500),
-                                (72, 'FO', 'Faroe Islands', 298),
-                                (73, 'FJ', 'Fiji Islands', 679),
-                                (74, 'FI', 'Finland', 358),
-                                (75, 'FR', 'France', 33),
-                                (76, 'GF', 'French Guiana', 594),
-                                (77, 'PF', 'French Polynesia', 689),
-                                (78, 'TF', 'French Southern Territories', 0),
-                                (79, 'GA', 'Gabon', 241),
-                                (80, 'GM', 'Gambia The', 220),
-                                (81, 'GE', 'Georgia', 995),
-                                (82, 'DE', 'Germany', 49),
-                                (83, 'GH', 'Ghana', 233),
-                                (84, 'GI', 'Gibraltar', 350),
-                                (85, 'GR', 'Greece', 30),
-                                (86, 'GL', 'Greenland', 299),
-                                (87, 'GD', 'Grenada', 1473),
-                                (88, 'GP', 'Guadeloupe', 590),
-                                (89, 'GU', 'Guam', 1671),
-                                (90, 'GT', 'Guatemala', 502),
-                                (91, 'XU', 'Guernsey and Alderney', 44),
-                                (92, 'GN', 'Guinea', 224),
-                                (93, 'GW', 'Guinea-Bissau', 245),
-                                (94, 'GY', 'Guyana', 592),
-                                (95, 'HT', 'Haiti', 509),
-                                (96, 'HM', 'Heard and McDonald Islands', 0),
-                                (97, 'HN', 'Honduras', 504),
-                                (98, 'HK', 'Hong Kong S.A.R.', 852),
-                                (99, 'HU', 'Hungary', 36),
-                                (100, 'IS', 'Iceland', 354),
-                                (101, 'IN', 'India', 91),
-                                (102, 'ID', 'Indonesia', 62),
-                                (103, 'IR', 'Iran', 98),
-                                (104, 'IQ', 'Iraq', 964),
-                                (105, 'IE', 'Ireland', 353),
-                                (106, 'IL', 'Israel', 972),
-                                (107, 'IT', 'Italy', 39),
-                                (108, 'JM', 'Jamaica', 1876),
-                                (109, 'JP', 'Japan', 81),
-                                (110, 'XJ', 'Jersey', 44),
-                                (111, 'JO', 'Jordan', 962),
-                                (112, 'KZ', 'Kazakhstan', 7),
-                                (113, 'KE', 'Kenya', 254),
-                                (114, 'KI', 'Kiribati', 686),
-                                (115, 'KP', 'Korea North', 850),
-                                (116, 'KR', 'Korea South', 82),
-                                (117, 'KW', 'Kuwait', 965),
-                                (118, 'KG', 'Kyrgyzstan', 996),
-                                (119, 'LA', 'Laos', 856),
-                                (120, 'LV', 'Latvia', 371),
-                                (121, 'LB', 'Lebanon', 961),
-                                (122, 'LS', 'Lesotho', 266),
-                                (123, 'LR', 'Liberia', 231),
-                                (124, 'LY', 'Libya', 218),
-                                (125, 'LI', 'Liechtenstein', 423),
-                                (126, 'LT', 'Lithuania', 370),
-                                (127, 'LU', 'Luxembourg', 352),
-                                (128, 'MO', 'Macau S.A.R.', 853),
-                                (129, 'MK', 'Macedonia', 389),
-                                (130, 'MG', 'Madagascar', 261),
-                                (131, 'MW', 'Malawi', 265),
-                                (132, 'MY', 'Malaysia', 60),
-                                (133, 'MV', 'Maldives', 960),
-                                (134, 'ML', 'Mali', 223),
-                                (135, 'MT', 'Malta', 356),
-                                (136, 'XM', 'Man (Isle of)', 44),
-                                (137, 'MH', 'Marshall Islands', 692),
-                                (138, 'MQ', 'Martinique', 596),
-                                (139, 'MR', 'Mauritania', 222),
-                                (140, 'MU', 'Mauritius', 230),
-                                (141, 'YT', 'Mayotte', 269),
-                                (142, 'MX', 'Mexico', 52),
-                                (143, 'FM', 'Micronesia', 691),
-                                (144, 'MD', 'Moldova', 373),
-                                (145, 'MC', 'Monaco', 377),
-                                (146, 'MN', 'Mongolia', 976),
-                                (147, 'MS', 'Montserrat', 1664),
-                                (148, 'MA', 'Morocco', 212),
-                                (149, 'MZ', 'Mozambique', 258),
-                                (150, 'MM', 'Myanmar', 95),
-                                (151, 'NA', 'Namibia', 264),
-                                (152, 'NR', 'Nauru', 674),
-                                (153, 'NP', 'Nepal', 977),
-                                (154, 'AN', 'Netherlands Antilles', 599),
-                                (155, 'NL', 'Netherlands The', 31),
-                                (156, 'NC', 'New Caledonia', 687),
-                                (157, 'NZ', 'New Zealand', 64),
-                                (158, 'NI', 'Nicaragua', 505),
-                                (159, 'NE', 'Niger', 227),
-                                (160, 'NG', 'Nigeria', 234),
-                                (161, 'NU', 'Niue', 683),
-                                (162, 'NF', 'Norfolk Island', 672),
-                                (163, 'MP', 'Northern Mariana Islands', 1670),
-                                (164, 'NO', 'Norway', 47),
-                                (165, 'OM', 'Oman', 968),
-                                (166, 'PK', 'Pakistan', 92),
-                                (167, 'PW', 'Palau', 680),
-                                (168, 'PS', 'Palestinian Territory Occupied', 970),
-                                (169, 'PA', 'Panama', 507),
-                                (170, 'PG', 'Papua new Guinea', 675),
-                                (171, 'PY', 'Paraguay', 595),
-                                (172, 'PE', 'Peru', 51),
-                                (173, 'PH', 'Philippines', 63),
-                                (174, 'PN', 'Pitcairn Island', 0),
-                                (175, 'PL', 'Poland', 48),
-                                (176, 'PT', 'Portugal', 351),
-                                (177, 'PR', 'Puerto Rico', 1787),
-                                (178, 'QA', 'Qatar', 974),
-                                (179, 'RE', 'Reunion', 262),
-                                (180, 'RO', 'Romania', 40),
-                                (181, 'RU', 'Russia', 70),
-                                (182, 'RW', 'Rwanda', 250),
-                                (183, 'SH', 'Saint Helena', 290),
-                                (184, 'KN', 'Saint Kitts And Nevis', 1869),
-                                (185, 'LC', 'Saint Lucia', 1758),
-                                (186, 'PM', 'Saint Pierre and Miquelon', 508),
-                                (187, 'VC', 'Saint Vincent And The Grenadines', 1784),
-                                (188, 'WS', 'Samoa', 684),
-                                (189, 'SM', 'San Marino', 378),
-                                (190, 'ST', 'Sao Tome and Principe', 239),
-                                (191, 'SA', 'Saudi Arabia', 966),
-                                (192, 'SN', 'Senegal', 221),
-                                (193, 'RS', 'Serbia', 381),
-                                (194, 'SC', 'Seychelles', 248),
-                                (195, 'SL', 'Sierra Leone', 232),
-                                (196, 'SG', 'Singapore', 65),
-                                (197, 'SK', 'Slovakia', 421),
-                                (198, 'SI', 'Slovenia', 386),
-                                (199, 'XG', 'Smaller Territories of the UK', 44),
-                                (200, 'SB', 'Solomon Islands', 677),
-                                (201, 'SO', 'Somalia', 252),
-                                (202, 'ZA', 'South Africa', 27),
-                                (203, 'GS', 'South Georgia', 0),
-                                (204, 'SS', 'South Sudan', 211),
-                                (205, 'ES', 'Spain', 34),
-                                (206, 'LK', 'Sri Lanka', 94),
-                                (207, 'SD', 'Sudan', 249),
-                                (208, 'SR', 'Suriname', 597),
-                                (209, 'SJ', 'Svalbard And Jan Mayen Islands', 47),
-                                (210, 'SZ', 'Swaziland', 268),
-                                (211, 'SE', 'Sweden', 46),
-                                (212, 'CH', 'Switzerland', 41),
-                                (213, 'SY', 'Syria', 963),
-                                (214, 'TW', 'Taiwan', 886),
-                                (215, 'TJ', 'Tajikistan', 992),
-                                (216, 'TZ', 'Tanzania', 255),
-                                (217, 'TH', 'Thailand', 66),
-                                (218, 'TG', 'Togo', 228),
-                                (219, 'TK', 'Tokelau', 690),
-                                (220, 'TO', 'Tonga', 676),
-                                (221, 'TT', 'Trinidad And Tobago', 1868),
-                                (222, 'TN', 'Tunisia', 216),
-                                (223, 'TR', 'Turkey', 90),
-                                (224, 'TM', 'Turkmenistan', 7370),
-                                (225, 'TC', 'Turks And Caicos Islands', 1649),
-                                (226, 'TV', 'Tuvalu', 688),
-                                (227, 'UG', 'Uganda', 256),
-                                (228, 'UA', 'Ukraine', 380),
-                                (229, 'AE', 'United Arab Emirates', 971),
-                                (230, 'GB', 'United Kingdom', 44),
-                                (231, 'US', 'United States', 1),
-                                (232, 'UM', 'United States Minor Outlying Islands', 1),
-                                (233, 'UY', 'Uruguay', 598),
-                                (234, 'UZ', 'Uzbekistan', 998),
-                                (235, 'VU', 'Vanuatu', 678),
-                                (236, 'VA', 'Vatican City State (Holy See)', 39),
-                                (237, 'VE', 'Venezuela', 58),
-                                (238, 'VN', 'Vietnam', 84),
-                                (239, 'VG', 'Virgin Islands (British)', 1284),
-                                (240, 'VI', 'Virgin Islands (US)', 1340),
-                                (241, 'WF', 'Wallis And Futuna Islands', 681),
-                                (242, 'EH', 'Western Sahara', 212),
-                                (243, 'YE', 'Yemen', 967),
-                                (244, 'YU', 'Yugoslavia', 38),
-                                (245, 'ZM', 'Zambia', 260),
-                                (246, 'ZW', 'Zimbabwe', 263);";
-            $wpdb->query(
-                    $sqlCountryInsert
-            );
-        }
-
-        // table to store user type
-        if ($wpdb->get_var("show tables like '" . $this->owt_library_tbl_user_type() . "'") != $this->owt_library_tbl_user_type()) {
-
-            $sql_user_type = 'CREATE TABLE `' . $this->owt_library_tbl_user_type() . '` (
-                                `id` int(11) NOT NULL AUTO_INCREMENT,
-                                `type` varchar(300) NOT NULL,
-                                `status` int(11) NOT NULL DEFAULT "1",
-                                `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                PRIMARY KEY (`id`)
-                              ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1';
-
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql_user_type);
-
-            $sqlStaffInsert = "INSERT INTO `" . $this->owt_library_tbl_user_type() . "` (`type`)VALUES ('teacher'),
-                                ('non-teaching'),
-                                ('student');";
-            $wpdb->query(
-                    $sqlStaffInsert
-            );
-        }
-
-        // table to store books
-        if ($wpdb->get_var("show tables like '" . $this->owt_library_tbl_books() . "'") != $this->owt_library_tbl_books()) {
-
-            $sql_book = 'CREATE TABLE `' . $this->owt_library_tbl_books() . '` (
-                                `id` int(11) NOT NULL AUTO_INCREMENT,
-                                `book_id` varchar(300) NOT NULL,
-                                `name` varchar(300) NOT NULL,
-                                `author_info` varchar(500) NOT NULL,
-                                `publisher_info` varchar(500) NOT NULL,
-                                `category_id` int(11) NOT NULL,
-                                `amount` varchar(10) NOT NULL,
-                                `cover_image` varchar(400) DEFAULT NULL,
-                                `isbn` varchar(20) DEFAULT NULL,
-                                `description` text,
-                                `status` int(11) NOT NULL DEFAULT "1",
-                                `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                PRIMARY KEY (`id`)
-                              ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1';
-
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql_book);
-        }
-
-        // table to store book category
-        if ($wpdb->get_var("show tables like '" . $this->owt_library_tbl_category() . "'") != $this->owt_library_tbl_category()) {
-
-            $sql_book = 'CREATE TABLE `' . $this->owt_library_tbl_category() . '` (
-                                `id` int(11) NOT NULL AUTO_INCREMENT,
-                                `name` varchar(300) NOT NULL,
-                                `status` int(11) NOT NULL DEFAULT "1",
-                                `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                PRIMARY KEY (`id`)
-                              ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1';
-
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql_book);
-        }
-
-        // table to store book issue
-        if ($wpdb->get_var("show tables like '" . $this->owt_library_tbl_book_issue() . "'") != $this->owt_library_tbl_book_issue()) {
-
-            $sql_book_issue = 'CREATE TABLE `' . $this->owt_library_tbl_book_issue() . '` (
-                                `id` int(11) NOT NULL AUTO_INCREMENT,
-                                `issue_id` VARCHAR(11) NOT NULL,
-                                `category_id` int(11) NOT NULL,
-                                `book_id` int(11) NOT NULL,
-                                `user_type_id` varchar(200) NOT NULL,
-                                `user_id` int(11) NOT NULL,
-                                `branch_id` int(11) NOT NULL,
-                                `duration_days` int(11) NOT NULL,
-                                `status` int(11) NOT NULL DEFAULT "1",
-                                `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                PRIMARY KEY (`id`)
-                              ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1';
-
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql_book_issue);
-        }
-
-        // table to store book return
-        if ($wpdb->get_var("show tables like '" . $this->owt_library_tbl_book_return() . "'") != $this->owt_library_tbl_book_return()) {
-
-            $sql_book_return = 'CREATE TABLE `' . $this->owt_library_tbl_book_return() . '` (
-                                `id` int(11) NOT NULL AUTO_INCREMENT,
-                                `user_id` INT(11) NOT NULL,
-                                `book_issue_id` varchar(30) NOT NULL,
-                                `has_fine_status` int(11) NOT NULL,
-                                `status` int(11) NOT NULL DEFAULT "1",
-                                `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                PRIMARY KEY (`id`)
-                              ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1';
-
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql_book_return);
-        }
-
-        // table to store late fine
-        if ($wpdb->get_var("show tables like '" . $this->owt_library_tbl_book_late_fine() . "'") != $this->owt_library_tbl_book_late_fine()) {
-
-            $sql_book_late_fine = 'CREATE TABLE `' . $this->owt_library_tbl_book_late_fine() . '` (
-                                    `id` int(11) NOT NULL AUTO_INCREMENT,
-                                    `book_return_id` varchar(50) NOT NULL,
-                                    `extra_days` int(11) NOT NULL,
-                                    `fine_amount` int(11) NOT NULL,
-                                    `fine_pay_status` int(11) NOT NULL,
-                                    `status` int(11) NOT NULL DEFAULT "1",
-                                    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                    PRIMARY KEY (`id`)
-                              ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1';
-
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql_book_late_fine);
-        }
-
-        // table to store country currencies
-        if ($wpdb->get_var("show tables like '" . $this->owt_library_tbl_country_currency() . "'") != $this->owt_library_tbl_country_currency()) {
-
-            $sql_currencies = 'CREATE TABLE `' . $this->owt_library_tbl_country_currency() . '` (
-                                    `id` int(11) NOT NULL AUTO_INCREMENT,
-                                    `country` varchar(300) NOT NULL,
-                                    `currency` varchar(150) NOT NULL,
-                                    `currency_code` varchar(10) NOT NULL,
-                                    `status` int(11) NOT NULL DEFAULT "1",
-                                    PRIMARY KEY (`id`)
-                              ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1';
-
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql_currencies);
-
-            $sqlCountryCurrencyInsert = "INSERT INTO " . $this->owt_library_tbl_country_currency() . " (country,currency,currency_code)VALUES 
-                                ('Albania', 'Leke', 'ALL'),
-				('America', 'Dollars', 'USD'),
-				('Afghanistan', 'Afghanis', 'AFN'),
-				('Argentina', 'Pesos', 'ARS'),
-				('Aruba', 'Guilders', 'AWG'),
-				('Australia', 'Dollars', 'AUD'),
-				('Azerbaijan', 'New Manats', 'AZN'),
-				('Bahamas', 'Dollars', 'BSD'),
-				('Bangladeshi Taka', 'Taka', 'BDT'),
-				('Barbados', 'Dollars', 'BBD'),
-				('Belarus', 'Rubles', 'BYR'),
-				('Belgium', 'Euro', 'EUR'),
-				('Beliz', 'Dollars', 'BZD'),
-				('Bermuda', 'Dollars', 'BMD'),
-				('Bolivia', 'Bolivianos', 'BOB'),
-				('Bosnia and Herzegovina', 'Convertible Marka', 'BAM'),
-				('Botswana', 'Pula', 'BWP'),
-				('Bulgaria', 'Leva', 'BGN'),
-				('Brazil', 'Reais', 'BRL'),
-				('Britain (United Kingdom)', 'Pounds', 'GBP'),
-				('Brunei Darussalam', 'Dollars', 'BND'),
-				('Cambodia', 'Riels', 'KHR'),
-				('Canada', 'Dollars', 'CAD'),
-				('Cayman Islands', 'Dollars', 'KYD'),
-				('Chile', 'Pesos', 'CLP'),
-				('China', 'Yuan Renminbi', 'CNY'),
-				('Colombia', 'Pesos', 'COP'),
-				('Costa Rica', 'Colón', 'CRC'),
-				('Croatia', 'Kuna', 'HRK'),
-				('Cuba', 'Pesos', 'CUP'),
-				('Cyprus', 'Euro', 'EUR'),
-				('Czech Republic', 'Koruny', 'CZK'),
-				('Denmark', 'Kroner', 'DKK'),
-				('Dominican Republic', 'Pesos', 'DOP'),
-				('East Caribbean', 'Dollars', 'XCD'),
-				('Egypt', 'Pounds', 'EGP'),
-				('El Salvador', 'Colones', 'SVC'),
-                                ('England (United Kingdom)', 'Pounds', 'GBP'),
-				('Euro', 'Euro', 'EUR'),
-				('Falkland Islands', 'Pounds', 'FKP'),
-				('Fiji', 'Dollars', 'FJD'),
-				('France', 'Euro', 'EUR'),
-				('Ghana', 'Cedis', 'GHC'),
-				('Gibraltar', 'Pounds', 'GIP'),
-				('Greece', 'Euro', 'EUR'),
-				('Guatemala', 'Quetzales', 'GTQ'),
-				('Guernsey', 'Pounds', 'GGP'),
-				('Guyana', 'Dollars', 'GYD'),
-                                ('Holland (Netherlands)', 'Euro', 'EUR'),
-				('Honduras', 'Lempiras', 'HNL'),
-				('Hong Kong', 'Dollars', 'HKD'),
-				('Hungary', 'Forint', 'HUF'),
-				('Iceland', 'Kronur', 'ISK'),
-				('India', 'Rupees', 'INR'),
-				('Indonesia', 'Rupiahs', 'IDR'),
-				('Iran', 'Rials', 'IRR'),
-				('Ireland', 'Euro', 'EUR'),
-				('Isle of Man', 'Pounds', 'IMP'),
-				('Israel', 'New Shekels', 'ILS'),
-				('Italy', 'Euro', 'EUR'),
-				('Jamaica', 'Dollars', 'JMD'),
-				('Japan', 'Yen', 'JPY'),
-				('Jersey', 'Pounds', 'JEP'),
-                                ('Kazakhstan', 'Tenge', 'KZT'),
-				('Korea (North)', 'Won', 'KPW'),
-				('Korea (South)', 'Won', 'KRW'),
-				('Kyrgyzstan', 'Soms', 'KGS'),
-				('Laos', 'Kips', 'LAK'),
-				('Latvia', 'Lati', 'LVL'),
-				('Lebanon', 'Pounds', 'LBP'),
-				('Liberia', 'Dollars', 'LRD'),
-				('Liechtenstein', 'Switzerland Francs', 'CHF'),
-				('Lithuania', 'Litai', 'LTL'),
-				('Luxembourg', 'Euro', 'EUR'),
-				('Macedonia', 'Denars', 'MKD'),
-				('Malaysia', 'Ringgits', 'MYR'),
-				('Malta', 'Euro', 'EUR'),
-				('Mauritius', 'Rupees', 'MUR'),
-				('Mexico', 'Pesos', 'MXN'),
-				('Mongolia', 'Tugriks', 'MNT'),
-				('Mozambique', 'Meticais', 'MZN'),
-				('Namibia', 'Dollars', 'NAD'),
-				('Nepal', 'Rupees', 'NPR'),
-				('Netherlands Antilles', 'Guilders', 'ANG'),
-				('Netherlands', 'Euro', 'EUR'),
-				('New Zealand', 'Dollars', 'NZD'),
-				('Nicaragua', 'Cordobas', 'NIO'),
-				('Nigeria', 'Nairas', 'NGN'),
-				('North Korea', 'Won', 'KPW'),
-				('Norway', 'Krone', 'NOK'),
-				('Oman', 'Rials', 'OMR'),
-				('Pakistan', 'Rupees', 'PKR'),
-				('Panama', 'Balboa', 'PAB'),
-				('Paraguay', 'Guarani', 'PYG'),
-				('Peru', 'Nuevos Soles', 'PEN'),
-				('Philippines', 'Pesos', 'PHP'),
-                                ('Poland', 'Zlotych', 'PLN'),
-				('Qatar', 'Rials', 'QAR'),
-				('Romania', 'New Lei', 'RON'),
-				('Russia', 'Rubles', 'RUB'),
-				('Saint Helena', 'Pounds', 'SHP'),
-				('Saudi Arabia', 'Riyals', 'SAR'),
-				('Serbia', 'Dinars', 'RSD'),
-				('Seychelles', 'Rupees', 'SCR'),
-				('Singapore', 'Dollars', 'SGD'),
-				('Slovenia', 'Euro', 'EUR'),
-				('Solomon Islands', 'Dollars', 'SBD'),
-				('Somalia', 'Shillings', 'SOS'),
-				('South Africa', 'Rand', 'ZAR'),
-				('South Korea', 'Won', 'KRW'),
-				('Spain', 'Euro', 'EUR'),
-				('Sri Lanka', 'Rupees', 'LKR'),
-				('Sweden', 'Kronor', 'SEK'),
-				('Switzerland', 'Francs', 'CHF'),
-				('Suriname', 'Dollars', 'SRD'),
-				('Syria', 'Pounds', 'SYP'),
-				('Taiwan', 'New Dollars', 'TWD'),
-				('Thailand', 'Baht', 'THB'),
-				('Trinidad and Tobago', 'Dollars', 'TTD'),
-				('Turkey', 'Lira', 'TRY'),
-				('Turkey', 'Liras', 'TRL'),
-                                ('Tuvalu', 'Dollars', 'TVD'),
-				('Ukraine', 'Hryvnia', 'UAH'),	
-				('United Kingdom', 'Pounds', 'GBP'),
-				('United States of America', 'Dollars', 'USD'),
-				('Uruguay', 'Pesos', 'UYU'),
-				('Uzbekistan', 'Sums', 'UZS'),
-				('Vatican City', 'Euro', 'EUR'),
-				('Venezuela', 'Bolivares Fuertes', 'VEF'),
-				('Vietnam', 'Dong', 'VND'),
-				('Yemen', 'Rials', 'YER'),
-				('Zimbabwe', 'Zimbabwe Dollars', 'ZWD');";
-
-            $wpdb->query(
-                    $sqlCountryCurrencyInsert
-            );
-        }
-
-        $is_page_exists = $wpdb->get_row(
+            // Check if the page already exists by slug
+            $is_page_exists = $wpdb->get_var(
                 $wpdb->prepare(
-                        "SELECT * from " . $wpdb->prefix . "posts WHERE post_name = %s", 'library-tabs'
+                    "SELECT ID FROM {$wpdb->prefix}posts WHERE post_name = %s AND post_type = 'page' AND post_status IN ('publish', 'draft', 'pending')",
+                    $slug
                 )
-        );
-
-        if (!empty($is_page_exists)) {
-            // we have already that page
-        } else {
-            $owt_library_page = array(
-                'post_title' => wp_strip_all_tags('Library Tabs'),
-                'post_content' => '[owt_library_tabs]',
-                'post_status' => 'publish',
-                'post_author' => 1,
-                'post_name' => 'library-tabs',
-                'post_type' => 'page',
             );
-            wp_insert_post($owt_library_page);
+
+            // Only create page if it doesn't exist
+            if (empty($is_page_exists)) {
+                wp_insert_post([
+                    'post_title'     => $page['title'],
+                    'post_content'   => $page['content'],
+                    'post_status'    => 'publish',
+                    'post_type'      => 'page',
+                    'post_name'      => $slug,
+                    'post_author'    => 1, // Admin user ID
+                    'post_date'      => current_time('mysql'),
+                    'post_date_gmt'  => current_time('mysql', true)
+                ]);
+            }
         }
     }
 
-    public function owt_library_tbl_country_currency() {
-        global $wpdb;
-        return $wpdb->prefix . "owt_lib_currency_code";
+    /**
+     * Add plugin options.
+     *
+     * @since 3.0
+     */
+    private function owt7_library_options() {
+        update_option('owt7_library_version', '3.4');
+        update_option('owt7_library_system', serialize(['lms' => 'free']));
+        update_option('owt7_library_db_tables', serialize([
+            $this->owt7_library_tbl_branch(),
+            $this->owt7_library_tbl_users(),
+            $this->owt7_library_tbl_bookcase(),
+            $this->owt7_library_tbl_bookcase_sections(),
+            $this->owt7_library_tbl_category(),
+            $this->owt7_library_tbl_books(),
+            $this->owt7_library_tbl_book_borrow(),
+            $this->owt7_library_tbl_book_return(),
+            $this->owt7_library_tbl_book_late_fine()
+        ]));
+        update_option('owt7_lms_late_fine_currency', '1');
+        update_option('owt7_lms_country', 'India');
+        update_option('owt7_lms_currency', 'INR');
     }
 
-    public function owt_library_tbl_book_late_fine() {
+    /**
+     * Return the users table name.
+     *
+     * @since 3.0
+     */
+    public function owt7_library_tbl_users() {
         global $wpdb;
-        return $wpdb->prefix . "owt_lib_late_fine";
+        return $wpdb->prefix . 'owt7_lib_users';
     }
 
-    public function owt_library_tbl_book_return() {
+    /**
+     * Return the books table name.
+     *
+     * @since 3.0
+     */
+    public function owt7_library_tbl_books() {
         global $wpdb;
-        return $wpdb->prefix . "owt_lib_return_book";
+        return $wpdb->prefix . 'owt7_lib_books';
     }
 
-    public function owt_library_tbl_book_issue() {
+    /**
+     * Return the bookcase table name.
+     *
+     * @since 3.0
+     */
+    public function owt7_library_tbl_bookcase() {
         global $wpdb;
-        return $wpdb->prefix . "owt_lib_book_issue";
+        return $wpdb->prefix . 'owt7_lib_bookcase';
     }
 
-    public function owt_library_tbl_students() {
-
+    /**
+     * Return the bookcase sections table name.
+     *
+     * @since 3.0
+     */
+    public function owt7_library_tbl_bookcase_sections() {
         global $wpdb;
-        return $wpdb->prefix . "owt_lib_students";
+        return $wpdb->prefix . 'owt7_lib_bookcase_sections';
     }
 
-    public function owt_library_tbl_teachers_staff() {
-
+    /**
+     * Return the branch table name.
+     *
+     * @since 3.0
+     */
+    public function owt7_library_tbl_branch() {
         global $wpdb;
-        return $wpdb->prefix . "owt_lib_staffs";
+        return $wpdb->prefix . 'owt7_lib_branch';
     }
 
-    public function owt_library_tbl_books() {
-
+    /**
+     * Return the category table name.
+     *
+     * @since 3.0
+     */
+    public function owt7_library_tbl_category() {
         global $wpdb;
-        return $wpdb->prefix . "owt_lib_books";
+        return $wpdb->prefix . 'owt7_lib_category';
     }
 
-    public function owt_library_tbl_authors() {
-
+    /**
+     * Return the book borrow table name.
+     *
+     * @since 3.0
+     */
+    public function owt7_library_tbl_book_borrow() {
         global $wpdb;
-        return $wpdb->prefix . "owt_lib_authors";
+        return $wpdb->prefix . 'owt7_lib_book_borrow';
     }
 
-    public function owt_library_tbl_publishers() {
-
+    /**
+     * Return the book return table name.
+     *
+     * @since 3.0
+     */
+    public function owt7_library_tbl_book_return() {
         global $wpdb;
-        return $wpdb->prefix . "owt_lib_publishers";
+        return $wpdb->prefix . 'owt7_lib_book_return';
     }
 
-    public function owt_library_tbl_user_type() {
-
+    /**
+     * Return the book late fine table name.
+     *
+     * @since 3.0
+     */
+    public function owt7_library_tbl_book_late_fine() {
         global $wpdb;
-        return $wpdb->prefix . "owt_lib_staff_type";
+        return $wpdb->prefix . 'owt7_lib_book_late_fine';
     }
-
-    public function owt_library_tbl_category() {
-
-        global $wpdb;
-        return $wpdb->prefix . "owt_lib_category";
-    }
-
-    public function owt_library_tbl_branch() {
-
-        global $wpdb;
-        return $wpdb->prefix . "owt_lib_branch";
-    }
-
-    public function owt_library_tbl_country() {
-
-        global $wpdb;
-        return $wpdb->prefix . "owt_lib_country";
-    }
-
 }
+?>

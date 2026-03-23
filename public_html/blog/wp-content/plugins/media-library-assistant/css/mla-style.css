@@ -14,9 +14,9 @@ div.mla_messages {
 	border:1px solid #CCC;
 	padding:0 10px;
 	margin-top:5px;
-	border-radius:5px;
 	-moz-border-radius:5px;
 	-webkit-border-radius:5px;
+	border-radius:5px;
 }
 
 div.mla_errors {
@@ -24,9 +24,16 @@ div.mla_errors {
 	border:1px solid #CCC;
 	padding:0 10px;
 	margin-top:5px;
-	border-radius:5px;
 	-moz-border-radius:5px;
 	-webkit-border-radius:5px;
+	border-radius:5px;
+}
+
+/*
+ * MLA List Table Search box
+ */
+#mla-filter p.search-box {
+	display: block;
 }
 
 /*
@@ -146,6 +153,10 @@ div.mla_errors {
 	width: 99%
 }
 
+.inline-edit-row .inline-edit-save {
+	display: block
+}
+
 .inline-edit-save #bulk_map,
 .inline-edit-save #bulk_custom_field_map {
 	margin-right: 1em
@@ -157,7 +168,6 @@ div.mla_errors {
 	content: '\f153';
 	display: block !important;
 	font: normal 16px/1 'dashicons';
-	speak: none;
 	height: 20px;
 	text-align: center;
 	width: 20px;
@@ -250,12 +260,14 @@ div.mla_errors {
  * MLA Settings page, Views, Uploads and Custom Fields tab inline editing - adapted from load-styles.php
  */
 
+#wpbody-content .bulk-edit-row-image .inline-edit-col-left,
 #wpbody-content .bulk-edit-row-upload .inline-edit-col-left,
 #wpbody-content .bulk-edit-row-custom .inline-edit-col-left,
 #wpbody-content .bulk-edit-row-view .inline-edit-col-left {
 	width: 30%
 }
 
+#wpbody-content .bulk-edit-row-image .inline-edit-col-right,
 #wpbody-content .bulk-edit-row-upload .inline-edit-col-right,
 #wpbody-content .bulk-edit-row-custom .inline-edit-col-right,
 #wpbody-content .bulk-edit-row-view .inline-edit-col-right {
@@ -290,6 +302,8 @@ div.mla_errors {
 	float:left;
 }
 
+.quick-edit-row-image fieldset.inline-edit-col label span.title,
+.bulk-edit-row-image fieldset.inline-edit-col-right label span.title,
 .quick-edit-row-upload fieldset.inline-edit-col label span.title,
 .bulk-edit-row-upload fieldset.inline-edit-col-right label span.title,
 .quick-edit-row-view fieldset.inline-edit-col label span.title,
@@ -297,6 +311,8 @@ div.mla_errors {
 	width: 8em
 }
 
+.quick-edit-row-image fieldset.inline-edit-col label span.input-text-wrap,
+.bulk-edit-row-image fieldset.inline-edit-col-right label span.input-text-wrap,
 .quick-edit-row-upload fieldset.inline-edit-col label span.input-text-wrap,
 .bulk-edit-row-upload fieldset.inline-edit-col-right label span.input-text-wrap,
 .quick-edit-row-view fieldset.inline-edit-col label span.input-text-wrap,
@@ -305,16 +321,20 @@ div.mla_errors {
 	width: 12em
 }
 
+.quick-edit-row-image fieldset.inline-edit-col label,
 .quick-edit-row-upload fieldset.inline-edit-col label,
 .quick-edit-row-view fieldset.inline-edit-col label {
 	width: 21em
 }
 
+.quick-edit-row-image fieldset.inline-edit-col label.checkbox-label,
 .quick-edit-row-upload fieldset.inline-edit-col label.checkbox-label,
 .quick-edit-row-view fieldset.inline-edit-col label.checkbox-label {
 	width: 10.5em
 }
 
+.quick-edit-row-image fieldset.inline-edit-col input.inline-edit-menu-order,
+.bulk-edit-row-image fieldset.inline-edit-col-right label.inline-edit-menu-order span.input-text-wrap,
 .quick-edit-row-upload fieldset.inline-edit-col input.inline-edit-menu-order,
 .bulk-edit-row-upload fieldset.inline-edit-col-right label.inline-edit-menu-order span.input-text-wrap,
 .quick-edit-row-view fieldset.inline-edit-col input.inline-edit-menu-order,
@@ -323,14 +343,18 @@ div.mla_errors {
 }
 
 @media screen and ( max-width: 782px ) {
+	#wpbody-content .bulk-edit-row-image .inline-edit-col-left,
+	#wpbody-content .bulk-edit-row-image .inline-edit-col-right,
 	#wpbody-content .bulk-edit-row-upload .inline-edit-col-left,
-	#wpbody-content .bulk-edit-row-view .inline-edit-col-left,
 	#wpbody-content .bulk-edit-row-upload .inline-edit-col-right,
+	#wpbody-content .bulk-edit-row-view .inline-edit-col-left,
 	#wpbody-content .bulk-edit-row-view .inline-edit-col-right {
 		float: none;
 		width: 100%
 	}
 
+	.quick-edit-row-image fieldset.inline-edit-col label span.title,
+	.bulk-edit-row-image fieldset.inline-edit-col-right label span.title,
 	.quick-edit-row-upload fieldset.inline-edit-col label span.title,
 	.bulk-edit-row-upload fieldset.inline-edit-col-right label span.title,
 	.quick-edit-row-view fieldset.inline-edit-col label span.title,
@@ -338,6 +362,8 @@ div.mla_errors {
 		width: 100%
 	}
 
+	.quick-edit-row-image fieldset.inline-edit-col label span.input-text-wrap,
+	.bulk-edit-row-image fieldset.inline-edit-col-right label span.input-text-wrap,
 	.quick-edit-row-upload fieldset.inline-edit-col label span.input-text-wrap,
 	.bulk-edit-row-upload fieldset.inline-edit-col-right label span.input-text-wrap,
 	.quick-edit-row-view fieldset.inline-edit-col label span.input-text-wrap,
@@ -346,6 +372,7 @@ div.mla_errors {
 		width: 100%
 	}
 
+	.quick-edit-row-image fieldset.inline-edit-col label,
 	.quick-edit-row-upload fieldset.inline-edit-col label,
 	.quick-edit-row-view fieldset.inline-edit-col label {
 		float: none;
@@ -363,6 +390,10 @@ div.mla_errors {
 /*
  * MLA Settings page
  */
+
+#donate-button-div {
+	margin-top: 5px;
+}
 
 #wpbody-content .optiontable th {
 	padding-right: 10px;
@@ -441,6 +472,28 @@ ul.mla_settings li {
  * Help and Documentation content
  */
 
+.mla-doc-shortcode-container {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 5px;
+}
+
+.mla-doc-shortcode-column {
+	padding: 10px;
+	border: 1px solid #ccc;
+}
+
+/* Responsive rule: single column on small screens */
+@media (max-width: 768px) {
+	.mla-doc-shortcode-container {
+		grid-template-columns: 1fr;
+	}
+}
+
+.mla-doc-shortcode-div {
+	display: inline-block;
+}
+
 .mla-doc-toc-list {
 	list-style-position:inside;
 	list-style:disc;
@@ -501,6 +554,11 @@ ul.mla_settings li {
 }
 
 #mla-doc-list-shortcode {
+	float:left;
+	margin-left: 15px
+}
+
+#mla-doc-cf-list-shortcode {
 	float:left;
 	margin-left: 15px
 }

@@ -1,43 +1,14 @@
 <?php
-
 /**
- * A last try to show posts, in case the Featured Content plugin returns no IDs.
+ * Jetpack Compatibility File
+ * See: https://jetpack.com/
  *
- * @param array $featured_ids
- * @return array
+ * @package automattic/jetpack
  */
-function twentyfourteen_featured_content_post_ids( $featured_ids ) {
-	if ( empty( $featured_ids ) ) {
-		$featured_ids = array_slice( get_option( 'sticky_posts', array() ), 0, 6 );
-	}
 
-	return $featured_ids;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
 }
-add_action( 'featured_content_post_ids', 'twentyfourteen_featured_content_post_ids' );
-
-/**
- * Set the default tag name for Featured Content.
- *
- * @param WP_Customize_Manager $wp_customize Theme Customizer object.
- * @return void
- */
-function twentyfourteen_customizer_default( $wp_customize ) {
-	$wp_customize->get_setting( 'featured-content[tag-name]' )->default = 'featured';
-}
-add_action( 'customize_register', 'twentyfourteen_customizer_default' );
-
-/**
- * Sets a default tag of 'featured' for Featured Content.
- *
- * @param array $settings
- * @return array
- */
-function twentyfourteen_featured_content_default_settings( $settings ) {
-	$settings['tag-name'] = 'featured';
-
-	return $settings;
-}
-add_action( 'featured_content_default_settings', 'twentyfourteen_featured_content_default_settings' );
 
 /**
  * Removes sharing markup from post content if we're not in the loop and it's a
@@ -49,13 +20,16 @@ add_action( 'featured_content_default_settings', 'twentyfourteen_featured_conten
  */
 function twentyfourteen_mute_content_filters( $show, $post ) {
 	$formats = get_theme_support( 'post-formats' );
-	if ( ! in_the_loop() && has_post_format( $formats[0], $post ) ) {
+	if ( ! in_the_loop() && is_array( $formats ) && has_post_format( $formats[0], $post ) ) {
 		$show = false;
 	}
 	return $show;
 }
 add_filter( 'sharing_show', 'twentyfourteen_mute_content_filters', 10, 2 );
 
+/**
+ * Enqueue Jetpack compat styles for Twenty Fourteen.
+ */
 function twentyfourteen_init_jetpack() {
 	/**
 	 * Add our compat CSS file for custom widget stylings and such.

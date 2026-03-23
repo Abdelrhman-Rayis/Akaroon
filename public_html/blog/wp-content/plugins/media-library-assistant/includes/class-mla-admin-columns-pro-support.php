@@ -5,6 +5,10 @@
  * @package Media Library Assistant
  * @since 2.71
  */
+
+use AC\ListTable;
+use ACP\ConditionalFormat\FormattableConfig;
+
 defined( 'ABSPATH' ) or die();
 
 /**
@@ -67,9 +71,9 @@ class ACP_Addon_MLA_ListScreen extends AC_Addon_MLA_ListScreen
 	 *
 	 * @since 2.71
 	 *
-	 * @param AC_ListScreen $list_screen
+	 * @param object $list_screen
 	 */
-	public function export_table_global( AC_ListScreen $list_screen ) {
+	public function export_table_global( $list_screen ) {
 		global $wp_list_table;
 
 		if ( ! $list_screen instanceof ACP_Addon_MLA_ListScreen ) {
@@ -211,6 +215,60 @@ class ACP_Addon_MLA_ListScreen extends AC_Addon_MLA_ListScreen
 } // class ACP_Addon_MLA_ListScreen
 
 /**
+ * Class MLA (Media Library Assistant) Media supports the ACP ListTable interface
+ *
+ * @since 3.05
+ */
+class MLA_Media implements ListTable {
+
+	/**
+	 * Initializes some properties.
+	 *
+	 * @param	MLA_List_Table	MLA Table object
+	 *
+	 * @since 3.05
+	 */
+	public function __construct( MLA_List_Table $table ) {
+		$this->table = $table;
+	}
+
+	/**
+	 * Supply the content for a table column
+	 *
+	 * @since 3.05
+	 * 
+	 * @param	string	A column name
+	 * @param	integer	An item ID
+	 *
+	 * @return	string	HTML markup to be placed inside the column
+	 */
+	public function get_column_value( $column, $id ) {
+		ob_start();
+
+		$method = 'column_' . $column;
+
+		if ( method_exists( $this->table, $method ) ) {
+			call_user_func( [ $this->table, $method ], get_post( $id ) );
+		} else {
+			$this->table->column_default( get_post( $id ), $column );
+		}
+
+		return ob_get_clean();
+	}
+
+	/**
+	 * Supply the total number of items
+	 *
+	 * @since 3.05
+	 * 
+	 * @return	integer	Total number of items
+	 */
+	public function get_total_items() {
+		return $this->table->get_pagination_arg( 'total_items' );
+	}
+} // Class MLA_Media
+
+/**
  * Exportability class for posts list screen
  *
  * @since 2.71
@@ -231,7 +289,7 @@ class ACP_Addon_MLA_Export_Strategy extends ACP\Export\Strategy {
 	 *
 	 * @return ListTable
 	 */
-	protected function get_list_table() {
+	protected function get_list_table(): ?ListTable {
 		global $wp_list_table;
 
 		if ( ! class_exists( 'MLA_List_Table' ) ) {
@@ -240,13 +298,13 @@ class ACP_Addon_MLA_Export_Strategy extends ACP\Export\Strategy {
 		}
 
 		if ( $wp_list_table instanceof MLA_List_Table ) {
-			return $wp_list_table;
+			return new MLA_Media( $wp_list_table );
 		}
 
 		$wp_list_table = new MLA_List_Table();
 		$wp_list_table->prepare_items();
 
-		return $wp_list_table;
+		return new MLA_Media( $wp_list_table );
 	}
 
 	/**
@@ -257,7 +315,7 @@ class ACP_Addon_MLA_Export_Strategy extends ACP\Export\Strategy {
 	 * @since 1.0
 	 * @return string[] Associative array of header labels for the columns.
 	 */
-	public function get_headers( array $columns ) {
+	public function get_headers( array $columns ): array {
 		$headers = parent::get_headers( $columns );
 
 		// Fix the first header to avoid MS Excel SYLK file format error
@@ -278,7 +336,7 @@ class ACP_Addon_MLA_Export_Strategy extends ACP\Export\Strategy {
 	 * @since 2.71
 	 * @see   ACP_Export_ExportableListScreen::ajax_export()
 	 */
-	protected function ajax_export() {
+	protected function ajax_export(): void {
 		// Hooks
 		add_filter( 'mla_list_table_query_final_terms', array( $this, 'mla_list_table_query_final_terms' ), 1e6 );
 		add_action( 'mla_list_table_prepare_items', array( $this, 'mla_list_table_prepare_items' ), 10, 2 );
@@ -291,7 +349,6 @@ class ACP_Addon_MLA_Export_Strategy extends ACP\Export\Strategy {
 	 * @param WP_Query $request
 	 *
 	 * @since 2.71
-	 * @see   action:pre_get_posts
 	 */
 	public function mla_list_table_query_final_terms( $request ) {
 		$per_page = $this->get_num_items_per_iteration();
@@ -309,7 +366,6 @@ class ACP_Addon_MLA_Export_Strategy extends ACP\Export\Strategy {
 	 * @param WP_Query $query
 	 *
 	 * @since 2.71
-	 * @see   action:the_posts
 	 */
 	public function mla_list_table_prepare_items( $query ) {
 			$this->export( wp_list_pluck( $query->items, 'ID' ) );
@@ -877,6 +933,13 @@ class ACP_Addon_MLA_Column_AltText extends ACP\Column\Media\AlternateText
 	}
 
 	/**
+	 * Suppress Conditional Formatting; not working yet
+	 */
+	public function conditional_format(): ?FormattableConfig {
+		return NULL;
+	}
+
+	/**
 	 * Support export
 	 */
 	public function export() {
@@ -921,6 +984,14 @@ class ACP_Addon_MLA_Column_Caption extends ACP\Column\Media\Caption
 	public function __construct() {
 		$this->set_original( true );
 		$this->set_type( 'caption' );
+	}
+
+
+	/**
+	 * Suppress Conditional Formatting; not working yet
+	 */
+	public function conditional_format(): ?FormattableConfig {
+		return NULL;
 	}
 
 	/**

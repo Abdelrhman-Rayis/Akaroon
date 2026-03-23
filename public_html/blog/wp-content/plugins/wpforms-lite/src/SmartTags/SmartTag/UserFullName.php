@@ -24,12 +24,12 @@ class UserFullName extends SmartTag {
 	 */
 	public function get_value( $form_data, $fields = [], $entry_id = '' ) {
 
-		$current_user = wp_get_current_user();
+		$current_user = $this->get_user( $entry_id );
 
 		if ( ! $current_user instanceof WP_User ) {
 			return '';
 		}
 
-		return $current_user->exists() ? sanitize_text_field( $current_user->user_firstname . ' ' . $current_user->user_lastname ) : '';
+		return $current_user->exists() ? esc_html( wp_strip_all_tags( $current_user->user_firstname . ' ' . $current_user->user_lastname ) ) : '';
 	}
 }

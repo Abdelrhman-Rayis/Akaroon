@@ -1,8 +1,7 @@
 <?php
-
 /**
  * Module Name: Markdown
- * Module Description: Write posts or pages in plain-text Markdown syntax
+ * Module Description: Write and format posts using clean, readable Markdown syntax.
  * Sort Order: 31
  * First Introduced: 2.8
  * Requires Connection: No
@@ -10,9 +9,16 @@
  * Module Tags: Writing
  * Feature: Writing
  * Additional Search Queries: md, markdown
+ *
+ * @package automattic/jetpack
  */
 
-include dirname( __FILE__ ) . '/markdown/easy-markdown.php';
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
+// Require the markdown class file.
+require __DIR__ . '/markdown/easy-markdown.php';
 
 /**
  * Remove checkbox set in modules/markdown/easy-markdown.php.

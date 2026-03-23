@@ -5,9 +5,9 @@ Description: Limit connection attempts by IP address
 Donate link: https://www.paypal.me/donateWPServeur
 Author: WPServeur, NicolasKulka, wpformation
 Author URI: https://wpserveur.net
-Version: 1.5.3
+Version: 1.5.9.2
 Requires at least: 4.2
-Tested up to: 5.7
+Tested up to: 6.8
 Domain Path: languages
 Text Domain: wps-limit-login
 License: GPLv2 or later
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin constants
-define( 'WPS_LIMIT_LOGIN_VERSION', '1.5.3' );
+define( 'WPS_LIMIT_LOGIN_VERSION', '1.5.9.2' );
 define( 'WPS_LIMIT_LOGIN_FOLDER', 'wps-limit-login' );
 define( 'WPS_LIMIT_LOGIN_BASENAME', plugin_basename( __FILE__ ) );
 if ( ! defined( 'WPS_PUB_API_URL' ) ) {

@@ -2,58 +2,105 @@
 /**
  * The error class.
  *
- * @since      	3.0
- * @package    	LiteSpeed
- * @subpackage 	LiteSpeed/src
- * @author     	LiteSpeed Technologies <info@litespeedtech.com>
+ * @package     LiteSpeed
+ * @since       3.0
  */
+
 namespace LiteSpeed;
 
-defined( 'WPINC' ) || exit;
+defined( 'WPINC' ) || exit();
 
+/**
+ * Class Error
+ *
+ * Handles error message translation and throwing for LiteSpeed Cache.
+ *
+ * @since 3.0
+ */
 class Error {
-	private static $CODE_SET = array(
-		'HTA_LOGIN_COOKIE_INVALID' => 4300, // .htaccess did not find.
-		'HTA_DNF'		 => 4500, // .htaccess did not find.
-		'HTA_BK'		 => 9010, // backup
-		'HTA_R'			 => 9041, // read htaccess
-		'HTA_W'			 => 9042, // write
-		'HTA_GET'		 => 9030, // failed to get
-	);
 
 	/**
-	 * Throw an error with msg
+	 * Error code mappings to numeric values.
+	 *
+	 * @since 3.0
+	 * @var array
+	 */
+	private static $code_set = [
+		'HTA_LOGIN_COOKIE_INVALID' => 4300, // .htaccess did not find.
+		'HTA_DNF'                 => 4500, // .htaccess did not find.
+		'HTA_BK'                  => 9010, // backup
+		'HTA_R'                   => 9041, // read htaccess
+		'HTA_W'                   => 9042, // write
+		'HTA_GET'                 => 9030, // failed to get
+	];
+
+	/**
+	 * Throw an error with message
+	 *
+	 * Throws an exception with the translated error message.
 	 *
 	 * @since  3.0
+	 * @access public
+	 * @param string $code Error code.
+	 * @param mixed  $args Optional arguments for message formatting.
+	 * @throws \Exception Always throws an exception with the error message.
 	 */
 	public static function t( $code, $args = null ) {
-		throw new \Exception( self::msg( $code, $args ) );
+		throw new \Exception( wp_kses_post( self::msg( $code, $args ) ) );
 	}
 
 	/**
 	 * Translate an error to description
 	 *
+	 * Converts error codes to human-readable messages.
+	 *
 	 * @since  3.0
+	 * @access public
+	 * @param string $code Error code.
+	 * @param mixed  $args Optional arguments for message formatting.
+	 * @return string Translated error message.
 	 */
 	public static function msg( $code, $args = null ) {
 		switch ( $code ) {
-
-			case 'disabled_all':
-				$msg = sprintf( __( 'The setting %s is currently enabled.', 'litespeed-cache' ), '<strong>' . Lang::title( Base::O_DEBUG_DISABLE_ALL ) . '</strong>' ) .
-					Doc::learn_more( admin_url( 'admin.php?page=litespeed-toolbox' ), __( 'Click here to change.', 'litespeed-cache' ), true, false, true );
-				break;
-
-			case 'lack_of_api_key':
-				$msg = sprintf( __( 'You will need to set %s to use the online services.', 'litespeed-cache' ), '<strong>' . Lang::title( Base::O_API_KEY ) . '</strong>' ) .
-					Doc::learn_more( admin_url( 'admin.php?page=litespeed-general' ), __( 'Click here to set.', 'litespeed-cache' ), true, false, true );
+			case 'qc_setup_required':
+				$msg =
+					sprintf(
+						__( 'You will need to finish %s setup to use the online services.', 'litespeed-cache' ),
+						'<strong>QUIC.cloud</strong>'
+					) .
+					Doc::learn_more(
+						admin_url( 'admin.php?page=litespeed-general' ),
+						__( 'Click here to set.', 'litespeed-cache' ),
+						true,
+						false,
+						true
+					);
 				break;
 
 			case 'out_of_daily_quota':
-				$msg = __( 'You don\'t have enough daily quota left for current service today.', 'litespeed-cache' );
+				$msg  = __( 'You have used all of your daily quota for today.', 'litespeed-cache' );
+				$msg .=
+					' ' .
+					Doc::learn_more(
+						'https://docs.quic.cloud/billing/services/#daily-limits-on-free-quota-usage',
+						__( 'Learn more or purchase additional quota.', 'litespeed-cache' ),
+						false,
+						false,
+						true
+					);
 				break;
 
 			case 'out_of_quota':
-				$msg = __( 'You don\'t have enough quota left for current service this month.', 'litespeed-cache' );
+				$msg  = __( 'You have used all of your quota left for current service this month.', 'litespeed-cache' );
+				$msg .=
+					' ' .
+					Doc::learn_more(
+						'https://docs.quic.cloud/billing/services/#daily-limits-on-free-quota-usage',
+						__( 'Learn more or purchase additional quota.', 'litespeed-cache' ),
+						false,
+						false,
+						true
+					);
 				break;
 
 			case 'too_many_requested':
@@ -61,7 +108,7 @@ class Error {
 				break;
 
 			case 'too_many_notified':
-				$msg = __( 'You have too many notified images, please pull down notified images first.', 'litespeed-cache' );
+				$msg = __( 'You have images waiting to be pulled. Please wait for the automatic pull to complete, or pull them down manually now.', 'litespeed-cache' );
 				break;
 
 			case 'empty_list':
@@ -69,15 +116,18 @@ class Error {
 				break;
 
 			case 'lack_of_param':
-				$msg = __( 'Not enough parameters. Please check if the domain key is set correctly', 'litespeed-cache' );
+				$msg = __( 'Not enough parameters. Please check if the QUIC.cloud connection is set correctly', 'litespeed-cache' );
 				break;
 
 			case 'unfinished_queue':
 				$msg = __( 'There is proceeding queue not pulled yet.', 'litespeed-cache' );
 				break;
 
-			case strpos( $code, 'unfinished_queue ' ) === 0:
-				$msg = sprintf( __( 'There is proceeding queue not pulled yet. Queue info: %s.', 'litespeed-cache' ), '<code>' . substr( $code, strlen( 'unfinished_queue ' ) ) . '</code>' );
+			case 0 === strpos( $code, 'unfinished_queue ' ):
+				$msg = sprintf(
+					__( 'There is proceeding queue not pulled yet. Queue info: %s.', 'litespeed-cache' ),
+					'<code>' . substr( $code, strlen( 'unfinished_queue ' ) ) . '</code>'
+				);
 				break;
 
 			case 'err_alias':
@@ -89,7 +139,7 @@ class Error {
 				break;
 
 			case 'err_key':
-				$msg = __( 'The domain key is not correct. Please try to sync your domain key again.', 'litespeed-cache' );
+				$msg = __( 'The QUIC.cloud connection is not correct. Please try to sync your QUIC.cloud connection again.', 'litespeed-cache' );
 				break;
 
 			case 'heavy_load':
@@ -110,10 +160,10 @@ class Error {
 
 			case 'HTA_DNF':
 				if ( ! is_array( $args ) ) {
-					$args = array( '<code>' . $args . '</code>' );
+					$args = [ '<code>' . $args . '</code>' ];
 				}
 				$args[] = '.htaccess';
-				$msg = __( 'Could not find %1$s in %2$s.', 'litespeed-cache' );
+				$msg    = __( 'Could not find %1$s in %2$s.', 'litespeed-cache' );
 				break;
 
 			case 'HTA_LOGIN_COOKIE_INVALID':
@@ -137,20 +187,22 @@ class Error {
 				break;
 
 			case 'failed_tb_creation':
-				$msg = __( 'Failed to create table %s! SQL: %s.', 'litespeed-cache' );
+				$msg = __( 'Failed to create table %1$s! SQL: %2$s.', 'litespeed-cache' );
 				break;
 
 			case 'crawler_disabled':
 				$msg = __( 'Crawler disabled by the server admin.', 'litespeed-cache' );
 				break;
 
-			/*** QC error code ***/
-			case 'try_later':
+			case 'try_later': // QC error code
 				$msg = __( 'Previous request too recent. Please try again later.', 'litespeed-cache' );
 				break;
 
-			case strpos( $code, 'try_later ' ) === 0:
-				$msg = sprintf( __( 'Previous request too recent. Please try again after %s.', 'litespeed-cache' ), '<code>' . Utility::readable_time( substr( $code, strlen( 'try_later ' ) ), 3600, true ) . '</code>' );
+			case 0 === strpos( $code, 'try_later ' ):
+				$msg = sprintf(
+					__( 'Previous request too recent. Please try again after %s.', 'litespeed-cache' ),
+					'<code>' . Utility::readable_time( substr( $code, strlen( 'try_later ' ) ), 3600, true ) . '</code>'
+				);
 				break;
 
 			case 'waiting_for_approval':
@@ -166,7 +218,9 @@ class Error {
 				break;
 
 			case substr( $code, 0, 14 ) === 'callback_fail ':
-				$msg = __( 'The callback validation to your domain failed. Please make sure there is no firewall blocking our servers. Response code: ', 'litespeed-cache' ) . substr( $code, 14 );
+				$msg =
+					__( 'The callback validation to your domain failed. Please make sure there is no firewall blocking our servers. Response code: ', 'litespeed-cache' ) .
+					substr( $code, 14 );
 				break;
 
 			case 'forbidden':
@@ -174,7 +228,10 @@ class Error {
 				break;
 
 			case 'err_dns_active':
-				$msg = __( 'You cannot remove this DNS zone, because it is still in use. Please update the domain\'s nameservers, then try to delete this zone again, otherwise your site will become inaccessible.', 'litespeed-cache' );
+				$msg = __(
+					'You cannot remove this DNS zone, because it is still in use. Please update the domain\'s nameservers, then try to delete this zone again, otherwise your site will become inaccessible.',
+					'litespeed-cache'
+				);
 				break;
 
 			default:
@@ -182,12 +239,12 @@ class Error {
 				break;
 		}
 
-		if ( $args !== null ) {
+		if ( null !== $args ) {
 			$msg = is_array( $args ) ? vsprintf( $msg, $args ) : sprintf( $msg, $args );
 		}
 
-		if ( isset( self::$CODE_SET[ $code ] ) ) {
-			$msg = 'ERROR ' . self::$CODE_SET[ $code ] . ': ' . $msg;
+		if ( isset( self::$code_set[ $code ] ) ) {
+			$msg = 'ERROR ' . self::$code_set[ $code ] . ': ' . $msg;
 		}
 
 		return $msg;

@@ -35,7 +35,7 @@ if ( ! empty( $lbs_posts ) ) {
 }
 
 // Delete widget data
-delete_option( 'widget_bookshelves_widget' );
+delete_option( 'widget_bookshelves_widget' ); // Remove after all installs are >= 5.0
 
 // Delete taxonomies
 $lbs_taxonomy = 'location';

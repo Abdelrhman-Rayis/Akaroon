@@ -56,19 +56,20 @@ class Captcha implements EducationInterface {
 		// Run a security check.
 		check_ajax_referer( 'wpforms-builder', 'nonce' );
 
-		// Check for permissions.
-		if ( ! wpforms_current_user_can() ) {
-			wp_send_json_error( esc_html__( 'You do not have permission.', 'wpforms-lite' ) );
-		}
-
 		// Check for form ID.
-		if ( ! isset( $_POST['id'] ) || empty( $_POST['id'] ) ) {
+		if ( empty( $_POST['id'] ) ) {
 			wp_send_json_error( esc_html__( 'No form ID found.', 'wpforms-lite' ) );
 		}
 
+		$form_id = absint( $_POST['id'] );
+
+		// Check for permissions.
+		if ( ! wpforms_current_user_can( 'edit_form_single', $form_id ) ) {
+			wp_send_json_error( esc_html__( 'You do not have permission.', 'wpforms-lite' ) );
+		}
+
 		// Get an actual form data.
-		$form_id   = absint( $_POST['id'] );
-		$form_data = wpforms()->form->get( $form_id, [ 'content_only' => true ] );
+		$form_data = wpforms()->obj( 'form' )->get( $form_id, [ 'content_only' => true ] );
 
 		// Check that CAPTCHA is configured in the settings.
 		$captcha_settings = wpforms_get_captcha_settings();
@@ -123,6 +124,10 @@ class Captcha implements EducationInterface {
 			return esc_html__( 'hCaptcha', 'wpforms-lite' );
 		}
 
+		if ( $settings['provider'] === 'turnstile' ) {
+			return esc_html__( 'Cloudflare Turnstile', 'wpforms-lite' );
+		}
+
 		$recaptcha_names = [
 			'v2'        => esc_html__( 'Google Checkbox v2 reCAPTCHA', 'wpforms-lite' ),
 			'invisible' => esc_html__( 'Google Invisible v2 reCAPTCHA', 'wpforms-lite' ),
@@ -155,8 +160,8 @@ class Captcha implements EducationInterface {
 				'not_configured'         => [
 					'title'   => esc_html__( 'Heads up!', 'wpforms-lite' ),
 					'content' => sprintf(
-						wp_kses( /* translators: %1$s - CAPTCHA settings page URL; %2$s - WPForms.com doc URL; %3$s - CAPTCHA name. */
-							__( 'The %3$s settings have not been configured yet. Please complete the setup in your <a href="%1$s" target="_blank">WPForms Settings</a>, and check out our <a href="%2$s" target="_blank" rel="noopener noreferrer">step by step tutorial</a> for full details.', 'wpforms-lite' ),
+						wp_kses( /* translators: %1$s - CAPTCHA settings page URL, %2$s - WPForms.com doc URL. */
+							__( 'Please complete the setup in your <a href="%1$s" target="_blank">WPForms Settings</a>, and check out <a href="%2$s" target="_blank" rel="noopener noreferrer">our guide</a> to learn about available CAPTCHA solutions.', 'wpforms-lite' ),
 							[
 								'a' => [
 									'href'   => true,
@@ -166,8 +171,7 @@ class Captcha implements EducationInterface {
 							]
 						),
 						esc_url( admin_url( 'admin.php?page=wpforms-settings&view=captcha' ) ),
-						'https://wpforms.com/docs/setup-captcha-wpforms/',
-						$captcha_name
+						esc_url( wpforms_utm_link( 'https://wpforms.com/docs/setup-captcha-wpforms/', 'builder-modal', 'Captcha Documentation' ) )
 					),
 				],
 				'configured_not_enabled' => [

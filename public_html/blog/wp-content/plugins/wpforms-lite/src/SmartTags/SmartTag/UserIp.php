@@ -13,6 +13,7 @@ class UserIp extends SmartTag {
 	 * Get smart tag value.
 	 *
 	 * @since 1.6.7
+	 * @since 1.8.2 Return empty string if IP collection is disabled. Return entry IP address if entry ID is provided.
 	 *
 	 * @param array  $form_data Form data.
 	 * @param array  $fields    List of fields.
@@ -22,6 +23,17 @@ class UserIp extends SmartTag {
 	 */
 	public function get_value( $form_data, $fields = [], $entry_id = '' ) {
 
-		return wpforms_get_ip();
+		if ( ! wpforms_is_collecting_ip_allowed() ) {
+			return '';
+		}
+
+		if ( ! $entry_id ) {
+			return esc_html( wpforms_get_ip() );
+		}
+
+		$entry_obj = wpforms()->obj( 'entry' );
+		$entry     = $entry_obj ? $entry_obj->get( $entry_id ) : null;
+
+		return $entry->ip_address ?? '';
 	}
 }

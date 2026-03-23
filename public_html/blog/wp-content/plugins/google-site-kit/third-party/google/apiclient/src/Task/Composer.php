@@ -18,22 +18,27 @@
 namespace Google\Site_Kit_Dependencies\Google\Task;
 
 use Google\Site_Kit_Dependencies\Composer\Script\Event;
+use InvalidArgumentException;
 use Google\Site_Kit_Dependencies\Symfony\Component\Filesystem\Filesystem;
 use Google\Site_Kit_Dependencies\Symfony\Component\Finder\Finder;
-use InvalidArgumentException;
 class Composer
 {
     /**
      * @param Event $event Composer event passed in for any script method
      * @param Filesystem $filesystem Optional. Used for testing.
      */
-    public static function cleanup(\Google\Site_Kit_Dependencies\Composer\Script\Event $event, \Google\Site_Kit_Dependencies\Symfony\Component\Filesystem\Filesystem $filesystem = null)
+    public static function cleanup(\Google\Site_Kit_Dependencies\Composer\Script\Event $event, ?\Google\Site_Kit_Dependencies\Symfony\Component\Filesystem\Filesystem $filesystem = null)
     {
         $composer = $event->getComposer();
         $extra = $composer->getPackage()->getExtra();
         $servicesToKeep = isset($extra['google/apiclient-services']) ? $extra['google/apiclient-services'] : [];
         if ($servicesToKeep) {
-            $serviceDir = \sprintf('%s/google/apiclient-services/src/Google/Service', $composer->getConfig()->get('vendor-dir'));
+            $vendorDir = $composer->getConfig()->get('vendor-dir');
+            $serviceDir = \sprintf('%s/google/apiclient-services/src/Google/Service', $vendorDir);
+            if (!\is_dir($serviceDir)) {
+                // path for google/apiclient-services >= 0.200.0
+                $serviceDir = \sprintf('%s/google/apiclient-services/src', $vendorDir);
+            }
             self::verifyServicesToKeep($serviceDir, $servicesToKeep);
             $finder = self::getServicesToRemove($serviceDir, $servicesToKeep);
             $filesystem = $filesystem ?: new \Google\Site_Kit_Dependencies\Symfony\Component\Filesystem\Filesystem();

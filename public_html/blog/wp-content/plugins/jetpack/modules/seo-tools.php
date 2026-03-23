@@ -1,11 +1,11 @@
 <?php
 /**
  * Module Name: SEO Tools
- * Module Description: Better results on search engines and social media.
+ * Module Description: Optimize titles, meta descriptions, and social previews for better search results.
  * Sort Order: 35
  * Recommendation Order: 15
  * First Introduced: 4.4
- * Requires Connection: Yes
+ * Requires Connection: No
  * Requires User Connection: No
  * Auto Activate: No
  * Module Tags: Social, Appearance
@@ -14,6 +14,10 @@
  *
  * @package automattic/jetpack
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
 
 // Suppress SEO Tools output if any of the following plugins is active.
 $jetpack_seo_conflicting_plugins = array(
@@ -26,6 +30,8 @@ $jetpack_seo_conflicting_plugins = array(
 	'slim-seo/slim-seo.php',
 	'wp-seopress/seopress.php',
 	'wp-seopress-pro/seopress-pro.php',
+	'seo-key/seo-key.php',
+	'seo-key-pro/seo-key.php',
 );
 
 foreach ( $jetpack_seo_conflicting_plugins as $seo_plugin ) {
@@ -39,8 +45,8 @@ foreach ( $jetpack_seo_conflicting_plugins as $seo_plugin ) {
 	}
 }
 
-/** This filter is documented in modules/seo-tools/jetpack-seo-utils.php */
+/** This filter is documented in modules/seo-tools/class-jetpack-seo-utils.php */
 if ( ! apply_filters( 'jetpack_disable_seo_tools', false ) ) {
-	require_once __DIR__ . '/seo-tools/jetpack-seo.php';
+	require_once __DIR__ . '/seo-tools/class-jetpack-seo.php';
 	new Jetpack_SEO();
 }

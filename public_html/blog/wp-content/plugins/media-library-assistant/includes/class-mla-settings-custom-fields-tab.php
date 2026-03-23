@@ -39,9 +39,9 @@ class MLASettings_CustomFields {
 		}
 
 		if ( $wp_locale->is_rtl() ) {
-			wp_register_style( MLACore::STYLESHEET_SLUG, MLA_PLUGIN_URL . 'css/mla-style-rtl.css', false, MLACore::CURRENT_MLA_VERSION );
+			wp_register_style( MLACore::STYLESHEET_SLUG, MLA_PLUGIN_URL . 'css/mla-style-rtl.css', false, MLACore::mla_script_version() );
 		} else {
-			wp_register_style( MLACore::STYLESHEET_SLUG, MLA_PLUGIN_URL . 'css/mla-style.css', false, MLACore::CURRENT_MLA_VERSION );
+			wp_register_style( MLACore::STYLESHEET_SLUG, MLA_PLUGIN_URL . 'css/mla-style.css', false, MLACore::mla_script_version() );
 		}
 
 		wp_enqueue_style( MLACore::STYLESHEET_SLUG );
@@ -56,7 +56,7 @@ class MLASettings_CustomFields {
 			'notitle' => '(' . __( 'no slug', 'media-library-assistant' ) . ')',
 			'comma' => _x( ',', 'tag_delimiter', 'media-library-assistant' ),
 			'useSpinnerClass' => $use_spinner_class,
-			'ajax_nonce' => wp_create_nonce( MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME ),
+			'ajax_nonce' => wp_create_nonce( MLASettings::JAVASCRIPT_INLINE_MAPPING_CUSTOM_SLUG, MLACore::MLA_ADMIN_NONCE_NAME ),
 			'bulkChunkSize' => MLACore::mla_get_option( MLACoreOptions::MLA_BULK_CHUNK_SIZE ),
 			'bulkWaiting' => __( 'Waiting', 'media-library-assistant' ),
 			'bulkRunning' => __( 'Running', 'media-library-assistant' ),
@@ -72,12 +72,12 @@ class MLASettings_CustomFields {
 			'screen' => 'settings_page_mla-settings-menu-custom_field',
 			'ajax_action' => MLASettings::JAVASCRIPT_INLINE_MAPPING_CUSTOM_SLUG,
 			'fieldsId' => '#mla-display-settings-custom-field-tab',
-			'totalItems' => $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE `post_type` = 'attachment'" )
+			'totalItems' => $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE `post_type` = 'attachment'" ) // phpcs:ignore
 		);
 
 		wp_enqueue_script( MLASettings::JAVASCRIPT_INLINE_MAPPING_CUSTOM_SLUG,
 			MLA_PLUGIN_URL . "js/mla-inline-mapping-scripts{$suffix}.js", 
-			array( 'jquery' ), MLACore::CURRENT_MLA_VERSION, false );
+			array( 'jquery' ), MLACore::mla_script_version(), false );
 
 		wp_localize_script( MLASettings::JAVASCRIPT_INLINE_MAPPING_CUSTOM_SLUG,
 			MLASettings::JAVASCRIPT_INLINE_MAPPING_OBJECT, $script_variables );
@@ -89,7 +89,7 @@ class MLASettings_CustomFields {
 			'notitle' => '(' . __( 'no slug', 'media-library-assistant' ) . ')',
 			'comma' => _x( ',', 'tag_delimiter', 'media-library-assistant' ),
 			'useSpinnerClass' => $use_spinner_class,
-			'ajax_nonce' => wp_create_nonce( MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME ),
+			'ajax_nonce' => wp_create_nonce( MLASettings::JAVASCRIPT_INLINE_EDIT_CUSTOM_SLUG, MLACore::MLA_ADMIN_NONCE_NAME ),
 			'tab' => 'custom_field',
 			'fields' => array( 'name', 'rule_name', 'data_source', 'meta_name', 'format', 'option', 'keep_existing', 'active' ),
 			'checkboxes' => array( 'no_null', 'mla_column', 'quick_edit', 'bulk_edit' ),
@@ -98,7 +98,7 @@ class MLASettings_CustomFields {
 
 		wp_enqueue_script( MLASettings::JAVASCRIPT_INLINE_EDIT_CUSTOM_SLUG,
 			MLA_PLUGIN_URL . "js/mla-inline-edit-settings-scripts{$suffix}.js", 
-			array( 'wp-lists', 'suggest', 'jquery' ), MLACore::CURRENT_MLA_VERSION, false );
+			array( 'wp-lists', 'suggest', 'jquery' ), MLACore::mla_script_version(), false );
 
 		wp_localize_script( MLASettings::JAVASCRIPT_INLINE_EDIT_CUSTOM_SLUG,
 			self::JAVASCRIPT_INLINE_EDIT_CUSTOM_OBJECT, $script_variables );
@@ -182,7 +182,7 @@ class MLASettings_CustomFields {
 
 		$examine_count = 0;
 		$update_count = 0;
-		$post_ids = $wpdb->get_col( "SELECT ID FROM {$wpdb->posts} WHERE `post_type` = 'attachment' {$limits}" );
+		$post_ids = $wpdb->get_col( "SELECT ID FROM {$wpdb->posts} WHERE `post_type` = 'attachment' {$limits}" ); // phpcs:ignore
 
 		do_action( 'mla_begin_mapping', $source, NULL );
 		foreach ( $post_ids as $key => $post_id ) {
@@ -218,7 +218,6 @@ class MLASettings_CustomFields {
 	 * Add a custom field rule from values in $_REQUEST
  	 *
 	 * @since 2.50
-	 * @uses $_REQUEST for field-level values
 	 *
 	 * @return string Message(s) reflecting the results of the operation
 	 */
@@ -227,11 +226,13 @@ class MLASettings_CustomFields {
 			'post_ID' => 0,
 			'rule_name' => '',
 			'name' => '',
+			'description' => '',
 			'data_source' => '',
 			'meta_name' => '',
 			'format' => '',
 			'option' => '',
 			'keep_existing' => false,
+			'replace_all' => false,
 			'no_null' => false,
 			'mla_column' => false,
 			'quick_edit' => false,
@@ -257,11 +258,21 @@ class MLASettings_CustomFields {
 
 		$new_rule['rule_name'] = $new_name;
 		$new_rule['name'] = $new_name;
+		$new_rule['description'] = sanitize_text_field( isset( $_REQUEST['mla_custom_field']['description'] ) ? wp_unslash( $_REQUEST['mla_custom_field']['description'] ) : '' );
 		$new_rule['data_source'] = sanitize_text_field( isset( $_REQUEST['mla_custom_field']['data_source'] ) ? wp_unslash( $_REQUEST['mla_custom_field']['data_source'] ) : 'none' );
 		$new_rule['meta_name'] = wp_kses( isset( $_REQUEST['mla_custom_field']['meta_name'] ) ? wp_unslash( $_REQUEST['mla_custom_field']['meta_name'] ) : '', 'post' );
 		$new_rule['format'] = sanitize_text_field( isset( $_REQUEST['mla_custom_field']['format'] ) ? wp_unslash( $_REQUEST['mla_custom_field']['format'] ) : 'native' );
 		$new_rule['option'] = sanitize_text_field( isset( $_REQUEST['mla_custom_field']['option'] ) ? wp_unslash( $_REQUEST['mla_custom_field']['option'] ) : 'text' );
-		$new_rule['keep_existing'] = isset( $_REQUEST['mla_custom_field']['keep_existing'] ) && '1' === $_REQUEST['mla_custom_field']['keep_existing'];
+
+		if ( isset( $_REQUEST['mla_custom_field']['keep_existing'] ) ) {
+			$keep_existing = absint( $_REQUEST['mla_custom_field']['keep_existing'] );
+			if ( 2 === $keep_existing ) {
+				$new_rule['replace_all'] = true;
+			} else {
+				$new_rule['keep_existing'] = 1 === $keep_existing;
+			}
+		}
+
 		$new_rule['no_null'] = isset( $_REQUEST['mla_custom_field']['no_null'] );
 		$new_rule['mla_column'] = isset( $_REQUEST['mla_custom_field']['mla_column'] );
 		$new_rule['quick_edit'] = isset( $_REQUEST['mla_custom_field']['quick_edit'] );
@@ -279,9 +290,8 @@ class MLASettings_CustomFields {
 	 * Update a custom field rule from full-screen Edit Rule values in $_REQUEST
  	 *
 	 * @since 2.50
-	 * @uses $_REQUEST for field-level values
 	 *
-	 * @param integer $post_id ID value of rule to update
+	 * @param	integer $post_id ID value of rule to update
 	 * @param	array	&$template Display templates.
 	 * @return	array	'message' => status/error messages, 'body' => tab content
 	 */
@@ -291,11 +301,13 @@ class MLASettings_CustomFields {
 			'post_ID' => 0,
 			'rule_name' => '',
 			'name' => '',
+			'description' => '',
 			'data_source' => '',
 			'meta_name' => '',
 			'format' => '',
 			'option' => '',
 			'keep_existing' => false,
+			'replace_all' => false,
 			'no_null' => false,
 			'mla_column' => false,
 			'quick_edit' => false,
@@ -328,11 +340,21 @@ class MLASettings_CustomFields {
 			$new_rule['post_ID'] = isset( $_REQUEST['mla_custom_field']['post_ID'] ) ? absint( $_REQUEST['mla_custom_field']['post_ID'] ) : 0;
 			$new_rule['rule_name'] = $new_name ? $new_name : sanitize_text_field( isset( $_REQUEST['mla_custom_field']['rule_name'] ) ? wp_unslash( $_REQUEST['mla_custom_field']['rule_name'] ) : '' );
 			$new_rule['name'] = $new_name ? $new_name : sanitize_text_field( isset( $_REQUEST['mla_custom_field']['name'] ) ? wp_unslash( $_REQUEST['mla_custom_field']['name'] ) : '' );
+			$new_rule['description'] = sanitize_text_field( isset( $_REQUEST['mla_custom_field']['description'] ) ? wp_unslash( $_REQUEST['mla_custom_field']['description'] ) : '' );
 			$new_rule['data_source'] = sanitize_text_field( isset( $_REQUEST['mla_custom_field']['data_source'] ) ? wp_unslash( $_REQUEST['mla_custom_field']['data_source'] ) : 'none' );
 			$new_rule['meta_name'] = wp_kses( isset( $_REQUEST['mla_custom_field']['meta_name'] ) ? wp_unslash( $_REQUEST['mla_custom_field']['meta_name'] ) : '', 'post' );
 			$new_rule['format'] = sanitize_text_field( isset( $_REQUEST['mla_custom_field']['format'] ) ? wp_unslash( $_REQUEST['mla_custom_field']['format'] ) : 'native' );
 			$new_rule['option'] = sanitize_text_field( isset( $_REQUEST['mla_custom_field']['option'] ) ? wp_unslash( $_REQUEST['mla_custom_field']['option'] ) : 'text' );
-			$new_rule['keep_existing'] = isset( $_REQUEST['mla_custom_field']['keep_existing'] ) && '1' === $_REQUEST['mla_custom_field']['keep_existing'];
+
+			if ( isset( $_REQUEST['mla_custom_field']['keep_existing'] ) ) {
+				$keep_existing = absint( $_REQUEST['mla_custom_field']['keep_existing'] );
+				if ( 2 === $keep_existing ) {
+					$new_rule['replace_all'] = true;
+				} else {
+					$new_rule['keep_existing'] = 1 === $keep_existing;
+				}
+			}
+
 			$new_rule['no_null'] = isset( $_REQUEST['mla_custom_field']['no_null'] );
 			$new_rule['mla_column'] = isset( $_REQUEST['mla_custom_field']['mla_column'] );
 			$new_rule['quick_edit'] = isset( $_REQUEST['mla_custom_field']['quick_edit'] );
@@ -372,6 +394,7 @@ class MLASettings_CustomFields {
 		}
 
 		MLA_Custom_Field_Query::mla_update_custom_field_rule( $post_id, 'deleted', true );
+		/* translators: 1: rule name */
 		return sprintf( __( 'Custom Field Rule "%1$s" deleted.', 'media-library-assistant' ), $rule['rule_name'] );
 	} // _delete_custom_field_rule
 
@@ -379,7 +402,6 @@ class MLASettings_CustomFields {
 	 * Update a custom field rule from Bulk Edit action values in $_REQUEST
  	 *
 	 * @since 2.50
-	 * @uses $_REQUEST for field-level values
 	 *
 	 * @param integer $post_id ID value of rule to update
 	 * @return string status/error message
@@ -393,42 +415,52 @@ class MLASettings_CustomFields {
 		// Sanitize and convert dropdown controls to field values
 		$field = sanitize_text_field( isset( $_REQUEST['format'] ) ? wp_unslash( $_REQUEST['format'] ) : '-1' );
 		if ( '-1' !== $field ) {
-			$rule['format'] = $field;
+			if ( in_array( $field, array( 'native', 'commas', 'raw' ) ) ) {
+				$rule['format'] = $field;
+			}
 		}
 
 		$field = sanitize_text_field( isset( $_REQUEST['option'] ) ? wp_unslash( $_REQUEST['option'] ) : '-1' );
 		if ( '-1' !== $field ) {
-			$rule['option'] = $field;
+			if ( in_array( $field, array( 'text', 'single', 'export', 'array', 'multi' ) ) ) {
+				$rule['option'] = $field;
+			}
 		}
 
-		$field = sanitize_text_field( isset( $_REQUEST['keep_existing'] ) ? wp_unslash( $_REQUEST['keep_existing'] ) : '-1' );
-		if ( '-1' !== $field ) {
-			$rule['keep_existing'] = '1' === $field;
+		$field = intval( isset( $_REQUEST['keep_existing'] ) ? wp_unslash( $_REQUEST['keep_existing'] ) : '-1' );
+		if ( -1 !== $field ) {
+			if ( 2 === $field ) {
+				$rule['keep_existing'] = false;
+				$rule['replace_all'] = true;
+			} else {
+				$rule['keep_existing'] = 1 === $field;
+				$rule['replace_all'] = false;
+			}
 		}
 
-		$field = sanitize_text_field( isset( $_REQUEST['no_null'] ) ? wp_unslash( $_REQUEST['no_null'] ) : '-1' );
-		if ( '-1' !== $field ) {
-			$rule['no_null'] = '1' === $field;
+		$field = intval( isset( $_REQUEST['no_null'] ) ? wp_unslash( $_REQUEST['no_null'] ) : '-1' );
+		if ( -1 !== $field ) {
+			$rule['no_null'] = 1 === $field;
 		}
 
-		$field = sanitize_text_field( isset( $_REQUEST['mla_column'] ) ? wp_unslash( $_REQUEST['mla_column'] ) : '-1' );
-		if ( '-1' !== $field ) {
-			$rule['mla_column'] = '1' === $field;
+		$field = intval( isset( $_REQUEST['mla_column'] ) ? wp_unslash( $_REQUEST['mla_column'] ) : '-1' );
+		if ( -1 !== $field ) {
+			$rule['mla_column'] = 1 === $field;
 		}
 
-		$field = sanitize_text_field( isset( $_REQUEST['quick_edit'] ) ? wp_unslash( $_REQUEST['quick_edit'] ) : '-1' );
-		if ( '-1' !== $field ) {
-			$rule['quick_edit'] = '1' === $field;
+		$field = intval( isset( $_REQUEST['quick_edit'] ) ? wp_unslash( $_REQUEST['quick_edit'] ) : '-1' );
+		if ( -1 !== $field ) {
+			$rule['quick_edit'] = 1 === $field;
 		}
 
-		$field = sanitize_text_field( isset( $_REQUEST['bulk_edit'] ) ? wp_unslash( $_REQUEST['bulk_edit'] ) : '-1' );
-		if ( '-1' !== $field ) {
-			$rule['bulk_edit'] = '1' === $field;
+		$field = intval( isset( $_REQUEST['bulk_edit'] ) ? wp_unslash( $_REQUEST['bulk_edit'] ) : '-1' );
+		if ( -1 !== $field ) {
+			$rule['bulk_edit'] = 1 === $field;
 		}
 
-		$field = sanitize_text_field( isset( $_REQUEST['active'] ) ? wp_unslash( $_REQUEST['active'] ) : '-1' );
-		if ( '-1' !== $field ) {
-			$rule['active'] = '1' === $field;
+		$field = intval( isset( $_REQUEST['active'] ) ? wp_unslash( $_REQUEST['active'] ) : '-1' );
+		if ( -1 !== $field ) {
+			$rule['active'] = 1 === $field;
 		}
 
 		$rule['changed'] = true;
@@ -473,6 +505,10 @@ class MLASettings_CustomFields {
 			'Cancel Name Change' => __( 'Cancel Name Change', 'media-library-assistant' ),
 			'Enter new field' => __( 'Enter new field', 'media-library-assistant' ),
 			'Cancel new field' => __( 'Cancel new field', 'media-library-assistant' ),
+			'Description' => __( 'Description', 'media-library-assistant' ),
+			'description' => $item['description'],
+			'description_rows' => 3,
+			'description_help' => __( 'Notes for the Custom Fields tab submenu table.', 'media-library-assistant' ),
 			'Data Source' => __( 'Data Source', 'media-library-assistant' ),
 			'data_sources' => MLAOptions::mla_compose_data_source_option_list( $item['data_source'] ),
 			'Meta/Template' => __( 'Meta/Template', 'media-library-assistant' ),
@@ -488,10 +524,12 @@ class MLASettings_CustomFields {
 			'Bulk Edit' => __( 'Bulk Edit', 'media-library-assistant' ),
 			'Check Bulk Edit' => __( 'Add to Media/Assistant Bulk Edit area', 'media-library-assistant' ),
 			'Existing Text' => __( 'Existing Text', 'media-library-assistant' ),
-			'keep_selected' => $item['keep_existing'] ? 'selected=selected' : '',
+			'keep_selected' => '', // Set below
 			'Keep' => __( 'Keep', 'media-library-assistant' ),
-			'replace_selected' => $item['keep_existing'] ? '' : 'selected=selected',
+			'replace_selected' => '', // Set below
 			'Replace' => __( 'Replace', 'media-library-assistant' ),
+			'replace_all_selected' => '', // Set below
+			'Replace All' => __( 'Replace All', 'media-library-assistant' ),
 			'Format' => __( 'Format', 'media-library-assistant' ),
 			'native_format' => ( 'native' === $item['format'] ) ? 'selected=selected' : '',
 			'Native' => __( 'Native', 'media-library-assistant' ),
@@ -524,6 +562,14 @@ class MLASettings_CustomFields {
 			'Update' => __( 'Update', 'media-library-assistant' ),
 		);
 
+		if ( $item['keep_existing'] ) {
+			$page_values['keep_selected'] = 'selected="selected"';
+		} elseif ( $item['replace_all'] ) {
+			$page_values['replace_all_selected'] = 'selected="selected"';
+		} else {
+			$page_values['replace_selected'] = 'selected="selected"';
+		}
+
 		return array(
 			'message' => '',
 			'body' => MLAData::mla_parse_template( $template['single-item-edit'], $page_values )
@@ -549,6 +595,7 @@ class MLASettings_CustomFields {
 				$result = MLASettings::mla_delete_custom_field( $rule );
 			}
 
+			/* translators: 1: rule name */
 			$message .=  sprintf( __( 'Custom Field Rule "%1$s": %2$s', 'media-library-assistant' ), $rule['name'], $result );
 		}
 
@@ -600,6 +647,7 @@ class MLASettings_CustomFields {
 				if ( isset( $_REQUEST['cb_mla_item_ID'] ) ) {
 					$post_ids = !empty( $_REQUEST['cb_mla_item_ID'] ) ? array_map( 'absint', stripslashes_deep( $_REQUEST['cb_mla_item_ID'] ) ) : array();
 					if ( 'execute' === $bulk_action ) {
+						/* translators: 1: bulk action value */
 						$page_content['message'] = sprintf( __( 'Unknown bulk action %1$s', 'media-library-assistant' ), $bulk_action );
 					} elseif ( 'purge' === $bulk_action ) {
 						$page_content['message'] = MLASettings_CustomFields::_purge_custom_field_values( $post_ids );
@@ -652,6 +700,7 @@ class MLASettings_CustomFields {
 					MLA_Custom_Field_Query::mla_put_custom_field_rules();
 					break;
 				default:
+					/* translators: 1: admin action value */
 					$page_content['message'] = sprintf( __( 'Unknown mla_admin_action - "%1$s"', 'media-library-assistant' ), sanitize_text_field( wp_unslash( $_REQUEST['mla_admin_action'] ) ) );
 					break;
 			} // switch ($_REQUEST['mla_admin_action'])
@@ -802,6 +851,8 @@ class MLASettings_CustomFields {
 			'Keep' => __( 'Keep', 'media-library-assistant' ),
 			'replace_selected' => '',
 			'Replace' => __( 'Replace', 'media-library-assistant' ),
+			'replace_all_selected' => '',
+			'Replace All' => __( 'Replace All', 'media-library-assistant' ),
 			'Format' => __( 'Format', 'media-library-assistant' ),
 			'native_format' => '',
 			'Native' => __( 'Native', 'media-library-assistant' ),
@@ -863,7 +914,7 @@ class MLASettings_CustomFields {
 			set_current_screen( sanitize_text_field( wp_unslash( $_REQUEST['screen'] ) ) );
 		}
 
-		check_ajax_referer( MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME );
+		check_ajax_referer( MLASettings::JAVASCRIPT_INLINE_MAPPING_CUSTOM_SLUG, MLACore::MLA_ADMIN_NONCE_NAME );
 
 		// Find the current chunk
 		$offset = isset( $_REQUEST['offset'] ) ? absint( $_REQUEST['offset'] ) : 0;
@@ -955,7 +1006,7 @@ class MLASettings_CustomFields {
 			set_current_screen( sanitize_text_field( wp_unslash( $_REQUEST['screen'] ) ) );
 		}
 
-		check_ajax_referer( MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME );
+		check_ajax_referer( MLASettings::JAVASCRIPT_INLINE_EDIT_CUSTOM_SLUG, MLACore::MLA_ADMIN_NONCE_NAME );
 
 		$error_message = '';
 		if ( !empty( $_REQUEST['post_ID'] ) ) {
@@ -976,7 +1027,18 @@ class MLASettings_CustomFields {
 		$rule['meta_name'] = wp_kses( isset( $_REQUEST['meta_name'] ) ? wp_unslash( $_REQUEST['meta_name'] ) : '', 'post' );
 		$rule['format'] = sanitize_text_field( isset( $_REQUEST['format'] ) ? wp_unslash( $_REQUEST['format'] ) : 'native' );
 		$rule['option'] = sanitize_text_field( isset( $_REQUEST['option'] ) ? wp_unslash( $_REQUEST['option'] ) : 'text' );
-		$rule['keep_existing'] = isset( $_REQUEST['keep_existing'] ) && '1' === $_REQUEST['keep_existing'];
+
+		if ( isset( $_REQUEST['keep_existing'] ) ) {
+			$keep_existing = absint( $_REQUEST['keep_existing'] );
+			if ( 2 === $keep_existing ) {
+				$rule['keep_existing'] = false;
+				$rule['replace_all'] = true;
+			} else {
+				$rule['keep_existing'] = 1 === $keep_existing;
+				$rule['replace_all'] = false;
+			}
+		}
+
 		$rule['no_null'] = isset( $_REQUEST['no_null'] ) && '1' === $_REQUEST['no_null'];
 		$rule['mla_column'] = isset( $_REQUEST['mla_column'] ) && '1' === $_REQUEST['mla_column'];
 		$rule['quick_edit'] = isset( $_REQUEST['quick_edit'] ) && '1' === $_REQUEST['quick_edit'];
@@ -1077,7 +1139,8 @@ class MLA_Custom_Fields_List_Table extends WP_List_Table {
 		'existing_text',
 		'delete_null',
 		'format',
-		'option'
+		'option',
+		'description',
 	);
 
 	/**
@@ -1111,6 +1174,7 @@ class MLA_Custom_Fields_List_Table extends WP_List_Table {
 		'delete_null' => array('delete_null',false),
 		'format' => array('format',false),
 		'option' => array('option',false),
+		'description' => array('description',false),
 		);
 
 	/**
@@ -1183,7 +1247,7 @@ class MLA_Custom_Fields_List_Table extends WP_List_Table {
 			$submenu_arguments['orderby'] = $field;
 		}
 
-		return $submenu_arguments;
+		return $submenu_arguments = apply_filters( 'mla_setting_table_submenu_arguments', $submenu_arguments, $include_filters, 'MLASettings_CustomFields' );
 	}
 
 	/**
@@ -1247,6 +1311,7 @@ class MLA_Custom_Fields_List_Table extends WP_List_Table {
 				'delete_null'  => _x( 'Delete NULL', 'list_table_column', 'media-library-assistant' ),
 				'format'  => _x( 'Format', 'list_table_column', 'media-library-assistant' ),
 				'option'  => _x( 'Option', 'list_table_column', 'media-library-assistant' ),
+				'description' => _x( 'Description', 'list_table_column', 'media-library-assistant' ),
 			);
 		}
 	}
@@ -1368,17 +1433,7 @@ class MLA_Custom_Fields_List_Table extends WP_List_Table {
 			$view_args['paged'] = absint( $_REQUEST['paged'] );
 		}
 
-		if ( isset( $_REQUEST['order'] ) ) {
-			$field = strtoupper( sanitize_text_field( wp_unslash( $_REQUEST['order'] ) ) );
-			$view_args['order'] = 'DESC' === $field ? 'DESC' : 'ASC';
-		}
-
-		$field = strtolower( sanitize_text_field( isset( $_REQUEST['orderby'] ) ? wp_unslash( $_REQUEST['orderby'] ) : '' ) );
-		if ( array_key_exists( $field, self::$default_sortable_columns ) ) {
-			$view_args['orderby'] = urlencode( $field );
-		}
-
-			$actions['edit'] = '<a href="' . add_query_arg( $view_args, MLACore::mla_nonce_url( '?mla_admin_action=' . MLACore::MLA_ADMIN_SINGLE_EDIT_DISPLAY, MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME ) ) . '" title="' . __( 'Edit this item', 'media-library-assistant' ) . '">' . __( 'Edit', 'media-library-assistant' ) . '</a>';
+		$actions['edit'] = '<a href="' . add_query_arg( $view_args, MLACore::mla_nonce_url( '?mla_admin_action=' . MLACore::MLA_ADMIN_SINGLE_EDIT_DISPLAY, MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME ) ) . '" title="' . __( 'Edit this item', 'media-library-assistant' ) . '">' . __( 'Edit', 'media-library-assistant' ) . '</a>';
 
 		if ( !$item->read_only ) {
 			$actions['inline hide-if-no-js'] = '<a class="editinline" href="#" title="' . __( 'Edit this item inline', 'media-library-assistant' ) . '">' . __( 'Quick Edit', 'media-library-assistant' ) . '</a>';
@@ -1412,7 +1467,15 @@ class MLA_Custom_Fields_List_Table extends WP_List_Table {
 		$inline_data .= '	<div class="meta_name">' . esc_attr( $item->meta_name ) . "</div>\r\n";
 		$inline_data .= '	<div class="format">' . esc_attr( $item->format ) . "</div>\r\n";
 		$inline_data .= '	<div class="option">' . esc_attr( $item->option ) . "</div>\r\n";
-		$inline_data .= '	<div class="keep_existing">' . esc_attr( $item->keep_existing ) . "</div>\r\n";
+
+		if ( $item->keep_existing ) {
+			$inline_data .= '	<div class="keep_existing">1' . "</div>\r\n";
+		} elseif ( $item->replace_all ) {
+			$inline_data .= '	<div class="keep_existing">2' . "</div>\r\n";
+		} else {
+			$inline_data .= '	<div class="keep_existing">0' . "</div>\r\n";
+		}
+
 		$inline_data .= '	<div class="no_null">' . esc_attr( $item->no_null ) . "</div>\r\n";
 		$inline_data .= '	<div class="mla_column">' . esc_attr( $item->mla_column ) . "</div>\r\n";
 		$inline_data .= '	<div class="quick_edit">' . esc_attr( $item->quick_edit ) . "</div>\r\n";
@@ -1534,6 +1597,8 @@ class MLA_Custom_Fields_List_Table extends WP_List_Table {
 	function column_existing_text( $item ) {
 		if ( $item->keep_existing ) {
 			return __( 'Keep', 'media-library-assistant' );
+		} elseif ( $item->replace_all ) {
+			return __( 'Replace All', 'media-library-assistant' );
 		} else {
 			return __( 'Replace', 'media-library-assistant' );
 		}
@@ -1577,6 +1642,18 @@ class MLA_Custom_Fields_List_Table extends WP_List_Table {
 	 */
 	function column_option( $item ) {
 		return $item->option;
+	}
+
+	/**
+	 * Populate the Description column
+	 *
+	 * @since 2.97
+	 * 
+	 * @param object	An MLA custom_field_rule object
+	 * @return	string	HTML markup to be placed inside the column
+	 */
+	function column_description( $item ) {
+		return esc_html( $item->description );
 	}
 
 	/**
@@ -1892,6 +1969,7 @@ class MLA_Custom_Field_Query {
 	 *             @type integer $post_ID Rule ID; equal to $$ID.
 	 *             @type string $rule_name Rule name, to accomodate an old bug.
 	 *             @type string $name Custom field name the rule applies to.
+	 *             @type string $description Notes for the Custom Fields tab submenu table.
 	 *             @type string $data_source Data source name, 'none', 'meta' or 'template'.
 	 *             @type string $meta_name if ( $data_source = 'meta' ) attachment metadata element name,
 	 *                                     if ( $data_source = 'template ) template value w/o "template:"
@@ -1965,11 +2043,15 @@ class MLA_Custom_Field_Query {
 					'post_ID' => self::$_custom_field_rule_highest_ID,
 					'rule_name' => $rule_name,
 					'name' => $current_value['name'],
+					// description added in v2.97
+					'description' => isset( $current_value['description'] ) ? $current_value['description'] : '',
 					'data_source' =>  $current_value['data_source'],
 					'meta_name' => $current_value['meta_name'],
 					'format' => $current_value['format'],
 					'option' => $current_value['option'],
 					'keep_existing' => $current_value['keep_existing'],
+					// replace_all added in v3.19
+					'replace_all' => isset( $current_value['replace_all'] ) ? $current_value['replace_all'] : false,
 					'no_null' => $current_value['no_null'],
 					'mla_column' => $current_value['mla_column'],
 					'quick_edit' => $current_value['quick_edit'],
@@ -2010,11 +2092,13 @@ class MLA_Custom_Field_Query {
 
 			$custom_field_rules[ $current_value['rule_name'] ] = array(
 				'name' => $current_value['name'],
+				'description' => $current_value['description'],
 				'data_source' =>  $current_value['data_source'],
 				'meta_name' => $current_value['meta_name'],
 				'format' => $current_value['format'],
 				'option' => $current_value['option'],
 				'keep_existing' => $current_value['keep_existing'],
+				'replace_all' => $current_value['replace_all'],
 				'no_null' => $current_value['no_null'],
 				'mla_column' => $current_value['mla_column'],
 				'quick_edit' => $current_value['quick_edit'],
@@ -2133,6 +2217,7 @@ class MLA_Custom_Field_Query {
 				foreach ( $keywords as $keyword ) {
 					$found |= false !== stripos( $value['rule_name'], $keyword );
 					$found |= false !== stripos( $value['name'], $keyword );
+					$found |= false !== stripos( $value['description'], $keyword );
 					$found |= false !== stripos( $value['data_source'], $keyword );
 					$found |= false !== stripos( $value['meta_name'], $keyword );
 				}
@@ -2202,6 +2287,9 @@ class MLA_Custom_Field_Query {
 					break;
 				case 'option':
 					$sortable_items[ ( empty( $value['option'] ) ? chr(1) : $value['option'] ) . $ID ] = (object) $value;
+					break;
+				case 'description':
+					$sortable_items[ ( empty( $value['description'] ) ? chr(1) : $value['description'] ) . $ID ] = (object) $value;
 					break;
 				default:
 					$sortable_items[ absint( $ID ) ] = (object) $value;
@@ -2467,24 +2555,24 @@ class MLA_Custom_Field_Query {
 		// See also mla_submenu_arguments
 		$template_items = array(
 			'all' => array(
-				'singular' => _x( 'All', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'All', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'All', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'All', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 			'mla_column' => array(
-				'singular' => _x( 'MLA Column', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'MLA Column', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'MLA Column', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'MLA Column', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 			'quick_edit' => array(
-				'singular' => _x( 'Quick Edit', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'Quick Edit', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'Quick Edit', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'Quick Edit', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 			'bulk_edit' => array(
-				'singular' => _x( 'Bulk Edit', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'Bulk Edit', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'Bulk Edit', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'Bulk Edit', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 			'read_only' => array(
-				'singular' => _x( 'Read Only', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'Read Only', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'Read Only', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'Read Only', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 		);
 
@@ -2506,6 +2594,11 @@ class MLA_Custom_Field_Query {
 			if ( $value->read_only ) {
 					$template_items[ 'read_only' ]['count']++;
 			}
+		}
+
+		// Read Only fields are a historical (MLA defect) artifact of interest to very few MLA users
+		if ( 0 === $template_items[ 'read_only' ]['count'] ) {
+			unset( $template_items[ 'read_only' ] );
 		}
 
 		return $template_items;

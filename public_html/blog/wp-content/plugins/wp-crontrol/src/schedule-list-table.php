@@ -1,11 +1,12 @@
 <?php
 /**
  * List table for cron schedules.
- *
- * @package wp-crontrol
  */
 
 namespace Crontrol;
+
+use Crontrol\Schedule\Schedule;
+use Crontrol\Schedule\CoreSchedule;
 
 require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 
@@ -13,20 +14,12 @@ require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
  * Cron schedule list table class.
  */
 class Schedule_List_Table extends \WP_List_Table {
-
 	/**
-	 * Array of cron event schedules that are added by WordPress core.
+	 * Array of Schedule instances for the current page.
 	 *
-	 * @var string[] Array of schedule names.
+	 * @var array<string,Schedule>
 	 */
-	protected static $core_schedules;
-
-	/**
-	 * Array of cron event schedule names that are in use by events.
-	 *
-	 * @var string[] Array of schedule names.
-	 */
-	protected static $used_schedules;
+	public $items;
 
 	/**
 	 * Constructor.
@@ -45,19 +38,20 @@ class Schedule_List_Table extends \WP_List_Table {
 	 *
 	 * @return string The name of the primary column.
 	 */
+	#[\Override]
 	protected function get_primary_column_name() {
 		return 'crontrol_name';
 	}
 
 	/**
 	 * Prepares the list table items and arguments.
+	 *
+	 * @return void
 	 */
+	#[\Override]
 	public function prepare_items() {
-		$schedules = Schedule\get();
+		$schedules = \Crontrol\Schedule\get();
 		$count     = count( $schedules );
-
-		self::$core_schedules = get_core_schedules();
-		self::$used_schedules = array_unique( wp_list_pluck( Event\get(), 'schedule' ) );
 
 		$this->items = $schedules;
 
@@ -71,22 +65,24 @@ class Schedule_List_Table extends \WP_List_Table {
 	/**
 	 * Returns an array of column names for the table.
 	 *
-	 * @return string[] Array of column names keyed by their ID.
+	 * @return array<string,string> Array of column names keyed by their ID.
 	 */
+	#[\Override]
 	public function get_columns() {
 		return array(
 			'crontrol_icon'     => '',
-			'crontrol_name'     => __( 'Internal Name', 'wp-crontrol' ),
-			'crontrol_interval' => __( 'Interval', 'wp-crontrol' ),
-			'crontrol_display'  => __( 'Display Name', 'wp-crontrol' ),
+			'crontrol_name'     => esc_html__( 'Internal Name', 'wp-crontrol' ),
+			'crontrol_interval' => esc_html__( 'Interval', 'wp-crontrol' ),
+			'crontrol_display'  => esc_html__( 'Display Name', 'wp-crontrol' ),
 		);
 	}
 
 	/**
 	 * Returns an array of CSS class names for the table.
 	 *
-	 * @return string[] Array of class names.
+	 * @return array<int,string> Array of class names.
 	 */
+	#[\Override]
 	protected function get_table_classes() {
 		return array( 'widefat', 'fixed', 'striped', 'table-view-list', $this->_args['plural'] );
 	}
@@ -94,35 +90,37 @@ class Schedule_List_Table extends \WP_List_Table {
 	/**
 	 * Generates and displays row action links for the table.
 	 *
-	 * @param array  $schedule    The schedule for the current row.
-	 * @param string $column_name Current column name.
-	 * @param string $primary     Primary column name.
+	 * @param Schedule $schedule    The schedule for the current row.
+	 * @param string   $column_name Current column name.
+	 * @param string   $primary     Primary column name.
 	 * @return string The row actions HTML.
 	 */
+	#[\Override]
 	protected function handle_row_actions( $schedule, $column_name, $primary ) {
 		if ( $primary !== $column_name ) {
 			return '';
 		}
 
 		$links = array();
-		$new_scheds = get_option( 'crontrol_schedules', array() );
 
-		if ( in_array( $schedule['name'], self::$core_schedules, true ) ) {
-			$links[] = "<span class='in-use'>" . esc_html__( 'This is a WordPress core schedule and cannot be deleted', 'wp-crontrol' ) . '</span>';
-		} elseif ( ! isset( $new_scheds[ $schedule['name'] ] ) ) {
-			$links[] = "<span class='in-use'>" . esc_html__( 'This schedule is added by another plugin and cannot be deleted', 'wp-crontrol' ) . '</span>';
-		} elseif ( in_array( $schedule['name'], self::$used_schedules, true ) ) {
-			$links[] = "<span class='in-use'>" . esc_html__( 'This custom schedule is in use and cannot be deleted', 'wp-crontrol' ) . '</span>';
-		} else {
-			$link = add_query_arg( array(
-				'page'   => 'crontrol_admin_options_page',
-				'action' => 'delete-sched',
-				'id'     => rawurlencode( $schedule['name'] ),
-			), admin_url( 'options-general.php' ) );
-			$link = wp_nonce_url( $link, 'delete-sched_' . $schedule['name'] );
-
-			$links[] = "<span class='delete'><a href='" . esc_url( $link ) . "'>" . esc_html__( 'Delete', 'wp-crontrol' ) . '</a></span>';
+		if ( $schedule->persistent() ) {
+			$links[] = "<span class='crontrol-in-use'>" . esc_html( $schedule->get_persistent_message() ) . '</span>';
+			return $this->row_actions( $links );
 		}
+
+		if ( ! $schedule->deletable() ) {
+			// Permission-based: no message shown
+			return $this->row_actions( $links );
+		}
+
+		$link = add_query_arg( array(
+			'page'            => 'wp-crontrol-schedules',
+			'crontrol_action' => 'delete-schedule',
+			'crontrol_id'     => rawurlencode( $schedule->name ),
+		), admin_url( 'options-general.php' ) );
+		$link = wp_nonce_url( $link, 'crontrol-delete-schedule_' . $schedule->name );
+
+		$links[] = "<span class='delete'><a href='" . esc_url( $link ) . "'>" . esc_html__( 'Delete', 'wp-crontrol' ) . '</a></span>';
 
 		return $this->row_actions( $links );
 	}
@@ -130,15 +128,14 @@ class Schedule_List_Table extends \WP_List_Table {
 	/**
 	 * Returns the output for the icon cell of a table row.
 	 *
-	 * @param array $schedule The schedule for the current row.
-	 * @return string The cell output.
+	 * @param Schedule $schedule The schedule for the current row.
 	 */
-	protected function column_crontrol_icon( array $schedule ) {
-		if ( in_array( $schedule['name'], self::$core_schedules, true ) ) {
+	protected function column_crontrol_icon( Schedule $schedule ): string {
+		if ( $schedule instanceof CoreSchedule ) {
 			return sprintf(
 				'<span class="dashicons dashicons-wordpress" aria-hidden="true"></span>
 				<span class="screen-reader-text">%s</span>',
-				esc_html__( 'This is a WordPress core schedule and cannot be deleted', 'wp-crontrol' )
+				esc_html( $schedule->get_persistent_message() )
 			);
 		}
 
@@ -146,29 +143,27 @@ class Schedule_List_Table extends \WP_List_Table {
 	}
 
 	/**
-	 * Returns the output for the schdule name cell of a table row.
+	 * Returns the output for the schedule name cell of a table row.
 	 *
-	 * @param array $schedule The schedule for the current row.
-	 * @return string The cell output.
+	 * @param Schedule $schedule The schedule for the current row.
 	 */
-	protected function column_crontrol_name( array $schedule ) {
-		return esc_html( $schedule['name'] );
+	protected function column_crontrol_name( Schedule $schedule ): string {
+		return esc_html( $schedule->name );
 	}
 
 	/**
 	 * Returns the output for the interval cell of a table row.
 	 *
-	 * @param array $schedule The schedule for the current row.
-	 * @return string The cell output.
+	 * @param Schedule $schedule The schedule for the current row.
 	 */
-	protected function column_crontrol_interval( array $schedule ) {
+	protected function column_crontrol_interval( Schedule $schedule ): string {
 		$interval = sprintf(
 			'%s (%s)',
-			esc_html( $schedule['interval'] ),
-			esc_html( interval( $schedule['interval'] ) )
+			esc_html( "{$schedule->interval}" ),
+			esc_html( interval( $schedule->interval, true ) )
 		);
 
-		if ( $schedule['is_too_frequent'] ) {
+		if ( $schedule->is_too_frequent() ) {
 			$interval .= sprintf(
 				'<span class="status-crontrol-warning"><br><span class="dashicons dashicons-warning" aria-hidden="true"></span> %s</span>',
 				sprintf(
@@ -186,18 +181,19 @@ class Schedule_List_Table extends \WP_List_Table {
 	/**
 	 * Returns the output for the display name cell of a table row.
 	 *
-	 * @param array $schedule The schedule for the current row.
-	 * @return string The cell output.
+	 * @param Schedule $schedule The schedule for the current row.
 	 */
-	protected function column_crontrol_display( array $schedule ) {
-		return esc_html( $schedule['display'] );
+	protected function column_crontrol_display( Schedule $schedule ): string {
+		return esc_html( $schedule->display );
 	}
 
 	/**
 	 * Outputs a message when there are no items to show in the table.
+	 *
+	 * @return void
 	 */
+	#[\Override]
 	public function no_items() {
 		esc_html_e( 'There are no schedules.', 'wp-crontrol' );
 	}
-
 }

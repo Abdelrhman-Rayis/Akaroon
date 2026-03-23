@@ -1,4 +1,4 @@
-/* global jetpackSlideshowSettings, escape */
+/* global jetpackSlideshowSettings */
 
 function JetpackSlideshow( element, transition, autostart ) {
 	this.element = element;
@@ -11,7 +11,7 @@ function JetpackSlideshow( element, transition, autostart ) {
 JetpackSlideshow.prototype.showLoadingImage = function ( toggle ) {
 	if ( toggle ) {
 		this.loadingImage_ = document.createElement( 'div' );
-		this.loadingImage_.className = 'slideshow-loading';
+		this.loadingImage_.className = 'jetpack-slideshow-loading';
 		var img = document.createElement( 'img' );
 		img.src = jetpackSlideshowSettings.spinner;
 		this.loadingImage_.appendChild( img );
@@ -34,15 +34,14 @@ JetpackSlideshow.prototype.init = function () {
 		img.src = imageInfo.src;
 		img.title = typeof imageInfo.title !== 'undefined' ? imageInfo.title : '';
 		img.alt = typeof imageInfo.alt !== 'undefined' ? imageInfo.alt : '';
-		img.align = 'middle';
 		img.setAttribute( 'itemprop', 'image' );
 		img.nopin = 'nopin';
 		var caption = document.createElement( 'div' );
-		caption.className = 'slideshow-slide-caption';
+		caption.className = 'jetpack-slideshow-slide-caption';
 		caption.setAttribute( 'itemprop', 'caption description' );
 		caption.innerHTML = imageInfo.caption;
 		var container = document.createElement( 'div' );
-		container.className = 'slideshow-slide';
+		container.className = 'jetpack-slideshow-slide';
 		container.setAttribute( 'itemprop', 'associatedMedia' );
 		container.setAttribute( 'itemscope', '' );
 		container.setAttribute( 'itemtype', 'https://schema.org/ImageObject' );
@@ -55,7 +54,7 @@ JetpackSlideshow.prototype.init = function () {
 					self.finishInit_();
 				}, 1 );
 			} else {
-				jQuery( img ).load( function () {
+				img.addEventListener( 'load', function () {
 					self.finishInit_();
 				} );
 			}
@@ -73,7 +72,7 @@ JetpackSlideshow.prototype.init = function () {
 
 JetpackSlideshow.prototype.makeZeroWidthSpan = function () {
 	var emptySpan = document.createElement( 'span' );
-	emptySpan.className = 'slideshow-line-height-hack';
+	emptySpan.className = 'jetpack-slideshow-line-height-hack';
 	// Having a NBSP makes IE act weird during transitions, but other
 	// browsers ignore a text node with a space in it as whitespace.
 	if ( -1 !== window.navigator.userAgent.indexOf( 'MSIE ' ) ) {
@@ -86,17 +85,18 @@ JetpackSlideshow.prototype.makeZeroWidthSpan = function () {
 
 JetpackSlideshow.prototype.finishInit_ = function () {
 	this.showLoadingImage( false );
-	this.renderControls_();
 
 	var self = this;
 	if ( this.images.length > 1 ) {
+		this.renderControls_();
+
 		// Initialize Cycle instance.
-		this.element.cycle( {
+		jQuery( this.element ).cycle( {
 			fx: this.transition,
 			prev: this.controls.prev,
 			next: this.controls.next,
 			timeout: jetpackSlideshowSettings.speed,
-			slideExpr: '.slideshow-slide',
+			slideExpr: '.jetpack-slideshow-slide',
 			onPrevNextEvent: function () {
 				return self.onCyclePrevNextClick_.apply( self, arguments );
 			},
@@ -105,27 +105,31 @@ JetpackSlideshow.prototype.finishInit_ = function () {
 		var slideshow = this.element;
 
 		if ( ! this.autostart ) {
-			slideshow.cycle( 'pause' );
-			jQuery( this.controls.stop ).removeClass( 'running' );
-			jQuery( this.controls.stop ).addClass( 'paused' );
+			jQuery( slideshow ).cycle( 'pause' );
+			this.controls.stop.classList.remove( 'running' );
+			this.controls.stop.classList.add( 'paused' );
 		}
 
-		jQuery( this.controls.stop ).click( function () {
-			var button = jQuery( this );
-			if ( ! button.hasClass( 'paused' ) ) {
-				slideshow.cycle( 'pause' );
-				button.removeClass( 'running' );
-				button.addClass( 'paused' );
-			} else {
-				button.addClass( 'running' );
-				button.removeClass( 'paused' );
-				slideshow.cycle( 'resume', true );
+		this.controls.stop.addEventListener( 'click', function ( event ) {
+			var button = event.currentTarget;
+
+			if ( button === event.target ) {
+				event.preventDefault();
+
+				if ( ! button.classList.contains( 'paused' ) ) {
+					jQuery( slideshow ).cycle( 'pause' );
+					button.classList.remove( 'running' );
+					button.classList.add( 'paused' );
+				} else {
+					button.classList.add( 'running' );
+					button.classList.remove( 'paused' );
+					jQuery( slideshow ).cycle( 'resume', true );
+				}
 			}
-			return false;
 		} );
-	} else {
-		this.element.children( ':first' ).show();
-		this.element.css( 'position', 'relative' );
+	} else if ( this.element.children.length ) {
+		this.element.children[ 0 ].style.display = 'block';
+		this.element.style.position = 'relative';
 	}
 	this.initialized_ = true;
 };
@@ -136,7 +140,7 @@ JetpackSlideshow.prototype.renderControls_ = function () {
 	}
 
 	var controlsDiv = document.createElement( 'div' );
-	controlsDiv.className = 'slideshow-controls';
+	controlsDiv.className = 'jetpack-slideshow-controls';
 
 	var controls = [ 'prev', 'stop', 'next' ];
 	for ( var i = 0; i < controls.length; i++ ) {
@@ -167,7 +171,7 @@ JetpackSlideshow.prototype.onCyclePrevNextClick_ = function ( isNext, i /*, slid
 	stats.src =
 		document.location.protocol +
 		'//pixel.wp.com/g.gif?host=' +
-		escape( document.location.host ) +
+		encodeURIComponent( document.location.host ) +
 		'&rand=' +
 		Math.random() +
 		'&blog=' +
@@ -179,32 +183,32 @@ JetpackSlideshow.prototype.onCyclePrevNextClick_ = function ( isNext, i /*, slid
 		'&post=' +
 		postid +
 		'&ref=' +
-		escape( document.location );
+		encodeURIComponent( document.location );
 };
 
-( function ( $ ) {
+( function () {
 	function jetpack_slideshow_init() {
-		$( '.jetpack-slideshow-noscript' ).remove();
-
-		$( '.jetpack-slideshow' ).each( function () {
-			var container = $( this );
-
-			if ( container.data( 'processed' ) ) {
+		document.querySelectorAll( '.jetpack-slideshow-noscript' ).forEach( function ( element ) {
+			element.remove();
+		} );
+		document.querySelectorAll( '.jetpack-slideshow' ).forEach( function ( container ) {
+			if ( container.dataset.processed === 'true' ) {
 				return;
 			}
 
-			var slideshow = new JetpackSlideshow(
-				container,
-				container.data( 'trans' ),
-				container.data( 'autostart' )
-			);
-			slideshow.images = container.data( 'gallery' );
+			// Extract data attributes manually
+			var transition = container.dataset.trans;
+			var autostart = container.dataset.autostart === 'true';
+			var gallery = JSON.parse( container.dataset.gallery || '[]' );
+
+			var slideshow = new JetpackSlideshow( container, transition, autostart );
+			slideshow.images = gallery;
 			slideshow.init();
 
-			container.data( 'processed', true );
+			container.dataset.processed = 'true';
 		} );
 	}
 
-	$( document ).ready( jetpack_slideshow_init );
-	$( 'body' ).on( 'post-load', jetpack_slideshow_init );
-} )( jQuery );
+	document.addEventListener( 'DOMContentLoaded', jetpack_slideshow_init );
+	document.body.addEventListener( 'post-load', jetpack_slideshow_init );
+} )();

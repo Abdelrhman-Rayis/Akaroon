@@ -2,22 +2,32 @@
 
 namespace Google\Site_Kit_Dependencies\GuzzleHttp\Cookie;
 
-use Google\Site_Kit_Dependencies\GuzzleHttp\Utils;
 /**
  * Persists cookies in the client session
  */
 class SessionCookieJar extends \Google\Site_Kit_Dependencies\GuzzleHttp\Cookie\CookieJar
 {
-    /** @var string session key */
+    /**
+     * @var string session key
+     */
     private $sessionKey;
+    /**
+     * @var bool Control whether to persist session cookies or not.
+     */
+    private $storeSessionCookies;
     /**
      * Create a new SessionCookieJar object
      *
-     * @param string $sessionKey Session key name to store the cookie data in session
+     * @param string $sessionKey          Session key name to store the cookie
+     *                                    data in session
+     * @param bool   $storeSessionCookies Set to true to store session cookies
+     *                                    in the cookie jar.
      */
-    public function __construct($sessionKey)
+    public function __construct(string $sessionKey, bool $storeSessionCookies = \false)
     {
+        parent::__construct();
         $this->sessionKey = $sessionKey;
+        $this->storeSessionCookies = $storeSessionCookies;
         $this->load();
     }
     /**
@@ -30,11 +40,12 @@ class SessionCookieJar extends \Google\Site_Kit_Dependencies\GuzzleHttp\Cookie\C
     /**
      * Save cookies to the client session
      */
-    public function save()
+    public function save() : void
     {
         $json = [];
+        /** @var SetCookie $cookie */
         foreach ($this as $cookie) {
-            if ($cookie->getExpires() && !$cookie->getDiscard()) {
+            if (\Google\Site_Kit_Dependencies\GuzzleHttp\Cookie\CookieJar::shouldPersist($cookie, $this->storeSessionCookies)) {
                 $json[] = $cookie->toArray();
             }
         }
@@ -43,16 +54,18 @@ class SessionCookieJar extends \Google\Site_Kit_Dependencies\GuzzleHttp\Cookie\C
     /**
      * Load the contents of the client session into the data array
      */
-    protected function load()
+    protected function load() : void
     {
-        $cookieJar = isset($_SESSION[$this->sessionKey]) ? $_SESSION[$this->sessionKey] : null;
-        $data = \Google\Site_Kit_Dependencies\GuzzleHttp\Utils::jsonDecode($cookieJar, \true);
+        if (!isset($_SESSION[$this->sessionKey])) {
+            return;
+        }
+        $data = \json_decode($_SESSION[$this->sessionKey], \true);
         if (\is_array($data)) {
             foreach ($data as $cookie) {
                 $this->setCookie(new \Google\Site_Kit_Dependencies\GuzzleHttp\Cookie\SetCookie($cookie));
             }
         } elseif (\strlen($data)) {
-            throw new \RuntimeException("Invalid cookie data");
+            throw new \RuntimeException('Invalid cookie data');
         }
     }
 }

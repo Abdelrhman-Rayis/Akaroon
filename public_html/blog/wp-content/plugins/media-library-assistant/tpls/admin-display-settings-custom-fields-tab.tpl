@@ -58,8 +58,14 @@ return false;"
 href="#mla-new-custom-field">
 [+Cancel Name Change+]
 </a>
-
-					<p class="description">[+Enter Name+]</p></td>
+			  <p class="description">[+Enter Name+]</p></td>
+			</tr>
+			<tr class="form-field custom-field-description-wrap">
+				<th scope="row"> <label for="mla-custom-field-description">[+Description+]</label>
+				</th>
+				<td><textarea name="mla_custom_field[description]" id="mla-custom-field-description" rows="[+description_rows+]">[+description+]</textarea>
+					<p class="description">[+description_help+]</p>
+				</td>
 			</tr>
 			<tr class="form-field custom-field-data-source-wrap">
 				<th scope="row"> <label for="mla-custom-field-data-source">[+Data Source+]</label>
@@ -99,7 +105,8 @@ href="#mla-new-custom-field">
 				</th>
 				<td><select name="mla_custom_field[keep_existing]" id="mla-custom-field-existing-text">
 						<option [+keep_selected+] value="1">[+Keep+]</option>
-						<option [+replace_selected+] value="">[+Replace+]</option>
+						<option [+replace_selected+] value="0">[+Replace+]</option>
+						<option [+replace_all_selected+] value="2">[+Replace All+]</option>
 					</select></td>
 			</tr>
 			<tr class="form-field custom-field-format-wrap">
@@ -298,7 +305,8 @@ href="#mla-new-custom-field">
 					<td>
 						<select name="mla_custom_field[keep_existing]" id="mla-custom-field-existing-text">
 							<option [+keep_selected+] value="1">[+Keep+]</option>
-							<option [+replace_selected+] value="">[+Replace+]</option>
+							<option [+replace_selected+] value="0">[+Replace+]</option>
+							<option [+replace_all_selected+] value="2">[+Replace All+]</option>
 						</select>
 					</td>
 					</tr>
@@ -395,7 +403,8 @@ href="#mla-new-custom-field">
 								<label class="alignleft"> <span class="dropdown-title">[+Existing Text+]</span> <span class="input-dropdown-wrap">
 								<select name="keep_existing">
 									<option value="1">[+Keep+]</option>
-									<option value="">[+Replace+]</option>
+									<option value="0">[+Replace+]</option>
+									<option value="2">[+Replace All+]</option>
 								</select>
 								</span> </label> 
 								<label class="alignleft"> <span class="dropdown-title">[+Format+]</span> <span class="input-dropdown-wrap">
@@ -482,7 +491,8 @@ href="#mla-new-custom-field">
 							<select name="keep_existing">
 								<option selected="selected" value="-1">&mdash; [+No Change+] &mdash;</option>
 								<option value="1">[+Keep+]</option>
-								<option value="">[+Replace+]</option>
+								<option value="0">[+Replace+]</option>
+								<option value="2">[+Replace All+]</option>
 							</select>
 							</label>
 							</div>

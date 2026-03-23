@@ -1,20 +1,37 @@
 <?php
 /**
  * Functions related to schedules.
- *
- * @package wp-crontrol
  */
 
 namespace Crontrol\Schedule;
 
+use Crontrol\Exception\DuplicateScheduleException;
+use Crontrol\Schedule\Schedule;
+
 /**
  * Adds a new custom cron schedule.
+ *
+ * @throws DuplicateScheduleException If the schedule name already exists.
  *
  * @param string $name     The internal name of the schedule.
  * @param int    $interval The interval between executions of the new schedule.
  * @param string $display  The display name of the schedule.
+ * @return void
  */
 function add( $name, $interval, $display ) {
+	$schedules = get();
+
+	if ( array_key_exists( $name, $schedules ) ) {
+		throw new DuplicateScheduleException(
+			sprintf(
+				/* translators: %s: The internal name of the schedule. */
+				__( 'A schedule with the name "%s" already exists.', 'wp-crontrol' ),
+				$name
+			)
+		);
+	}
+
+	/** @var array<string,int|string> */
 	$old_scheds = get_option( 'crontrol_schedules', array() );
 
 	$old_scheds[ $name ] = array(
@@ -37,8 +54,10 @@ function add( $name, $interval, $display ) {
  * Deletes a custom cron schedule.
  *
  * @param string $name The internal name of the schedule to delete.
+ * @return void
  */
 function delete( $name ) {
+	/** @var array<string,int|string> */
 	$scheds = get_option( 'crontrol_schedules', array() );
 	unset( $scheds[ $name ] );
 	update_option( 'crontrol_schedules', $scheds );
@@ -54,39 +73,48 @@ function delete( $name ) {
 /**
  * Gets a sorted (according to interval) list of the cron schedules
  *
- * @return array[] Array of cron schedule arrays.
+ * @return array<string,Schedule> Array of Schedule objects keyed by schedule name.
  */
 function get() {
+	/**
+	 * @phpstan-var array<string,array{
+	 *   interval: int,
+	 *   display?: string,
+	 * }> $schedules
+	 */
 	$schedules = wp_get_schedules();
-	uasort( $schedules, function( array $a, array $b ) {
-		return ( $a['interval'] - $b['interval'] );
-	} );
+	uasort(
+		$schedules,
+		fn( array $a, array $b ) => $a['interval'] <=> $b['interval']
+	);
 
-	array_walk( $schedules, function( array &$schedule, $name ) {
-		$schedule['name'] = $name;
-		$schedule['is_too_frequent'] = ( $schedule['interval'] < WP_CRON_LOCK_TIMEOUT );
-	} );
+	$result = [];
+	foreach ( $schedules as $name => $schedule ) {
+		$display = $schedule['display'] ?? $name;
+		$result[ $name ] = Schedule::create( $name, $schedule['interval'], $display );
+	}
 
-	return $schedules;
+	return $result;
 }
 
 /**
  * Displays a dropdown filled with the possible schedules, including non-repeating.
  *
- * @param string|false $current The currently selected schedule, or false for none.
+ * @param ?string $current The currently selected schedule, or null for none.
+ * @return void
  */
-function dropdown( $current = false ) {
+function dropdown( ?string $current = null ) {
 	$schedules = get();
 	?>
-	<select class="postform" name="schedule" id="schedule" required>
+	<select class="postform" name="crontrol_schedule" id="crontrol_schedule" required>
 	<option <?php selected( $current, '_oneoff' ); ?> value="_oneoff"><?php esc_html_e( 'Non-repeating', 'wp-crontrol' ); ?></option>
-	<?php foreach ( $schedules as $sched_name => $sched_data ) { ?>
-		<option <?php selected( $current, $sched_name ); ?> value="<?php echo esc_attr( $sched_name ); ?>">
+	<?php foreach ( $schedules as $schedule ) { ?>
+		<option <?php selected( $current, $schedule->name ); ?> value="<?php echo esc_attr( $schedule->name ); ?>">
 			<?php
 			printf(
 				'%s (%s)',
-				esc_html( $sched_data['display'] ),
-				esc_html( $sched_name )
+				esc_html( $schedule->display ),
+				esc_html( $schedule->name )
 			);
 			?>
 		</option>

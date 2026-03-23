@@ -1,6 +1,7 @@
 /* global ajaxurl */
 
 var jQuery,
+	mla,
 	mla_thumbnail_support_vars,
 	mlaThumbnail = {
 		// Properties
@@ -40,26 +41,28 @@ var jQuery,
 			t.what = '#attachment-';
 
 			// prepare the bulk-generate row
-			bgRow.keyup( function( e ){
+			bgRow.on( 'keyup', function( e ){
 				if ( e.which == 27 )
 					return mlaThumbnail.inlineThumbnail.revert();
 			});
 
-			$( 'a.cancel', bgRow ).click( function(){
+			$( 'a.cancel', bgRow ).on( 'click', function(){
 				return mlaThumbnail.inlineThumbnail.revert();
 			});
 
-			$( '#doaction, #doaction2' ).click( function( e ){
-				var n = $( this ).attr( 'id' ).substr( 2 );
+//			$( '#doaction, #doaction2' ).on( 'click', function( e ){
+			$( '#mla-filter #doaction, #mla-filter #doaction2' ).on( 'click', function( e ){
+				var n = $( this ).attr( 'id' ).substr( 2 ), action = $( 'select[name="'+n+'"]' ).val();
+				mla.utility.debugAdd( 'mla-thumbnail-generation-scripts action click n = ' + n + ', action = ' + action );
 
-				if ( $( 'select[name="'+n+'"]' ).val() == 'mla-generate-featured-image' ) {
+				if ( action === 'mla-generate-featured-image' ) {
 					e.preventDefault();
 					t.openBulkGenerate();
 				}
 			});
 
 			// Filter button (dates, categories) in top nav bar
-			$( '#post-query-submit' ).mousedown( function(){
+			$( '#post-query-submit' ).on( 'mousedown', function(){
 				t.revert();
 				$( 'select[name^="action"]' ).val( '-1' );
 			});
@@ -90,7 +93,7 @@ var jQuery,
 
 			// Populate the list of selected items
 			$( '#mla-thumbnail-titles' ).html( te );
-			$( '#mla-thumbnail-titles a' ).click(function(){
+			$( '#mla-thumbnail-titles a' ).on( 'click', function(){
 				var id = $( this ).attr( 'id' ).substr( 1 );
 
 				$( 'table.widefat input[value="' + id + '"]' ).prop( 'checked', false );

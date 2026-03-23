@@ -1,25 +1,36 @@
-<?php
-
-/*
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
+/**
+ * Twitter Timeline Widget.
+ *
  * Based on Evolution Twitter Timeline
  * (https://wordpress.org/extend/plugins/evolution-twitter-timeline/)
  * For details on Twitter Timelines see:
  *  - https://twitter.com/settings/widgets
  *  - https://dev.twitter.com/docs/embedded-timelines
+ *
+ * @package automattic/jetpack
  */
+
+// phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed -- TODO: Move classes to appropriately-named class files.
 
 use Automattic\Jetpack\Assets;
 use Automattic\Jetpack\Redirect;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 /**
  * Register the widget for use in Appearance -> Widgets
  */
-add_action( 'widgets_init', 'jetpack_twitter_timeline_widget_init' );
-
 function jetpack_twitter_timeline_widget_init() {
 	register_widget( 'Jetpack_Twitter_Timeline_Widget' );
 }
+add_action( 'widgets_init', 'jetpack_twitter_timeline_widget_init' );
 
+/**
+ * Widget class.
+ */
 class Jetpack_Twitter_Timeline_Widget extends WP_Widget {
 	/**
 	 * Register widget with WordPress.
@@ -36,11 +47,23 @@ class Jetpack_Twitter_Timeline_Widget extends WP_Widget {
 			)
 		);
 
-		if ( is_active_widget( false, false, $this->id_base ) || is_active_widget( false, false, 'monster' ) || is_customize_preview() ) {
+		if ( is_customize_preview() ) {
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		}
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
+		add_filter( 'widget_types_to_hide_from_legacy_widget_block', array( $this, 'hide_widget_in_block_editor' ) );
+	}
+
+	/**
+	 * Remove the "Twitter Timeline" widget from the Legacy Widget block
+	 *
+	 * @param array $widget_types List of widgets that are currently removed from the Legacy Widget block.
+	 * @return array $widget_types New list of widgets that will be removed.
+	 */
+	public function hide_widget_in_block_editor( $widget_types ) {
+		$widget_types[] = 'twitter_timeline';
+		return $widget_types;
 	}
 
 	/**
@@ -53,17 +76,9 @@ class Jetpack_Twitter_Timeline_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Enqueue Twitter's widget library.
-	 *
-	 * @deprecated
-	 */
-	public function library() {
-		_deprecated_function( __METHOD__, '4.0.0' );
-		wp_print_scripts( array( 'jetpack-twitter-timeline' ) );
-	}
-
-	/**
 	 * Enqueue script to improve admin UI
+	 *
+	 * @param string $hook Page hook.
 	 */
 	public function admin_scripts( $hook ) {
 		// This is still 'widgets.php' when managing widgets via the Customizer.
@@ -73,7 +88,10 @@ class Jetpack_Twitter_Timeline_Widget extends WP_Widget {
 				Assets::get_file_url_for_environment(
 					'_inc/build/widgets/twitter-timeline-admin.min.js',
 					'modules/widgets/twitter-timeline-admin.js'
-				)
+				),
+				array( 'jquery' ),
+				JETPACK__VERSION,
+				true
 			);
 		}
 	}
@@ -91,7 +109,9 @@ class Jetpack_Twitter_Timeline_Widget extends WP_Widget {
 
 		// Twitter deprecated `data-widget-id` on 2018-05-25,
 		// with cease support deadline on 2018-07-27.
-		if ( isset( $instance['type'] ) && 'widget-id' === $instance['type'] ) {
+		$explicit_widget_id = isset( $instance['type'] ) && 'widget-id' === $instance['type'];
+		$implicit_widget_id = empty( $instance['type'] ) && ! empty( $instance['widget-id'] ) && is_numeric( $instance['widget-id'] );
+		if ( $explicit_widget_id || $implicit_widget_id ) {
 			if ( current_user_can( 'edit_theme_options' ) ) {
 				$output .= $args['before_widget']
 				. $args['before_title'] . esc_html__( 'Twitter Timeline', 'jetpack' ) . $args['after_title']
@@ -103,6 +123,8 @@ class Jetpack_Twitter_Timeline_Widget extends WP_Widget {
 			echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			return;
 		}
+
+		$this->enqueue_scripts();
 
 		$instance['lang'] = substr( strtoupper( get_locale() ), 0, 2 );
 
@@ -154,7 +176,7 @@ class Jetpack_Twitter_Timeline_Widget extends WP_Widget {
 		}
 
 		if ( ! empty( $instance['chrome'] ) && is_array( $instance['chrome'] ) ) {
-			$data_attrs .= ' data-chrome="' . esc_attr( join( ' ', $instance['chrome'] ) ) . '"';
+			$data_attrs .= ' data-chrome="' . esc_attr( implode( ' ', $instance['chrome'] ) ) . '"';
 		}
 
 		$timeline_placeholder = __( 'My Tweets', 'jetpack' );
@@ -203,14 +225,13 @@ class Jetpack_Twitter_Timeline_Widget extends WP_Widget {
 
 		$output .= esc_html( $timeline_placeholder ) . '</a>';
 
-		// End tag output
+		// End tag output.
 
 		echo $output . $args['after_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 		/** This action is documented in modules/widgets/gravatar-profile.php */
 		do_action( 'jetpack_stats_extra', 'widget_view', 'twitter_timeline' );
 	}
-
 
 	/**
 	 * Sanitize widget form values as they are saved.
@@ -222,21 +243,21 @@ class Jetpack_Twitter_Timeline_Widget extends WP_Widget {
 	 *
 	 * @return array Updated safe values to be saved.
 	 */
-	public function update( $new_instance, $old_instance ) {
+	public function update( $new_instance, $old_instance ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$instance = array();
 
 		$instance['title'] = sanitize_text_field( $new_instance['title'] );
 
 		$width = (int) $new_instance['width'];
 		if ( $width ) {
-			// From publish.twitter.com: 220 <= width <= 1200
+			// From publish.twitter.com: 220 <= width <= 1200.
 			$instance['width'] = min( max( $width, 220 ), 1200 );
 		} else {
 			// Set default width value to minimum.
 			$instance['width'] = 220;
 		}
 
-		$tweet_display             = sanitize_text_field( $new_instance['tweet-display'] );
+		$tweet_display             = sanitize_text_field( $new_instance['tweet-display'] ?? 'dynamic' );
 		$instance['tweet-display'] = $tweet_display;
 		/**
 		 * A timeline with a specified limit is expanded to the height of those Tweets.
@@ -264,7 +285,7 @@ class Jetpack_Twitter_Timeline_Widget extends WP_Widget {
 				break;
 		}
 
-		// If they entered something that might be a full URL, try to parse it out
+		// If they entered something that might be a full URL, try to parse it out.
 		if ( is_string( $new_instance['widget-id'] ) ) {
 			if ( preg_match(
 				'#https?://twitter\.com/settings/widgets/(\d+)#s',
@@ -285,7 +306,7 @@ class Jetpack_Twitter_Timeline_Widget extends WP_Widget {
 		$instance['type'] = 'profile';
 
 		$instance['theme'] = 'light';
-		if ( in_array( $new_instance['theme'], array( 'light', 'dark' ) ) ) {
+		if ( in_array( $new_instance['theme'], array( 'light', 'dark' ), true ) ) {
 			$instance['theme'] = $new_instance['theme'];
 		}
 
@@ -322,6 +343,8 @@ class Jetpack_Twitter_Timeline_Widget extends WP_Widget {
 	/**
 	 * Returns a link to the documentation for a feature of this widget on
 	 * Jetpack or WordPress.com.
+	 *
+	 * @param string $hash anchor to potentially append to URL to target specific paragraph in page.
 	 */
 	public function get_docs_link( $hash = '' ) {
 		if ( defined( 'IS_WPCOM' ) && IS_WPCOM ) {
@@ -338,6 +361,7 @@ class Jetpack_Twitter_Timeline_Widget extends WP_Widget {
 	 * @see WP_Widget::form()
 	 *
 	 * @param array $instance Previously saved values from database.
+	 * @return string|void
 	 */
 	public function form( $instance ) {
 		$defaults = array(
@@ -575,6 +599,6 @@ class Jetpack_Twitter_Timeline_Widget extends WP_Widget {
 				</option>
 			</select>
 		</p>
-	<?php
+		<?php
 	}
 }

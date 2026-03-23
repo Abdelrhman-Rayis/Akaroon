@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Media Library Assistant\n"
-"POT-Creation-Date: 2021-03-14 20:58-0700\n"
-"PO-Revision-Date: 2021-03-14 20:58-0700\n"
+"POT-Creation-Date: 2025-12-25 16:03-0800\n"
+"PO-Revision-Date: 2025-12-25 16:04-0800\n"
 "Language-Team: David Lingren <david@davidlingren.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -14,7 +14,7 @@ msgstr ""
 "_n_noop:1,2;_c;_nc:4c,1,2;_x:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;_ex:1,2c;"
 "esc_html__;esc_html_e;esc_html_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"Last-Translator: David Lingren <dlingren@comcast.net>\n"
+"Last-Translator: David Lingren <david@davidlingren.com>\n"
 "Language: en_US\n"
 "X-Poedit-SearchPath-0: includes\n"
 "X-Poedit-SearchPath-1: tests\n"
@@ -138,6 +138,12 @@ msgstr ""
 msgid "Where-used Reporting"
 msgstr ""
 
+msgid "For complete documentation"
+msgstr ""
+
+msgid "click here"
+msgstr ""
+
 msgid "Exclude Revisions"
 msgstr ""
 
@@ -226,12 +232,6 @@ msgstr ""
 msgid ""
 "Check the \"<strong>Term Search</strong>\" box to add the taxonomy to the "
 "\"Search Media/Terms\" list."
-msgstr ""
-
-msgid "For complete documentation"
-msgstr ""
-
-msgid "click here"
 msgstr ""
 
 msgid ""
@@ -371,7 +371,13 @@ msgstr ""
 msgid "Enter the size of the Bulk Edit and Map All processing chunks"
 msgstr ""
 
-msgid "Taxonomy Filter parameters"
+msgid "Store presets per-user"
+msgstr ""
+
+msgid "Check this option to store separate Bulk Edit presets for each user."
+msgstr ""
+
+msgid "Media/Assistant Taxonomy Filter parameters"
 msgstr ""
 
 msgid "Maximum Depth"
@@ -388,6 +394,16 @@ msgstr ""
 msgid ""
 "Check/uncheck this option to include/exclude children for hierarchical "
 "taxonomies."
+msgstr ""
+
+msgid "Terms Search Taxonomy Filter parameters"
+msgstr ""
+
+msgid "Terms Search Filter Taxonomy"
+msgstr ""
+
+msgid ""
+"Select the (optional) taxonomy on which to filter the Terms Search results."
 msgstr ""
 
 msgid "Search Media Defaults"
@@ -424,10 +440,19 @@ msgstr ""
 
 msgid ""
 "Check this option to add \"Parent Info\", \"Menu Order\", \"Attachment "
-"Metadata\" and four \"where-used\" meta boxes to the Edit Media screen."
+"Metadata\", \"Attachment File Metadata\" and four \"where-used\" meta boxes "
+"to the Edit Media screen."
 msgstr ""
 
 msgid "You can also use Filters to customize the meta boxes."
+msgstr ""
+
+msgid "Enable File Attachment Metadata meta box"
+msgstr ""
+
+msgid ""
+"Check this option to enable the \"Attachment File Metadata\"  meta box on "
+"the Edit Media screen."
 msgstr ""
 
 msgid "Media/Add New Enhancements"
@@ -455,6 +480,14 @@ msgstr ""
 msgid ""
 "Check this option to automatically open the \"Bulk Edit area\" when the "
 "Media/Add New screen is displayed."
+msgstr ""
+
+msgid "&quot;bulk edit&quot; area auto-fill presets"
+msgstr ""
+
+msgid ""
+"Check this option to automatically import the \"Bulk Edit area\" preset "
+"values when the Media/Add New screen is displayed."
 msgstr ""
 
 msgid "Media Manager/Media Grid Enhancements"
@@ -535,6 +568,14 @@ msgstr ""
 msgid ""
 "Check this option to automatically fill MLA-enhanced meta boxes in the "
 "\"ATTACHMENT DETAILS\" pane<br>&nbsp;&nbsp;when the item is selected."
+msgstr ""
+
+msgid "Media Manager auto-open meta boxes"
+msgstr ""
+
+msgid ""
+"Check this option to automatically open all MLA-enhanced taxonomy meta boxes "
+"in the \"ATTACHMENT DETAILS\" pane<br>&nbsp;&nbsp;when the item is selected."
 msgstr ""
 
 msgid "Media Manager Order By"
@@ -737,10 +778,10 @@ msgstr ""
 msgid "See Help menu."
 msgstr ""
 
-msgid "Enable custom field mapping when adding new media"
+msgid "Perform custom field mapping when adding new media"
 msgstr ""
 
-msgid "Enable custom field mapping when updating media metadata"
+msgid "Perform custom field mapping when updating media metadata"
 msgstr ""
 
 msgid ""
@@ -750,25 +791,13 @@ msgid ""
 "saving any rule changes."
 msgstr ""
 
-msgid "Enable IPTC/EXIF Mapping"
+msgid "Enable IPTC/EXIF/WP Mapping"
 msgstr ""
 
-msgid "Enable IPTC/EXIF Mapping when adding new media"
+msgid "Perform IPTC/EXIF/WP Mapping when adding new media"
 msgstr ""
 
-msgid ""
-"Check this option to enable mapping when uploading new media (attachments)."
-"<br>&nbsp;&nbsp;Does NOT affect the operation of the \"Map\" buttons on the "
-"bulk edit, single edit and settings screens."
-msgstr ""
-
-msgid "Enable IPTC/EXIF Mapping when updating media metadata"
-msgstr ""
-
-msgid ""
-"Check this option to enable mapping when media (attachments) metadata is "
-"regenerated,<br>&nbsp;&nbsp;e.g., when the Media/Edit Media \"Edit Image\" "
-"functions are used."
+msgid "Perform IPTC/EXIF/WP Mapping when updating media metadata"
 msgstr ""
 
 msgid ""
@@ -794,7 +823,7 @@ msgid ""
 "changes."
 msgstr ""
 
-msgid "IPTC/EXIF Mapping help"
+msgid "IPTC/EXIF/WP Mapping help"
 msgstr ""
 
 msgid "Name/Slug"
@@ -810,6 +839,45 @@ msgid "Description"
 msgstr ""
 
 msgid "Uploaded on"
+msgstr ""
+
+msgid "Enable Intermediate Image Size Support"
+msgstr ""
+
+msgid ""
+"Check/uncheck this option to enable/disable Intermediate Image Size Support, "
+"then click <strong>Save Changes</strong> to record the new setting."
+msgstr ""
+
+msgid "Image Sizes help."
+msgstr ""
+
+msgctxt "image_sizes_name"
+msgid "Thumbnail"
+msgstr ""
+
+msgctxt "image_sizes_description"
+msgid "WordPress reserved size"
+msgstr ""
+
+msgctxt "image_sizes_name"
+msgid "Medium"
+msgstr ""
+
+msgctxt "image_sizes_name"
+msgid "Medium Large"
+msgstr ""
+
+msgctxt "image_sizes_name"
+msgid "Large"
+msgstr ""
+
+msgctxt "image_sizes_name"
+msgid "Post Thumbnail"
+msgstr ""
+
+msgctxt "image_sizes_description"
+msgid "WordPress reserved size, requires theme support"
 msgstr ""
 
 msgid "Enable View and Post MIME Type Support"
@@ -950,6 +1018,13 @@ msgid ""
 "click <strong>Save Changes</strong> to record the new setting."
 msgstr ""
 
+msgid "Custom Icons"
+msgstr ""
+
+msgid ""
+"Enter the path (relative to .../wp-content/) of your custom icon directory."
+msgstr ""
+
 msgid "Display Limit"
 msgstr ""
 
@@ -990,6 +1065,14 @@ msgstr ""
 msgid ""
 "Enter a numeric MLA_DEBUG_LEVEL value, e.g., 0x0003 or 3; leave blank to use "
 "the existing MLA_DEBUG_LEVEL value."
+msgstr ""
+
+msgid "Add Tax. Columns"
+msgstr ""
+
+msgid ""
+"Check this option to add Parent, Term ID and Term-Taxonomy ID columns to the "
+"taxonomy edit admin submenu tables."
 msgstr ""
 
 #, php-format
@@ -1286,6 +1369,18 @@ msgctxt "error_log"
 msgid "mla_parse_xml_string set option failed."
 msgstr ""
 
+msgid "Auto"
+msgstr ""
+
+msgid "Manual"
+msgstr ""
+
+msgid "Bracket"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
 msgid "Yes"
 msgstr ""
 
@@ -1429,6 +1524,21 @@ msgctxt "error_log"
 msgid "%1$s: %2$s non-array \"%3$s\""
 msgstr ""
 
+msgid "Parent ID"
+msgstr ""
+
+msgid "Select"
+msgstr ""
+
+msgid "No Change"
+msgstr ""
+
+msgid "Allow"
+msgstr ""
+
+msgid "Do not allow"
+msgstr ""
+
 msgid "+&nbsp;Add&nbsp;New&nbsp;Term"
 msgstr ""
 
@@ -1447,39 +1557,30 @@ msgstr ""
 msgid "Replace"
 msgstr ""
 
+msgid "Reset"
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Export"
+msgstr ""
+
 msgid ""
 "IMPORTANT: Make your entries BEFORE uploading new items. Pull down the Help "
 "menu for more information."
 msgstr ""
 
-msgid "Reset"
-msgstr ""
-
-msgid "No Change"
-msgstr ""
-
-msgid "Allow"
-msgstr ""
-
-msgid "Do not allow"
-msgstr ""
-
-msgid "Parent ID"
-msgstr ""
-
-msgid "Select"
-msgstr ""
-
 msgid "Custom field mapping updated."
 msgstr ""
 
-msgid "IPTC/EXIF mapping updated."
+msgid "IPTC/EXIF/WP mapping updated."
 msgstr ""
 
 msgid "Custom field mapping is disabled."
 msgstr ""
 
-msgid "IPTC/EXIF mapping is disabled."
+msgid "IPTC/EXIF/WP mapping is disabled."
 msgstr ""
 
 msgid "Month"
@@ -1529,16 +1630,19 @@ msgstr ""
 msgid "Map Custom Field metadata"
 msgstr ""
 
-msgid "Map IPTC/EXIF metadata for this item"
+msgid "Map IPTC/EXIF/WP metadata for this item"
 msgstr ""
 
-msgid "Map IPTC/EXIF metadata"
+msgid "Map IPTC/EXIF/WP metadata"
 msgstr ""
 
 msgid "Parent Info"
 msgstr ""
 
 msgid "Attachment Metadata"
+msgstr ""
+
+msgid "Attachment File Metadata"
 msgstr ""
 
 #, php-format
@@ -1550,6 +1654,112 @@ msgid "Post Parent"
 msgstr ""
 
 msgid "Select Parent"
+msgstr ""
+
+msgctxt "list_table_column"
+msgid "Slug"
+msgstr ""
+
+msgctxt "list_table_column"
+msgid "Width"
+msgstr ""
+
+msgctxt "list_table_column"
+msgid "Height"
+msgstr ""
+
+msgctxt "list_table_column"
+msgid "Crop"
+msgstr ""
+
+msgctxt "list_table_column"
+msgid "Horizontal Position"
+msgstr ""
+
+msgctxt "list_table_column"
+msgid "Vertical Position"
+msgstr ""
+
+msgctxt "list_table_column"
+msgid "Status"
+msgstr ""
+
+msgctxt "list_table_column"
+msgid "Source"
+msgstr ""
+
+msgid "Medium Large"
+msgstr ""
+
+#, php-format
+msgid "<br>Changing %1$s \"%2$s\" to valid value \"%3$s\""
+msgstr ""
+
+msgid "Slug"
+msgstr ""
+
+#, php-format
+msgid "%1$s: Could not add Slug \"%2$s\"; value already exists"
+msgstr ""
+
+#, php-format
+msgid "Edit size \"%1$s\"; added"
+msgstr ""
+
+#, php-format
+msgid "<br>Changing new %1$s \"%2$s\" to valid value \"%3$s\""
+msgstr ""
+
+#, php-format
+msgid "Edit view \"%1$s\"; no changes detected"
+msgstr ""
+
+#, php-format
+msgid "Edit view \"%1$s\"; updated"
+msgstr ""
+
+#, php-format
+msgid "Image size \"%1$s\" reverted to standard"
+msgstr ""
+
+#, php-format
+msgid "Image size \"%1$s\" deleted"
+msgstr ""
+
+#, php-format
+msgid "%1$s: Did not find image size \"%2$s\""
+msgstr ""
+
+msgctxt "table_image_size_singular"
+msgid "All"
+msgstr ""
+
+msgctxt "table_image_size_plural"
+msgid "All"
+msgstr ""
+
+msgctxt "table_image_size_singular"
+msgid "WordPress"
+msgstr ""
+
+msgctxt "table_image_size_plural"
+msgid "WordPress"
+msgstr ""
+
+msgctxt "table_image_size_singular"
+msgid "Other Theme/Plugin"
+msgstr ""
+
+msgctxt "table_image_size_plural"
+msgid "Other Theme/Plugin"
+msgstr ""
+
+msgctxt "table_image_size_singular"
+msgid "Custom"
+msgstr ""
+
+msgctxt "table_image_size_plural"
+msgid "Custom"
 msgstr ""
 
 msgid "All"
@@ -1677,13 +1887,16 @@ msgid "CANCELED"
 msgstr ""
 
 #, php-format
-msgid "Item permanently deleted."
+msgid "%d item permanently deleted."
 msgid_plural "%d items permanently deleted."
 msgstr[0] ""
 msgstr[1] ""
 
 #, php-format
 msgid "Item %1$d moved to Trash."
+msgstr ""
+
+msgid "List Filter"
 msgstr ""
 
 msgid "download path out of bounds."
@@ -1870,14 +2083,6 @@ msgid "Icon Type"
 msgstr ""
 
 msgctxt "list_table_column"
-msgid "Source"
-msgstr ""
-
-msgctxt "list_table_column"
-msgid "Status"
-msgstr ""
-
-msgctxt "list_table_column"
 msgid "WordPress Type"
 msgstr ""
 
@@ -1891,10 +2096,6 @@ msgstr ""
 
 msgctxt "list_table_column"
 msgid "Std. Icon Type"
-msgstr ""
-
-msgctxt "list_table_column"
-msgid "Slug"
 msgstr ""
 
 msgctxt "list_table_column"
@@ -1929,30 +2130,7 @@ msgid "Ignoring specification for Post MIME Type; using slug"
 msgstr ""
 
 #, php-format
-msgid "<br>Changing %1$s \"%2$s\" to valid value \"%3$s\""
-msgstr ""
-
-msgid "Slug"
-msgstr ""
-
-#, php-format
-msgid "%1$s: Could not add Slug \"%2$s\"; value already exists"
-msgstr ""
-
-#, php-format
 msgid "Edit view \"%1$s\"; added"
-msgstr ""
-
-#, php-format
-msgid "<br>Changing new %1$s \"%2$s\" to valid value \"%3$s\""
-msgstr ""
-
-#, php-format
-msgid "Edit view \"%1$s\"; no changes detected"
-msgstr ""
-
-#, php-format
-msgid "Edit view \"%1$s\"; updated"
 msgstr ""
 
 #, php-format
@@ -1965,22 +2143,6 @@ msgstr ""
 
 #, php-format
 msgid "%1$s: Did not find view \"%2$s\""
-msgstr ""
-
-msgctxt "table_view_singular"
-msgid "Active"
-msgstr ""
-
-msgctxt "table_view_plural"
-msgid "Active"
-msgstr ""
-
-msgctxt "table_view_singular"
-msgid "Inactive"
-msgstr ""
-
-msgctxt "table_view_plural"
-msgid "Inactive"
 msgstr ""
 
 msgctxt "table_view_singular"
@@ -2122,6 +2284,12 @@ msgstr ""
 msgid "Attachments"
 msgstr ""
 
+msgid "Term ID"
+msgstr ""
+
+msgid "Term-Tax ID"
+msgstr ""
+
 #, php-format
 msgctxt "error_log"
 msgid ""
@@ -2172,9 +2340,6 @@ msgid "Checked On Top"
 msgstr ""
 
 msgid "Inline Add Term"
-msgstr ""
-
-msgid "List Filter"
 msgstr ""
 
 msgid "Taxonomy"
@@ -2293,31 +2458,6 @@ msgstr ""
 msgid "Delete NULL values"
 msgstr ""
 
-#, php-format
-msgid "%1$s: No old values for %2$s."
-msgstr ""
-
-msgid "Field Title"
-msgstr ""
-
-msgid "IPTC Value"
-msgstr ""
-
-msgid "EXIF Value"
-msgstr ""
-
-msgid "EXIF to IPTC"
-msgstr ""
-
-msgid "IPTC to EXIF"
-msgstr ""
-
-msgid "Priority"
-msgstr ""
-
-msgid "Delimiter(s)"
-msgstr ""
-
 msgid "ERROR: No post ID found"
 msgstr ""
 
@@ -2413,7 +2553,7 @@ msgid "Term Mapping Replication"
 msgstr ""
 
 msgid ""
-"When mapping IPTC/EXIF metadata to taxonomy terms, make them available in "
+"When mapping IPTC/EXIF/WP metadata to taxonomy terms, make them available in "
 "all languages."
 msgstr ""
 
@@ -2544,6 +2684,9 @@ msgstr ""
 msgid "Cancel new field"
 msgstr ""
 
+msgid "Notes for the Custom Fields tab submenu table."
+msgstr ""
+
 msgid "Meta/Template"
 msgstr ""
 
@@ -2562,6 +2705,9 @@ msgstr ""
 msgid "Keep"
 msgstr ""
 
+msgid "Replace All"
+msgstr ""
+
 msgid "Native"
 msgstr ""
 
@@ -2575,9 +2721,6 @@ msgid "Text"
 msgstr ""
 
 msgid "Single"
-msgstr ""
-
-msgid "Export"
 msgstr ""
 
 msgid "Array"
@@ -2884,6 +3027,22 @@ msgid "Installed"
 msgstr ""
 
 msgctxt "table_view_singular"
+msgid "Active"
+msgstr ""
+
+msgctxt "table_view_plural"
+msgid "Active"
+msgstr ""
+
+msgctxt "table_view_singular"
+msgid "Inactive"
+msgstr ""
+
+msgctxt "table_view_plural"
+msgid "Inactive"
+msgstr ""
+
+msgctxt "table_view_singular"
 msgid "Network"
 msgstr ""
 
@@ -2899,13 +3058,130 @@ msgctxt "table_view_plural"
 msgid "Uninstalled"
 msgstr ""
 
-msgid "IPTC/EXIF mapping settings updated."
+msgid "Image settings saved."
 msgstr ""
 
-msgid "IPTC/EXIF no mapping changes detected."
+msgid "Top"
+msgstr ""
+
+msgid "Bottom"
+msgstr ""
+
+msgid "Edit Image Size"
+msgstr ""
+
+msgid ""
+"The &#8220;slug&#8221; is the URL-friendly, unique key for the image size. "
+"It must be all lowercase and contain only letters, numbers, periods (.), "
+"slashes (/) and hyphens (-)."
+msgstr ""
+
+msgid ""
+"The name is used for the size selection dropdown control and other display "
+"purposes."
+msgstr ""
+
+msgid "Width"
+msgstr ""
+
+msgid "A positive integer setting the maximum image width in pixels."
+msgstr ""
+
+msgid "Use zero or leave blank to set no limit."
+msgstr ""
+
+msgid "Height"
+msgstr ""
+
+msgid "A positive integer setting the maximum image height in pixels."
+msgstr ""
+
+msgid "Crop"
+msgstr ""
+
+msgid ""
+"Check this box if you want to crop the image to an exact width and height."
+msgstr ""
+
+msgid "Horizontal"
+msgstr ""
+
+msgid "Select a value for the crop location."
+msgstr ""
+
+msgid "Vertical"
+msgstr ""
+
+msgid "Check this box if you want to remove this entry from the list of sizes."
+msgstr ""
+
+msgid ""
+"The description can contain any documentation or notes you need to "
+"understand or use the item."
+msgstr ""
+
+#, php-format
+msgid "Edit Image Size \"%1$s\" cancelled."
+msgstr ""
+
+msgid "Image Size Support is disabled"
+msgstr ""
+
+msgid "Image Sizes Processing"
+msgstr ""
+
+msgid ""
+"In this tab you can manage the list of \"Intermediate Image Sizes\", which "
+"are used by WordPress to generate and access intermediate image sizes for "
+"Media Library items."
+msgstr ""
+
+msgid ""
+"You can find more information about managing image sizes by clicking the "
+"<strong>\"Help\"</strong> tab in the upper-right corner of this screen."
+msgstr ""
+
+msgid "Search Sizes"
+msgstr ""
+
+msgid "Image Size"
+msgstr ""
+
+msgid "Add Size"
+msgstr ""
+
+msgid "<strong>Quick Edit</strong>"
+msgstr ""
+
+msgid "No image slug found"
+msgstr ""
+
+msgid "List Image"
+msgstr ""
+
+msgid "Revert to standard item"
+msgstr ""
+
+msgid "Revert to Standard"
+msgstr ""
+
+msgid "IPTC/EXIF/WP mapping settings updated."
+msgstr ""
+
+msgid "IPTC/EXIF/WP no mapping changes detected."
 msgstr ""
 
 msgid "updated."
+msgstr ""
+
+#, php-format
+msgid "Rule \"%1$s\"; reverted to standard"
+msgstr ""
+
+msgid "Notes for the IPTC/EXIF/WP tab submenu table."
+msgstr ""
+
+msgid "IPTC Value"
 msgstr ""
 
 msgid "EXIF/Template Value"
@@ -2915,6 +3191,9 @@ msgid "EXIF element name or Content Template"
 msgstr ""
 
 msgid " (starting with \"template:\")"
+msgstr ""
+
+msgid "Priority"
 msgstr ""
 
 msgid "IPTC"
@@ -2938,7 +3217,7 @@ msgstr ""
 msgid "Edit IPTC EXIF Rule cancelled."
 msgstr ""
 
-msgid "IPTC/EXIF Mapping Support is disabled"
+msgid "IPTC/EXIF/WP Mapping Support is disabled"
 msgstr ""
 
 msgid "IPTC &amp; EXIF Mapping Progress"
@@ -2951,6 +3230,11 @@ msgid ""
 "In this tab you can define the rules for mapping IPTC (International Press "
 "Telecommunications Council) and EXIF (EXchangeable Image File) metadata to "
 "WordPress standard attachment fields, taxonomy terms and custom fields."
+msgstr ""
+
+msgid ""
+"You can also use a Content Template to compose a value from field-level data "
+"sources like Title, Author, ALT Text and File Name."
 msgstr ""
 
 msgctxt "list_table_column"
@@ -3212,6 +3496,14 @@ msgctxt "table_view_plural"
 msgid "Term List"
 msgstr ""
 
+msgctxt "table_view_singular"
+msgid "Custom Field List"
+msgstr ""
+
+msgctxt "table_view_plural"
+msgid "Custom Field List"
+msgstr ""
+
 msgid "Upload MIME Type settings saved."
 msgstr ""
 
@@ -3241,11 +3533,6 @@ msgstr ""
 msgid ""
 "Check this box if you want to remove this entry from the list of Upload MIME "
 "Types returned by get_allowed_mime_types()."
-msgstr ""
-
-msgid ""
-"The description can contain any documentation or notes you need to "
-"understand or use the item."
 msgstr ""
 
 msgid "Known File Extension/MIME Type Associations"
@@ -3311,16 +3598,7 @@ msgstr ""
 msgid "Search Known Types"
 msgstr ""
 
-msgid "<strong>Quick Edit</strong>"
-msgstr ""
-
 msgid "No upload slug found"
-msgstr ""
-
-msgid "Revert to standard item"
-msgstr ""
-
-msgid "Revert to Standard"
 msgstr ""
 
 msgid "Delete/Revert Custom"
@@ -3424,7 +3702,15 @@ msgstr ""
 msgid "No view slug found"
 msgstr ""
 
+#, php-format
+msgctxt "error_log"
+msgid "%1$s: %2$s: \"%3$s\" not a directory"
+msgstr ""
+
 msgid "Settings"
+msgstr ""
+
+msgid "Image Sizes per page"
 msgstr ""
 
 msgid "Views per page"
@@ -3459,6 +3745,9 @@ msgstr ""
 msgid "General"
 msgstr ""
 
+msgid "Image"
+msgstr ""
+
 msgid "Views"
 msgstr ""
 
@@ -3468,7 +3757,7 @@ msgstr ""
 msgid "Custom Fields"
 msgstr ""
 
-msgid "IPTC/EXIF"
+msgid "IPTC/EXIF/WP"
 msgstr ""
 
 msgid "Documentation"
@@ -3497,6 +3786,30 @@ msgstr ""
 msgid "Delete General options and restore default settings"
 msgstr ""
 
+msgid "Donations to Support MLA"
+msgstr ""
+
+msgid "Donate to our fund"
+msgstr ""
+
+msgid "Donate"
+msgstr ""
+
+#, php-format
+msgid ""
+"<strong>I do not solicit nor accept personal donations in support of the "
+"plugin.</strong> WordPress and its global community means a lot to me and I "
+"am happy to give something back.\n"
+"<br />&nbsp;<br />\n"
+"If you find the Media Library Assistant plugin useful and would like to "
+"support a great cause, consider a %1$s to our Chateau Seaview Fund at the "
+"ALS Network. Every dollar of the fund goes to make the lives of people with "
+"ALS, their families and caregivers easier. Thank you!"
+msgstr ""
+
+msgid "tax-deductible donation"
+msgstr ""
+
 msgid "enhanced version of the WordPress [gallery] shortcode."
 msgstr ""
 
@@ -3506,6 +3819,11 @@ msgstr ""
 msgid ""
 "provides flat or hierarchical lists, dropdown controls and checkbox lists of "
 "taxonomy terms."
+msgstr ""
+
+msgid ""
+"provides flat lists, dropdown controls and checkbox lists of custom field "
+"values."
 msgstr ""
 
 msgid "Shortcodes made available by this plugin"
@@ -3583,10 +3901,10 @@ msgstr ""
 msgid "General settings reset to default values."
 msgstr ""
 
-msgid "select settings"
+msgid "Import ALL Settings"
 msgstr ""
 
-msgid "Import ALL Settings"
+msgid "select settings"
 msgstr ""
 
 msgctxt "message_list"
@@ -3622,7 +3940,15 @@ msgid "%1$s: Writing the settings file ( %2$s ) \"%3$s\"."
 msgstr ""
 
 #, php-format
-msgid "Settings exported; %1$s settings recorded."
+msgid "Settings exported; %1$s settings recorded in %2$s."
+msgstr ""
+
+msgctxt "message_list"
+msgid "updated"
+msgstr ""
+
+msgctxt "message_list"
+msgid "unchanged"
 msgstr ""
 
 msgid "No settings imported."
@@ -3643,16 +3969,20 @@ msgstr ""
 msgid "%1$s: Reading the settings file ( %2$s ) \"%3$s\"."
 msgstr ""
 
-msgctxt "message_list"
-msgid "updated"
-msgstr ""
-
-msgctxt "message_list"
-msgid "unchanged"
-msgstr ""
-
 #, php-format
 msgid "Settings imported; %1$s updated, %2$s unchanged."
+msgstr ""
+
+msgid "mla_debug attributes"
+msgstr ""
+
+msgid "mla_debug arguments"
+msgstr ""
+
+msgid "mla_debug query"
+msgstr ""
+
+msgid "mla_debug results"
 msgstr ""
 
 msgid "Previous"
@@ -3661,19 +3991,52 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
+msgid "mla_custom_list REQUEST"
+msgstr ""
+
+msgid "mla_custom_list attributes"
+msgstr ""
+
+msgid "mla_custom_list arguments"
+msgstr ""
+
 msgid "not found"
+msgstr ""
+
+msgid "mla_debug empty list"
+msgstr ""
+
+msgid "no-values"
+msgstr ""
+
+msgid "mla_debug adding ANY valuess"
+msgstr ""
+
+msgid "mla_debug adding NO valuess"
+msgstr ""
+
+msgid "mla_debug adding ALL valuess"
+msgstr ""
+
+msgid "mla_debug query arguments"
+msgstr ""
+
+msgid "mla_debug last_query"
+msgstr ""
+
+msgid "mla_debug last_error"
+msgstr ""
+
+msgid "mla_debug num_rows"
+msgstr ""
+
+msgid "mla_debug found_rows"
 msgstr ""
 
 msgid "mla_debug REQUEST"
 msgstr ""
 
 msgid "mla_debug attributes_errors"
-msgstr ""
-
-msgid "mla_debug attributes"
-msgstr ""
-
-msgid "mla_debug arguments"
 msgstr ""
 
 msgid "mla_debug empty gallery"
@@ -3687,19 +4050,7 @@ msgstr ""
 msgid "unknown"
 msgstr ""
 
-msgid "mla_debug empty cloud"
-msgstr ""
-
-msgid "mla_debug empty list"
-msgstr ""
-
-msgid "no-terms"
-msgstr ""
-
 msgid "Invalid mla_gallery"
-msgstr ""
-
-msgid "mla_debug query"
 msgstr ""
 
 msgid "mla_debug request"
@@ -3709,6 +4060,9 @@ msgid "mla_debug query_vars"
 msgstr ""
 
 msgid "mla_debug post_count"
+msgstr ""
+
+msgid "mla_debug found_posts"
 msgstr ""
 
 msgid "mla_debug JOIN filter"
@@ -3738,19 +4092,19 @@ msgstr ""
 msgid "Invalid taxonomy"
 msgstr ""
 
-msgid "mla_debug query arguments"
+msgid "mla_debug empty cloud"
 msgstr ""
 
-msgid "mla_debug last_query"
+msgid "mla_debug adding ANY terms"
 msgstr ""
 
-msgid "mla_debug last_error"
+msgid "mla_debug adding NO terms"
 msgstr ""
 
-msgid "mla_debug num_rows"
+msgid "mla_debug adding IGNORE terms"
 msgstr ""
 
-msgid "mla_debug found_rows"
+msgid "no-terms"
 msgstr ""
 
 msgid "Notes for the Shortcodes tab submenu table."
@@ -3836,6 +4190,15 @@ msgstr ""
 msgid "Markup for the end of the list."
 msgstr ""
 
+msgid "Markup for the beginning of each row in the list; grid format only."
+msgstr ""
+
+msgid "Markup for each item/cell of the list."
+msgstr ""
+
+msgid "Markup for the end of each row in the list; grid format only."
+msgstr ""
+
 msgid "error loading tpls/mla-custom-templates.tpl"
 msgstr ""
 
@@ -3897,12 +4260,6 @@ msgstr ""
 
 msgid ""
 "Pull down the Help menu and select Thumbnail Generation for setting details"
-msgstr ""
-
-msgid "Width"
-msgstr ""
-
-msgid "Height"
 msgstr ""
 
 msgid "Best Fit"

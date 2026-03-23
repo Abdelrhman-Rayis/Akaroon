@@ -27,7 +27,7 @@
                 id = mainBody.find("#post_ID").val();
 
             // Get editor link
-            editorLink = "admin.php?page=yellow-pencil-editor&href&yp_page_id=" + id + "&yp_page_type=" + typenow + "&yp_mode=" + type;
+            editorLink = "admin.php?page=yellow-pencil-editor&href&wyp_page_id=" + id + "&wyp_page_type=" + typenow + "&wyp_mode=" + type;
 
             // Open Window
             window.open(editorLink, "_blank");
@@ -39,10 +39,10 @@
         if(mainBody.hasClass("post-type-attachment") == 0 && mainBody.find("#postbox-container-1").length > 0){
 
             // Append Button
-            mainBody.find("#postbox-container-1").prepend("<a class='yp-btn'><span class='dashicons dashicons-admin-appearance'></span>Edit Page - YellowPencil</a>")
+            mainBody.find("#postbox-container-1").prepend("<a class='wyp-btn'><span class='dashicons dashicons-admin-appearance'></span>Edit Page - YellowPencil</a>")
 
             // Click event
-            mainDocument.on("click", ".yp-btn", function() {
+            mainDocument.on("click", ".wyp-btn", function() {
 
                 // Variables
                 var form = $("form#post"),
@@ -70,10 +70,10 @@
                 setTimeout(function(){
 
                     // Check if need update
-                    if(mainBody.find(".edit-post-header-toolbar").length > 0 && mainBody.find(".yp-btn").length == 0){
+                    if(mainBody.find(".edit-post-header-toolbar").length > 0 && mainBody.find(".wyp-btn").length == 0){
 
                         // Create a virtual button
-                        var button = $('<button type="button" class="components-button has-icon yp-btn"><span class="dashicons dashicons-admin-appearance"></span></button>');
+                        var button = $('<button type="button" class="components-button has-icon wyp-btn"><span class="dashicons dashicons-admin-appearance"></span></button>');
 
                         // Add event
                         button.on("click", function(){

@@ -12,9 +12,9 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 
 		<li class='text-option'>
 			<h3>Text</h3>
-			<div class='yp-t-cont'>
+			<div class='wyp-t-cont'>
 
-				".yp_get_select_markup(
+				".wyp_get_select_markup(
 					'font-family',
 					'Font Family',
 					"google-fonts.json",
@@ -23,28 +23,28 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 				)."
 
 				<div class='option-group-class option-group-vn-p'>
-				".yp_get_color_markup(
+				".wyp_get_color_markup(
 					'color',
 					'Color',
 					'Set the text color.'
 				)."
 
-				".yp_get_select_markup(
+				".wyp_get_select_markup(
 					'font-weight',
 					'Weight',
 					array(
 						'300' => 'Light'.' 300',
-						'400' => 'normal'.' 400',
-						'500' => 'Semi-Bold'.' 500',
+						'400' => 'Regular'.' 400',
+						'500' => 'Medium'.' 500',
 						'600' => 'Bold'.' 600',
-						'700' => 'Extra-Bold'.' 700'
+						'700' => 'Extra'.' 700'
 					),
 					"",
 					'Sets how thick or thin characters in text should be displayed.'
 				)."
 				</div>
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'font-size',
 					'Font Size',
 					"",
@@ -55,7 +55,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Sets the size of a font.'
 				)."
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'line-height',
 					'Line Height',
 					"",
@@ -67,7 +67,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 				)."
 
 				<div class='option-group-class option-group-less'>
-				".yp_get_radio_markup(
+				".wyp_get_radio_markup(
 					'font-style',
 					'Style',
 					array(
@@ -78,7 +78,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Specifies the font style for a text.'
 				)."
 
-				".yp_get_radio_markup(
+				".wyp_get_radio_markup(
 					'text-transform',
 					'Transform',
 					array(
@@ -93,7 +93,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 				</div>
 
 				<div class='option-group-class option-group-less'>
-				".yp_get_radio_markup(
+				".wyp_get_radio_markup(
 					'text-decoration',
 					'Decoration',
 					array(
@@ -106,7 +106,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Specifies the decoration added to the text.'
 				)."
 
-				".yp_get_radio_markup(
+				".wyp_get_radio_markup(
 					'text-align',
 					'Align',
 					array(
@@ -121,13 +121,13 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 				</div>
 
 				<div class='option-group-class option-group-less'>
-				".yp_get_select_markup(
+				".wyp_get_select_markup(
 					'text-shadow',
 					'Text Shadow',
 					array(
 						'none' => 'none',
-						'rgba(0, 0, 0, 0.3) 0px 1px 1px' => 'Basic Shadow',
-						'rgb(255, 255, 255) 1px 1px 0px, rgb(170, 170, 170) 2px 2px 0px' => 'Shadow Multiple',
+						'rgba(0, 0, 0, 0.3) 0px 1px 1px' => 'Basic',
+						'rgb(255, 255, 255) 1px 1px 0px, rgb(170, 170, 170) 2px 2px 0px' => 'Multiple',
 						'rgb(255, 0, 0) -1px 0px 0px, rgb(0, 255, 255) 1px 0px 0px' => 'Anaglyph',
 						'rgb(255, 255, 255) 0px 1px 1px, rgb(0, 0, 0) 0px -1px 1px' => 'Emboss',
 						'rgb(255, 255, 255) 0px 0px 2px, rgb(255, 255, 255) 0px 0px 4px, rgb(255, 255, 255) 0px 0px 6px, rgb(255, 119, 255) 0px 0px 8px, rgb(255, 0, 255) 0px 0px 12px, rgb(255, 0, 255) 0px 0px 16px, rgb(255, 0, 255) 0px 0px 20px, rgb(255, 0, 255) 0px 0px 24px' => 'Neon',
@@ -137,7 +137,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Adds shadow to text.'
 				)."
 
-				".yp_get_select_markup(
+				".wyp_get_select_markup(
 					'white-space',
 					'Breaking',
 					array(
@@ -153,7 +153,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 				)."
 				</div>
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'letter-spacing',
 					'Letter Spacing',
 					"normal",
@@ -164,7 +164,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Increases or decreases the space between characters in a text.'
 				)."
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'word-spacing',
 					'Word Spacing',
 					"normal",
@@ -176,7 +176,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 				)."
 
 				<div class='option-group-class option-group-less cl-direction'>
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'column-count',
 						'Columns',
 						'',
@@ -187,7 +187,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 						'Specifies the number of columns an element should be divided into.'
 					)."
 
-					".yp_get_radio_markup(
+					".wyp_get_radio_markup(
 						'direction',
 						'Direction',
 						array(
@@ -207,10 +207,10 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 
 		echo "<li class='background-option'>
 			<h3>Background</h3>
-			<div class='yp-t-cont'>";
+			<div class='wyp-t-cont'>";
 
 				if($backdrop_filter_status){
-					echo yp_get_radio_markup(
+					echo wyp_get_radio_markup(
 						'background-type',
 						'Background Type',
 						array(
@@ -222,20 +222,20 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					);
 				}
 
-				echo "<div class='yp-background-background-section'>
-				".yp_get_color_markup(
+				echo "<div class='wyp-background-background-section'>
+				".wyp_get_color_markup(
 					'background-color',
 					'Color',
 					'Sets the background color of an element.'
 				)."
 
-				".yp_get_input_markup(
+				".wyp_get_input_markup(
 					'background-image',
 					'Image',
 					'Sets background image for an element.'
 				)."
 
-				".yp_get_radio_markup(
+				".wyp_get_radio_markup(
 					'background-size',
 					'Size',
 					array(
@@ -248,7 +248,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 				)."
 
 				<div class='option-group-class background-cgn'>
-				".yp_get_select_markup(
+				".wyp_get_select_markup(
 					'background-blend-mode',
 					'Blend Mode',
 					array(
@@ -267,7 +267,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Defines the blending mode of background color and image.'
 				)."
 
-				".yp_get_radio_markup(
+				".wyp_get_radio_markup(
 					'background-attachment',
 					'Fixed',
 					array(
@@ -280,7 +280,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 
 				</div>
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'background-position-x',
 					'Horizontal Position',
 					"",
@@ -291,7 +291,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Sets the horizontal starting position of a background image.'
 				)."
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'background-position-y',
 					'Vertical Position',
 					"",
@@ -302,7 +302,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Sets the vertical starting position of a background image.'
 				)."
 
-				".yp_get_radio_markup(
+				".wyp_get_radio_markup(
 					'background-repeat',
 					'Tile',
 					array(
@@ -315,7 +315,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Sets if the background image will be repeated.'
 				)."
 
-				".yp_get_radio_markup(
+				".wyp_get_radio_markup(
 					'background-clip',
 					'Clip',
 					array(
@@ -329,9 +329,9 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 				</div>";
 
 				if($backdrop_filter_status){
-				echo "<div class='yp-background-filter-section'>
+				echo "<div class='wyp-background-filter-section'>
 
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'blur-backdrop-filter',
 						'Blur',
 						'',
@@ -342,7 +342,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 						""
 					)."
 
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'grayscale-backdrop-filter',
 						'Grayscale',
 						'',
@@ -353,7 +353,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 						""
 					)."
 
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'invert-backdrop-filter',
 						'Invert',
 						'',
@@ -364,7 +364,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 						""
 					)."
 
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'sepia-backdrop-filter',
 						'Sepia',
 						'',
@@ -375,7 +375,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 						""
 					)."
 
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'brightness-backdrop-filter',
 						'Brightness',
 						'',
@@ -386,7 +386,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 						""
 					)."
 
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'contrast-backdrop-filter',
 						'Contrast',
 						'',
@@ -397,7 +397,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 						""
 					)."
 
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'hue-rotate-backdrop-filter',
 						'Hue Rotate',
 						'',
@@ -408,7 +408,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 						""
 					)."
 
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'saturate-backdrop-filter',
 						'Saturate',
 						'',
@@ -428,9 +428,9 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 
 		<li class='spacing-option'>
 			<h3>Spacings</h3>
-			<div class='yp-t-cont'>
+			<div class='wyp-t-cont'>
 
-				".yp_get_radio_markup(
+				".wyp_get_radio_markup(
 					'spacing-type',
 					'Spacing Type',
 					array(
@@ -441,8 +441,8 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					''
 				)."
 
-				<div class='yp-spacing-padding-section'>
-					".yp_get_slider_markup(
+				<div class='wyp-spacing-padding-section'>
+					".wyp_get_slider_markup(
 						'padding-left',
 						'Padding Left',
 						'',
@@ -453,7 +453,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 						'Sets the left padding (space) of an element.'
 					)."
 
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'padding-right',
 						'Padding Right',
 						'',
@@ -464,7 +464,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 						'Sets the right padding (space) of an element.'
 					)."
 
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'padding-top',
 						'Padding Top',
 						'',
@@ -475,7 +475,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 						'Sets the top padding (space) of an element.'
 					)."
 
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'padding-bottom',
 						'Padding Bottom',
 						'',
@@ -487,8 +487,8 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					)."
 				</div>
 
-				<div class='yp-spacing-margin-section'>
-					".yp_get_slider_markup(
+				<div class='wyp-spacing-margin-section'>
+					".wyp_get_slider_markup(
 						'margin-left',
 						'Margin Left',
 						"auto",
@@ -499,7 +499,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 						'Sets the left margin of an element.'
 					)."
 
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'margin-right',
 						'Margin Right',
 						"auto",
@@ -510,7 +510,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 						'Sets the right margin of an element.'
 					)."
 
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'margin-top',
 						'Margin Top',
 						'',
@@ -521,7 +521,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 						'Sets the top margin of an element.'
 					)."
 
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'margin-bottom',
 						'Margin Bottom',
 						'',
@@ -538,9 +538,9 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 
 		<li class='border-option'>
 			<h3>Borders</h3>
-			<div class='yp-t-cont'>
+			<div class='wyp-t-cont'>
 
-				".yp_get_radio_markup(
+				".wyp_get_radio_markup(
 					'border-type',
 					'Border Type',
 					array(
@@ -554,16 +554,16 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					''
 				)."
 
-				<div class='yp-border-all-section'>
+				<div class='wyp-border-all-section'>
 
 					<div class='option-group-class'>
-					".yp_get_color_markup(
+					".wyp_get_color_markup(
 						'border-color',
 						'Color',
 						'Sets the color of an element&#39;s four borders.'
 					)."
 
-					".yp_get_radio_markup(
+					".wyp_get_radio_markup(
 						'border-style',
 						'Style',
 						array(
@@ -577,7 +577,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					)."
 					</div>
 
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'border-width',
 						'Width',
 						'',
@@ -590,16 +590,16 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 
 				</div>
 
-				<div class='yp-border-top-section'>
+				<div class='wyp-border-top-section'>
 
 					<div class='option-group-class'>
-					".yp_get_color_markup(
+					".wyp_get_color_markup(
 						'border-top-color',
 						'Color',
 						'Sets the color of an element&#39;s top border.'
 					)."
 
-					".yp_get_radio_markup(
+					".wyp_get_radio_markup(
 						'border-top-style',
 						'Style',
 						array(
@@ -613,7 +613,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					)."
 					</div>
 
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'border-top-width',
 						'Width',
 						'',
@@ -626,16 +626,16 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 
 				</div>
 
-				<div class='yp-border-right-section'>
+				<div class='wyp-border-right-section'>
 
 					<div class='option-group-class'>
-					".yp_get_color_markup(
+					".wyp_get_color_markup(
 						'border-right-color',
 						'Color',
 						'Sets the color of an element&#39;s right border.'
 					)."
 
-					".yp_get_radio_markup(
+					".wyp_get_radio_markup(
 						'border-right-style',
 						'Style',
 						array(
@@ -649,7 +649,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					)."
 					</div>
 
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'border-right-width',
 						'Width',
 						'',
@@ -663,16 +663,16 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 				</div>
 
 
-				<div class='yp-border-bottom-section'>
+				<div class='wyp-border-bottom-section'>
 
 					<div class='option-group-class'>
-					".yp_get_color_markup(
+					".wyp_get_color_markup(
 						'border-bottom-color',
 						'Color',
 						'Sets the color of an element&#39;s bottom border.'
 					)."
 
-					".yp_get_radio_markup(
+					".wyp_get_radio_markup(
 						'border-bottom-style',
 						'Style',
 						array(
@@ -686,7 +686,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					)."
 					</div>
 
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'border-bottom-width',
 						'Width',
 						'',
@@ -700,16 +700,16 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 				</div>
 
 
-				<div class='yp-border-left-section'>
+				<div class='wyp-border-left-section'>
 
 					<div class='option-group-class'>
-					".yp_get_color_markup(
+					".wyp_get_color_markup(
 						'border-left-color',
 						'Color',
 						'Sets the color of an element&#39;s left border.'
 					)."
 
-					".yp_get_radio_markup(
+					".wyp_get_radio_markup(
 						'border-left-style',
 						'Style',
 						array(
@@ -723,7 +723,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					)."
 					</div>
 
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'border-left-width',
 						'Width',
 						'',
@@ -741,9 +741,9 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 
 		<li class='border-radius-option'>
 			<h3>Border Radius</h3>
-			<div class='yp-t-cont'>
+			<div class='wyp-t-cont'>
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'border-top-left-radius',
 					'Radius Top Left',
 					'',
@@ -754,7 +754,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Defines the radius of the top-left corner.'
 				)."
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'border-top-right-radius',
 					'Radius Top Right',
 					'',
@@ -765,7 +765,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Defines the radius of the top-right corner.'
 				)."
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'border-bottom-left-radius',
 					'Radius Bottom Left',
 					'',
@@ -776,7 +776,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Defines the radius of the bottom-left corner.'
 				)."
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'border-bottom-right-radius',
 					'Radius Bottom Right',
 					'',
@@ -792,9 +792,9 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 
 		<li class='position-option'>
 			<h3>Positioning</h3>
-			<div class='yp-t-cont'>
+			<div class='wyp-t-cont'>
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'z-index',
 					'Z Index',
 					"auto",
@@ -805,7 +805,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Specifies the stack order of an element. Z index only works on positioned elements (absolute, relative, or fixed).'
 				)."
 
-				".yp_get_radio_markup(
+				".wyp_get_radio_markup(
 					'position',
 					'Position',
 					array(
@@ -820,7 +820,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 
 				)."
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'top',
 					'Top',
 					"auto",
@@ -831,7 +831,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'For absolutely: positioned elements, the top property sets the top edge of an element to a unit above/below the top edge of its containing element.<br><br>For relatively: positioned elements, the top property sets the top edge of an element to a unit above/below its normal position.'
 				)."
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'left',
 					'Left',
 					"auto",
@@ -842,7 +842,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'For absolutely: positioned elements, the left property sets the left edge of an element to a unit to the left/right of the left edge of its containing element.<br><br>For relatively: positioned elements, the left property sets the left edge of an element to a unit to the left/right to its normal position.'
 				)."
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'bottom',
 					'Bottom',
 					"auto",
@@ -853,7 +853,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'For absolutely: positioned elements, the bottom property sets the bottom edge of an element to a unit above/below the bottom edge of its containing element.<br><br>For relatively: positioned elements, the bottom property sets the bottom edge of an element to a unit above/below its normal position.'
 				)."
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'right',
 					'Right',
 					"auto",
@@ -869,9 +869,9 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 
 		<li class='size-option'>
 			<h3>Measures</h3>
-			<div class='yp-t-cont'>
+			<div class='wyp-t-cont'>
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'width',
 					'Width',
 					"auto",
@@ -882,7 +882,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Sets the width of an element.'
 				)."
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'height',
 					'Height',
 					"auto",
@@ -893,7 +893,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Sets the height of an element'
 				)."
 
-				".yp_get_radio_markup(
+				".wyp_get_radio_markup(
 					'overflow',
 					'Overflow',
 					array(
@@ -906,7 +906,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Specifies what should happen if content overflows an element\'s box.'
 				)."
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'min-width',
 					'Min Width',
 					"initial",
@@ -917,7 +917,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Set the minimum width of an element.'
 				)."
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'max-width',
 					'Max Width',
 					"none",
@@ -928,7 +928,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Set the maximum width of an element.'
 				)."
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'min-height',
 					'Min Height',
 					"initial",
@@ -939,7 +939,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Set the minimum height of an element.'
 				)."
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'max-height',
 					'Max Height',
 					"none",
@@ -956,9 +956,9 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 
 		<li class='lists-option'>
 			<h3>Lists</h3>
-			<div class='yp-t-cont'>
+			<div class='wyp-t-cont'>
 
-				".yp_get_select_markup(
+				".wyp_get_select_markup(
 					'list-style-type',
 					'List Type'
 					,array(
@@ -974,13 +974,13 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Specifies the type of list-item marker in a list.'
 				)."
 
-				".yp_get_input_markup(
+				".wyp_get_input_markup(
 					'list-style-image',
 					'List Image',
 					'Replaces the list-item marker with an image.'
 				)."
 
-				".yp_get_radio_markup(
+				".wyp_get_radio_markup(
 					'list-style-position',
 					'List Position',
 					array(
@@ -1002,9 +1002,9 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 
 			echo "<li class='transform-option'>
 				<h3>Transforms</h3>
-				<div class='yp-t-cont'>
+				<div class='wyp-t-cont'>
 
-					".yp_get_radio_markup(
+					".wyp_get_radio_markup(
 						'transform-type',
 						'Transform Type',
 						array(
@@ -1018,9 +1018,9 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					)."
 
 
-					<div class='yp-transform-move-section'>
+					<div class='wyp-transform-move-section'>
 
-						".yp_get_slider_markup(
+						".wyp_get_slider_markup(
 							'translate-x-transform',
 							'Move Horizontal',
 							'',
@@ -1031,7 +1031,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 							""
 						)."
 
-						".yp_get_slider_markup(
+						".wyp_get_slider_markup(
 							'translate-y-transform',
 							'Move Vertical',
 							'',
@@ -1044,9 +1044,9 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 
 					</div>
 
-					<div class='yp-transform-rotate-section'>
+					<div class='wyp-transform-rotate-section'>
 
-						".yp_get_slider_markup(
+						".wyp_get_slider_markup(
 							'rotatex-transform',
 							'Rotate X',
 							'',
@@ -1057,7 +1057,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 							""
 						)."
 
-						".yp_get_slider_markup(
+						".wyp_get_slider_markup(
 							'rotatey-transform',
 							'Rotate Y',
 							'',
@@ -1068,7 +1068,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 							""
 						)."
 
-						".yp_get_slider_markup(
+						".wyp_get_slider_markup(
 							'rotatez-transform',
 							'Rotate Z',
 							'',
@@ -1081,9 +1081,9 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 
 					</div>
 
-					<div class='yp-transform-skew-section'>
+					<div class='wyp-transform-skew-section'>
 
-						".yp_get_slider_markup(
+						".wyp_get_slider_markup(
 							'skew-x-transform',
 							'Skew X',
 							'',
@@ -1094,7 +1094,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 							""
 						)."
 
-						".yp_get_slider_markup(
+						".wyp_get_slider_markup(
 							'skew-y-transform',
 							'skew Y',
 							'',
@@ -1107,9 +1107,9 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 
 					</div>
 
-					<div class='yp-transform-extra-section'>
+					<div class='wyp-transform-extra-section'>
 
-						".yp_get_slider_markup(
+						".wyp_get_slider_markup(
 							'scale-transform',
 							'Scale',
 							'',
@@ -1120,7 +1120,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 							""
 						)."
 
-						".yp_get_slider_markup(
+						".wyp_get_slider_markup(
 							'perspective',
 							'Perspective',
 							'',
@@ -1143,9 +1143,9 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 		if($box_shadow_status){
 		echo "<li class='box-shadow-option'>
 			<h3>Shadow</h3>
-			<div class='yp-t-cont'>
+			<div class='wyp-t-cont'>
 
-				".yp_get_radio_markup(
+				".wyp_get_radio_markup(
 					'box-shadow-inset',
 					'Position',
 					array(
@@ -1156,13 +1156,13 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Defines whether the shadow is inside or outside.'
 				)."
 
-				".yp_get_color_markup(
+				".wyp_get_color_markup(
 					'box-shadow-color',
 					'Color',
 					'Sets color of the shadow.'
 				)."
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'box-shadow-blur-radius',
 					'Blur Radius',
 					'',
@@ -1173,7 +1173,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Sets blur radius of the shadow.'
 				)."
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'box-shadow-spread',
 					'Spread',
 					'',
@@ -1184,7 +1184,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Set size of the shadow.'
 				)."
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'box-shadow-horizontal',
 					'Horizontal Length',
 					'',
@@ -1195,7 +1195,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Sets horizontal length of the shadow.'
 				)."
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'box-shadow-vertical',
 					'Vertical Length',
 					'',
@@ -1219,9 +1219,9 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 
 			echo "<li class='filter-option'>
 				<h3>Filters</h3>
-				<div class='yp-t-cont'>
+				<div class='wyp-t-cont'>
 
-					".yp_get_radio_markup(
+					".wyp_get_radio_markup(
 						'filter-type',
 						'Filter Type',
 						array(
@@ -1233,9 +1233,9 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					)."
 
 
-					<div class='yp-filter-color-adjustment-section'>
+					<div class='wyp-filter-color-adjustment-section'>
 
-						".yp_get_slider_markup(
+						".wyp_get_slider_markup(
 							'brightness-filter',
 							'Brightness',
 							'',
@@ -1246,7 +1246,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 							""
 						)."
 
-						".yp_get_slider_markup(
+						".wyp_get_slider_markup(
 							'contrast-filter',
 							'Contrast',
 							'',
@@ -1257,7 +1257,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 							""
 						)."
 
-						".yp_get_slider_markup(
+						".wyp_get_slider_markup(
 							'hue-rotate-filter',
 							'Hue Rotate',
 							'',
@@ -1268,7 +1268,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 							""
 						)."
 
-						".yp_get_slider_markup(
+						".wyp_get_slider_markup(
 							'saturate-filter',
 							'Saturate',
 							'',
@@ -1281,9 +1281,9 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 
 					</div>
 
-					<div class='yp-filter-color-effects-section'>
+					<div class='wyp-filter-color-effects-section'>
 
-						".yp_get_slider_markup(
+						".wyp_get_slider_markup(
 							'blur-filter',
 							'Blur',
 							'',
@@ -1294,7 +1294,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 							""
 						)."
 
-						".yp_get_slider_markup(
+						".wyp_get_slider_markup(
 							'grayscale-filter',
 							'Grayscale',
 							'',
@@ -1305,7 +1305,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 							""
 						)."
 
-						".yp_get_slider_markup(
+						".wyp_get_slider_markup(
 							'invert-filter',
 							'Invert',
 							'',
@@ -1316,7 +1316,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 							""
 						)."
 
-						".yp_get_slider_markup(
+						".wyp_get_slider_markup(
 							'sepia-filter',
 							'Sepia',
 							'',
@@ -1334,10 +1334,10 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 		}
 
 		echo "<li class='animation-option'>
-			<h3>Motion <span class='yp-badge yp-anim-recording'>Rec</span></h3>
-			<div class='yp-t-cont'>
+			<h3>Motion <span class='wyp-badge wyp-anim-recording'>Rec</span></h3>
+			<div class='wyp-t-cont'>
 
-				".yp_get_radio_markup(
+				".wyp_get_radio_markup(
 					'motion-type',
 					'Motion Type',
 					array(
@@ -1348,14 +1348,14 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					''
 				)."
 
-				<div class='yp-motion-animation-section'>";
+				<div class='wyp-motion-animation-section'>";
 
 				// Dev Animation Tools Filter
 				$filter_animation_tools = apply_filters( 'yp_animation_tools', TRUE);
 
 				// If animation Generator Open
 				if($filter_animation_tools){
-					echo "<a class='yp-advanced-link yp-just-desktop yp-add-animation-link'>Create An Animation</a>";
+					echo "<a class='wyp-advanced-link wyp-just-desktop wyp-add-animation-link'>Create An Animation</a>";
 				}
 
 				$myAnimations = array();
@@ -1444,7 +1444,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 				// Merge
 				$animations = array_merge($myAnimations, $defaultAnimations);
 
-				echo " ".yp_get_select_markup(
+				echo " ".wyp_get_select_markup(
 					'animation-name',
 					'Animation',
 					$animations,
@@ -1453,7 +1453,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 				)."
 
 				<div class='option-group-class'>
-				".yp_get_select_markup(
+				".wyp_get_select_markup(
 					'animation-play',
 					'Trigger',
 					array(
@@ -1466,7 +1466,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'OnScreen: Play animation when element visible on screen.<br><br>Hover: Play animation when mouse on element.<br><br>Click: Play animation when element clicked.<br><br>Focus: Play element when click on a text field.'
 				)."
 
-				".yp_get_select_markup(
+				".wyp_get_select_markup(
 					'--animation-trigger-repeat',
 					'Trigger Repeat',
 					array(
@@ -1482,7 +1482,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 				)."
 				</div>
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'animation-duration',
 					'Duration',
 					'',
@@ -1494,7 +1494,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					's,ms'
 				)."
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'animation-delay',
 					'Delay',
 					'',
@@ -1506,7 +1506,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					's,ms'
 				)."
 
-				".yp_get_select_markup(
+				".wyp_get_select_markup(
 					'animation-timing-function',
 					'Easing',
 					array(
@@ -1520,7 +1520,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Specifies the speed curve of the animation effect.'
 				)."
 
-				".yp_get_radio_markup(
+				".wyp_get_radio_markup(
 					'animation-fill-mode',
 					'Animation Fill Mode',
 					array(
@@ -1535,7 +1535,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 
 				</div>
 
-				<div class='yp-motion-transition-section'>";
+				<div class='wyp-motion-transition-section'>";
 
 					// Transition CSS Filter
 				    $transition_status = apply_filters( 'yp_property__transition', TRUE);
@@ -1543,7 +1543,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 				    // Transition is valid
 				    if($transition_status){
 
-						echo yp_get_select_markup(
+						echo wyp_get_select_markup(
 							'transition-property',
 							'Type',
 							'transition-properties.json',
@@ -1551,7 +1551,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 							'Specifies the name of the CSS property the transition effect is for (the transition effect will start when the specified CSS property changes).'
 						)."
 
-						".yp_get_slider_markup(
+						".wyp_get_slider_markup(
 							'transition-duration',
 							'Duration',
 							'',
@@ -1563,7 +1563,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 							's,ms'
 						)."
 
-						".yp_get_select_markup(
+						".wyp_get_select_markup(
 							'transition-timing-function',
 							'Easing',
 							array(
@@ -1586,9 +1586,9 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 
 		<li class='extra-option'>
 			<h3>Extra</h3>
-			<div class='yp-t-cont'>
+			<div class='wyp-t-cont'>
 
-					".yp_get_select_markup(
+					".wyp_get_select_markup(
 						'display',
 						'Display',
 						array(
@@ -1607,7 +1607,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					)."
 
 					<div class='flex-container-section'>
-					".yp_get_radio_markup(
+					".wyp_get_radio_markup(
 						'flex-direction',
 						'Direction',
 						array(
@@ -1619,13 +1619,13 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					)."
 
 					<div class='option-group-class'>
-					".yp_get_select_markup(
+					".wyp_get_select_markup(
 						'justify-content',
 						'Justify Content',
 						array(
 							'normal' => 'normal',
-							'flex-start' => 'flex-start',
-							'flex-end' => 'flex-end',
+							'flex-start' => 'start',
+							'flex-end' => 'end',
 							'center' => 'center',
 							'space-between' => 'space-between',
 							'space-around' => 'space-around',
@@ -1634,15 +1634,15 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 						'Aligns the flexible container&#39;s items when the items do not use all available space on the main-axis (horizontally).'
 					)."
 
-					".yp_get_select_markup(
+					".wyp_get_select_markup(
 						'align-items',
 						'Align Items',
 						array(
 							'normal' => 'normal',
 							'stretch' => 'stretch',
 							'center' => 'center',
-							'flex-start' => 'flex-start',
-							'flex-end' => 'flex-end',
+							'flex-start' => 'start',
+							'flex-end' => 'end',
 							'baseline' => 'baseline',
 						),
 						"",
@@ -1650,7 +1650,23 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					)."
 					</div>
 
-					".yp_get_radio_markup(
+					".wyp_get_select_markup(
+						'align-content',
+						'Align Content',
+						array(
+							'normal' => 'normal',
+							'stretch' => 'stretch',
+							'center' => 'center',
+							'flex-start' => 'start',
+							'flex-end' => 'end',
+							'space-between' => 'space-between',
+							'space-around' => 'space-around',
+						),
+						"",
+						'Specifies the default alignment for items inside the flexible container.'
+					)."
+
+					".wyp_get_radio_markup(
 						'flex-wrap',
 						'Children',
 						array(
@@ -1663,7 +1679,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					</div>
 
 					<div class='flex-child-section'>
-					".yp_get_radio_markup(
+					".wyp_get_radio_markup(
 						'flex',
 						'Sizing',
 						array(
@@ -1675,15 +1691,15 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 						'Sets the flexible length on flexible items.'
 					)."
 
-					".yp_get_select_markup(
+					".wyp_get_select_markup(
 						'align-self',
 						'Align',
 						array(
 							'auto' => 'auto',
 							'stretch' => 'stretch',
 							'center' => 'center',
-							'flex-start' => 'flex-start',
-							'flex-end' => 'flex-end',
+							'flex-start' => 'start',
+							'flex-end' => 'end',
 							'baseline' => 'baseline',
 						),
 						"",
@@ -1694,28 +1710,28 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 
 				<div class='grid-section'>
 
-					".yp_grid_builder(
+					".wyp_grid_builder(
 						'grid-template-columns',
 						'Columns',
 						'Specifies the number (and the widths) of columns in a grid layout.'
 					)."
 
-					".yp_grid_builder(
+					".wyp_grid_builder(
 						'grid-template-rows',
 						'Rows',
 						'Specifies the number (and the heights) of the rows in a grid layout.'
 					)."
 
 					<div class='option-group-class'>
-					".yp_get_select_markup(
+					".wyp_get_select_markup(
 						'align-content',
 						'Align',
 						array(
 							'normal' => 'normal',
 							'stretch' => 'stretch',
 							'center' => 'center',
-							'flex-start' => 'flex-start',
-							'flex-end' => 'flex-end',
+							'flex-start' => 'start',
+							'flex-end' => 'end',
 							'space-between' => 'space-between',
 							'space-around' => 'space-around',
 						),
@@ -1723,13 +1739,13 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 						'Modifies the behavior of the flex-wrap property. It is similar to align-items, but instead of aligning flex items, it aligns flex lines.'
 					)."
 
-					".yp_get_select_markup(
+					".wyp_get_select_markup(
 						'justify-content1',
 						'Justify',
 						array(
 							'normal' => 'normal',
-							'flex-start' => 'flex-start',
-							'flex-end' => 'flex-end',
+							'flex-start' => 'start',
+							'flex-end' => 'end',
 							'center' => 'center',
 							'space-between' => 'space-between',
 							'space-around' => 'space-around',
@@ -1739,7 +1755,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					)."
 					</div>
 
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'column-gap',
 						'Column Gap',
 						'normal',
@@ -1750,7 +1766,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 						'Defines the size of the gap between the columns in a grid layout.'
 					)."
 
-					".yp_get_slider_markup(
+					".wyp_get_slider_markup(
 						'row-gap',
 						'Row Gap',
 						'normal',
@@ -1764,7 +1780,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 				</div>
 
 				<div class='option-group-class'>
-				".yp_get_radio_markup(
+				".wyp_get_radio_markup(
 					'float',
 					'Float',
 					array(
@@ -1776,7 +1792,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Specifies how an element should float.'
 				)."
 
-				".yp_get_radio_markup(
+				".wyp_get_radio_markup(
 					'clear',
 					'Clear',
 					array(
@@ -1788,7 +1804,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 				)."
 				</div>
 
-				".yp_get_radio_markup(
+				".wyp_get_radio_markup(
 					'visibility',
 					'Visibility',
 					array(
@@ -1799,7 +1815,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Specifies whether or not an element is visible.'
 				)."
 
-				".yp_get_slider_markup(
+				".wyp_get_slider_markup(
 					'opacity',
 					'Opacity',
 					'',
@@ -1811,7 +1827,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 				)."
 
 				<div class='option-group-class'>
-				".yp_get_select_markup(
+				".wyp_get_select_markup(
 					'cursor',
 					'Cursor',
 					array(
@@ -1835,7 +1851,7 @@ echo "<form autocomplete='off' spellcheck='false' autocorrect='off' autocapitali
 					'Specifies the type of cursor to be displayed when pointing on an element.'
 				)."
 
-				".yp_get_radio_markup(
+				".wyp_get_radio_markup(
 					'pointer-events',
 					'Pointer Events',
 					array(

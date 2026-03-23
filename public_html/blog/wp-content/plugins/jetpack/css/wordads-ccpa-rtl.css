@@ -1,13 +1,9 @@
-/*!
-* Do not modify this file directly.  It is compiled SASS code.
-*/
 /* Include Cleanslate */
 /*!
 * CleanSlate
 *   github.com/premasagar/cleanslate
 *
-*/
-/*
+*/ /*
     An extreme CSS reset stylesheet, for normalising the styling of a container element and its children.
 
     by Premasagar Rose
@@ -27,13 +23,11 @@
 .cleanslate article, .cleanslate aside, .cleanslate figure, .cleanslate figcaption, .cleanslate footer, .cleanslate header, .cleanslate menu, .cleanslate nav, .cleanslate section, .cleanslate time, .cleanslate mark, .cleanslate audio, .cleanslate video, .cleanslate abbr, .cleanslate address, .cleanslate area, .cleanslate blockquote, .cleanslate canvas, .cleanslate caption, .cleanslate cite, .cleanslate code, .cleanslate colgroup, .cleanslate col, .cleanslate datalist, .cleanslate fieldset, .cleanslate main, .cleanslate map, .cleanslate meta, .cleanslate optgroup, .cleanslate output, .cleanslate progress, .cleanslate svg {
   background-attachment: scroll !important;
   background-color: transparent !important;
-  background-image: none !important;
-  /* This rule affects the use of pngfix JavaScript http://dillerdesign.com/experiment/DD_BelatedPNG for IE6, which is used to force the browser to recognise alpha-transparent PNGs files that replace the IE6 lack of PNG transparency. (The rule overrides the VML image that is used to replace the given CSS background-image). If you don't know what that means, then you probably haven't used the pngfix script, and this comment may be ignored :) */
+  background-image: none !important; /* This rule affects the use of pngfix JavaScript http://dillerdesign.com/experiment/DD_BelatedPNG for IE6, which is used to force the browser to recognise alpha-transparent PNGs files that replace the IE6 lack of PNG transparency. (The rule overrides the VML image that is used to replace the given CSS background-image). If you don't know what that means, then you probably haven't used the pngfix script, and this comment may be ignored :) */
   background-position: 100% 0 !important;
   background-repeat: repeat !important;
   border-color: black !important;
-  border-color: currentColor !important;
-  /* `border-color` should match font color. Modern browsers (incl. IE9) allow the use of "currentColor" to match the current font 'color' value <http://www.w3.org/TR/css3-color/#currentcolor>. For older browsers, a default of 'black' is given before this rule. Guideline to support older browsers: if you haven't already declared a border-color for an element, be sure to do so, e.g. when you first declare the border-width. */
+  border-color: currentColor !important; /* `border-color` should match font color. Modern browsers (incl. IE9) allow the use of "currentColor" to match the current font 'color' value <http://www.w3.org/TR/css3-color/#currentcolor>. For older browsers, a default of 'black' is given before this rule. Guideline to support older browsers: if you haven't already declared a border-color for an element, be sure to do so, e.g. when you first declare the border-width. */
   border-radius: 0 !important;
   border-style: none !important;
   border-width: medium !important;
@@ -47,8 +41,7 @@
   direction: inherit !important;
   display: inline !important;
   float: none !important;
-  font-family: inherit !important;
-  /* As with other inherit values, this needs to be set on the root container element */
+  font-family: inherit !important; /* As with other inherit values, this needs to be set on the root container element */
   font-size: inherit !important;
   font-style: inherit !important;
   font-variant: normal !important;
@@ -57,8 +50,7 @@
   right: auto !important;
   letter-spacing: normal !important;
   line-height: inherit !important;
-  list-style-type: inherit !important;
-  /* Could set list-style-type to none */
+  list-style-type: inherit !important; /* Could set list-style-type to none */
   list-style-position: outside !important;
   list-style-image: none !important;
   margin: 0 !important;
@@ -93,30 +85,25 @@
   -webkit-background-clip: border-box !important;
   background-clip: border-box !important;
   background-size: auto !important;
-  -o-border-image: none !important;
   border-image: none !important;
   border-radius: 0 !important;
   box-shadow: none !important;
   box-sizing: content-box !important;
   column-count: auto !important;
   column-gap: normal !important;
-  column-rule: medium none black !important;
-  /* doesn't exist yet but probably will */
+  column-rule: medium none black !important; /* doesn't exist yet but probably will */
   column-span: 1 !important;
   column-width: auto !important;
   font-feature-settings: normal !important;
   overflow-x: visible !important;
   overflow-y: visible !important;
-  -webkit-hyphens: manual !important;
-  -ms-hyphens: manual !important;
-      hyphens: manual !important;
+  hyphens: manual !important;
   -ms-perspective: none !important;
   -o-perspective: none !important;
   perspective: none !important;
   -ms-perspective-origin: 50% 50% !important;
   -o-perspective-origin: 50% 50% !important;
   perspective-origin: 50% 50% !important;
-  -webkit-backface-visibility: visible !important;
   backface-visibility: visible !important;
   text-shadow: none !important;
   transition: all 0s ease 0s !important;
@@ -144,17 +131,17 @@
 
 .cleanslate h1 {
   font-size: 2em !important;
-  padding: .67em 0 !important;
+  padding: 0.67em 0 !important;
 }
 
 .cleanslate h2 {
   font-size: 1.5em !important;
-  padding: .83em 0 !important;
+  padding: 0.83em 0 !important;
 }
 
 .cleanslate h3 {
   font-size: 1.17em !important;
-  padding: .83em 0 !important;
+  padding: 0.83em 0 !important;
 }
 
 .cleanslate h4 {
@@ -162,7 +149,7 @@
 }
 
 .cleanslate h5 {
-  font-size: .83em !important;
+  font-size: 0.83em !important;
 }
 
 .cleanslate p {
@@ -202,7 +189,7 @@
 
 .cleanslate ul li, .cleanslate ul ul li, .cleanslate ul ul ul li, .cleanslate ol li, .cleanslate ol ol li, .cleanslate ol ol ol li, .cleanslate ul ol ol li, .cleanslate ul ul ol li, .cleanslate ol ul ul li, .cleanslate ol ol ul li {
   list-style-position: inside !important;
-  margin-top: .08em !important;
+  margin-top: 0.08em !important;
 }
 
 .cleanslate ol ol, .cleanslate ol ol ol, .cleanslate ul ul, .cleanslate ul ul ul, .cleanslate ol ul, .cleanslate ol ul ul, .cleanslate ol ol ul, .cleanslate ul ol, .cleanslate ul ol ol, .cleanslate ul ul ol {
@@ -236,8 +223,7 @@
   /* Fixes IE7 issue with positioning of nested bullets */
   min-height: auto !important;
   min-width: auto !important;
-  padding-right: 20px !important;
-  /* replace -webkit-padding-start: 40px; */
+  padding-right: 20px !important; /* replace -webkit-padding-start: 40px; */
 }
 
 .cleanslate strong {
@@ -276,34 +262,18 @@
   -webkit-appearance: push-button !important;
   color: buttontext !important;
   border: 1px #a6a6a6 solid !important;
-  background: lightgrey !important;
-  /* Old browsers */
-  background: white;
-  /* Old browsers */
-  /* FF3.6+ */
-  /* Chrome,Safari4+ */
-  /* Chrome10+,Safari5.1+ */
-  /* Opera 11.10+ */
-  /* IE10+ */
-  background: linear-gradient(to bottom, white 0%, #dddddd 100%, #d1d1d1 100%, #dddddd 100%) !important;
-  /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#dddddd',GradientType=0 ) !important;
-  /* IE6-9 */
+  background: lightgrey !important; /* Old browsers */
+  background: rgb(255, 255, 255); /* Old browsers */ /* FF3.6+ */ /* Chrome,Safari4+ */ /* Chrome10+,Safari5.1+ */ /* Opera 11.10+ */ /* IE10+ */
+  background: linear-gradient(to bottom, rgb(255, 255, 255) 0%, rgb(221, 221, 221) 100%, rgb(209, 209, 209) 100%, rgb(221, 221, 221) 100%) !important; /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#dddddd',GradientType=0 ) !important; /* IE6-9 */
   -o-box-shadow: -1px 1px 0px #eee !important;
   box-shadow: -1px 1px 0px #eee !important;
   outline: initial !important;
 }
 
 .cleanslate button:active, .cleanslate input[type=submit]:active, .cleanslate input[type=button]:active, .cleanslate button:active {
-  background: #3b679e !important;
-  /* Old browsers */
-  /* FF3.6+ */
-  /* Chrome,Safari4+ */
-  /* Chrome10+,Safari5.1+ */
-  /* Opera 11.10+ */
-  /* IE10+ */
-  background: linear-gradient(to bottom, #3b679e 0%, #2b88d9 50%, #207cca 51%, #7db9e8 100%) !important;
-  /* W3C */
+  background: rgb(59, 103, 158) !important; /* Old browsers */ /* FF3.6+ */ /* Chrome,Safari4+ */ /* Chrome10+,Safari5.1+ */ /* Opera 11.10+ */ /* IE10+ */
+  background: linear-gradient(to bottom, rgb(59, 103, 158) 0%, rgb(43, 136, 217) 50%, rgb(32, 124, 202) 51%, rgb(125, 185, 232) 100%) !important; /* W3C */
   border-color: #5259b0 !important;
 }
 
@@ -381,8 +351,7 @@
 }
 
 .cleanslate blockquote, .cleanslate q {
-  quotes: none !important;
-  /* HTML5 */
+  quotes: none !important; /* HTML5 */
 }
 
 .cleanslate blockquote:before, .cleanslate blockquote:after, .cleanslate q:before, .cleanslate q:after, .cleanslate li:before, .cleanslate li:after {
@@ -466,11 +435,9 @@
   font-size: medium !important;
   line-height: 1 !important;
   direction: rtl !important;
-  text-align: right !important;
-  /* for IE, Opera */
-  text-align: start !important;
-  /* recommended W3C Spec */
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif !important;
+  text-align: right !important; /* for IE, Opera */
+  text-align: start !important; /* recommended W3C Spec */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
   color: black !important;
   font-style: normal !important;
   font-weight: normal !important;
@@ -490,10 +457,9 @@
 
 .cleanslate {
   /* Modal */
-  /* Form Toggle */
 }
-
-.cleanslate .components-modal__screen-overlay, .cleanslate .ccpa__loading-overlay {
+.cleanslate .components-modal__screen-overlay,
+.cleanslate .ccpa__loading-overlay {
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
@@ -504,7 +470,6 @@
   animation: edit-post__fade-in-animation 0.2s ease-out 0s !important;
   animation-fill-mode: forwards !important;
 }
-
 .cleanslate .components-modal__frame {
   position: absolute !important;
   top: 0 !important;
@@ -518,7 +483,6 @@
   box-shadow: 0 3px 30px rgba(25, 30, 35, 0.2) !important;
   overflow: auto !important;
 }
-
 .cleanslate .ccpa__loading-message {
   position: absolute !important;
   top: 50% !important;
@@ -528,9 +492,8 @@
   box-sizing: border-box !important;
   margin: 0 !important;
   text-align: center !important;
-  color: #ffffff !important;
+  color: #fff !important;
 }
-
 @media (min-width: 600px) {
   .cleanslate .components-modal__frame {
     top: 50% !important;
@@ -545,16 +508,14 @@
     animation-fill-mode: forwards !important;
   }
 }
-
 @keyframes components-modal__appear-animation {
   from {
-    margin-top: 32px !important;
+    margin-top: 32px;
   }
   to {
-    margin-top: 0 !important;
+    margin-top: 0;
   }
 }
-
 .cleanslate .components-modal__header {
   box-sizing: border-box !important;
   border-bottom: 1px solid #e2e4e7 !important;
@@ -570,17 +531,14 @@
   z-index: 10 !important;
   margin: 0 -16px 16px !important;
 }
-
 .cleanslate .components-modal__header .components-modal__header-heading {
   font-size: 16px !important;
   font-weight: 600 !important;
 }
-
 .cleanslate .components-modal__header h1 {
   line-height: 1 !important;
   margin: 0 !important;
 }
-
 .cleanslate .components-modal__header-heading-container {
   align-items: center !important;
   flex-grow: 1 !important;
@@ -588,13 +546,11 @@
   flex-direction: row !important;
   justify-content: left !important;
 }
-
 .cleanslate .components-modal__content {
   box-sizing: border-box !important;
   height: 100% !important;
   padding: 0 16px !important;
 }
-
 .cleanslate .components-modal__footer {
   box-sizing: border-box !important;
   border-top: 1px solid #e2e4e7 !important;
@@ -606,27 +562,12 @@
   z-index: 10 !important;
   margin: 0 -16px !important;
 }
-
 .cleanslate .components-modal__footer-bottom {
   display: flex !important;
   flex-direction: row-reverse !important;
   justify-content: space-between !important;
   align-items: center !important;
 }
-
-.cleanslate .components-button {
-  display: inline-flex !important;
-  text-decoration: none !important;
-  font-size: 13px !important;
-  margin: 0 !important;
-  border: 0 !important;
-  cursor: pointer !important;
-  -webkit-appearance: none !important;
-  background: none !important;
-  /* Buttons that look like links, for a cross of good semantics with the visual */
-  /* Link buttons that are red to indicate destructive behavior. */
-}
-
 .cleanslate .components-icon-button {
   display: flex !important;
   align-items: center !important;
@@ -642,48 +583,43 @@
   box-shadow: none !important;
   outline: none !important;
 }
-
 .cleanslate .components-icon-button:active {
   background: none !important;
 }
-
 .cleanslate .components-icon-button .dashicon {
   display: inline-block !important;
   flex: 0 0 auto !important;
 }
-
 .cleanslate .components-icon-button svg {
   fill: currentColor !important;
   outline: none !important;
   cursor: pointer !important;
 }
-
-.cleanslate .components-icon-button:not(:disabled):not([aria-disabled="true"]):not(.is-default):hover, .cleanslate .components-icon-button:not(:disabled):not([aria-disabled="true"]):not(.is-default):focus {
+.cleanslate .components-icon-button:not(:disabled):not([aria-disabled=true]):not(.is-default):hover, .cleanslate .components-icon-button:not(:disabled):not([aria-disabled=true]):not(.is-default):focus {
   background-color: #fff !important;
   color: #1d2327 !important;
   box-shadow: inset 0 0 0 1px #e2e4e7, inset 0 0 0 2px #fff, 0 1px 1px rgba(25, 30, 35, 0.2) !important;
 }
-
-.cleanslate .components-icon-button:not(:disabled):not([aria-disabled="true"]):not(.is-default):active {
+.cleanslate .components-icon-button:not(:disabled):not([aria-disabled=true]):not(.is-default):active {
   outline: none !important;
   background-color: #fff !important;
   color: #1d2327 !important;
   box-shadow: inset 0 0 0 1px #c3c4c7, inset 0 0 0 2px #fff !important;
 }
-
-.cleanslate .components-icon-button[aria-disabled="true"]:focus, .cleanslate .components-icon-button:disabled:focus {
+.cleanslate .components-icon-button[aria-disabled=true]:focus,
+.cleanslate .components-icon-button:disabled:focus {
   box-shadow: none !important;
 }
-
+.cleanslate {
+  /* Form Toggle */
+}
 .cleanslate .components-form-toggle {
   position: relative !important;
   display: inline-block !important;
 }
-
 .cleanslate .components-form-toggle.disabled {
   opacity: 0.5 !important;
 }
-
 .cleanslate .components-form-toggle .components-form-toggle__on,
 .cleanslate .components-form-toggle .components-form-toggle__off {
   position: absolute !important;
@@ -693,27 +629,26 @@
   height: 6px !important;
   overflow: hidden !important;
 }
-
 .cleanslate .components-form-toggle.is-checked .components-form-toggle__on {
   display: block !important;
 }
-
 .cleanslate .components-form-toggle.is-checked .components-form-toggle__off {
   display: none !important;
 }
-
 .cleanslate .components-form-toggle .components-form-toggle__off {
   color: #787c82 !important;
   fill: currentColor !important;
   left: 6px !important;
   width: 6px !important;
 }
-
 .cleanslate .components-form-toggle .components-form-toggle__on {
   right: 8px !important;
   display: none !important;
+  outline: 1px solid transparent !important;
+  outline-offset: -1px !important;
+  border: 1px solid #000 !important;
+  filter: invert(100%) contrast(500%) !important;
 }
-
 .cleanslate .components-form-toggle .components-form-toggle__track {
   content: "" !important;
   display: inline-block !important;
@@ -726,13 +661,11 @@
   border-radius: 9px !important;
   transition: 0.2s background ease !important;
 }
-
 @media (prefers-reduced-motion: reduce) {
   .cleanslate .components-form-toggle .components-form-toggle__track {
     transition-duration: 0s !important;
   }
 }
-
 .cleanslate .components-form-toggle .components-form-toggle__thumb {
   display: block !important;
   position: absolute !important;
@@ -746,54 +679,44 @@
   background-color: #787c82 !important;
   border: 5px solid #787c82 !important;
 }
-
 @media (prefers-reduced-motion: reduce) {
   .cleanslate .components-form-toggle .components-form-toggle__thumb {
     transition-duration: 0s !important;
   }
 }
-
 .cleanslate .components-form-toggle:hover .components-form-toggle__track {
   border: 2px solid #50575e !important;
 }
-
 .cleanslate .components-form-toggle:hover .components-form-toggle__thumb {
   background-color: #50575e !important;
   border: 5px solid #787c82 !important;
 }
-
 .cleanslate .components-form-toggle:hover .components-form-toggle__off {
   color: #50575e !important;
 }
-
 .cleanslate .components-form-toggle.is-checked .components-form-toggle__track {
   background-color: #11a0d2 !important;
   border: 2px solid #11a0d2 !important;
   border: 9px solid transparent !important;
 }
-
 .cleanslate .components-form-toggle__input:focus + .components-form-toggle__track {
   box-shadow: 0 0 0 2px #fff, 0 0 0 3px #787c82 !important;
   outline: 2px solid transparent !important;
   outline-offset: 2px !important;
 }
-
 .cleanslate .components-form-toggle.is-checked .components-form-toggle__thumb {
   background-color: #fff !important;
   border-width: 0 !important;
   transform: translateX(-18px) !important;
 }
-
 .cleanslate .components-form-toggle.is-checked::before {
   background-color: #11a0d2 !important;
   border: 2px solid #11a0d2 !important;
 }
-
 .cleanslate .components-disabled .components-form-toggle {
   opacity: 0.3 !important;
 }
-
-.cleanslate .components-form-toggle input.components-form-toggle__input[type="checkbox"] {
+.cleanslate .components-form-toggle input.components-form-toggle__input[type=checkbox] {
   position: absolute !important;
   top: 0 !important;
   right: 0 !important;
@@ -805,26 +728,15 @@
   z-index: 1 !important;
   border: none !important;
 }
-
-.cleanslate .components-form-toggle.disabled input.components-form-toggle__input[type="checkbox"] {
+.cleanslate .components-form-toggle.disabled input.components-form-toggle__input[type=checkbox] {
   cursor: default !important;
 }
-
-.cleanslate .components-form-toggle input.components-form-toggle__input[type="checkbox"]:checked {
+.cleanslate .components-form-toggle input.components-form-toggle__input[type=checkbox]:checked {
   background: none !important;
 }
-
-.cleanslate .components-form-toggle input.components-form-toggle__input[type="checkbox"]::before {
+.cleanslate .components-form-toggle input.components-form-toggle__input[type=checkbox]::before {
   content: "" !important;
 }
-
-.cleanslate .components-form-toggle .components-form-toggle__on {
-  outline: 1px solid transparent !important;
-  outline-offset: -1px !important;
-  border: 1px solid #000 !important;
-  filter: invert(100%) contrast(500%) !important;
-}
-
 .cleanslate .components-button {
   display: inline-flex !important;
   text-decoration: none !important;
@@ -834,10 +746,9 @@
   cursor: pointer !important;
   -webkit-appearance: none !important;
   background: none !important;
-  /* Buttons that look like links, for a cross of good semantics with the visual */
+  /* Buttons that look like links for a cross of good semantics and visuals. */
   /* Link buttons that are red to indicate destructive behavior. */
 }
-
 .cleanslate .components-button.is-button {
   padding: 0 10px 1px !important;
   line-height: 26px !important;
@@ -847,100 +758,100 @@
   border-width: 1px !important;
   border-style: solid !important;
 }
-
 .cleanslate .components-button.is-primary {
-  background: #0085ba !important;
-  border-color: #006a95 #00648c #00648c !important;
-  box-shadow: inset 0 -1px 0 #00648c !important;
+  background: rgb(0, 133, 186) !important;
+  border-color: rgb(0, 106, 149) rgb(0, 100, 140) rgb(0, 100, 140) !important;
+  box-shadow: inset 0 -1px 0 rgb(0, 100, 140) !important;
   color: #fff !important;
   text-decoration: none !important;
-  text-shadow: 0 -1px 1px #005d82, -1px 0 1px #005d82, 0 1px 1px #005d82, 1px 0 1px #005d82 !important;
+  text-shadow: 0 -1px 1px rgb(0, 93, 130), -1px 0 1px rgb(0, 93, 130), 0 1px 1px rgb(0, 93, 130), 1px 0 1px rgb(0, 93, 130) !important;
 }
-
-.cleanslate .components-button.is-primary:hover, .cleanslate .components-button.is-primary:focus:enabled {
-  background: #007eb1 !important;
-  border-color: #00435d !important;
+.cleanslate .components-button.is-primary:hover,
+.cleanslate .components-button.is-primary:focus:enabled {
+  background: rgb(0, 126, 177) !important;
+  border-color: rgb(0, 67, 93) !important;
   color: #fff !important;
 }
-
 .cleanslate .components-button.is-primary:hover {
-  box-shadow: inset 0 -1px 0 #00435d !important;
+  box-shadow: inset 0 -1px 0 rgb(0, 67, 93) !important;
 }
-
 .cleanslate .components-button.is-primary:active:enabled {
-  background: #006a95 !important;
-  border-color: #00435d !important;
-  box-shadow: inset 0 1px 0 #00435d !important;
+  background: rgb(0, 106, 149) !important;
+  border-color: rgb(0, 67, 93) !important;
+  box-shadow: inset 0 1px 0 rgb(0, 67, 93) !important;
   vertical-align: top !important;
 }
-
-.cleanslate .components-button.is-primary:disabled, .cleanslate .components-button.is-primary:disabled:active:enabled, .cleanslate .components-button.is-primary[aria-disabled="true"], .cleanslate .components-button.is-primary[aria-disabled="true"]:active:enabled {
-  color: #66b6d6 !important;
-  background: #0085ba !important;
-  border-color: #007cad !important;
+.cleanslate .components-button.is-primary:disabled,
+.cleanslate .components-button.is-primary:disabled:active:enabled,
+.cleanslate .components-button.is-primary[aria-disabled=true],
+.cleanslate .components-button.is-primary[aria-disabled=true]:active:enabled {
+  color: rgb(102, 182, 214) !important;
+  background: rgb(0, 133, 186) !important;
+  border-color: rgb(0, 124, 173) !important;
   box-shadow: none !important;
   text-shadow: none !important;
   opacity: 1 !important;
 }
-
-.cleanslate .components-button.is-primary:disabled.is-button, .cleanslate .components-button.is-primary:disabled.is-button:hover, .cleanslate .components-button.is-primary:disabled:active:enabled, .cleanslate .components-button.is-primary:disabled:active:enabled.is-button, .cleanslate .components-button.is-primary:disabled:active:enabled.is-button:hover, .cleanslate .components-button.is-primary:disabled:active:enabled:active:enabled, .cleanslate .components-button.is-primary[aria-disabled="true"].is-button, .cleanslate .components-button.is-primary[aria-disabled="true"].is-button:hover, .cleanslate .components-button.is-primary[aria-disabled="true"]:active:enabled, .cleanslate .components-button.is-primary[aria-disabled="true"]:active:enabled.is-button, .cleanslate .components-button.is-primary[aria-disabled="true"]:active:enabled.is-button:hover, .cleanslate .components-button.is-primary[aria-disabled="true"]:active:enabled:active:enabled {
+.cleanslate .components-button.is-primary:disabled.is-button,
+.cleanslate .components-button.is-primary:disabled.is-button:hover,
+.cleanslate .components-button.is-primary:disabled:active:enabled,
+.cleanslate .components-button.is-primary:disabled:active:enabled.is-button,
+.cleanslate .components-button.is-primary:disabled:active:enabled.is-button:hover,
+.cleanslate .components-button.is-primary:disabled:active:enabled:active:enabled,
+.cleanslate .components-button.is-primary[aria-disabled=true].is-button,
+.cleanslate .components-button.is-primary[aria-disabled=true].is-button:hover,
+.cleanslate .components-button.is-primary[aria-disabled=true]:active:enabled,
+.cleanslate .components-button.is-primary[aria-disabled=true]:active:enabled.is-button,
+.cleanslate .components-button.is-primary[aria-disabled=true]:active:enabled.is-button:hover,
+.cleanslate .components-button.is-primary[aria-disabled=true]:active:enabled:active:enabled {
   box-shadow: none !important;
   text-shadow: none !important;
 }
-
-.cleanslate .components-button.is-primary:disabled:focus:enabled, .cleanslate .components-button.is-primary:disabled:active:enabled:focus:enabled, .cleanslate .components-button.is-primary[aria-disabled="true"]:focus:enabled, .cleanslate .components-button.is-primary[aria-disabled="true"]:active:enabled:focus:enabled {
-  color: #66b6d6 !important;
-  border-color: #007cad !important;
+.cleanslate .components-button.is-primary:disabled:focus:enabled,
+.cleanslate .components-button.is-primary:disabled:active:enabled:focus:enabled,
+.cleanslate .components-button.is-primary[aria-disabled=true]:focus:enabled,
+.cleanslate .components-button.is-primary[aria-disabled=true]:active:enabled:focus:enabled {
+  color: rgb(102, 182, 214) !important;
+  border-color: rgb(0, 124, 173) !important;
   box-shadow: 0 0 0 1px #fff, 0 0 0 3px #007cba !important;
 }
-
 .cleanslate .ccpa-settings {
   font-size: 13px !important;
   line-height: 20px !important;
   color: #1a1a1a !important;
   border-bottom: 1px solid #e2e4e7 !important;
 }
-
 .cleanslate .ccpa-setting {
   margin: 0 -16px 10px -16px !important;
   padding: 16px !important;
   border-bottom: 1px solid #e2e4e7 !important;
 }
-
 .cleanslate .ccpa-setting__header {
-  font-weight: bold !important;
+  font-weight: 700 !important;
 }
-
 .cleanslate .ccpa-setting__text {
   padding-left: 50px !important;
 }
-
 .cleanslate .ccpa-setting__toggle {
   float: left !important;
 }
-
 .cleanslate .ccpa-setting__toggle-text {
   float: left !important;
   margin-left: 8px !important;
   margin-top: -2px !important;
   display: none !important;
 }
-
 .cleanslate .ccpa-setting__toggle-text-off {
   display: inline-block !important;
 }
-
 .cleanslate .is-checked > .ccpa-setting__toggle-text-off {
   display: none !important;
 }
-
 .cleanslate .is-checked > .ccpa-setting__toggle-text-on {
   display: inline-block !important;
 }
-
-.cleanslate .ccpa-privacy, .cleanslate .ccpa-privacy:visited {
-  color: #0085ba !important;
+.cleanslate .ccpa-privacy,
+.cleanslate .ccpa-privacy:visited {
+  color: rgb(0, 133, 186) !important;
   text-decoration: none !important;
 }
-
-/*# sourceMappingURL=wordads-ccpa-rtl.css.map */

@@ -5,9 +5,9 @@ Plugin URI: https://profiles.wordpress.org/arjunthakur#content-plugins/
 Tags: hide page title, hide custom post title, hide post title, hide title, title hide, hide entry title, page title hide, post title hide, wp title, custom post type, cpt hide, custom post title hide.
 Author URI: https://profiles.wordpress.org/arjunthakur
 Requires at least: 3.5
-Tested up to: 5.7
-Stable tag: 1.5.6
-Version: 1.5.6
+Tested up to: 6.6.2
+Stable tag: 1.5.8
+Version: 1.5.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 

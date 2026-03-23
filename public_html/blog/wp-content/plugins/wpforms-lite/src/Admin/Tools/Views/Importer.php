@@ -207,7 +207,7 @@ class Importer extends View {
 				<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
 				<?php
 				printf(
-					wp_kses( /* translators: %s - Provider name. */
+					wp_kses( /* translators: %s - provider name. */
 						__( 'Analyzing <span class="form-current">1</span> of <span class="form-total">0</span> forms from %s.', 'wpforms-lite' ),
 						[
 							'span' => [
@@ -220,7 +220,7 @@ class Importer extends View {
 				?>
 			</p>
 			<div class="upgrade">
-				<h5><?php esc_html_e( 'Heads Up!', 'wpforms-lite' ); ?></h5>
+				<h5><?php esc_html_e( 'Heads up!', 'wpforms-lite' ); ?></h5>
 				<p><?php esc_html_e( 'One or more of your forms contain fields that are not available in WPForms Lite. To properly import these fields, we recommend upgrading to WPForms Pro.', 'wpforms-lite' ); ?></p>
 				<p><?php esc_html_e( 'You can continue with the import without upgrading, and we will do our best to match the fields. However, some of them will be omitted due to compatibility issues.', 'wpforms-lite' ); ?></p>
 				<p>
@@ -251,7 +251,7 @@ class Importer extends View {
 				<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
 				<?php
 				printf(
-					wp_kses( /* translators: %s - Provider name. */
+					wp_kses( /* translators: %s - provider name. */
 						__( 'Importing <span class="form-current">1</span> of <span class="form-total">0</span> forms from %s.', 'wpforms-lite' ),
 						[
 							'span' => [

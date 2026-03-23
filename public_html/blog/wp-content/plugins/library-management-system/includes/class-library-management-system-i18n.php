@@ -1,28 +1,12 @@
 <?php
-
 /**
- * Define the internationalization functionality
- *
- * Loads and defines the internationalization files for this plugin
- * so that it is ready for translation.
- *
- * @link       http://onlinewebtutorhub.blogspot.in/
- * @since      1.0.0
- *
+ * @link       https://onlinewebtutorblog.com
+ * @since      3.3
  * @package    Library_Management_System
  * @subpackage Library_Management_System/includes
- */
-
-/**
- * Define the internationalization functionality.
- *
- * Loads and defines the internationalization files for this plugin
- * so that it is ready for translation.
- *
- * @since      1.0.0
- * @package    Library_Management_System
- * @subpackage Library_Management_System/includes
- * @author     Online Web Tutor <onlinewebtutorhub@gmail.com>
+ * @copyright  Copyright (c) 2026, Online Web Tutor
+ * @license    GPL-2.0+ https://www.gnu.org/licenses/gpl-2.0.html
+ * @author     Online Web Tutor
  */
 class Library_Management_System_i18n {
 
@@ -30,7 +14,7 @@ class Library_Management_System_i18n {
 	/**
 	 * Load the plugin text domain for translation.
 	 *
-	 * @since    1.0.0
+	 * @since    3.0
 	 */
 	public function load_plugin_textdomain() {
 
@@ -41,7 +25,4 @@ class Library_Management_System_i18n {
 		);
 
 	}
-
-
-
 }

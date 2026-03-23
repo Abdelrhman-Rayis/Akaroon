@@ -3,8 +3,8 @@ Contributors: WPServeur, NicolasKulka, wpformation
 Donate link: https://www.paypal.me/donateWPServeur
 Tags: login, limit login, security, authentication, WPS Limit Login, wps-limit-login, Limit Login Attempts, Limit Login Attempts Reloaded, Limit Login Attempts Revamped, Limit Login Attempts Renovated, Limit Login Attempts Updated, Better Limit Login Attempts, Limit Login Attempts Renewed, Limit Login Attempts Upgraded, limit, wpserveur
 Requires at least: 4.2
-Tested up to: 5.7
-Stable tag: 1.5.3
+Tested up to: 6.8
+Stable tag: 1.5.9.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -97,6 +97,35 @@ This plugin is only maintained, which means we do not guarantee free support. Co
 5. WP Login
 
 == Changelog ==
+
+= 1.5.9.2 =
+* Tested up to 6.8
+
+= 1.5.9.1 =
+* Fix Fatal Error
+
+= 1.5.9 =
+* Tested up to 6.5
+* Add pub WPBoutik
+
+= 1.5.8.1 =
+* Fix : Fatal error: Uncaught TypeError: Typed property WPS\WPS_Limit_Login\Plugin::$allow_local_options must be an instance of WPS\WPS_Limit_Login\mixed, bool used
+
+= 1.5.8 =
+* Tested up to 6.4
+* Fix Deprecated with PHP 8.3
+
+= 1.5.7 =
+* Tested up to 6.3
+
+= 1.5.6 =
+* Tested up to 6.0
+
+= 1.5.5 =
+* Tested up to 5.9
+
+= 1.5.4 =
+* Tested up to 5.8
 
 = 1.5.3 =
 * Tested up to 5.7

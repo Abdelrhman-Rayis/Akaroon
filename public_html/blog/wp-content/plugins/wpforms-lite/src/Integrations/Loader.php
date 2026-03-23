@@ -32,21 +32,45 @@ class Loader {
 	 */
 	public function __construct() {
 
-		$core_class_names = array(
+		$core_class_names = [
+			'SMTP\Notifications',
+			'LiteConnect\LiteConnect',
 			'Divi\Divi',
 			'Elementor\Elementor',
+			'WPCode\WPCode',
+			'WPCode\RegisterLibrary',
 			'Gutenberg\FormSelector',
 			'WPMailSMTP\Notifications',
 			'WPorg\Translations',
+			'Stripe\Stripe',
+			'UncannyAutomator\UncannyAutomator',
 			'UsageTracking\UsageTracking',
 			'DefaultThemes\DefaultThemes',
-			'TranslationsPress\Translations',
-		);
+			'Translations\Translations',
+			'DefaultContent\DefaultContent',
+			'PopupMaker\PopupMaker',
+			'WooCommerce\Notifications',
+			'AI\AI',
+			'ConstantContact\V3\ConstantContact',
+			'Square\Square',
+			'MotoPress\MotoPress',
+			'Abilities\Abilities',
+		];
 
-		$class_names = \apply_filters( 'wpforms_integrations_available', $core_class_names );
+		/**
+		 * Filter available integrations.
+		 *
+		 * @since 1.7.0
+		 *
+		 * @param array $core_class_names Array of core class names.
+		 */
+		$class_names = (array) apply_filters( 'wpforms_integrations_available', $core_class_names ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
 
 		foreach ( $class_names as $class_name ) {
 			$integration = $this->register_class( $class_name );
+
+			wpforms()->register_instance( $class_name, $integration );
+
 			if ( ! empty( $integration ) ) {
 				$this->load_integration( $integration );
 			}
@@ -78,23 +102,26 @@ class Loader {
 	 */
 	public function register_class( $class_name ) {
 
-		$class_name = \sanitize_text_field( $class_name );
+		$class_name = sanitize_text_field( $class_name );
 
 		// Load Lite class if exists.
-		if ( ! \wpforms()->pro && \class_exists( 'WPForms\Lite\Integrations\\' . $class_name ) ) {
+		if ( class_exists( 'WPForms\Lite\Integrations\\' . $class_name ) && ! wpforms()->is_pro() ) {
 			$class_name = 'WPForms\Lite\Integrations\\' . $class_name;
+
 			return new $class_name();
 		}
 
 		// Load Pro class if exists.
-		if ( \wpforms()->pro && \class_exists( 'WPForms\Pro\Integrations\\' . $class_name ) ) {
+		if ( class_exists( 'WPForms\Pro\Integrations\\' . $class_name ) && wpforms()->is_pro() ) {
 			$class_name = 'WPForms\Pro\Integrations\\' . $class_name;
+
 			return new $class_name();
 		}
 
 		// Load general class if neither Pro nor Lite class exists.
-		if ( \class_exists( __NAMESPACE__ . '\\' . $class_name ) ) {
+		if ( class_exists( __NAMESPACE__ . '\\' . $class_name ) ) {
 			$class_name = __NAMESPACE__ . '\\' . $class_name;
+
 			return new $class_name();
 		}
 	}

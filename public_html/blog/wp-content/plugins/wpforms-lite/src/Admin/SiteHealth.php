@@ -10,29 +10,12 @@ namespace WPForms\Admin;
 class SiteHealth {
 
 	/**
-	 * Indicate if Site Health is allowed to load.
-	 *
-	 * @since 1.5.5
-	 *
-	 * @return bool
-	 */
-	private function allow_load() {
-
-		global $wp_version;
-
-		return version_compare( $wp_version, '5.2', '>=' );
-	}
-
-	/**
 	 * Init Site Health.
 	 *
 	 * @since 1.5.5
 	 */
 	final public function init() {
 
-		if ( ! $this->allow_load() ) {
-			return;
-		}
 		$this->hooks();
 	}
 
@@ -69,20 +52,18 @@ class SiteHealth {
 
 		// Install date.
 		$activated = get_option( 'wpforms_activated', [] );
-		if ( ! empty( $activated['lite'] ) ) {
-			$date = $activated['lite'] + ( get_option( 'gmt_offset' ) * 3600 );
 
+		if ( ! empty( $activated['lite'] ) ) {
 			$wpforms['fields']['lite'] = [
 				'label' => esc_html__( 'Lite install date', 'wpforms-lite' ),
-				'value' => date_i18n( esc_html__( 'M j, Y @ g:ia' ), $date ),
+				'value' => wpforms_datetime_format( $activated['lite'], '', true ),
 			];
 		}
-		if ( ! empty( $activated['pro'] ) ) {
-			$date = $activated['pro'] + ( get_option( 'gmt_offset' ) * 3600 );
 
+		if ( ! empty( $activated['pro'] ) ) {
 			$wpforms['fields']['pro'] = [
 				'label' => esc_html__( 'Pro install date', 'wpforms-lite' ),
-				'value' => date_i18n( esc_html__( 'M j, Y @ g:ia' ), $date ),
+				'value' => wpforms_datetime_format( $activated['pro'], '', true ),
 			];
 		}
 
@@ -95,12 +76,14 @@ class SiteHealth {
 
 		// DB tables.
 		$db_tables = wpforms()->get_existing_custom_tables();
+
 		if ( $db_tables ) {
 			$db_tables_str = empty( $db_tables ) ? esc_html__( 'Not found', 'wpforms-lite' ) : implode( ', ', $db_tables );
 
 			$wpforms['fields']['db_tables'] = [
-				'label' => esc_html__( 'DB tables', 'wpforms-lite' ),
-				'value' => $db_tables_str,
+				'label'   => esc_html__( 'DB tables', 'wpforms-lite' ),
+				'value'   => $db_tables_str,
+				'private' => true,
 			];
 		}
 
@@ -110,9 +93,9 @@ class SiteHealth {
 			'value' => wp_count_posts( 'wpforms' )->publish,
 		];
 
-		if ( ! wpforms()->pro ) {
+		if ( ! wpforms()->is_pro() ) {
 
-			$forms = wpforms()->form->get( '', array( 'fields' => 'ids' ) );
+			$forms = wpforms()->obj( 'form' )->get( '', [ 'fields' => 'ids' ] );
 
 			if ( empty( $forms ) || ! is_array( $forms ) ) {
 				$forms = [];

@@ -1,6 +1,11 @@
 <?php
 
+// phpcs:ignore Generic.Commenting.DocComment.MissingShort
+/** @noinspection PhpIllegalPsrClassPathInspection */
+
 namespace WPForms\Admin\Tools\Views;
+
+use WPForms\Helpers\DB;
 
 /**
  * Class System.
@@ -56,20 +61,40 @@ class System extends View {
 	 */
 	public function display() {
 		?>
-
-		<div class="wpforms-setting-row tools">
+		<div class="wpforms-setting-row tools wpforms-settings-row-system-information">
 			<h4 id="form-export"><?php esc_html_e( 'System Information', 'wpforms-lite' ); ?></h4>
-			<textarea class="info-area" readonly><?php echo esc_textarea( $this->get_system_info() ); ?></textarea>
+			<textarea id="wpforms-system-information" class="info-area" readonly>
+				<?php echo esc_textarea( $this->get_system_info() ); ?>
+			</textarea>
+			<button type="button" id="wpforms-system-information-copy"
+					class="wpforms-btn wpforms-btn-md wpforms-btn-light-grey">
+				<?php esc_html_e( 'Copy System Information', 'wpforms-lite' ); ?>
+			</button>
 		</div>
 
-		<div class="wpforms-setting-row tools">
+		<div class="wpforms-setting-row tools wpforms-settings-row-test-ssl">
 			<h4 id="ssl-verify"><?php esc_html_e( 'Test SSL Connections', 'wpforms-lite' ); ?></h4>
-			<p><?php esc_html_e( 'Click the button below to verify your web server can perform SSL connections successfully.', 'wpforms-lite' ); ?></p>
+			<p class="desc"><?php esc_html_e( 'Click the button below to verify your web server can perform SSL connections successfully.', 'wpforms-lite' ); ?></p>
 			<button type="button" id="wpforms-ssl-verify" class="wpforms-btn wpforms-btn-md wpforms-btn-orange">
 				<?php esc_html_e( 'Test Connection', 'wpforms-lite' ); ?>
 			</button>
 		</div>
 
+		<?php
+		DB::flush_existing_tables_cache();
+
+		if ( DB::custom_tables_exist() ) {
+			return;
+		}
+		?>
+
+		<div class="wpforms-setting-row tools wpforms-settings-row-recreate-tables">
+			<h4 id="recreate-tables"><?php esc_html_e( 'Recreate custom tables', 'wpforms-lite' ); ?></h4>
+			<p class="desc"><?php esc_html_e( 'Click the button below to recreate WPForms custom database tables.', 'wpforms-lite' ); ?></p>
+			<button type="button" id="wpforms-recreate-tables" class="wpforms-btn wpforms-btn-md wpforms-btn-orange">
+				<?php esc_html_e( 'Recreate Tables', 'wpforms-lite' ); ?>
+			</button>
+		</div>
 		<?php
 	}
 
@@ -113,13 +138,14 @@ class System extends View {
 		$data      = '-- WPForms Info' . "\n\n";
 
 		if ( ! empty( $activated['pro'] ) ) {
-			$date  = $activated['pro'] + ( get_option( 'gmt_offset' ) * 3600 );
-			$data .= 'Pro:                      ' . date_i18n( esc_html__( 'M j, Y @ g:ia', 'wpforms-lite' ), $date ) . "\n";
+			$data .= 'Pro:                      ' . $this->get_formatted_datetime( $activated['pro'] ) . "\n";
 		}
+
 		if ( ! empty( $activated['lite'] ) ) {
-			$date  = $activated['lite'] + ( get_option( 'gmt_offset' ) * 3600 );
-			$data .= 'Lite:                     ' . date_i18n( esc_html__( 'M j, Y @ g:ia', 'wpforms-lite' ), $date ) . "\n";
+			$data .= 'Lite:                     ' . $this->get_formatted_datetime( $activated['lite'] ) . "\n";
 		}
+
+		$data .= 'Lite Connect:             ' . $this->get_lite_connect_info() . "\n";
 
 		return $data;
 	}
@@ -163,7 +189,7 @@ class System extends View {
 		$data .= 'Active Theme:             ' . $theme . "\n";
 		$data .= 'Show On Front:            ' . get_option( 'show_on_front' ) . "\n";
 
-		// Only show page specs if front page is set to 'page'.
+		// Only show page specs if the front page is set to 'page'.
 		if ( get_option( 'show_on_front' ) === 'page' ) {
 			$front_page_id = get_option( 'page_on_front' );
 			$blog_page_id  = get_option( 'page_for_posts' );
@@ -177,6 +203,7 @@ class System extends View {
 		$data .= 'WPFORMS_DEBUG:            ' . ( defined( 'WPFORMS_DEBUG' ) ? WPFORMS_DEBUG ? 'Enabled' : 'Disabled' : 'Not set' ) . "\n";
 		$data .= 'Memory Limit:             ' . WP_MEMORY_LIMIT . "\n";
 		$data .= 'Registered Post Stati:    ' . implode( ', ', get_post_stati() ) . "\n";
+		$data .= 'Revisions:                ' . ( WP_POST_REVISIONS ? WP_POST_REVISIONS > 1 ? 'Limited to ' . WP_POST_REVISIONS : 'Enabled' : 'Disabled' ) . "\n";
 
 		return $data;
 	}
@@ -241,7 +268,7 @@ class System extends View {
 		if ( ! empty( $muplugins ) && count( $muplugins ) > 0 ) {
 			$data = "\n" . '-- Must-Use Plugins' . "\n\n";
 
-			foreach ( $muplugins as $plugin => $plugin_data ) {
+			foreach ( $muplugins as $plugin_data ) {
 				$data .= $plugin_data['Name'] . ': ' . $plugin_data['Version'] . "\n";
 			}
 		}
@@ -340,7 +367,7 @@ class System extends View {
 		$data  = "\n" . '-- Webserver Configuration' . "\n\n";
 		$data .= 'PHP Version:              ' . PHP_VERSION . "\n";
 		$data .= 'MySQL Version:            ' . $wpdb->db_version() . "\n";
-		$data .= 'Webserver Info:           ' . isset( $_SERVER['SERVER_SOFTWARE'] ) ? sanitize_text_field( wp_unslash( $_SERVER['SERVER_SOFTWARE'] ) ) : '' . "\n";
+		$data .= 'Webserver Info:           ' . ( isset( $_SERVER['SERVER_SOFTWARE'] ) ? sanitize_text_field( wp_unslash( $_SERVER['SERVER_SOFTWARE'] ) ) : '' ) . "\n";
 
 		// PHP configs... now we're getting to the important stuff.
 		$data .= "\n" . '-- PHP Configuration' . "\n\n";
@@ -375,4 +402,43 @@ class System extends View {
 		return $data;
 	}
 
+	/**
+	 * Get Lite Connect status info string.
+	 *
+	 * @since 1.7.5
+	 *
+	 * @return string
+	 */
+	private function get_lite_connect_info() {
+
+		$lc_enabled       = wpforms_setting( 'lite-connect-enabled' );
+		$lc_enabled_since = wpforms_setting( 'lite-connect-enabled-since' );
+		$date             = $this->get_formatted_datetime( $lc_enabled_since );
+
+		if ( $lc_enabled ) {
+			$string = $lc_enabled_since ? 'Backup is enabled since ' . $date : 'Backup is enabled';
+		} else {
+			$string = $lc_enabled_since ? 'Backup is not enabled. Previously was enabled since ' . $date : 'Backup is not enabled';
+		}
+
+		return $string;
+	}
+
+	/**
+	 * Get formatted datetime.
+	 *
+	 * @since 1.8.5
+	 *
+	 * @param int|string $date Date.
+	 *
+	 * @return string
+	 */
+	private function get_formatted_datetime( $date ) {
+
+		return sprintf(
+			'%1$s at %2$s (GMT)',
+			gmdate( 'M j, Y', $date ),
+			gmdate( 'g:ia', $date )
+		);
+	}
 }

@@ -10,8 +10,11 @@
 
 namespace Google\Site_Kit\Modules\Analytics_4;
 
+use Google\Site_Kit\Core\Modules\Tags\Module_Web_Tag;
+use Google\Site_Kit\Core\Tags\GTag;
+use Google\Site_Kit\Core\Tags\Tag_With_Linker_Trait;
 use Google\Site_Kit\Core\Util\Method_Proxy_Trait;
-use Google\Site_Kit\Modules\Analytics\Web_Tag as Analytics_Web_Tag;
+use Google\Site_Kit\Core\Tags\Tag_With_Linker_Interface;
 
 /**
  * Class for Web tag.
@@ -20,20 +23,54 @@ use Google\Site_Kit\Modules\Analytics\Web_Tag as Analytics_Web_Tag;
  * @access private
  * @ignore
  */
-class Web_Tag extends Analytics_Web_Tag {
+class Web_Tag extends Module_Web_Tag implements Tag_Interface, Tag_With_Linker_Interface {
 
 	use Method_Proxy_Trait;
+	use Tag_With_Linker_Trait;
 
 	/**
-	 * Constructor.
+	 * Custom dimensions data.
 	 *
-	 * @since 1.33.0
-	 *
-	 * @param string $tag_id Tag ID.
-	 * @param string $module_slug Module slug.
+	 * @since 1.113.0
+	 * @var array
 	 */
-	public function __construct( $tag_id, $module_slug ) {
-		parent::__construct( 'G-' . $tag_id, $module_slug );
+	private $custom_dimensions;
+
+	/**
+	 * Sets custom dimensions data.
+	 *
+	 * @since 1.113.0
+	 *
+	 * @param string $custom_dimensions Custom dimensions data.
+	 */
+	public function set_custom_dimensions( $custom_dimensions ) {
+		$this->custom_dimensions = $custom_dimensions;
+	}
+
+	/**
+	 * Sets the current home domain.
+	 *
+	 * @since 1.24.0
+	 *
+	 * @param string $domain Domain name.
+	 */
+	public function set_home_domain( $domain ) {
+		$this->home_domain = $domain;
+	}
+
+	/**
+	 * Gets args to use if blocked_on_consent is deprecated.
+	 *
+	 * @since 1.122.0
+	 *
+	 * @return array args to pass to apply_filters_deprecated if deprecated ($version, $replacement, $message)
+	 */
+	protected function get_tag_blocked_on_consent_deprecated_args() {
+		return array(
+			'1.122.0', // Deprecated in this version.
+			'',
+			__( 'Please use the consent mode feature instead.', 'google-site-kit' ),
+		);
 	}
 
 	/**
@@ -42,25 +79,116 @@ class Web_Tag extends Analytics_Web_Tag {
 	 * @since 1.31.0
 	 */
 	public function register() {
-		// Do not call parent::register() because we need to override what is registered in the Analytics::Web_Tag class.
-		add_action( 'wp_enqueue_scripts', $this->get_method_proxy( 'enqueue_gtag_script' ), 20 );
+		add_action( 'googlesitekit_setup_gtag', $this->get_method_proxy( 'setup_gtag' ) );
+		add_filter( 'script_loader_tag', $this->get_method_proxy( 'filter_tag_output' ), 10, 2 );
+
 		$this->do_init_tag_action();
 	}
 
 	/**
-	 * Enqueues gtag script.
+	 * Outputs gtag snippet.
 	 *
-	 * @since 1.31.0
+	 * @since 1.24.0
 	 */
-	protected function enqueue_gtag_script() {
-		if ( did_action( 'googlesitekit_analytics_init_tag' ) ) {
-			// If the gtag script is already registered in the Analytics module, then we need to add <MEASUREMENT_ID> configuration only.
-			$config = sprintf( 'gtag("config", "%s");', esc_js( $this->tag_id ) );
-			wp_add_inline_script( 'google_gtagjs', $config );
-		} else {
-			// Otherwise register gtag as in the Analytics module knowing that we used Measurement ID from GA4 instead of Property ID.
-			parent::enqueue_gtag_script();
-		}
+	protected function render() {
+		// Do nothing, gtag script is enqueued.
 	}
 
+	/**
+	 * Configures gtag script.
+	 *
+	 * @since 1.24.0
+	 * @since 1.124.0 Renamed and refactored to use new GTag infrastructure.
+	 *
+	 * @param GTag $gtag GTag instance.
+	 */
+	protected function setup_gtag( GTag $gtag ) {
+		$gtag_opt = $this->get_tag_config();
+
+		/**
+		 * Filters the gtag configuration options for the Analytics snippet.
+		 *
+		 * You can use the {@see 'googlesitekit_amp_gtag_opt'} filter to do the same for gtag in AMP.
+		 *
+		 * @since 1.24.0
+		 *
+		 * @see https://developers.google.com/gtagjs/devguide/configure
+		 *
+		 * @param array $gtag_opt gtag config options.
+		 */
+		$gtag_opt = apply_filters( 'googlesitekit_gtag_opt', $gtag_opt );
+
+		if ( ! empty( $gtag_opt['linker'] ) ) {
+			$gtag->add_command( 'set', array( 'linker', $gtag_opt['linker'] ) );
+
+			unset( $gtag_opt['linker'] );
+		}
+
+		$gtag->add_tag( $this->tag_id, $gtag_opt );
+	}
+
+	/**
+	 * Filters output of tag HTML.
+	 *
+	 * @param string $tag Tag HTML.
+	 * @param string $handle WP script handle of given tag.
+	 * @return string
+	 */
+	protected function filter_tag_output( $tag, $handle ) {
+		// The tag will either have its own handle or use the common GTag handle, not both.
+		if ( GTag::get_handle_for_tag( $this->tag_id ) !== $handle && GTag::HANDLE !== $handle ) {
+			return $tag;
+		}
+
+		// Retain this comment for detection of Site Kit placed tag.
+		$snippet_comment = sprintf( "<!-- %s -->\n", esc_html__( 'Google Analytics snippet added by Site Kit', 'google-site-kit' ) );
+
+		$block_on_consent_attrs = $this->get_tag_blocked_on_consent_attribute();
+
+		if ( $block_on_consent_attrs ) {
+			$tag = $this->add_legacy_block_on_consent_attributes( $tag, $block_on_consent_attrs );
+		}
+
+		return $snippet_comment . $tag;
+	}
+
+	/**
+	 * Gets the tag config as used in the gtag data vars.
+	 *
+	 * @since 1.113.0
+	 *
+	 * @return array Tag configuration.
+	 */
+	protected function get_tag_config() {
+		$config = array();
+
+		if ( ! empty( $this->custom_dimensions ) ) {
+			$config = array_merge( $config, $this->custom_dimensions );
+		}
+
+		return $this->add_linker_to_tag_config( $config );
+	}
+
+	/**
+	 * Adds HTML attributes to the gtag script tag to block it until user consent is granted.
+	 *
+	 * This mechanism for blocking the tag is deprecated and the consent mode feature should be used instead.
+	 *
+	 * @since 1.122.0
+	 * @since 1.158.0 Remove src from signature & replacement.
+	 *
+	 * @param string $tag                    The script tag.
+	 * @param string $block_on_consent_attrs The attributes to add to the script tag to block it until user consent is granted.
+	 *
+	 * @return string The script tag with the added attributes.
+	 */
+	protected function add_legacy_block_on_consent_attributes( $tag, $block_on_consent_attrs ) {
+		// Use regex to match script tags with src attribute, regardless of other attributes like id.
+		// This handles WordPress-generated script tags which include id attributes.
+		return preg_replace(
+			'/<script\b([^>]*?)\s*src=/si',
+			'<script' . $block_on_consent_attrs . '$1 src=',
+			$tag
+		);
+	}
 }

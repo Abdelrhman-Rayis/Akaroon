@@ -5,8 +5,8 @@
  * This intergration added AMP support when using amp-wp, the existing dataLayer used
  * for Google Tag Manager on HTML is loaded and built into AMP compatible code.
  *
- * @author   Vincent Koc <https://github.com/koconder/>
- * @package  gtm4wp
+ * @author  Vincent Koc <https://github.com/koconder/>
+ * @package GTM4WP
  */
 
 /**
@@ -14,12 +14,11 @@
  * Todo's
  *
  * - Better handling of gtm4wp_amp_gtmampcode_check() to allow for other plugins
- * - Develop array's into strings as AMP GTM dose not allow custom js variables
+ * - Develop array's into strings as AMP GTM does not allow custom js variables
  * - Better Client ID support (https://github.com/Automattic/amp-wp/issues/775)
  * - Update AMP cache on GTM changes (https://github.com/Automattic/amp-wp/pull/605)
  * - Supporting PWA with SuperPWA intergration with AMP and PWA for offline
  */
-
 
 /**
  * Check if we are running AMP
@@ -40,31 +39,34 @@ function gtm4wp_amp_running() {
  *
  * @link https://github.com/Automattic/amp-wp/blob/develop/includes/amp-post-template-actions.php
  * @author Vincent Koc <https://github.com/koconder/>
+ *
+ * @param array $data AMP Template data.
  * @return array Returns AMP Analytics array used by amp-wp
  */
 function gtm4wp_amp_gtmampcode_check( $data ) {
 	global $gtm4wp_amp_headerinjected;
 
-	//run once
-	if($gtm4wp_amp_headerinjected){
+	// run once.
+	if ( $gtm4wp_amp_headerinjected ) {
 		return $data;
 	}
 
-	// AMP-WP Plugin
+	// AMP-WP Plugin.
 	if ( ! empty( $data['amp_analytics'] ) ) {
-		// Inject into AMP Plugin to load
+		// Inject into AMP Plugin to load.
 		$data['amp_component_scripts']['amp-analytics'] = 'https://cdn.ampproject.org/v0/amp-analytics-0.1.js';
 		$gtm4wp_amp_headerinjected                      = true;
 
-		// Manually load into AMP-WP Plugin
+		// Manually load into AMP-WP Plugin.
 	} else {
-		// Inject manually based on AMP <head> hook
+		// Inject manually based on AMP <head> hook.
 		add_action( 'amp_post_template_head', 'gtm4wp_amp_gtmampcode_injecthead' );
 	}
 
-	// Return the $data back to amp-wp hook
+	// Return the $data back to amp-wp hook.
 	return $data;
 }
+
 
 /**
  * Post-check AMP Project's AMP Analytics tag, using amp-wp hook
@@ -76,7 +78,9 @@ function gtm4wp_amp_gtmampcode_injecthead() {
 	global $gtm4wp_amp_headerinjected;
 
 	$gtm4wp_amp_headerinjected = true;
-	echo '<script async custom-element="amp-analytics" src="https://cdn.ampproject.org/v0/amp-analytics-0.1.js"></script>';
+
+	// phpcs ignore because wp_enqueue_script() can not handle special script element attributes needed here.
+	echo '<script async custom-element="amp-analytics" src="https://cdn.ampproject.org/v0/amp-analytics-0.1.js"></script>'; // phpcs:ignore
 }
 
 /**
@@ -88,46 +92,46 @@ function gtm4wp_amp_gtmampcode_injecthead() {
 function gtm4wp_amp_gtmcode() {
 	global $gtm4wp_datalayer_json, $gtm4wp_options, $gtm4wp_amp_bodyinjected;
 
-	//run once
-	if($gtm4wp_amp_bodyinjected){
+	// run once.
+	if ( $gtm4wp_amp_bodyinjected ) {
 		return false;
 	}
 
 	$gtm4wp_amp_bodyinjected = true;
-	// Check dataLayer is loaded from the plugin
+	// Check dataLayer is loaded from the plugin.
 	if ( ! empty( $gtm4wp_datalayer_json ) ) {
 
-		// Builds a list of GTM id's
+		// Builds a list of GTM id's.
 		$gtm4wp_ampids     = explode( ',', $gtm4wp_options[ GTM4WP_OPTION_INTEGRATE_AMPID ] );
 		$gtm4wp_ampid_list = array();
 
-		// Counter used for status return
+		// Counter used for status return.
 		$x = 0;
 
-		// Check we have more than one valid Google Tag Manager ID
+		// Check we have more than one valid Google Tag Manager ID.
 		if ( count( $gtm4wp_ampids ) > 0 ) {
 
-			// Loop through each GTM idea and build the AMP GTM code
+			// Loop through each GTM idea and build the AMP GTM code.
 			foreach ( $gtm4wp_ampids as $gtm4wp_oneampid ) {
 
-				// Docs: https://developers.google.com/analytics/devguides/collection/amp-analytics/
-				// Examples: from https://www.simoahava.com/analytics/accelerated-mobile-pages-via-google-tag-manager/
-				// Inject the AMP GTM code
-				// TODO: Use AMP classes to enable cross-compatibility with other future plugins
-				echo '<!-- Google Tag Manager --><amp-analytics config="https://www.googletagmanager.com/amp.json?id=' . $gtm4wp_oneampid . '&gtm.url=SOURCE_URL" data-credentials="include"><script type="application/json">' . gtm4wp_amp_gtmvariables() . '</script></amp-analytics>';
+				// Docs: https://developers.google.com/analytics/devguides/collection/amp-analytics/.
+				// Examples: from https://www.simoahava.com/analytics/accelerated-mobile-pages-via-google-tag-manager/.
+				// Inject the AMP GTM code.
+				// TODO: Use AMP classes to enable cross-compatibility with other future plugins.
+				echo '<!-- Google Tag Manager --><amp-analytics config="https://www.googletagmanager.com/amp.json?id=' . esc_url_raw( $gtm4wp_oneampid ) . '&gtm.url=SOURCE_URL" data-credentials="include"><script type="application/json">' . wp_json_encode( gtm4wp_amp_gtmvariables() ) . '</script></amp-analytics>';
 
-				// Add to counter
+				// Add to counter.
 				$x++;
 			}
 
-			// Check how many injections for return
+			// Check how many injections for return.
 			if ( $x > 0 ) {
 				return $x;
 			}
 		}
 	}
 
-	// No injection has occured
+	// No injection has occured.
 	return false;
 }
 
@@ -135,27 +139,29 @@ function gtm4wp_amp_gtmcode() {
  * Generate the AMP "vars" from the GTM dataLayer
  *
  * @author Vincent Koc <https://github.com/koconder/>
- * @return string Returns json dataLayer for AMP code
+ * @return array Returns json dataLayer for AMP code
  */
 function gtm4wp_amp_gtmvariables() {
-	global $gtm4wp_datalayer_json;
-	return '{"vars":' . $gtm4wp_datalayer_json . ' }';
+	global $gtm4wp_datalayer_data;
+
+	return array(
+		'vars' => $gtm4wp_datalayer_data,
+	);
 }
 
-
-// Set Status at start
+// Set Status at start.
 $gtm4wp_amp_headerinjected = false;
-$gtm4wp_amp_bodyinjected = false;
+$gtm4wp_amp_bodyinjected   = false;
 
-// Load AMP-Analytics tag into <head>
+// Load AMP-Analytics tag into <head>.
 add_action( 'amp_post_template_data', 'gtm4wp_amp_gtmampcode_check' );
 
-// Load the GTM code processing to gain the GTM DataLayer
+// Load the GTM code processing to gain the GTM DataLayer.
 add_action( 'amp_post_template_head', 'gtm4wp_wp_header_begin' );
 add_action( 'amp_post_template_head', 'gtm4wp_wp_header_top', 1 );
 
-// Try amp_wp_body_open
-// (https://github.com/Automattic/amp-wp/pull/1143)
-add_action( 'amp_post_template_body_open', 'gtm4wp_amp_gtmcode');
-// Publish the GTM code and dataLayer to the footer
+// Try amp_wp_body_open.
+// (https://github.com/Automattic/amp-wp/pull/1143).
+add_action( 'amp_post_template_body_open', 'gtm4wp_amp_gtmcode' );
+// Publish the GTM code and dataLayer to the footer.
 add_action( 'amp_post_template_footer', 'gtm4wp_amp_gtmcode' );

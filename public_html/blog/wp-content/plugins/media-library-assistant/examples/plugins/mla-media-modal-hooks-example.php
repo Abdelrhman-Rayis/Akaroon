@@ -7,7 +7,7 @@
  *     - items assigned to a taxonomy term can be excluded from the "Query Attachments" results
  *
  * @package MLA Media Modal Hooks Example
- * @version 1.02
+ * @version 1.03
  */
 
 /*
@@ -15,10 +15,10 @@ Plugin Name: MLA Media Modal Hooks Example
 Plugin URI: http://davidlingren.com/
 Description: Provides examples of the filters provided by the "Media Manager Enhancements" feature
 Author: David Lingren
-Version: 1.02
+Version: 1.03
 Author URI: http://davidlingren.com/
 
-Copyright 2014-2015 David Lingren
+Copyright 2014-2022 David Lingren
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -70,27 +70,26 @@ class MLAMediaModalExample {
 		 * Comment out the filters you don't need; save them for future use
 		 */
 		 
-		/*
-		 * Defined in /media-library-assistant/includes/class-mla-data.php
-		 */
+		// Defined in /media-library-assistant/includes/class-mla-media-modal-ajax.php
 		add_filter( 'mla_media_modal_form_fields', 'MLAMediaModalExample::mla_media_modal_form_fields', 10, 2 );
+		add_filter( 'mla_media_modal_begin_fill_compat_fields', 'MLAMediaModalExample::mla_media_modal_begin_fill_compat_fields', 10, 3 );
+		add_filter( 'mla_media_modal_end_fill_compat_fields', 'MLAMediaModalExample::mla_media_modal_end_fill_compat_fields', 10, 4 );
+		add_filter( 'mla_media_modal_update_compat_fields_terms', 'MLAMediaModalExample::mla_media_modal_update_compat_fields_terms', 10, 4 );
+		add_filter( 'mla_media_modal_query_initial_terms', 'MLAMediaModalExample::mla_media_modal_query_initial_terms', 10, 2 );
+		add_filter( 'mla_media_modal_query_filtered_terms', 'MLAMediaModalExample::mla_media_modal_query_filtered_terms', 10, 2 );
+		add_action( 'mla_media_modal_begin_update_compat_fields', 'MLAMediaModalExample::mla_media_modal_begin_update_compat_fields', 10, 1 );
+		add_filter( 'mla_media_modal_end_update_compat_fields', 'MLAMediaModalExample::mla_media_modal_end_update_compat_fields', 10, 3 );
+
+		// Defined in /media-library-assistant/includes/class-mla-media-modal.php
 		add_filter( 'mla_media_modal_months_dropdown', 'MLAMediaModalExample::mla_media_modal_months_dropdown', 10, 2 );
 		add_filter( 'mla_media_modal_terms_options', 'MLAMediaModalExample::mla_media_modal_terms_options', 10, 1 );
 		add_filter( 'mla_media_modal_initial_filters', 'MLAMediaModalExample::mla_media_modal_initial_filters', 10, 2 );
 		add_filter( 'mla_media_modal_settings', 'MLAMediaModalExample::mla_media_modal_settings', 10, 2 );
 		add_filter( 'mla_media_modal_strings', 'MLAMediaModalExample::mla_media_modal_strings', 10, 2 );
 		add_filter( 'mla_media_modal_template_path', 'MLAMediaModalExample::mla_media_modal_template_path', 10, 2 );
-		add_filter( 'mla_media_modal_begin_fill_compat_fields', 'MLAMediaModalExample::mla_media_modal_begin_fill_compat_fields', 10, 3 );
-		add_filter( 'mla_media_modal_end_fill_compat_fields', 'MLAMediaModalExample::mla_media_modal_end_fill_compat_fields', 10, 4 );
-		add_action( 'mla_media_modal_begin_update_compat_fields', 'MLAMediaModalExample::mla_media_modal_begin_update_compat_fields', 10, 1 );
-		add_filter( 'mla_media_modal_update_compat_fields_terms', 'MLAMediaModalExample::mla_media_modal_update_compat_fields_terms', 10, 4 );
-		add_filter( 'mla_media_modal_end_update_compat_fields', 'MLAMediaModalExample::mla_media_modal_end_update_compat_fields', 10, 3 );
-		add_filter( 'mla_media_modal_query_initial_terms', 'MLAMediaModalExample::mla_media_modal_query_initial_terms', 10, 2 );
-		add_filter( 'mla_media_modal_query_filtered_terms', 'MLAMediaModalExample::mla_media_modal_query_filtered_terms', 10, 2 );
+		add_action( 'mla_media_modal_query_items', 'MLAMediaModalExample::mla_media_modal_query_items', 10, 5 );
 
-		/*
-		 * Defined in /media-library-assistant/includes/class-mla-data.php
-		 */
+		// Defined in /media-library-assistant/includes/class-mla-data-query.php
 		add_filter( 'mla_media_modal_query_final_terms', 'MLAMediaModalExample::mla_media_modal_query_final_terms', 10, 1 );
 		add_filter( 'mla_media_modal_query_custom_items', 'MLAMediaModalExample::mla_media_modal_query_custom_items', 10, 2 );
 	} // initialize
@@ -248,9 +247,7 @@ class MLAMediaModalExample {
 	public static function mla_media_modal_template_path( $template_path ) {
 		//error_log( 'MLAMediaModalExample::mla_media_modal_template_path $template_path = ' . var_export( $template_path, true ), 0 );
 
-		/*
-		 * To suppress the loading of the default template(s), set $template_path = '';
-		 */
+		// To suppress the loading of the default template(s), set $template_path = '';
 		return $template_path;
 	} // mla_media_modal_template_path
 
@@ -334,9 +331,7 @@ class MLAMediaModalExample {
 		//error_log( "MLAMediaModalExample::mla_media_modal_update_compat_fields_terms( {$key}, {$post_id} ) \$terms = " . var_export( $terms, true ), 0 );
 		//error_log( "MLAMediaModalExample::mla_media_modal_update_compat_fields_terms( {$key}, {$post_id} ) \$value = " . var_export( $value, true ), 0 );
 
-		/*
-		 * To suppress term assignment, set $terms = NULL;
-		 */
+		// To suppress term assignment, set $terms = NULL;
 		return $terms;
 	} // mla_media_modal_update_compat_fields_terms
 
@@ -400,6 +395,25 @@ class MLAMediaModalExample {
 	} // mla_media_modal_query_filtered_terms
 
 	/**
+	 * MLA Media Modal Query Items action
+	 *
+	 * Gives you an opportunity to Record or modify
+	 * the results of the "mla_query_media_modal_items" query.
+	 *
+	 * @since 1.03
+	 *
+	 * @param	object	$attachments_query WP_Query results, passed by reference
+	 * @param	array	$query query parameters passed to WP_Query
+	 * @param	array	$raw_query query parameters passed in to function
+	 * @param	integer	$offset parameter_name => parameter_value pairs
+	 * @param	integer	$count parameter_name => parameter_value pairs
+	 */
+	public static function mla_media_modal_query_items( $attachments_query, $query, $raw_query, $offset, $count ) {
+//error_log( __LINE__ . " MLAMediaModalExample::mla_media_modal_query_items( {$offset}, {$count} ) query = " . var_export( $query, true ), 0 );
+//error_log( __LINE__ . " MLAMediaModalExample::mla_media_modal_query_items( {$offset}, {$count} ) raw_query = " . var_export( $raw_query, true ), 0 );
+//error_log( __LINE__ . " MLAMediaModalExample::mla_media_modal_query_items( {$attachments_query->post_count}, {$attachments_query->found_posts} ) query_vars = " . var_export( $attachments_query->query_vars, true ), 0 );
+	} // mla_media_modal_query_items
+	/**
 	 * MLA Edit Media "Query Attachments" final terms Filter
 	 *
 	 * Gives you an opportunity to change the terms of the 
@@ -461,8 +475,6 @@ class MLAMediaModalExample {
 	} // mla_media_modal_query_custom_items
 } //MLAMediaModalExample
 
-/*
- * Install the filters at an early opportunity
- */
+// Install the filters at an early opportunity
 add_action('init', 'MLAMediaModalExample::initialize');
 ?>

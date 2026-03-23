@@ -6,10 +6,27 @@
  * @package automattic/jetpack
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
+// phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed -- TODO: Move classes to appropriately-named class files.
+
 /**
  * Class Jetpack_Shortcode_Unavailable
+ *
+ * @phan-constructor-used-for-side-effects
  */
 class Jetpack_Shortcode_Unavailable {
+	/**
+	 * Shortcodes that are unavailable.
+	 *
+	 * Key is the shortcode, value is string explaining why.
+	 *
+	 * @var array
+	 */
+	public $shortcodes;
+
 	/**
 	 * Set up the actions and filters for the class to listen to.
 	 *
@@ -71,6 +88,7 @@ function jetpack_init_shortcode_unavailable() {
 	new Jetpack_Shortcode_Unavailable(
 		array(
 			'digg'                    => __( 'The Digg API was shut down in 2014.', 'jetpack' ),
+			'hulu'                    => __( 'Hulu no longer allows embedding content.', 'jetpack' ),
 			'blip.tv'                 => __( 'The Blip.tv service has been shut down since August 20th, 2015.', 'jetpack' ),
 			'googlevideo'             => __( 'The Google Video embed service is not available anymore, it has been replaced by YouTube.', 'jetpack' ),
 			'jetpack-email-subscribe' => __( 'The Email Subscribe shortcode is now available as a block in the Block editor.', 'jetpack' ),

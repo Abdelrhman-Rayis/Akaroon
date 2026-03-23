@@ -1,8 +1,8 @@
 === Visual CSS Style Editor ===
-Tags: yellow pencil, css, design, google fonts, editor, customize
+Tags: CSS, visual CSS, CSS editor, design, customize, font, animation, yellow pencil, theme
 Requires at least: 4.0
-Tested up to: 5.7
-Stable tag: 5.7
+Tested up to: 6.9
+Stable tag: 6.8
 Contributors: WaspThemes
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -13,7 +13,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 [youtube https://www.youtube.com/watch?v=TDOgAf6R1Ik]
 
 == Visual CSS Editor ==
-The plugin allows you to **customize any page and theme without coding**. Click on an element and start visual editing. Adjust **colors**, **fonts**, **sizes**, **positions** and a lot more. Take full control over your website's design with more than 60 styles properties.
+The plugin allows you to **customize any page and theme without coding**. Click on an element and start visual editing. Adjust **colors**, **fonts**, **sizes**, **positions** and a lot more. Take full control over your website's design with more than 60 style properties.
 
 === Key Features ===
 - Customize any page, any element
@@ -46,7 +46,7 @@ The plugin provides you advanced tools and ready-to-use libraries for styling yo
 === Design Assets ===
 Reach many design assets with one click. Customize your website's design to fit your needs!
 
-- 800+ Google fonts *(pro version)*
+- 900+ Google fonts *(pro version)*
 - 300+ Background patterns *(pro version)*
 - Unsplash background stock images *(pro version)*
 - Material and flat color palettes *(pro version)*
@@ -106,7 +106,7 @@ Reach many design assets with one click. Customize your website's design to fit 
 This works seamlessly with almost any WordPress theme and plugin. You can use it for editing the pages that you created with the page builders.
 
 === Compatible with All Page Builders ===
-The plugin allows you to customize the pages created with Gutenberg block editor, Elementor or another page builder. Re-design your website today.
+The plugin allows you to customize the pages created with Gutenberg block editor, Elementor, or another page builder. Re-design your website today.
 
 === How does this work? ===
 The plugin generates CSS codes like a professional web developer in the background while you are editing the web page visually.
@@ -127,10 +127,10 @@ The following properties are available only in paid version;
 
 === Documentation and Support ===
 - For documentation and tutorials go to our [Documentation](https://yellowpencil.waspthemes.com/documentation/?utm_source=wp-repo&utm_medium=link&utm_campaign=readme).
-- We provides very limited support on the [WordPress.org forums](https://wordpress.org/support/plugin/yellow-pencil-visual-theme-customizer/). Please feel free to post questions or bug reports, but for timely support, we recommend purchasing a YellowPencil Pro license.
+- We provide very limited support on the [WordPress.org forums](https://wordpress.org/support/plugin/yellow-pencil-visual-theme-customizer/). Please feel free to post questions or bug reports, but for timely support, we recommend purchasing a YellowPencil Pro license.
 - For more information, check out our website at [YellowPencil Visual CSS Style Editor](https://yellowpencil.waspthemes.com/?utm_source=wp-repo&utm_medium=link&utm_campaign=readme).
 
-=== Liked This Plugin? ===
+=== Community ===
 - Join our [Facebook Group](https://www.facebook.com/groups/YellowPencils/).
 - Rate us on [WordPress](https://wordpress.org/support/plugin/yellow-pencil-visual-theme-customizer/reviews/#new-post).
 
@@ -145,10 +145,10 @@ The following properties are available only in paid version;
 Yes, this plugin is compatible with all themes and plugins. You can be sure that it works in the best possible way.
 
 = Is it safe to use? =
-Yes, the plugin does not modify the theme and plugin files. This is 100% safe. You can manage all the changes, disable or delete it at any time.
+Yes, the plugin does not modify the theme and plugin files. This is 100% safe. You can manage all the changes, disable or delete them at any time.
 
 = Do I need to know coding knowledge to use it? =
-No, the plugin has a simple interface and this developed for anyone. A beginner user can use it easily. If you worry about how to use it, [plugin documentation](http://yellowpencil.waspthemes.com/documentation/?utm_source=wp-repo&utm_medium=link&utm_campaign=readme) will help you.
+No, the plugin has a simple interface and this is developed for anyone. A beginner user can use it easily. If you worry about how to use it, [plugin documentation](http://yellowpencil.waspthemes.com/documentation/?utm_source=wp-repo&utm_medium=link&utm_campaign=readme) will help you.
 
 = Can I customize WordPress Login page? =
 Yes, In the WordPress Dashboard, go to Appearance > YellowPencil Editor. Select the target page as WordPress login page and click customize button.
@@ -161,7 +161,7 @@ Yes, In the WordPress Dashboard, go to Appearance > YellowPencil Editor. Select 
 4. Editing font family.
 5. Editing padding & margin visually.
 6. Adds animation to the element.
-7. Applies CSS3 gradient to an text element.
+7. Applies CSS3 gradient to a text element.
 8. The editor panel. Choose one block on your website and apply any style visually.
 9. The text properties in the editor panel.
 10. The background properties in the editor panel.
@@ -169,6 +169,75 @@ Yes, In the WordPress Dashboard, go to Appearance > YellowPencil Editor. Select 
 
 
 == Changelog ==
+= 7.6.7 =
+- Fixed: a few minor bugs.
+
+= 7.6.5 =
+- Fixed: Security improvements and bug fixes.
+
+= 7.6.4 =
+- Fixed: A minor security bug.
+
+= 7.6.1 =
+- Fixed: a few minor bugs.
+
+= 7.6.0 =
+- Fixed: Issue of "Edit With YellowPencil" button showing up on unrelated pages in WordPress panel.
+
+= 7.5.9 =
+- Fixed: A minor security issue.
+
+= 7.5.8 =
+- Fixed: a few minor PHP bugs.
+
+= 7.5.7 =
+- Fixed: A PHP warning.
+
+= 7.5.6 =
+- Added "align-content" property to Flex options.
+- Improvements: better CSS selectors for the WordPress block editor.
+- improvements to the navigator.
+
+= 7.5.5 =
+- Fixed: A php notice occurred on PHP 8
+
+= 7.5.4 =
+- Fixed: A minor conflict with older PHP versions.
+
+= 7.5.3 =
+- Fixed: A PHP warning occurred on PHP 8.
+- Fixed: External stylesheet loading bug.
+- Improvements: The editor is now able to stop unwanted redirects and page refreshes.
+- Improvements: The blue dot on the responsive tool is removed.
+
+= 7.5.2 =
+- Google fonts list updated.
+- Fixed a bug that occurred when trying to open the item menu.
+- Fixed a bug that occurred when trying to select an item from the navigation tool while cursor mode was active.
+
+= 7.5.1 =
+- CSS rendering bug fixed
+- Fixed a bug that occurred when editing the CSS selector
+
+= 7.5.0 =
+- CSS loading bug fixed.
+
+= 7.4.9 =
+- Fixed a bug that occurred when resetting a CSS property.
+
+= 7.4.8 =
+- Improvements for animation triggers.
+- Fixed a bug that appeared in older PHP versions.
+
+= 7.4.7 =
+- Fixed the editor not loading bug when WordPress dashboard and website have different protocols.
+- Fixed a bug that related to the element states
+
+= 7.4.6 =
+- Fixed a bug that occurred when selecting elements
+- Fixed a bug that occurred when editing the CSS selector
+- Performance improvements to the editor
+
 = 7.4.5 =
 - Performance improvements to the editor
 

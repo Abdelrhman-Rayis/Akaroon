@@ -9,8 +9,14 @@
  * opened on 8/19/2017 by "lwcorp".
  * https://wordpress.org/support/topic/how-about-mla_gallery-listmask/
  *
+ * Enhanced (settings screen notes) for support topic "Cannot open PDFs"
+ * opened on 5/10/2022 by "gerdski".
+ * https://wordpress.org/support/topic/cannot-open-pdfs/
+ *
+ * Revised for MLA v2.30 rewrite of named transfer method
+ *
  * @package MLA Item Transfer Pretty Links
- * @version 1.01
+ * @version 1.03
  */
 
 /*
@@ -18,11 +24,11 @@ Plugin Name: MLA Item Transfer Pretty Links
 Plugin URI: http://davidlingren.com/
 Description: Converts "Transfer by Item Name" links to pretty links, adds URL rewrite rule to convert them back.
 Author: David Lingren
-Version: 1.01
+Version: 1.03
 
 Author URI: http://davidlingren.com/
 
-Copyright 2014 - 2017 David Lingren
+Copyright 2014 - 2025 David Lingren
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -55,7 +61,16 @@ class MLAItemTransferPrettyLinks {
 	 *
 	 * @var	string
 	 */
-	const CURRENT_VERSION = '1.00';
+	const CURRENT_VERSION = '1.03';
+
+	/**
+	 * Constant to log this plugin's debug activity
+	 *
+	 * @since 1.03
+	 *
+	 * @var	integer
+	 */
+	const MLA_DEBUG_CATEGORY = 0x00008000;
 
 	/**
 	 * Slug prefix for registering and enqueueing submenu pages, style sheets and scripts
@@ -155,7 +170,7 @@ class MLAItemTransferPrettyLinks {
 	 * @return	array	Updated array of links for the Plugin
 	 */
 	public static function plugin_action_links( $links, $file ) {
-		if ( $file == 'mla-item-transfer-pretty-links.php' ) {
+		if ( 0 === strpos( $file, 'mla-item-transfer-pretty-links' ) ) {
 			$settings_link = sprintf( '<a href="%s">%s</a>', admin_url( 'options-general.php?page=' . self::SLUG_PREFIX . 'settings' ), 'Settings' );
 			array_unshift( $links, $settings_link );
 		}
@@ -174,7 +189,7 @@ class MLAItemTransferPrettyLinks {
 			$mla_item = get_query_var('mla_item');
 			$mla_disposition = get_query_var('mla_disposition');
 			$mla_debug = get_query_var('mla_debug');
-			MLACore::mla_debug_add( __LINE__ . " MLAItemTransferPrettyLinks:template_redirect item = {$mla_item}, disposition = {$mla_disposition}, debug = <{$mla_debug}>", MLACore::MLA_DEBUG_CATEGORY_ANY );
+			MLACore::mla_debug_add( __LINE__ . " MLAItemTransferPrettyLinks:template_redirect item = {$mla_item}, disposition = {$mla_disposition}, debug = <{$mla_debug}>", self::MLA_DEBUG_CATEGORY );
 			
 			$args = array(
 				'action' => 'mla_named_transfer',
@@ -214,7 +229,7 @@ class MLAItemTransferPrettyLinks {
 	 * @return	void Echoes HTML markup for the submenu page
 	 */
 	public static function add_submenu_page() {
-		MLACore::mla_debug_add( __LINE__ . " MLAItemTransferPrettyLinks:add_submenu_page() \$_REQUEST = " . var_export( $_REQUEST, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		MLACore::mla_debug_add( __LINE__ . " MLAItemTransferPrettyLinks:add_submenu_page() \$_REQUEST = " . var_export( $_REQUEST, true ), self::MLA_DEBUG_CATEGORY );
 
 		if ( !current_user_can( 'manage_options' ) ) {
 			echo "<h2>MLA Item Transfer Pretty Links - Error</h2>\n";
@@ -264,6 +279,7 @@ class MLAItemTransferPrettyLinks {
 		echo "\t\t" . '<form action="' . admin_url( 'options-general.php?page=' . self::SLUG_PREFIX . 'settings' ) . '" method="post" class="' . self::SLUG_PREFIX . 'settings-form-class" id="' . self::SLUG_PREFIX . 'settings-form-id">' . "\n";
 		echo "\t\t" . '  <p class="submit" style="padding-bottom: 0;">' . "\n";
 		echo "\t\t" . '    <table width=99%>' . "\n";
+		echo "\t\t" . '      <tr><td colspan=2>The <code>mla_named_transfer=true</code> parameter implements the “simple” approach described in the Settings/Media Library Assistant Documentation tab. The example plugin adds the “more complex” alternative, transforming the links from the <code>admin-ajax.php</code> format to something like:<br />&nbsp;<br /><code>http://www.mysite.com/mla-transfer/view/my-item-slug<br />http://www.mysite.com/mla-transfer/download/my-item-slug</code><br />&nbsp;<br />The example plugin adds a Settings/MLA Pretty Links page that allows you to change the “mla-transfer”, “download” and “view” portions of the pretty links. It will transform any [mla_gallery] shortcode containing a <code>mla_named_transfer=true</code> parameter.<br />&nbsp;<br /></td></tr>' . "\n";
 
 		echo "\t\t" . '      <tr><td colspan=2>Enter the "pretty link" elements for your site, then click Save Settings.</td></tr>' . "\n";
 		echo "\t\t" . '      <tr><td colspan=2>Make sure the labels do not conflict with other WordPress elements, e.g., Custom Post Types.</td></tr>' . "\n";
@@ -418,7 +434,7 @@ class MLAItemTransferPrettyLinks {
 	 * @param	array	$all_display_parameters shortcode arguments merged with gallery display defaults, so every possible parameter is present
 	 */
 	public static function mla_gallery_arguments( $all_display_parameters ) {
-		MLACore::mla_debug_add( __LINE__ . " MLAItemTransferPrettyLinks::mla_gallery_arguments link = " . var_export( $all_display_parameters['link'], true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		MLACore::mla_debug_add( __LINE__ . " MLAItemTransferPrettyLinks::mla_gallery_arguments link = " . var_export( $all_display_parameters['link'], true ), self::MLA_DEBUG_CATEGORY );
 
 		self::$all_display_parameters = $all_display_parameters;
 		return $all_display_parameters;
@@ -432,15 +448,22 @@ class MLAItemTransferPrettyLinks {
 	 * @param	array	$item_values parameter_name => parameter_value pairs
 	 */
 	public static function mla_gallery_item_values( $item_values ) {
-		
 		// We only care about MLA Named Item Transfer links
 		if ( 'true' !== self::$all_display_parameters['mla_named_transfer'] ) {
 			return $item_values;
 		}
+
+		// Create pretty link with all Content Parameters
+		$match_count = preg_match( '#mla_item=([^\&]+)#', $item_values['transferlink'], $matches, PREG_OFFSET_CAPTURE );
+		if ( ! ( ( $match_count == false ) || ( $match_count == 0 ) ) ) {
+			$query_args = '?' . $matches[0][0];
+		} else {
+			$query_args = '';
+		}
 		
 		// Create pretty link with all Content Parameters
 		$match_count = preg_match( '#href=\'([^\']+)\'#', $item_values['filelink'], $matches, PREG_OFFSET_CAPTURE );
-		if ( ! ( ( $match_count == false ) || ( $match_count == 0 ) ) ) {
+		if ( ! ( ( $match_count == false ) || ( $match_count == 0 ) || empty( $query_args ) ) ) {
 			$url = $item_values['site_url'] . '/' . self::$settings['transfer_label'] . '/';
 
 			if ( 'download' === self::$all_display_parameters['link'] ) {
@@ -450,12 +473,13 @@ class MLAItemTransferPrettyLinks {
 			}
 
 			$url .= '/' . $item_values['slug'];
+			$url .= $query_args;
 			
 			$item_values['link_url'] = $url;
 			$item_values['link'] = preg_replace( '#' . $matches[0][0] . '#', sprintf( 'href=\'%1$s\'', $url ), $item_values['filelink'] );
 		}
 		
-		MLACore::mla_debug_add( __LINE__ . " MLAItemTransferPrettyLinks::mla_gallery_item_values link_url = " . var_export( $item_values['link_url'], true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		MLACore::mla_debug_add( __LINE__ . " MLAItemTransferPrettyLinks::mla_gallery_item_values link_url = " . var_export( $item_values['link_url'], true ), self::MLA_DEBUG_CATEGORY );
 
 		return $item_values;
 	} // mla_gallery_item_values

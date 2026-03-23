@@ -1,9 +1,18 @@
 <?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
+// phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed -- TODO: Move classes to appropriately-named class files.
+
 /**
  * Social Icons Widget.
  */
 class Jetpack_Widget_Social_Icons extends WP_Widget {
+
+	const ID_BASE = 'jetpack_widget_social_icons';
+
 	/**
 	 * Default widget options.
 	 *
@@ -20,6 +29,7 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 		$widget_ops = array(
 			'classname'                   => 'jetpack_widget_social_icons',
 			'description'                 => __( 'Add social-media icons to your site.', 'jetpack' ),
+			'show_instance_in_rest'       => true,
 			'customize_selective_refresh' => true,
 		);
 
@@ -47,11 +57,18 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 			add_action( 'admin_print_footer_scripts', array( $this, 'render_admin_js' ) );
 		}
 
-		// Enqueue scripts and styles for the display of the widget, on the frontend or in the customizer.
-		if ( is_active_widget( false, $this->id, $this->id_base, true ) || is_customize_preview() ) {
-			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_icon_scripts' ) );
-			add_action( 'wp_footer', array( $this, 'include_svg_icons' ), 9999 );
-		}
+		add_filter( 'widget_types_to_hide_from_legacy_widget_block', array( $this, 'hide_widget_in_block_editor' ) );
+	}
+
+	/**
+	 * Remove the "Social Icons" widget from the Legacy Widget block
+	 *
+	 * @param array $widget_types List of widgets that are currently removed from the Legacy Widget block.
+	 * @return array $widget_types New list of widgets that will be removed.
+	 */
+	public function hide_widget_in_block_editor( $widget_types ) {
+		$widget_types[] = self::ID_BASE;
+		return $widget_types;
 	}
 
 	/**
@@ -61,7 +78,7 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 		wp_enqueue_script(
 			'jetpack-widget-social-icons-script',
 			plugins_url( 'social-icons/social-icons-admin.js', __FILE__ ),
-			array( 'jquery-ui-sortable' ),
+			array( 'jquery', 'jquery-ui-sortable' ),
 			'20170506',
 			true
 		);
@@ -97,15 +114,36 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 	public function include_svg_icons() {
 		// Define SVG sprite file in Jetpack.
 		$svg_icons = dirname( __DIR__ ) . '/theme-tools/social-menu/social-menu.svg';
-
+		$svg_icons = class_exists( 'Automattic\Jetpack\Classic_Theme_Helper\Main' ) ? JETPACK__PLUGIN_DIR . 'jetpack_vendor/automattic/jetpack-classic-theme-helper/src/social-menu/social-menu.svg' : dirname( __DIR__ ) . '/theme-tools/social-menu/social-menu.svg';
 		// Define SVG sprite file in WPCOM.
 		if ( defined( 'IS_WPCOM' ) && IS_WPCOM ) {
-			$svg_icons = dirname( __DIR__ ) . '/social-menu/social-menu.svg';
+			$svg_icons = class_exists( 'Automattic\Jetpack\Classic_Theme_Helper\Main' ) ? JETPACK__PLUGIN_DIR . 'jetpack_vendor/automattic/jetpack-classic-theme-helper/src/social-menu/social-menu.svg' : dirname( __DIR__ ) . '/social-menu/social-menu.svg';
 		}
 
 		// If it exists, include it.
 		if ( is_file( $svg_icons ) ) {
-			require_once $svg_icons;
+			$svg_contents = file_get_contents( $svg_icons ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Only reading a local file.
+		}
+
+		if ( ! empty( $svg_contents ) ) {
+			$allowed_tags = array(
+				'svg'    => array(
+					'style'       => true,
+					'version'     => true,
+					'xmlns'       => true,
+					'xmlns:xlink' => true,
+				),
+				'defs'   => array(),
+				'symbol' => array(
+					'id'      => true,
+					'viewbox' => true,
+				),
+				'path'   => array(
+					'd'     => true,
+					'style' => true,
+				),
+			);
+			echo wp_kses( $svg_contents, $allowed_tags );
 		}
 	}
 
@@ -120,13 +158,17 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 	public function widget( $args, $instance ) {
 		$instance = wp_parse_args( $instance, $this->defaults );
 
+		// Enqueue front end assets.
+		$this->enqueue_icon_scripts();
+		add_action( 'wp_footer', array( $this, 'include_svg_icons' ), 9999 );
+
 		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
 		$title = apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base );
 
 		echo $args['before_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 		if ( ! empty( $title ) ) {
-			echo $args['before_title'] . esc_html( $title ) . $args['after_title']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $args['before_title'] . $title . $args['after_title']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		if ( ! empty( $instance['icons'] ) ) :
@@ -146,7 +188,7 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 							<?php
 							printf(
 								'<a href="%1$s" %2$s>',
-								esc_url( $icon['url'], array( 'http', 'https', 'mailto', 'skype' ) ),
+								esc_url( $icon['url'], array( 'http', 'https', 'mailto', 'sms' ) ),
 								true === $instance['new-tab'] ?
 									'target="_blank" rel="noopener noreferrer"' :
 									'target="_self"'
@@ -156,7 +198,19 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 
 							foreach ( $social_icons as $social_icon ) {
 								foreach ( $social_icon['url'] as $url_fragment ) {
-									if ( false !== stripos( $icon['url'], $url_fragment ) ) {
+									/*
+									 * url_fragment can be a URL host, or a regex, starting with #.
+									 * Let's check for both scenarios.
+									 */
+									if (
+										// First Regex.
+										(
+											str_starts_with( $url_fragment, '#' ) && str_ends_with( $url_fragment, '#' )
+											&& preg_match( $url_fragment, $icon['url'] )
+										)
+										// Then, regular host name.
+										|| str_contains( $icon['url'], $url_fragment )
+									) {
 										printf(
 											'<span class="screen-reader-text">%1$s</span>%2$s',
 											esc_attr( $social_icon['label'] ),
@@ -209,6 +263,7 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 
 		$instance['title']     = sanitize_text_field( $new_instance['title'] );
 		$instance['icon-size'] = $this->defaults['icon-size'];
+		$instance['url-icons'] = array_key_exists( 'url-icons', $new_instance ) ? $new_instance['url-icons'] : array();
 
 		if ( in_array( $new_instance['icon-size'], array( 'small', 'medium', 'large' ), true ) ) {
 			$instance['icon-size'] = $new_instance['icon-size'];
@@ -217,13 +272,15 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 		$instance['new-tab'] = isset( $new_instance['new-tab'] ) ? (bool) $new_instance['new-tab'] : false;
 		$instance['icons']   = array();
 
-		foreach ( $new_instance['url-icons'] as $url ) {
-			$url = filter_var( $url, FILTER_SANITIZE_URL );
+		if ( array_key_exists( 'url-icons', $new_instance ) ) {
+			foreach ( $new_instance['url-icons'] as $url ) {
+				$url = filter_var( $url, FILTER_SANITIZE_URL );
 
-			if ( ! empty( $url ) ) {
-				$instance['icons'][] = array(
-					'url' => $url,
-				);
+				if ( ! empty( $url ) ) {
+					$instance['icons'][] = array(
+						'url' => $url,
+					);
+				}
 			}
 		}
 
@@ -290,17 +347,19 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 		</p>
 
 		<?php
-		switch ( get_locale() ) {
+		$lang = strtolower( substr( get_locale(), 0, 2 ) );
+		switch ( $lang ) {
 			case 'es':
-				$support = 'https://es.support.wordpress.com/social-media-icons-widget/#iconos-disponibles';
+				$support = 'https://wordpress.com/es/support/wordpress-editor/blocks/social-icons-block/display-social-profiles/#iconos-sociales-compatibles';
 				break;
 
-			case 'pt-br':
-				$support = 'https://br.support.wordpress.com/widgets/widget-de-icones-sociais/#ícones-disponíveis';
+			case 'pt':
+				$support = 'https://wordpress.com/pt-br/support/exibir-perfis-de-redes-sociais/#icones-de-redes-sociais-compativeis';
 				break;
 
 			default:
-				$support = 'https://en.support.wordpress.com/widgets/social-media-icons-widget/#available-icons';
+				$support = 'https://wordpress.com/support/wordpress-editor/blocks/social-icons-block/display-social-profiles/#supported-social-icons';
+				break;
 		}
 		?>
 
@@ -344,7 +403,7 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 							esc_attr( $args['url-icon-id'] ),
 							esc_attr( $args['url-icon-name'] ),
 							esc_attr__( 'Account URL', 'jetpack' ),
-							esc_url( $args['url-value'], array( 'http', 'https', 'mailto', 'skype' ) )
+							esc_url( $args['url-value'], array( 'http', 'https', 'mailto', 'sms' ) )
 						);
 					?>
 				</p>
@@ -423,16 +482,7 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 			),
 			array(
 				'url'   => array(
-					'amazon.cn',
-					'amazon.in',
-					'amazon.fr',
-					'amazon.de',
-					'amazon.it',
-					'amazon.nl',
-					'amazon.es',
-					'amazon.co',
-					'amazon.ca',
-					'amazon.com',
+					'#https?:\/\/(www\.)?amazon\.(com|cn|in|fr|de|it|nl|es|co|ca)\/#',
 				),
 				'icon'  => 'amazon',
 				'label' => 'Amazon',
@@ -466,6 +516,11 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 				'label' => 'Blogger',
 			),
 			array(
+				'url'   => array( 'bsky.app' ),
+				'icon'  => 'bluesky',
+				'label' => 'Bluesky',
+			),
+			array(
 				'url'   => array( 'codepen.io' ),
 				'icon'  => 'codepen',
 				'label' => 'CodePen',
@@ -481,7 +536,7 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 				'label' => 'Digg',
 			),
 			array(
-				'url'   => array( 'discord.gg', 'discordapp.com' ),
+				'url'   => array( '#discord\.gg|discordapp\.com#' ),
 				'icon'  => 'discord',
 				'label' => 'Discord',
 			),
@@ -531,7 +586,7 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 				'label' => 'Goodreads',
 			),
 			array(
-				'url'   => array( 'google.com', 'google.co.uk', 'google.ca', 'google.cn', 'google.it' ),
+				'url'   => array( '#google\.(com|co\.uk|ca|cn|it)#' ),
 				'icon'  => 'google',
 				'label' => 'Google',
 			),
@@ -556,6 +611,11 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 				'label' => __( 'Email', 'jetpack' ),
 			),
 			array(
+				'url'   => jetpack_mastodon_get_instance_list(),
+				'icon'  => 'mastodon',
+				'label' => 'Mastodon',
+			),
+			array(
 				'url'   => array( 'meetup.com' ),
 				'icon'  => 'meetup',
 				'label' => 'Meetup',
@@ -564,6 +624,11 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 				'url'   => array( 'medium.com' ),
 				'icon'  => 'medium',
 				'label' => 'Medium',
+			),
+			array(
+				'url'   => array( 'nextdoor.com' ),
+				'icon'  => 'nextdoor',
+				'label' => 'Nextdoor',
 			),
 			array(
 				'url'   => array( 'patreon.com' ),
@@ -576,11 +641,6 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 				'label' => 'Pinterest',
 			),
 			array(
-				'url'   => array( 'getpocket.com' ),
-				'icon'  => 'pocket',
-				'label' => 'Pocket',
-			),
-			array(
 				'url'   => array( 'ravelry.com' ),
 				'icon'  => 'ravelry',
 				'label' => 'Ravelry',
@@ -591,19 +651,14 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 				'label' => 'Reddit',
 			),
 			array(
-				'url'   => array( 'skype.com' ),
-				'icon'  => 'skype',
-				'label' => 'Skype',
-			),
-			array(
-				'url'   => array( 'skype:' ),
-				'icon'  => 'skype',
-				'label' => 'Skype',
-			),
-			array(
 				'url'   => array( 'slideshare.net' ),
 				'icon'  => 'slideshare',
 				'label' => 'SlideShare',
+			),
+			array(
+				'url'   => array( 'sms:' ),
+				'icon'  => 'sms',
+				'label' => 'SMS',
 			),
 			array(
 				'url'   => array( 'snapchat.com' ),
@@ -626,14 +681,24 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 				'label' => 'Stack Overflow',
 			),
 			array(
+				'url'   => array( 'strava.com' ),
+				'icon'  => 'strava',
+				'label' => 'Strava',
+			),
+			array(
 				'url'   => array( 'stumbleupon.com' ),
 				'icon'  => 'stumbleupon',
 				'label' => 'StumbleUpon',
 			),
 			array(
-				'url'   => array( 'telegram.me', 't.me' ),
+				'url'   => array( '#https?:\/\/(www\.)?(telegram|t)\.me#' ),
 				'icon'  => 'telegram',
 				'label' => 'Telegram',
+			),
+			array(
+				'url'   => array( 'threads.net' ),
+				'icon'  => 'threads',
+				'label' => 'Threads',
 			),
 			array(
 				'url'   => array( 'tiktok.com' ),
@@ -649,11 +714,6 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 				'url'   => array( 'twitch.tv' ),
 				'icon'  => 'twitch',
 				'label' => 'Twitch',
-			),
-			array(
-				'url'   => array( 'twitter.com' ),
-				'icon'  => 'twitter',
-				'label' => 'Twitter',
 			),
 			array(
 				'url'   => array( 'vimeo.com' ),
@@ -676,7 +736,7 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 				'label' => 'WooCommerce',
 			),
 			array(
-				'url'   => array( 'wordpress.com', 'wordpress.org' ),
+				'url'   => array( '#wordpress\.(com|org)#' ),
 				'icon'  => 'wordpress',
 				'label' => 'WordPress',
 			),
@@ -684,6 +744,11 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 				'url'   => array( 'yelp.com' ),
 				'icon'  => 'yelp',
 				'label' => 'Yelp',
+			),
+			array(
+				'url'   => array( '#^https?:\/\/(www\.)?(twitter|x)\.com#' ),
+				'icon'  => 'x',
+				'label' => 'X',
 			),
 			array(
 				'url'   => array( 'xanga.com' ),
@@ -727,7 +792,17 @@ class Jetpack_Widget_Social_Icons extends WP_Widget {
 			),
 		);
 
-		return $social_links_icons;
+		/**
+		 * Filter the list of services matching Social Media Icons available in the Social Icons SVG sprite.
+		 *
+		 * @since 12.3
+		 *
+		 * @param array $social_links_icons Array of social links icons.
+		 */
+		return apply_filters(
+			'jetpack_social_icons_supported_icons',
+			$social_links_icons
+		);
 	}
 } // Jetpack_Widget_Social_Icons
 

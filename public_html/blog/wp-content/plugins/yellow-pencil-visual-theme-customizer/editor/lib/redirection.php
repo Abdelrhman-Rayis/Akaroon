@@ -13,4 +13,4 @@ if ( defined('YP_DEMO_MODE') == false ) {
 }
 
 // Get frame.
-yp_frame_output();
+wyp_frame_output();

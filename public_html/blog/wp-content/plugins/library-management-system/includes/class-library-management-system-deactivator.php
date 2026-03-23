@@ -1,36 +1,27 @@
 <?php
-
 /**
- * Fired during plugin deactivation
- *
- * @link       http://onlinewebtutorhub.blogspot.in/
- * @since      1.0.0
- *
+ * @link       https://onlinewebtutorblog.com
+ * @since      3.3
  * @package    Library_Management_System
  * @subpackage Library_Management_System/includes
- */
-
-/**
- * Fired during plugin deactivation.
- *
- * This class defines all code necessary to run during the plugin's deactivation.
- *
- * @since      1.0.0
- * @package    Library_Management_System
- * @subpackage Library_Management_System/includes
- * @author     Online Web Tutor <onlinewebtutorhub@gmail.com>
+ * @copyright  Copyright (c) 2026, Online Web Tutor
+ * @license    GPL-2.0+ https://www.gnu.org/licenses/gpl-2.0.html
+ * @author     Online Web Tutor
  */
 class Library_Management_System_Deactivator {
 
-	/**
-	 * Short Description. (use period)
-	 *
-	 * Long Description.
-	 *
-	 * @since    1.0.0
-	 */
-	public static function deactivate() {
+    private $table_activator;
 
-	}
+    public function __construct($activator) {
+        $this->table_activator = $activator;
+    }
 
+    /**
+     * Deactivate the plugin.
+     *
+     * @since 3.0
+     */
+    public function deactivate() {
+        //
+    }
 }

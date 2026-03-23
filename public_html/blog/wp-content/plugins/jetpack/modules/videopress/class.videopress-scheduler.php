@@ -1,8 +1,16 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName
 /**
- * VideoPress playback module markup generator.
+ * VideoPress cron scheduler.
  *
- * @since 1.3
+ * @package automattic/jetpack
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
+/**
+ * VideoPress Cron Scheduler.
  */
 class VideoPress_Scheduler {
 
@@ -12,7 +20,9 @@ class VideoPress_Scheduler {
 	const CLEANUP_CRON_METHOD = 'videopress_cleanup_media_library';
 
 	/**
-	 * @var VideoPress_Scheduler
+	 * Singleton instance.
+	 *
+	 * @var VideoPress_Scheduler $instance A VideoPress_Scheduler singleton instance (default null)
 	 **/
 	private static $instance = null;
 
@@ -22,12 +32,12 @@ class VideoPress_Scheduler {
 	 * @var array
 	 */
 	protected $crons = array(
+		// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
 	// 'cleanup' => array(
 	// 'method' => self::CLEANUP_CRON_METHOD,
 	// 'interval' => 'minutes_30',
 	// ),
 	);
-
 
 	/**
 	 * Private VideoPress_Scheduler constructor.
@@ -53,7 +63,7 @@ class VideoPress_Scheduler {
 	 * @return VideoPress_Scheduler
 	 */
 	public static function init() {
-		if ( is_null( self::$instance ) ) {
+		if ( self::$instance === null ) {
 			self::$instance = new VideoPress_Scheduler();
 		}
 
@@ -83,7 +93,7 @@ class VideoPress_Scheduler {
 	/**
 	 * Activate a single cron
 	 *
-	 * @param string $cron_name
+	 * @param string $cron_name The name of the cron to activate.
 	 *
 	 * @return bool
 	 */
@@ -117,7 +127,7 @@ class VideoPress_Scheduler {
 	/**
 	 * Only activate the crons if it is Jetpack that was activated.
 	 *
-	 * @param string $plugin_file_name
+	 * @param string $plugin_file_name The name of the plugin that was activated.
 	 */
 	public function activate_crons_on_jetpack_activation( $plugin_file_name ) {
 
@@ -128,6 +138,8 @@ class VideoPress_Scheduler {
 
 	/**
 	 * Deactivates any crons associated with the VideoPress module.
+	 *
+	 * @param string $cron_name Name of the cron to deactivate.
 	 *
 	 * @return bool
 	 */
@@ -158,7 +170,7 @@ class VideoPress_Scheduler {
 	 *
 	 * If so, return when it will next run,
 	 *
-	 * @param string $cron_name
+	 * @param string $cron_name Cron job name.
 	 *
 	 * @return int|bool Timestamp of the next run time OR false.
 	 */
@@ -173,7 +185,7 @@ class VideoPress_Scheduler {
 	/**
 	 * Check that the given cron job name is valid.
 	 *
-	 * @param string $cron_name
+	 * @param string $cron_name Cron job name.
 	 *
 	 * @return bool
 	 */

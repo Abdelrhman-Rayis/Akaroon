@@ -6,32 +6,32 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // to load editor for visitors on demo mode
-add_action("template_redirect", 'yp_theme_redirect');
+add_action("template_redirect", 'wyp_theme_redirect');
 
-function yp_theme_redirect(){
+function wyp_theme_redirect(){
 
 	if(defined('YP_DEMO_MODE') && isset($_GET['yellow_pencil']) == true){
-		$yellow_pencil = WT_PLUGIN_DIR . '/editor/lib/redirection.php';
-		yp_do_theme_redirect($yellow_pencil);
+		$yellow_pencil = YP_PLUGIN_DIR . '/editor/lib/redirection.php';
+		wyp_do_theme_redirect($yellow_pencil);
 	}
 
 }
 
 
 // to load customize type iframe for visitors on demo mode
-add_action("template_redirect", 'yp_theme_redirect2');
+add_action("template_redirect", 'wyp_theme_redirect2');
 
-function yp_theme_redirect2(){
+function wyp_theme_redirect2(){
 
-	if(defined('YP_DEMO_MODE') && isset($_GET['yp_customize_type']) == true){
-		$yellow_pencil = WT_PLUGIN_DIR . '/editor/lib/customization-popup.php';
-		yp_do_theme_redirect($yellow_pencil);
+	if(defined('YP_DEMO_MODE') && isset($_GET['wyp_customize_type']) == true){
+		$yellow_pencil = YP_PLUGIN_DIR . '/editor/lib/customization-popup.php';
+		wyp_do_theme_redirect($yellow_pencil);
 	}
 
 }
 
 
-function yp_do_theme_redirect($url) {
+function wyp_do_theme_redirect($url) {
 
 	global $post, $wp_query;
 
@@ -48,10 +48,10 @@ function yp_do_theme_redirect($url) {
 
 }
 
-function yp_demo_editor_header(){
+function wyp_demo_editor_header(){
 
 	echo '<style>
-		.yp-demo-link{
+		.wyp-demo-link{
 			font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
 			text-transform: uppercase;
 			position:fixed;
@@ -76,21 +76,21 @@ function yp_demo_editor_header(){
 		    text-decoration: none !important;
 		}
 
-		.yp-demo-link:hover{
+		.wyp-demo-link:hover{
 		    background-color:#2ABC67 !important;
 		}
 
-		body.yp-yellow-pencil .theme-demo-options{display:none !important;}@media(max-width:992px){.yp-demo-link{display:none !important;}}</style>';
+		body.yp-yellow-pencil .theme-demo-options{display:none !important;}@media(max-width:992px){.wyp-demo-link{display:none !important;}}</style>';
 
 }
 
-add_action("wp_head","yp_demo_editor_header");
+add_action("wp_head","wyp_demo_editor_header");
 
 
-function yp_demo_editor_footer(){
+function wyp_demo_editor_footer(){
 
 	// get data
-    $data = yp_get_page_ids();
+    $data = wyp_get_page_ids();
 
     // Getting page informations
     $page_id = $data[0];
@@ -98,20 +98,20 @@ function yp_demo_editor_footer(){
     $edit_mode = $data[2];
 
     // URL OF Editor
-    $yellow_pencil_uri = yp_get_uri();
+    $yellow_pencil_uri = wyp_get_uri();
 
     // Getting current page
     $href = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
     $edit_link = add_query_arg(array(
-        'href' => yp_urlencode(esc_url($href)),
-        'yp_page_id' => $page_id,
-        'yp_page_type' => $page_type,
-        'yp_mode' => $edit_mode
+        'href' => wyp_urlencode(esc_url($href)),
+        'wyp_page_id' => $page_id,
+        'wyp_page_type' => $page_type,
+        'wyp_mode' => $edit_mode
     ),$yellow_pencil_uri);
 
-	echo '<a href="'.$edit_link.'" class="yp-demo-link yp-live-editor-link">Live Editor</a>';
+	echo '<a href="'.$edit_link.'" class="wyp-demo-link wyp-live-editor-link yp-demo-link yp-live-editor-link">Live Editor</a>';
 
 }
 
-add_action("wp_footer","yp_demo_editor_footer");
+add_action("wp_footer","wyp_demo_editor_footer");

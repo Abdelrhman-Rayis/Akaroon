@@ -5,7 +5,7 @@
  *
  * Works in single as well as in Multisite/Network installs.
  *
- * @since    1.0.0
+ * @since    1.0
  */
 
 defined( 'ABSPATH' ) or die( "Cheating........Uh!!" );
@@ -57,7 +57,7 @@ if ( isset( $heateor_sss_options['delete_options'] ) ) {
  * Get all blog IDs of blogs in the current network that are not:
  * archived, spam, deleted
  *
- * @since    1.0.0
+ * @since    1.0
  * @return   array|boolean    The blog IDs, (bool) FALSE if: no matches.
  */
 function heateor_sss_get_blog_ids() {

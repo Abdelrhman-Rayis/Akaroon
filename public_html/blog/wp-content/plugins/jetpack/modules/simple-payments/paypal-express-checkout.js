@@ -1,10 +1,10 @@
 /**
- * This PaypalExpressCheckout global is included by wp_enqueue_script( 'paypal-express-checkout' );
+ * This PaypalExpressCheckout global is included by wp_enqueue_script( 'jetpack-paypal-express-checkout' );
  * It handles communication with Paypal Express checkout and public-api.wordpress.com for the purposes
  * of simple-payments module.
  */
 
-/* global paypal, jQuery */
+/* global paypal */
 /* exported PaypalExpressCheckout */
 var PaypalExpressCheckout = {
 	primaryCssClassName: 'jetpack-simple-payments',
@@ -69,7 +69,7 @@ var PaypalExpressCheckout = {
 	 * Get the DOM element-placeholder used to show message
 	 * about the transaction. If it doesn't exist then the function will create a new one.
 	 *
-	 * @param  string domId id of the payment button placeholder
+	 * @param string domId id of the payment button placeholder
 	 * @return Element the dom element to print the message
 	 */
 	getMessageContainer: function ( domId ) {
@@ -81,9 +81,9 @@ var PaypalExpressCheckout = {
 	 * Use this function to give feedback to the user according
 	 * to the transaction result.
 	 *
-	 * @param  {String} message message to show
-	 * @param  {String} domId paypal-button element dom identifier
-	 * @param  {Boolean} [error] defines if it's a message error. Not TRUE as default.
+	 * @param {String}  message message to show
+	 * @param {String}  domId   paypal-button element dom identifier
+	 * @param {Boolean} [error] defines if it's a message error. Not TRUE as default.
 	 */
 	showMessage: function ( message, domId, isError ) {
 		var domEl = PaypalExpressCheckout.getMessageContainer( domId );
@@ -159,6 +159,7 @@ var PaypalExpressCheckout = {
 					label: 'pay',
 					shape: 'rect',
 					color: 'silver',
+					size: 'responsive',
 					fundingicons: true,
 				},
 

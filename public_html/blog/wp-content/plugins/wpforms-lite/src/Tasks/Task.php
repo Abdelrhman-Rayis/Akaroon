@@ -2,6 +2,9 @@
 
 namespace WPForms\Tasks;
 
+use InvalidArgumentException;
+use UnexpectedValueException;
+
 /**
  * Class Task.
  *
@@ -87,25 +90,44 @@ class Task {
 	private $interval;
 
 	/**
+	 * Task meta.
+	 *
+	 * @since 1.7.0
+	 *
+	 * @var Meta
+	 */
+	private $meta;
+
+	/**
+	 * Log title.
+	 *
+	 * @since 1.9.1
+	 *
+	 * @var string
+	 */
+	protected $log_title = 'Task';
+
+	/**
 	 * Task constructor.
 	 *
 	 * @since 1.5.9
 	 *
 	 * @param string $action Action of the task.
 	 *
-	 * @throws \InvalidArgumentException When action is not a string.
-	 * @throws \UnexpectedValueException When action is empty.
+	 * @throws InvalidArgumentException When action is not a string.
+	 * @throws UnexpectedValueException When action is empty.
 	 */
 	public function __construct( $action ) {
 
 		if ( ! is_string( $action ) ) {
-			throw new \InvalidArgumentException( 'Task action should be a string.' );
+			throw new InvalidArgumentException( 'Task action should be a string.' );
 		}
 
 		$this->action = sanitize_key( $action );
+		$this->meta   = new Meta();
 
 		if ( empty( $this->action ) ) {
-			throw new \UnexpectedValueException( 'Task action cannot be empty.' );
+			throw new UnexpectedValueException( 'Task action cannot be empty.' );
 		}
 	}
 
@@ -114,7 +136,7 @@ class Task {
 	 *
 	 * @since 1.5.9
 	 *
-	 * @return \WPForms\Tasks\Task
+	 * @return Task
 	 */
 	public function async() {
 
@@ -131,7 +153,7 @@ class Task {
 	 * @param int $timestamp When the first instance of the job will run.
 	 * @param int $interval  How long to wait between runs.
 	 *
-	 * @return \WPForms\Tasks\Task
+	 * @return Task
 	 */
 	public function recurring( $timestamp, $interval ) {
 
@@ -149,7 +171,7 @@ class Task {
 	 *
 	 * @param int $timestamp When the first instance of the job will run.
 	 *
-	 * @return \WPForms\Tasks\Task
+	 * @return Task
 	 */
 	public function once( $timestamp ) {
 
@@ -164,7 +186,7 @@ class Task {
 	 *
 	 * @since 1.5.9
 	 *
-	 * @return \WPForms\Tasks\Task
+	 * @return Task
 	 */
 	public function params() {
 
@@ -186,14 +208,13 @@ class Task {
 		$action_id = null;
 
 		// No processing if ActionScheduler is not usable.
-		if ( ! wpforms()->get( 'tasks' )->is_usable() ) {
+		if ( ! wpforms()->obj( 'tasks' )->is_usable() ) {
 			return $action_id;
 		}
 
 		// Save data to tasks meta table.
 		if ( $this->params !== null ) {
-			$task_meta     = new Meta();
-			$this->meta_id = $task_meta->add(
+			$this->meta_id = $this->meta->add(
 				[
 					'action' => $this->action,
 					'data'   => $this->params,
@@ -207,6 +228,7 @@ class Task {
 
 		// Prevent 500 errors when Action Scheduler tables don't exist.
 		try {
+
 			switch ( $this->type ) {
 				case self::TYPE_ASYNC:
 					$action_id = $this->register_async();
@@ -233,6 +255,7 @@ class Task {
 	 * @since 1.5.9
 	 *
 	 * @return null|string Action ID.
+	 * @noinspection PhpUndefinedFunctionInspection
 	 */
 	protected function register_async() {
 
@@ -242,7 +265,21 @@ class Task {
 
 		return as_enqueue_async_action(
 			$this->action,
-			[ 'tasks_meta_id' => $this->meta_id ],
+			/**
+			 * Filter arguments passed to the async task.
+			 *
+			 * @since 1.9.4
+			 *
+			 * @param array $args Arguments passed to the async task.
+			 *
+			 * @return array
+			 */
+			(array) apply_filters(
+				'wpforms_tasks_task_register_async_args',
+				[
+					'tasks_meta_id' => $this->meta_id,
+				]
+			),
 			Tasks::GROUP
 		);
 	}
@@ -253,6 +290,7 @@ class Task {
 	 * @since 1.5.9
 	 *
 	 * @return null|string Action ID.
+	 * @noinspection PhpUndefinedFunctionInspection
 	 */
 	protected function register_recurring() {
 
@@ -275,6 +313,7 @@ class Task {
 	 * @since 1.5.9
 	 *
 	 * @return null|string Action ID.
+	 * @noinspection PhpUndefinedFunctionInspection
 	 */
 	protected function register_once() {
 
@@ -297,15 +336,42 @@ class Task {
 	 *
 	 * @return null|bool|string Null if no matching action found,
 	 *                          false if AS library is missing,
+	 *                          true if scheduled task has no params,
 	 *                          string of the scheduled action ID if a scheduled action was found and unscheduled.
+	 * @noinspection PhpUndefinedFunctionInspection
 	 */
 	public function cancel() {
 
-		// Exit if AS function does not exist.
 		if ( ! function_exists( 'as_unschedule_all_actions' ) ) {
 			return false;
 		}
 
-		return as_unschedule_all_actions( $this->action );
+		if ( $this->params === null ) {
+			as_unschedule_all_actions( $this->action );
+
+			return true;
+		}
+
+		$this->meta_id = $this->meta->get_meta_id( $this->action, $this->params );
+
+		if ( $this->meta_id === null ) {
+			return null;
+		}
+
+		return as_unschedule_action( $this->action, [ 'tasks_meta_id' => $this->meta_id ], Tasks::GROUP );
+	}
+
+
+
+	/**
+	 * Log message to WPForms logger and standard debug.log file.
+	 *
+	 * @since 1.9.1
+	 *
+	 * @param string $message The error message that should be logged.
+	 */
+	protected function log( $message ) {
+
+		wpforms_log( $this->log_title, $message, [ 'type' => 'log' ] );
 	}
 }

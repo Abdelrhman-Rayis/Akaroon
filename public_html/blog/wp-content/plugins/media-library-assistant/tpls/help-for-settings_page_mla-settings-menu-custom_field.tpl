@@ -12,8 +12,8 @@
 <p>Three checkbox options control the custom field mapping when new items are added to the Media Library:
 <ul>
 <li><strong>Enable custom field mapping</strong> - Check this option to enable the mapping rules and display the "Map" buttons on the Media/Edit Media and Media/Assistant Bulk Edit screens.</li>
-<li><strong>Enable custom field mapping when adding new media</strong> - Check this option to enable mapping when uploading new items (attachments) to the Media Library.</li>
-<li><strong>Enable custom field mapping when updating media metadata</strong> - Check this option to enable mapping when item (attachment) metadata is regenerated,
+<li><strong>Perform custom field mapping when adding new media</strong> - Check this option to perform mapping when uploading new items (attachments) to the Media Library.</li>
+<li><strong>Perform custom field mapping when updating media metadata</strong> - Check this option to perform mapping when WordPress regenerates the item (attachment) metadata array,
  e.g., when the Media/Edit Media "Edit Image" functions are used.</li>
 </ul>
 The "when adding" and "when updating" options do <strong>NOT</strong> affect the operation of the "Map" buttons on the bulk edit or single edit screens, nor do they affect any of the "Execute" mapping functions On this Settings screen.</p>
@@ -64,7 +64,7 @@ There is no "trash" area or "undo" feature, so use the "Purge Values" and "Delet
 <!-- template="mla-read-only" -->
 <!-- title="Read Only Rules" order="70" -->
 <p>Long ago in an MLA version far away there was a bug that caused some custom field mapping rule names to be mis-interpreted. This added multiple rules for the same custom field to the table.</p>
-<p>If you have any of these damaged rules they are detected and marked "Read Only" in the submenu table. You can delete them, or edit them and change the name to some other custom field. Have a look at any other rules with a similar name and decide which one you want to keep.</p>
+<p>If you have any of these damaged rules they are detected and marked "Read Only" in the submenu table. A specific "Read Only" view will be added to the list of table views as well. You can delete the rules, or edit them and change the name to some other custom field. Have a look at any other rules with a similar name and decide which one you want to keep.</p>
 <!-- template="sidebar" -->
 <p><strong>For more information:</strong></p>
 <p><a href="[+settingsURL+]?page=mla-settings-menu-documentation&mla_tab=documentation#mla_custom_field_mapping" target="_blank">Documentation on Custom Field Mapping Rules</a></p>

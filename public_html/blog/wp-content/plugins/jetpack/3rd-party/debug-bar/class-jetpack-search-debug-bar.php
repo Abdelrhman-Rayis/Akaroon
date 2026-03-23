@@ -5,6 +5,12 @@
  * @package automattic/jetpack
  */
 
+use Automattic\Jetpack\Search as Jetpack_Search;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 /**
  * Singleton class instantiated by Jetpack_Searc_Debug_Bar::instance() that handles
  * rendering the Jetpack Search debug bar menu item and panel.
@@ -28,7 +34,8 @@ class Jetpack_Search_Debug_Bar extends Debug_Bar_Panel {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->title( esc_html__( 'Jetpack Search', 'jetpack' ) );
+		/** "Search" is a product name, do not translate. */
+		$this->title( 'Jetpack Search' );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'login_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
@@ -41,7 +48,7 @@ class Jetpack_Search_Debug_Bar extends Debug_Bar_Panel {
 	 * @return Jetpack_Search_Debug_Bar
 	 */
 	public static function instance() {
-		if ( is_null( self::$instance ) ) {
+		if ( self::$instance === null ) {
 			self::$instance = new Jetpack_Search_Debug_Bar();
 		}
 		return self::$instance;
@@ -91,11 +98,17 @@ class Jetpack_Search_Debug_Bar extends Debug_Bar_Panel {
 	 * @return void
 	 */
 	public function render() {
-		if ( ! class_exists( 'Jetpack_Search' ) ) {
+		$jetpack_search = (
+			Jetpack_Search\Options::is_instant_enabled() ?
+			Jetpack_Search\Instant_Search::instance() :
+			Jetpack_Search\Classic_Search::instance()
+		);
+
+		// Search hasn't been initialized. Exit early and do not display the debug bar.
+		if ( ! method_exists( $jetpack_search, 'get_last_query_info' ) ) {
 			return;
 		}
 
-		$jetpack_search  = Jetpack_Search::instance();
 		$last_query_info = $jetpack_search->get_last_query_info();
 
 		// If not empty, let's reshuffle the order of some things.
@@ -108,7 +121,7 @@ class Jetpack_Search_Debug_Bar extends Debug_Bar_Panel {
 			unset( $last_query_info['response'] );
 			unset( $last_query_info['response_code'] );
 
-			if ( is_null( $last_query_info['es_time'] ) ) {
+			if ( $last_query_info['es_time'] === null ) {
 				$last_query_info['es_time'] = esc_html_x(
 					'cache hit',
 					'displayed in search results when results are cached',
@@ -169,9 +182,9 @@ class Jetpack_Search_Debug_Bar extends Debug_Bar_Panel {
 				// bar.
 				// Use _wp_specialchars() "manually" to ensure entities are encoded correctly.
 				echo _wp_specialchars( // phpcs:ignore WordPress.Security.EscapeOutput
-					wp_json_encode( $value ),
+					wp_json_encode( $value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ),
 					ENT_NOQUOTES, // Don't need to encode quotes (output is for a text node).
-					'UTF-8',         // wp_json_encode() outputs UTF-8 (really just ASCII), not the blog's charset.
+					'UTF-8',         // wp_json_encode() outputs UTF-8, not the blog's charset.
 					true       // Do "double-encode" existing HTML entities.
 				);
 			?>

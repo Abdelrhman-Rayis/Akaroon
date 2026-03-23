@@ -1,0 +1,1050 @@
+# Library Management System Italian Translation
+# Copyright (C) 2024 Online Web Tutor
+# This file is distributed under the same license as the Library Management System plugin.
+# Online Web Tutor <onlinewebtutorhub@gmail.com>, 2024.
+msgid ""
+msgstr ""
+"Project-Id-Version: Library Management System 3.4\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/library-"
+"management-system\n"
+"POT-Creation-Date: 2024-05-28 16:01+0530\n"
+"PO-Revision-Date: 2026-01-27 08:42+0530\n"
+"Last-Translator: Online Web Tutor <onlinewebtutorhub@gmail.com>\n"
+"Language-Team: Italian\n"
+"Language: it_IT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.8\n"
+
+msgid "Library System"
+msgstr "Sistema di Biblioteca"
+
+msgid "Books Return History"
+msgstr "Cronologia Restituzione Libri"
+
+msgid "Borrow a Book"
+msgstr "Prendere in Prestito un Libro"
+
+msgid "Books Borrow History"
+msgstr "Cronologia Prestiti Libri"
+
+msgid "Books Return"
+msgstr "Restituzione Libri"
+
+msgid "-- Select Branch --"
+msgstr "-- Seleziona Filiale --"
+
+msgid "-- Select Category --"
+msgstr "-- Seleziona Categoria --"
+
+msgid "S No"
+msgstr "S No"
+
+msgid "User Details"
+msgstr "Dettagli Utente"
+
+msgid "Book Details"
+msgstr "Dettagli Libro"
+
+msgid "Borrow Details (Y-m-d)"
+msgstr "Dettagli Prestito (A-m-g)"
+
+msgid "Fine Status"
+msgstr "Stato Multa"
+
+msgid "Action"
+msgstr "Azione"
+
+msgid "Return Books"
+msgstr "Restituzione libri"
+
+msgid "Return Date"
+msgstr "Data di Restituzione"
+
+msgid "Branch"
+msgstr "Filiale"
+
+msgid "User"
+msgstr "Utente"
+
+msgid "-- Select User --"
+msgstr "-- Seleziona Utente --"
+
+msgid "Borrowed Books"
+msgstr "Libri Presi in Prestito"
+
+msgid "Submit & Save"
+msgstr "Invia e Salva"
+
+msgid "Borrow Date"
+msgstr "Data di Prestito"
+
+msgid "Category"
+msgstr "Categoria"
+
+msgid "Book"
+msgstr "Libro"
+
+msgid "-- Select Book --"
+msgstr "-- Seleziona Libro --"
+
+msgid "Days"
+msgstr "Giorni"
+
+msgid "-- Select Days --"
+msgstr "-- Seleziona Giorni --"
+
+msgid "Filter by:"
+msgstr "Filtra per:"
+
+msgid "Borrow ID"
+msgstr "ID Prestito"
+
+msgid "Status"
+msgstr "Stato"
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "days"
+msgstr "giorni"
+
+msgid "Issued on"
+msgstr "Emesso il"
+
+msgid "Return by"
+msgstr "Restituire entro"
+
+msgid "Return Pending"
+msgstr "Restituzione in sospeso"
+
+msgid "Returned"
+msgstr "Restituito"
+
+msgid "Return"
+msgstr "Restituisci"
+
+msgid "Delete"
+msgstr "Elimina"
+
+msgid "Total Days"
+msgstr "Giorni Totali"
+
+msgid "Issued"
+msgstr "Emesso"
+
+msgid "Returned with fine"
+msgstr "Restituito con multa"
+
+msgid "No fine"
+msgstr "Nessuna multa"
+
+msgid "Pay Fine"
+msgstr "Paga Multa"
+
+msgid "List Book"
+msgstr "Elenco Libri"
+
+msgid "Add New Category"
+msgstr "Aggiungi Nuova Categoria"
+
+msgid "List Category"
+msgstr "Elenco Categorie"
+
+msgid "Add New Book"
+msgstr "Aggiungi Nuovo Libro"
+
+msgid "Book List"
+msgstr "Lista Libri"
+
+msgid "-- All --"
+msgstr "-- Tutti --"
+
+msgid "Book ID"
+msgstr "ID Libro"
+
+msgid "Basic Details"
+msgstr "Dettagli di Base"
+
+msgid "Stock Quantity"
+msgstr "Quantità in Magazzino"
+
+msgid " Category"
+msgstr " Categoria"
+
+msgid "Add Category"
+msgstr "Aggiungi Categoria"
+
+msgid "-- Select Status --"
+msgstr "-- Seleziona Stato --"
+
+msgid " Book"
+msgstr " Libro"
+
+msgid "Add Book"
+msgstr "Aggiungi Libro"
+
+msgid "Bookcase"
+msgstr "Scaffale"
+
+msgid "-- Select Bookcase --"
+msgstr "-- Seleziona Scaffale --"
+
+msgid "Section"
+msgstr "Sezione"
+
+msgid "-- Select Section --"
+msgstr "-- Seleziona Sezione --"
+
+msgid "Book Name"
+msgstr "Nome Libro"
+
+msgid "Authors Name"
+msgstr "Nome Autori"
+
+msgid "Publication Name"
+msgstr "Nome Pubblicazione"
+
+msgid "Publication Year"
+msgstr "Anno di Pubblicazione"
+
+msgid "Publication Location"
+msgstr "Luogo di Pubblicazione"
+
+msgid "Cost"
+msgstr "Costo"
+
+msgid "ISBN"
+msgstr "ISBN"
+
+msgid "Book URL"
+msgstr "URL del Libro"
+
+msgid "Book Language"
+msgstr "Lingua del Libro"
+
+msgid "Number of Pages"
+msgstr "Numero di Pagine"
+
+msgid "Description"
+msgstr "Descrizione"
+
+msgid "Cover Image"
+msgstr "Immagine di Copertina"
+
+msgid "Upload Cover Image"
+msgstr "Carica Immagine di Copertina"
+
+msgid "Active"
+msgstr "Attivo"
+
+msgid "Inactive"
+msgstr "Inattivo"
+
+msgid "View"
+msgstr "Visualizza"
+
+msgid "Edit"
+msgstr "Modifica"
+
+msgid "Category List"
+msgstr "Lista Categorie"
+
+msgid "Total Books"
+msgstr "Totale Libri"
+
+msgid "Created at"
+msgstr "Creato il"
+
+msgid "Premium Library Management System"
+msgstr "Sistema Premium di Gestione Biblioteca"
+
+msgid "Basic"
+msgstr "Base"
+
+msgid "Introduction"
+msgstr "Introduzione"
+
+msgid ""
+"Welcome to the most advanced Library Management System (LMS) Plugin. Our LMS "
+"plugin is designed to streamline and enhance the management of libraries, "
+"offering an intuitive and powerful solution for organizing books, users, "
+"bookcases, transactions, etc. Whether you are running a small community "
+"library or a large institutional library, our plugin provides the tools you "
+"need to operate efficiently and effectively."
+msgstr ""
+"Benvenuto nel plugin più avanzato per la Gestione di Biblioteca (LMS). Il "
+"nostro plugin LMS è progettato per semplificare e migliorare la gestione "
+"delle biblioteche, offrendo una soluzione intuitiva e potente per "
+"organizzare libri, utenti, scaffali, transazioni e altro. Che tu gestisca "
+"una piccola biblioteca comunitaria o una grande biblioteca istituzionale, il "
+"nostro plugin fornisce gli strumenti necessari per operare in modo "
+"efficiente ed efficace."
+
+msgid "Features"
+msgstr "Funzionalità"
+
+msgid "Book Management"
+msgstr "Gestione Libri"
+
+msgid "(Unlimited)"
+msgstr "(Illimitato)"
+
+msgid ""
+"Manage your library's collection with ease. Add, edit, and categorize books "
+"effortlessly."
+msgstr ""
+"Gestisci facilmente la collezione della tua biblioteca. Aggiungi, modifica e "
+"categorizza i libri senza difficoltà."
+
+msgid "User Management"
+msgstr "Gestione Utenti"
+
+msgid ""
+"Keep track of your library members, their borrow history, and contact "
+"details."
+msgstr ""
+"Tieni traccia dei membri della biblioteca, della loro cronologia prestiti e "
+"dei dettagli di contatto."
+
+msgid "Transaction Tracking"
+msgstr "Monitoraggio Transazioni"
+
+msgid ""
+"Monitor all borrow and return transactions with detailed logs and reporting "
+"features."
+msgstr ""
+"Monitora tutte le transazioni di prestito e restituzione con registri "
+"dettagliati e funzioni di reportistica."
+
+msgid "Analytics and Reports"
+msgstr "Analisi e Report"
+
+msgid ""
+"Generate insightful reports to understand usage patterns and improve library "
+"services."
+msgstr ""
+"Genera report dettagliati per comprendere i modelli di utilizzo e migliorare "
+"i servizi della biblioteca."
+
+msgid "Customizable Settings"
+msgstr "Impostazioni Personalizzabili"
+
+msgid "Tailor the plugin settings to fit the specific needs of your library."
+msgstr ""
+"Personalizza le impostazioni del plugin per adattarle alle esigenze "
+"specifiche della tua biblioteca."
+
+msgid "Secure and Reliable"
+msgstr "Sicuro e Affidabile"
+
+msgid ""
+"Ensure the safety and integrity of your library data with our secure system "
+"architecture."
+msgstr ""
+"Garantisci la sicurezza e l'integrità dei dati della biblioteca grazie alla "
+"nostra architettura di sistema sicura."
+
+msgid "Data Backup"
+msgstr "Backup dei Dati"
+
+msgid ""
+"Safeguard your data by creating backups regularly with our plugin's data "
+"backup feature."
+msgstr ""
+"Proteggi i tuoi dati creando backup regolari con la funzione di backup del "
+"plugin."
+
+msgid "Late Fine System"
+msgstr "Sistema di Multe per Ritardi"
+
+msgid ""
+"Implement a late fine system to manage overdue books and encourage timely "
+"returns."
+msgstr ""
+"Implementa un sistema di multe per gestire i libri in ritardo e incoraggiare "
+"le restituzioni puntuali."
+
+msgid "Upload CSV and Save Data"
+msgstr "Carica CSV e Salva Dati"
+
+msgid ""
+"Import CSV data files to LMS. Just follow some pattern to prepare data and "
+"feed into system."
+msgstr ""
+"Importa file CSV nel sistema LMS. Basta seguire un modello per preparare i "
+"dati e inserirli nel sistema."
+
+msgid "Multilanguage Support"
+msgstr "Supporto Multilingua"
+
+msgid ""
+"Use the plugin in multiple languages, making it accessible to a wider "
+"audience. More than 10 Languages it supports."
+msgstr ""
+"Utilizza il plugin in più lingue, rendendolo accessibile a un pubblico più "
+"ampio. Supporta più di 10 lingue."
+
+msgid "Book Listing with Filters"
+msgstr "Elenco Libri con Filtri"
+
+msgid ""
+"Create a frontend page to list all books with filters, enhancing user "
+"browsing experience. It also opens single book page view. Plugin Shortcodes."
+msgstr ""
+"Crea una pagina frontend per elencare tutti i libri con filtri, migliorando "
+"l'esperienza di navigazione degli utenti. Include anche la visualizzazione "
+"della pagina singola del libro tramite shortcode del plugin."
+
+msgid "Check Book Availability"
+msgstr "Controlla la Disponibilità del Libro"
+
+msgid ""
+"Allow users to check the availability of books from the frontend page "
+"without login."
+msgstr ""
+"Consenti agli utenti di controllare la disponibilità dei libri dalla pagina "
+"frontend senza effettuare il login."
+
+msgid "Get Started with Our LMS Pro Plugin"
+msgstr "Inizia con il Nostro Plugin LMS Pro"
+
+msgid ""
+"Experience the future of library management today. Download our LMS plugin "
+"and transform the way you manage your library."
+msgstr ""
+"Scopri oggi il futuro della gestione delle biblioteche. Scarica il nostro "
+"plugin LMS e trasforma il modo in cui gestisci la tua biblioteca."
+
+msgid "Buy Premium Version"
+msgstr "Acquista la Versione Premium"
+
+msgid "Library Management System"
+msgstr "Sistema di Gestione Biblioteca"
+
+msgid "Free Vs Pro"
+msgstr "Gratis vs Pro"
+
+msgid "What is LMS Plugin?"
+msgstr "Cos'è il Plugin LMS?"
+
+msgid ""
+"LMS is a WordPress plugin which is designed to streamline and enhance the "
+"management of libraries, offering an intuitive and powerful solution for "
+"organizing books, users, bookcases, transactions, etc. Whether you are "
+"running a small community library or a large institutional library, our "
+"plugin provides the tools you need to operate efficiently and effectively."
+msgstr ""
+"LMS è un plugin WordPress progettato per semplificare e migliorare la "
+"gestione delle biblioteche, offrendo una soluzione intuitiva e potente per "
+"organizzare libri, utenti, scaffali, transazioni e altro. Che tu gestisca "
+"una piccola biblioteca comunitaria o una grande biblioteca istituzionale, il "
+"nostro plugin fornisce gli strumenti necessari per operare in modo "
+"efficiente ed efficace."
+
+msgid "Features Comparison"
+msgstr "Confronto Funzionalità"
+
+msgid "Free Version"
+msgstr "Versione Gratuita"
+
+msgid "Manage Categories (Up to 5)"
+msgstr "Gestisci Categorie (fino a 5)"
+
+msgid "Manage Bookcases (Up to 5)"
+msgstr "Gestisci Scaffali (fino a 5)"
+
+msgid "Manage Sections (Up to 15)"
+msgstr "Gestisci Sezioni (fino a 15)"
+
+msgid "Manage Books (Up to 15)"
+msgstr "Gestisci Libri (fino a 15)"
+
+msgid "Manage User Branches (Up to 5)"
+msgstr "Gestisci Filiali Utenti (fino a 5)"
+
+msgid "Manage LMS Users (Up to 15)"
+msgstr "Gestisci Utenti LMS (fino a 15)"
+
+msgid "Borrow a Single Book"
+msgstr "Prendere in Prestito un Singolo Libro"
+
+msgid "Track Book Transactions and History"
+msgstr "Traccia Transazioni e Cronologia Libri"
+
+msgid "Manage User Late Fines"
+msgstr "Gestisci Multe per Ritardi degli Utenti"
+
+msgid "Test Data Import Tool"
+msgstr "Strumento di Importazione Dati di Test"
+
+msgid "Generate Reports (PDF / Print / CSV) with Filters"
+msgstr "Genera Report (PDF / Stampa / CSV) con Filtri"
+
+msgid "Multilingual Support (English / Hindi / Spanish)"
+msgstr "Supporto Multilingua (Inglese / Hindi / Spagnolo)"
+
+msgid "Pro Version (Basic)"
+msgstr "Versione Pro (Base)"
+
+msgid "Manage Unlimited Categories"
+msgstr "Gestisci Categorie Illimitate"
+
+msgid "Manage Unlimited Bookcases"
+msgstr "Gestisci Scaffali Illimitati"
+
+msgid "Manage Unlimited Sections"
+msgstr "Gestisci Sezioni Illimitate"
+
+msgid "Manage Unlimited Books"
+msgstr "Gestisci Libri Illimitati"
+
+msgid "Manage Unlimited User Branches"
+msgstr "Gestisci Filiali Utenti Illimitate"
+
+msgid "Manage Unlimited LMS Users"
+msgstr "Gestisci Utenti LMS Illimitati"
+
+msgid "Borrow Multiple Books"
+msgstr "Prendere in Prestito Più Libri"
+
+msgid "Return Multiple Books"
+msgstr "Restituisci Più Libri"
+
+msgid ""
+"Multilingual Support (10 Languages: English, Hindi, Spanish, French, Arabic, "
+"Portuguese, Russian, Turkish, Vietnamese, Italian)"
+msgstr ""
+"Supporto Multilingua (10 lingue: Inglese, Hindi, Spagnolo, Francese, Arabo, "
+"Portoghese, Russo, Turco, Vietnamita, Italiano)"
+
+msgid "Data Backup Tool (Export and Import)"
+msgstr "Strumento di Backup Dati (Esporta e Importa)"
+
+msgid "CSV Data Import"
+msgstr "Importazione Dati CSV"
+
+msgid "Book Listing with Filters (via Shortcode)"
+msgstr "Elenco Libri con Filtri (tramite Shortcode)"
+
+msgid "Public LMS Page with Data Filters (Category, Book Availability)"
+msgstr "Pagina Pubblica LMS con Filtri Dati (Categoria, Disponibilità Libro)"
+
+msgid "Single Book Page View"
+msgstr "Visualizzazione Pagina Singolo Libro"
+
+msgid ""
+"Customizable Settings (Borrow Days, Fines, Country, Currency, Data Backup, "
+"Shortcode)"
+msgstr ""
+"Impostazioni Personalizzabili (Giorni di Prestito, Multe, Paese, Valuta, "
+"Backup Dati, Shortcode)"
+
+msgid "Late Fine"
+msgstr "Multa per Ritardo"
+
+msgid "Update Late Fine"
+msgstr "Aggiorna Multa per Ritardo"
+
+msgid "Set Late Fine"
+msgstr "Imposta Multa per Ritardo"
+
+msgid "All Settings"
+msgstr "Tutte le Impostazioni"
+
+msgid "Fine Amount"
+msgstr "Importo Multa"
+
+msgid "(Currency Unknown)"
+msgstr "(Valuta Sconosciuta)"
+
+msgid "Settings"
+msgstr "Impostazioni"
+
+msgid "Run Test Data Importer"
+msgstr "Esegui Importatore Dati di Test"
+
+msgid "Refresh it?"
+msgstr "Aggiornarlo?"
+
+msgid "Remove Test Data?"
+msgstr "Rimuovere i Dati di Test?"
+
+msgid "Set Country & Currency"
+msgstr "Imposta Paese e Valuta"
+
+msgid "Configure Settings"
+msgstr "Configura Impostazioni"
+
+msgid "View Settings"
+msgstr "Visualizza Impostazioni"
+
+msgid "Country & Currency"
+msgstr "Paese e Valuta"
+
+msgid "Update Data"
+msgstr "Aggiorna Dati"
+
+msgid "Add Data"
+msgstr "Aggiungi Dati"
+
+msgid "Country"
+msgstr "Paese"
+
+msgid "Currency"
+msgstr "Valuta"
+
+msgid "Country & Currency Settings"
+msgstr "Impostazioni Paese e Valuta"
+
+msgid "Enter"
+msgstr "Inserisci"
+
+msgid "Download Sample CSVs"
+msgstr "Scarica CSV di Esempio"
+
+msgid "Module Type"
+msgstr "Tipo di Modulo"
+
+msgid "-- Select Module --"
+msgstr "-- Seleziona Modulo --"
+
+msgid "Categories"
+msgstr "Categorie"
+
+msgid "Bookcases"
+msgstr "Scaffali"
+
+msgid "Sections"
+msgstr "Sezioni"
+
+msgid "Books"
+msgstr "Libri"
+
+msgid "Branches"
+msgstr "Filiali"
+
+msgid "Users"
+msgstr "Utenti"
+
+msgid "Click to Download"
+msgstr "Clicca per Scaricare"
+
+msgid "Fine Amount:"
+msgstr "Importo Multa:"
+
+msgid "Welcome to Library Management System"
+msgstr "Benvenuto nel Sistema di Gestione Biblioteca"
+
+msgid "Free"
+msgstr "Gratuito"
+
+msgid "Manage Books"
+msgstr "Gestisci Libri"
+
+msgid "View Books"
+msgstr "Visualizza Libri"
+
+msgid "Manage Users"
+msgstr "Gestisci Utenti"
+
+msgid "View Users"
+msgstr "Visualizza Utenti"
+
+msgid "Manage Bookcase"
+msgstr "Gestisci Scaffale"
+
+msgid "View Bookcases"
+msgstr "Visualizza Scaffali"
+
+msgid "Transaction Reports"
+msgstr "Report Transazioni"
+
+msgid "View Reports"
+msgstr "Visualizza Report"
+
+msgid "List Branch"
+msgstr "Elenco Filiali"
+
+msgid "Add User Branch"
+msgstr "Aggiungi Filiale Utente"
+
+msgid "Add New User"
+msgstr "Aggiungi Nuovo Utente"
+
+msgid "List User"
+msgstr "Elenco Utenti"
+
+msgid "Branch List"
+msgstr "Lista Filiali"
+
+msgid "Total Users"
+msgstr "Totale Utenti"
+
+msgid "Add New Branch"
+msgstr "Aggiungi Nuova Filiale"
+
+msgid "Add Branch"
+msgstr "Aggiungi Filiale"
+
+msgid "Branch Name"
+msgstr "Nome Filiale"
+
+msgid "Select Status"
+msgstr "Seleziona Stato"
+
+msgid "Add User"
+msgstr "Aggiungi Utente"
+
+msgid "User / Registration ID"
+msgstr "Utente / ID Registrazione"
+
+msgid "Select Branch"
+msgstr "Seleziona Filiale"
+
+msgid "Enter Name"
+msgstr "Inserisci Nome"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Enter Email"
+msgstr "Inserisci Email"
+
+msgid "Phone Number"
+msgstr "Numero di Telefono"
+
+msgid "Enter Phone Number"
+msgstr "Inserisci Numero di Telefono"
+
+msgid "Gender"
+msgstr "Genere"
+
+msgid "Select Gender"
+msgstr "Seleziona Genere"
+
+msgid "Address"
+msgstr "Indirizzo"
+
+msgid "Enter Address"
+msgstr "Inserisci Indirizzo"
+
+msgid "Profile Image"
+msgstr "Immagine Profilo"
+
+msgid "Upload Profile Image"
+msgstr "Carica Immagine Profilo"
+
+msgid "Users List"
+msgstr "Lista Utenti"
+
+msgid "All"
+msgstr "Tutti"
+
+msgid "User ID"
+msgstr "ID Utente"
+
+msgid "<i>N/A</i>"
+msgstr "<i>N/D</i>"
+
+msgid "Add New Bookcase"
+msgstr "Aggiungi Nuovo Scaffale"
+
+msgid "List Section"
+msgstr "Elenco Sezioni"
+
+msgid "Add New Section"
+msgstr "Aggiungi Nuova Sezione"
+
+msgid "List Bookcase"
+msgstr "Elenco Scaffali"
+
+msgid "Add Bookcase"
+msgstr "Aggiungi Scaffale"
+
+msgid "Total Sections"
+msgstr "Totale Sezioni"
+
+msgid "Add Section"
+msgstr "Aggiungi Sezione"
+
+msgid "Library Management"
+msgstr "Gestione Biblioteca"
+
+msgid "Dashboard"
+msgstr "Bacheca"
+
+msgid "Manage Bookcase & Section"
+msgstr "Gestisci Scaffali e Sezioni"
+
+msgid "Book Transactions"
+msgstr "Transazioni Libri"
+
+msgid "Free Vs Pro LMS"
+msgstr "LMS Gratis vs Pro"
+
+msgid "Upgrade to Pro"
+msgstr "Passa alla Versione Pro"
+
+msgid "Branch name already taken"
+msgstr "Nome della filiale già utilizzato"
+
+msgid "Successfully, Branch added to LMS"
+msgstr "Filiale aggiunta con successo al LMS"
+
+msgid "Failed to add Branch"
+msgstr "Impossibile aggiungere la filiale"
+
+msgid "Sorry, No Credits Left.<br/>Upgrade to Pro Version of LMS."
+msgstr ""
+"Spiacente, nessun credito disponibile.<br/>Passa alla versione Pro di LMS."
+
+msgid "Branch value required"
+msgstr "Il valore della filiale è obbligatorio"
+
+msgid "Successfully, Branch data updated"
+msgstr "Dati della filiale aggiornati con successo"
+
+msgid "Branch not found"
+msgstr "Filiale non trovata"
+
+msgid "Invalid Operation"
+msgstr "Operazione non valida"
+
+msgid "User already exists"
+msgstr "L'utente esiste già"
+
+msgid "Successfully, User added to LMS"
+msgstr "Utente aggiunto con successo al LMS"
+
+msgid "Failed to add User"
+msgstr "Impossibile aggiungere l'utente"
+
+msgid "Required fields are missing"
+msgstr "Mancano campi obbligatori"
+
+msgid "User ID already taken"
+msgstr "ID utente già utilizzato"
+
+msgid "Successfully, User data updated"
+msgstr "Dati utente aggiornati con successo"
+
+msgid "User not found"
+msgstr "Utente non trovato"
+
+msgid " not found"
+msgstr " non trovato"
+
+msgid "Failed to delete. There are number of rows of "
+msgstr "Impossibile eliminare. Ci sono righe associate di "
+
+msgid "Data Module not found"
+msgstr "Modulo dati non trovato"
+
+msgid "Bookcase name already taken"
+msgstr "Nome dello scaffale già utilizzato"
+
+msgid "Successfully, Bookcase added to LMS"
+msgstr "Scaffale aggiunto con successo al LMS"
+
+msgid "Failed to add Bookcase"
+msgstr "Impossibile aggiungere lo scaffale"
+
+msgid "Bookcase value required"
+msgstr "Il valore dello scaffale è obbligatorio"
+
+msgid "Successfully, Bookcase data updated"
+msgstr "Dati dello scaffale aggiornati con successo"
+
+msgid "Bookcase not found"
+msgstr "Scaffale non trovato"
+
+msgid "Section name already taken"
+msgstr "Nome della sezione già utilizzato"
+
+msgid "Successfully, Section added to LMS"
+msgstr "Sezione aggiunta con successo al LMS"
+
+msgid "Failed to add Section"
+msgstr "Impossibile aggiungere la sezione"
+
+msgid "Section value required"
+msgstr "Il valore della sezione è obbligatorio"
+
+msgid "Successfully, Section data updated"
+msgstr "Dati della sezione aggiornati con successo"
+
+msgid "Section not found"
+msgstr "Sezione non trovata"
+
+msgid "Category name already taken"
+msgstr "Nome della categoria già utilizzato"
+
+msgid "Successfully, Category added to LMS"
+msgstr "Categoria aggiunta con successo al LMS"
+
+msgid "Failed to add Category"
+msgstr "Impossibile aggiungere la categoria"
+
+msgid "Category value required"
+msgstr "Il valore della categoria è obbligatorio"
+
+msgid "Successfully, Category data updated"
+msgstr "Dati della categoria aggiornati con successo"
+
+msgid "Category not found"
+msgstr "Categoria non trovata"
+
+msgid "Book name already taken"
+msgstr "Nome del libro già utilizzato"
+
+msgid "Successfully, Book added to LMS"
+msgstr "Libro aggiunto con successo al LMS"
+
+msgid "Failed to add Book"
+msgstr "Impossibile aggiungere il libro"
+
+msgid "Please fill required values"
+msgstr "Per favore compila i valori richiesti"
+
+msgid "Successfully, Book data updated"
+msgstr "Dati del libro aggiornati con successo"
+
+msgid "Book not found"
+msgstr "Libro non trovato"
+
+msgid "No Section Found"
+msgstr "Nessuna sezione trovata"
+
+msgid "No User Found"
+msgstr "Nessun utente trovato"
+
+msgid "No book found"
+msgstr "Nessun libro trovato"
+
+msgid "Failed, This Book already borrowed by User."
+msgstr "Errore, questo libro è già stato preso in prestito dall'utente."
+
+msgid "Want to Borrow More than 1 Book?<br/>Upgrade to Pro Version"
+msgstr "Vuoi prendere in prestito più di 1 libro?<br/>Passa alla versione Pro"
+
+msgid "Failed to Borrow Book.<br/>User has late fine."
+msgstr ""
+"Impossibile prendere in prestito il libro.<br/>L'utente ha una multa in "
+"sospeso."
+
+msgid "Successfully, Book borrowed"
+msgstr "Libro preso in prestito con successo"
+
+msgid "Failed to borrow book"
+msgstr "Impossibile prendere in prestito il libro"
+
+msgid "Failed, Book is Out of Stock."
+msgstr "Errore, il libro non è disponibile in magazzino."
+
+msgid "All fields are required"
+msgstr "Tutti i campi sono obbligatori"
+
+msgid "Successfully, Books Returned"
+msgstr "Libri restituiti con successo"
+
+msgid "Please Select Books to be Return"
+msgstr "Seleziona i libri da restituire"
+
+msgid "No data found"
+msgstr "Nessun dato trovato"
+
+msgid "Invalid LMS operation"
+msgstr "Operazione LMS non valida"
+
+msgid "Successfully, LMS Settings updated"
+msgstr "Impostazioni LMS aggiornate con successo"
+
+msgid "Invalid LMS Module"
+msgstr "Modulo LMS non valido"
+
+msgid "Download Link Not Found"
+msgstr "Link di download non trovato"
+
+msgid "Invalid Module Type"
+msgstr "Tipo di modulo non valido"
+
+msgid "Successfully, Test Data Imported to LMS"
+msgstr "Dati di test importati con successo nel LMS"
+
+msgid "Failed to Import Test data"
+msgstr "Impossibile importare i dati di test"
+
+msgid "Successfully, Test Data Removed"
+msgstr "Dati di test rimossi con successo"
+
+msgid "Successfully, Late Fine Paid."
+msgstr "Multa per ritardo pagata con successo."
+
+msgid "Fine already paid"
+msgstr "Multa già pagata"
+
+msgid "Invalid LMS Operation"
+msgstr "Operazione LMS non valida"
+
+msgid "LMS actions blocked due to security reasons"
+msgstr "Azioni LMS bloccate per motivi di sicurezza"
+
+msgid "403 - Forbidden"
+msgstr "403 - Vietato"
+
+msgid "Access denied."
+msgstr "Accesso negato."
+
+msgid "Go to Library"
+msgstr "Vai alla Biblioteca"
+
+msgid "404 - Not Found"
+msgstr "404 - Non Trovato"
+
+msgid "The requested book ID was not found."
+msgstr "L'ID del libro richiesto non è stato trovato."
+
+msgid "500 - Internal Server Error"
+msgstr "500 - Errore Interno del Server"
+
+msgid "Sorry, something went wrong on our end."
+msgstr "Spiacente, qualcosa è andato storto da parte nostra."
+
+msgid "Category:"
+msgstr "Categoria:"
+
+msgid "Author:"
+msgstr "Autore:"
+
+msgid "Publication Name:"
+msgstr "Nome Pubblicazione:"
+
+msgid "Status:"
+msgstr "Stato:"
+
+msgid "Available"
+msgstr "Disponibile"
+
+msgid "Not Available"
+msgstr "Non Disponibile"
+
+msgid "First"
+msgstr "Primo"
+
+msgid "Prev"
+msgstr "Precedente"
+
+msgid "Next"
+msgstr "Successivo"
+
+msgid "Last"
+msgstr "Ultimo"
+
+msgid "Back"
+msgstr "Indietro"
+
+msgid "Description:"
+msgstr "Descrizione:"

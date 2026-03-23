@@ -52,8 +52,17 @@ jQuery( '#mla-new-iptc-exif-name' ).val('none');
 jQuery( '#mla-new-iptc-exif' ).val('');
 jQuery( '#mla-iptc-exif-display-name, #mla-change-name-link' ).show();
 return false;" 
-href="#mla-new-iptc-exif"> [+Cancel Name Change+] </a>
+href="#mla-new-iptc-exif">
+[+Cancel Name Change+]
+</a>
 					<p class="description [+custom_class+]">[+Enter Name+]</p></td>
+			</tr>
+			<tr class="form-field iptc-exif-description-wrap">
+				<th scope="row"> <label for="mla-iptc-exif-description">[+Description+]</label>
+				</th>
+				<td><textarea name="mla_iptc_exif_rule[description]" id="mla-iptc-exif-description" rows="[+description_rows+]">[+description+]</textarea>
+					<p class="description">[+description_help+]</p>
+				</td>
 			</tr>
 			<tr class="form-field iptc-exif-iptc-value-wrap">
 				<th scope="row"> <label for="mla-iptc-exif-iptc-value">[+IPTC Value+]</label>
@@ -81,7 +90,8 @@ href="#mla-new-iptc-exif"> [+Cancel Name Change+] </a>
 				</th>
 				<td><select name="mla_iptc_exif_rule[keep_existing]" id="mla-iptc-exif-keep-existing">
                 <option [+keep_selected+] value="1">[+Keep+]</option>
-                <option [+replace_selected+] value="">[+Replace+]</option>
+                <option [+replace_selected+] value="0">[+Replace+]</option>
+                <option [+replace_all_selected+] value="2">[+Replace All+]</option>
             </select></td>
 			</tr>
 			<tr class="form-field iptc-exif-option-wrap [+taxonomy_class+]">
@@ -264,7 +274,8 @@ href="#mla-new-iptc-exif"> [+Cancel new field+] </a></td>
 				</th>
 				<td><select name="mla_iptc_exif_rule[keep_existing]" id="mla-iptc-exif-keep-existing">
                 <option selected="selected" value="1">[+Keep+]</option>
-                <option value="">[+Replace+]</option>
+                <option value="0">[+Replace+]</option>
+                <option value="2">[+Replace All+]</option>
             </select></td>
 			</tr>
 							<tr class="form-field iptc-exif-format-wrap">
@@ -349,7 +360,8 @@ href="#mla-new-iptc-exif"> [+Cancel new field+] </a></td>
 								<label class="alignleft"> <span class="dropdown-title">[+Existing Text+]</span> <span class="input-dropdown-wrap">
 									<select name="keep_existing">
 										<option value="1">[+Keep+]</option>
-										<option value="">[+Replace+]</option>
+										<option value="0">[+Replace+]</option>
+						                <option value="2">[+Replace All+]</option>
 									</select>
 									</span> </label>
 								<label class="alignleft inline-taxonomy-group"> <span class="dropdown-title">[+Option+]</span> <span class="input-dropdown-wrap">
@@ -421,14 +433,15 @@ href="#mla-new-iptc-exif"> [+Cancel new field+] </a></td>
 									<select name="iptc_first">
 										<option selected="selected" value="-1">&mdash; [+No Change+] &mdash;</option>
 										<option value="1">[+IPTC+]</option>
-										<option value="">[+EXIF+]</option>
+										<option value="0">[+EXIF+]</option>
 									</select>
 								</label>
 								<label class="alignleft inline-edit-keep_existing"> <span class="dropdown-title">[+Existing Text+]</span>
 									<select name="keep_existing">
 										<option selected="selected" value="-1">&mdash; [+No Change+] &mdash;</option>
 										<option value="1">[+Keep+]</option>
-										<option value="">[+Replace+]</option>
+										<option value="0">[+Replace+]</option>
+										<option value="2">[+Replace All+]</option>
 									</select>
 								</label>
 							</div>

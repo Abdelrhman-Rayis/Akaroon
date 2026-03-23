@@ -1,203 +1,138 @@
-=== 3D FlipBook - PDF Flipbook Viewer, Flipbook Image Gallery ===
+=== 3D FlipBook – PDF Embedder, PDF Flipbook Viewer, Flipbook Image Gallery ===
 Contributors: iberezansky
-Donate link: http://3dflipbook.net/download-wp
+Donate link: https://3dflipbook.net/download-wp
 Tags: flipbook, flip book, pdf viewer, pdf flipbook, pdf to flip book
 Requires at least: 4.3
-Tested up to: 5.7
+Tested up to: 6.9
 Requires PHP: 5.3
-Stable tag: /trunk/
+Stable tag: 1.16.18
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-3D FlipBook is PDF Viewer, allows to browse images, PDFs or HTMLs as a flipbook. 3D FlipBook attracts user attention and makes more impression on him.
+3D FlipBook is PDF Viewer, allowing to browse images, PDFs or HTMLs as flipbook. Flipbook attracts user attention and makes more impression on him.
 
 == Description ==
 
 <p>
-  <a href="http://3dflipbook.net/">3D FlipBook</a> is PDF Viewer that allows to browse images, PDFs or HTMLs as a flipbook. It can be used for demonstration magazines, books, cards, brochures, booklets and much more in natural way. 3D FlipBook helps to attract user attention and make more impression on him.
+  <a href="https://3dflipbook.net/">3D FlipBook</a> allows to build image flipbook, PDF flipbook, HTML flipbook and portfolio flipbook without any limits in pages or file size. You just need to add a PDF link and your PDF will turn into alive realistic 3D flipbook.
 </p>
 
-[youtube https://youtu.be/fQOuO6w9CR0]
-<a href="https://youtu.be/fQOuO6w9CR0">3D FlipBook WordPress Plugin - Demo Video</a>
+<p>
+  You can use 3D FlipBook for demonstration magazines, books, cards, brochures, booklets and much more in natural way. 3D FlipBook helps to attract user attention and make more impression on him.
+</p>
+
+[youtube https://youtu.be/pN2TqSLLMYs]
+<a href="https://youtu.be/pN2TqSLLMYs">3D FlipBook WordPress Plugin - Demo Video</a>
 
 <ul>
-  <li>Start from <a href="http://3dflipbook.net/wp-overview">the live preview</a></li>
+  <li>Start from <a href="https://3dflipbook.net/wp-overview">the live preview</a></li>
   <li>Watch <a href="http://www.youtube.com/channel/UCRLxHMrRORwfPs9WvTOzlHQ/videos">our YouTube channel</a>, there a lot of useful lessons</li>
-  <li>Check <a href="http://3dflipbook.net/wp-user-manual">the user manual</a></li>
+  <li>Check <a href="https://3dflipbook.net/wp-user-manual">the user manual</a></li>
 </ul>
+
+
+<h3>3D FlipBook variations</h3>
+
+<p>
+  3D FlipBook provide you with the best look of your PDFs and images on the market. Flipbook converts your flat images and PDFs to interactive and real life flipbooks with the help of  WegGL technology. There is nothing to worry about for you and your customers, all complex work happens behind the scenes and the beautiful result stays in front of you.
+</p>
+
+<p>
+  Supporting skins makes 3D FlipBook customization very easy. It is necessary just to choose appropriate skin and that is all. There are available skins for light and dark themes - the most universal ones.
+</p>
+
+<ul>
+  <li>
+    <strong>PDF Flipbook:</strong> the easiest way to create a new flipbook is to give to the 3D FlipBook PDF URL. Plugin renders them using PDF.js library. Updating a PDF Flipbook or creating it is just a link to the PDF file, no extra hassle. PDF is the best file format for 3D FlipBook.
+  </li>
+  <li>
+    <strong>Image Flipbook:</strong> if you have a lot of images that you want to display - 3D FlipBook is here to help you. Create a story flipbook out of your images, flip and share your photos and portfolios with your friends.
+  </li>
+  <li>
+    <strong>HTML Flipbook:</strong> 3D FlipBook uses SVG foreignObject technology to render HTMLs online. This will help you to use lightweight and fast loading sources for your books. Combining with CSS layers for dynamic content you can get the best result.
+  </li>
+</ul>
+
+<h3>Just 3 steps</h3>
+
+<p>
+  WordPress is famous for its easy to learn and use structure. 3D FlipBook inherits WordPress post structure for creating and managing flipbooks. It is similar to creating a post.
+</p>
+
+1. Install 3D FlipBook.
+2. 3D FlipBook-> Add new.
+3. Provide a link to your PDF and publish the flipbook.
+
+<p>
+  Flipbook is ready to flip, click the permalink to see your flipbook.
+</p>
 
 <h3>Main features</h3>
 
 <ul>
-  <li>Google Analytics</li>
-  <li>Predefined flipbook styles</li>
-  <li>Auto resolution</li>
-  <li>Double pages PDFs</li>
-  <li>3D FlipBook categories</li>
-  <li>3D FlipBook shortcode generator</li>
-  <li>RTL - right-to-left, top-to-bottom script</li>
-  <li>Default flipbook template option in General Settings</li>
-  <li>Default flipbook lightbox option in General Settings</li>
-  <li>CSS Layers</li>
-  <li>Languages</li>
-  <li>PDF search</li>
-  <li>3D FlipBook thumbnails</li>
-  <li>Flip sounds</li>
-  <li>Flipbook deep linking</li>
-  <li>PDF bookmarks</li>
-  <li>Printing</li>
-  <li>3D FlipBook single page mode</li>
-  <li>3D FlipBook control customization</li>
-  <li>PDF links</li>
-  <li>Mobile-Friendly</li>
-  <li>Smart pan mode</li>
-  <li>3D FlipBook templates</li>
-  <li>Realistic view</li>
-  <li>Flixible page corners</li>
-  <li>Smart pages loading</li>
-  <li>HTML, PDF, images as sources</li>
-  <li>User friendly</li>
-  <li>High perfomance</li>
-  <li>Lightbox effect</li>
-  <li>Interactive</li>
-  <li>Responsive</li>
-  <li>Easy to use</li>
+  <li><strong>Visual page editor:</strong> insert in your flipbooks Google AdSense, Audio, HTML, Link, iFrame, Image, Video, YouTube as second layer just in two clicks.</li>
+  <li><strong>Google Analytics:</strong> track all book pages visited by your users.</li>
+  <li><strong>Flipbook styles:</strong> create flat and volumetric flipbooks with different flip animations.</li>
+  <li><strong>Auto resolution:</strong> sharp and clear text at any zoom level.</li>
+  <li><strong>Double pages PDFs:</strong> supporting PDFs in format 1w, 2w, ..., 2w, 1w, where w is the page width.</li>
+  <li><strong>3D FlipBook categories:</strong> use one shortcode to show all flipbooks from one or several categories as a book gallery.</li>
+  <li><strong>3D FlipBook shortcode generator:</strong> you do not need to memorize all shortcode parameters,  3D FlipBook has visual shortcode generator.</li>
+  <li><strong>RTL:</strong> right-to-left, top-to-bottom script books are supported.</li>
+  <li><strong>Default flipbook template, skin and lightbox in general settings:</strong> define once what style you want to use on your site, do not set in each shortcode.</li>
+  <li><strong>Languages:</strong> flipbook plugin is ready for translation to any language.</li>
+  <li><strong>PDF search:</strong> find everything in your PDFs.</li>
+  <li><strong>Auto thumbnails:</strong> 3D FlipBook automatically generates thumbnails for your flipbooks - no routine work.</li>
+  <li><strong>PDF bookmarks:</strong> plugin uses PDF bookmarks to build the table of contents for your flipbooks, also you can add your own table of contents.</li>
+  <li><strong>Single page mode & responsive:</strong> read flipbooks on mobile devices with the same level of comfort like at desktops.</li>
+  <li><strong>Toolbar customization:</strong> disable useless commands for your flipbooks like Print, Download, Sound and so on.</li>
+  <li><strong>PDF links:</strong> 3D FlipBook fully supports PDF links, also it can highlight them or disable.</li>
+  <li><strong>HTML, PDF, images as sources:</strong> build your flipbooks from everything, 3D FlipBook supports very reach set of sources.</li>
+  <li><strong>Interactivity:</strong> Supporting HTML opens wide abilities for creating interactive books. It allows to use CSS3 and JavaScript, create navigation, use hover effects and much more. 3D FlipBook as PDF Viewer supports PDF links, highlighters and any HTMl as the second markup layer.</li>
 </ul>
 
-
-<h3>Details</h3>
-
-<h4>Realistic view</h4>
 <p>
-  <a href="http://3dflipbook.net/">3D FlipBook</a> allows to create volume book, with page thickness. It is the most exact computer model of a book or a magazine from real world.
-</p>
-<p>
-  The plugin is able to simulate book opening process.
-  Modeled flipbook repeat the same actions as its real prototype:
-    while the cover is opening or closing the internal flipbook pages are deforming as it happens in real life.
-  The deformation can be customized. You can reduce it or switch off.
+  If these features are still not enough, you can <a href="https://3dflipbook.net/sources/interactive-3d-flipbook-powered-physics-engine-sources.zip">download</a> the plugin sources and add your ones.
 </p>
 
-<h4>Natural behaviour</h4>
-<p>
-  The plugin is called <a href="http://3dflipbook.net/">3D FlipBook</a>, for sure, it can perform page flipping animation.
-  But this is very common ability so all typical plugins are able to do it.
-  <a href="http://3dflipbook.net/">3D FlipBook</a> allows to customize the shape of flipping pages but it is still not enough to be unique.
-  The main feature is using specially designed physics engine that perform all interaction with a user.
-  This engine is based on physics laws so all user actions with the flipbook seems realistic.
-  <a href="http://3dflipbook.net/">3D FlipBook</a> allows you drag and throw pages together. The engine solve the collisions and show natural scene.
-</p>
-<p>
-  Physics engine has a lot of properties: gravity, mass, flexibility, page flipping velocities and much more.
-  But it is little necessary to know for using the plugin because all those properties have default presets.
-</p>
+<h3>Foreign libraries</h3>
 
-<h4>Flexible page corners</h4>
-<p>
-  The main goal of <a href="http://3dflipbook.net/">3D FlipBook</a> is maximum user friendly. Main key of being friendly is behave in habitual for user way.
-  How are we used to turn pages in books? - of course it is dragging a page while holding a corner!
-  <a href="http://3dflipbook.net/">3D FlipBook</a> is one known 3D flipbook plugin that has such feature.
-</p>
+1. html2canvas.min.js - <a href="http://html2canvas.hertzen.com">html2canvas</a>
+2. pdf.min.js - <a href="https://mozilla.github.io/pdf.js/">PDFJS</a>
+3. pdf.worker.js - <a href="https://mozilla.github.io/pdf.js/">PDFJS</a>
+4. react.min.js - <a href="https://react.dev/">ReactJS</a>
+5. react-dom.min.js - <a href="https://react.dev/">ReactJS</a>
+6. three.min.js - <a href="https://threejs.org">ThreeJS</a>
 
-<h4>Skins support</h4>
-<p>
-  Supporting skins makes 3D FlipBook customization very easy. It is necessary just to choose appropriate skin and that is all.
-  Now there are available skins for light and dark themes - the most universal ones.
-</p>
+<h3>What do users say about 3D FlipBook</h3>
 
-<h4>Smart pan</h4>
-<p>
-  <a href="http://3dflipbook.net/">3D FlipBook</a> has smart algorithm to show the book in maximum comfortable and appropriate for user way.
-  Flipbook automatically chooses book scale and alignment on the screen, disallows user to drag the book out of view port.
-  The pan makes only smooth moves that seems very friendly for user. All these abilities help the book to look richer.
-</p>
+★★★★★
+>I wanted to display three high school yearbooks in a page-turning format. I tried several plugins with disappointing results before I stumbled across 3D FlipBook. It has been very easy to use and has given me excellent results. [elkrun](https://wordpress.org/support/topic/very-happy-with-this-plugin-39/)
 
-<h4>HTML, PDF, images as sources</h4>
-<p>
-  The plugin can use PDF, images and HTMLs as pages. Supporting HTML format as texture is a new technology no one of other plugins support it.
-  HTML allow easily create interactive books, handle user events, manage plugin behaviour. Using HTML textures is next important step in development web animation.
-  Supporting PDFs allows to create PDF flipbooks and use the plugin as PDF Viewer.
-</p>
+★★★★★
+>This is a really fantastic plugin. It looks and functions perfectly and the layout is very user-friendly. Can’t recommend it enough! THANK YOU! [dkf1908](https://wordpress.org/support/topic/incredible-151/)
 
-<h4>Smart pages loading</h4>
-<p>
-  <a href="http://3dflipbook.net/">3D FlipBook</a> is not just pretty but it is smart. It has user behaviour prediction system.
-  Flipbook tracks user actions and try to predict next necessary pages.
-  In the background it loads predicted pages and renders them. When the user go to next page it is ready to be shown.
-</p>
-<p>
-  <a href="http://3dflipbook.net/">3D FlipBook</a> uses priorities for page loading. First of all it loads visible for user pages then predicted ones.
-  You can customize amount of pages to preload.
-</p>
+★★★★★
+>This plugin is awesome! Does everything it says it does and more. The free version is actually quite complete. Congrats to the developers! Note: I’ve been reading some of the bad reviews and to my experience the only problem this plugin might have is between the chair and the computer 🙂 [lramos](https://wordpress.org/support/topic/awesome-plugin-great-job-flipbook-team/)
 
-<h4>User friendly</h4>
-<p>
-  <a href="http://3dflipbook.net/">3D FlipBook</a> is designed to be maximum user friendly. It has familiar to user page flipping control.
-  Flexible corners help user to understand that he can turn the page by means drag and drop technology.
-  Physics engine computes page transforms in similar to real world way.
-  Modeling book is close to natural book - it has the same volume and shape.
-  It is possible to use hard flat covers to create hard bending and use flexible pages, make whole book flexible or flat.
-</p>
-<p>
-  <a href="http://3dflipbook.net/">3D FlipBook</a> has specially designed animation of page loading process.
-  It is created automatically for different page colors.
-  <a href="http://3dflipbook.net/">3D FlipBook</a> computes animation colors as inversion of page color.
-  It looks nice for all colors.
-</p>
-<p>
-  <a href="http://3dflipbook.net/">3D FlipBook</a> supports fullscreen mode. It is comfortable to watch magazines in this mode, they look like alive.
-</p>
-<p>
-  Sometimes it is useful to change lightning. <a href="http://3dflipbook.net/">3D FlipBook</a> gives to its users such ability.
-  User can change lightning to do it appropriate for him. It is important option for reading long texts.
-</p>
+★★★★★
+>I have been using this plugin for about six months and I really like it. The features are great, the look is terrific, and it even has sounds. [ericleesmith](https://codecanyon.net/item/interactive-3d-flipbook-powered-physics-engine-wordpress-plugin/reviews/19389832#review_2944311)
 
-<h4>High performance</h4>
-<p>
-  The plugin performance does not depend on number of pages because it does not manage single pages.
-  <a href="http://3dflipbook.net/">3D FlipBook</a> works with blocks of pages, it allows to keep in memory just visible for user pages.
-  So if the book is closed then there are 2 or 3 blocks.
-  The first is left cover, the second is right cover and third is internal pages.
-  If the book is opened there can be two blocks for left and right internal pages.
-  There can be more blocks just when the flipping animation is performing.
-  The plugin has no problem with more than 50 simultaneously flipping blocks.
-  When the turn is finished the turned block merges with neighbour block.
-</p>
-<p>
-  For fast rendering 3D graphics <a href="http://3dflipbook.net/">3D FlipBook</a> uses WebGL. WebGL is a API for creating interactive 3D graphics without using plugins.
-</p>
-<p>
-  PDF Viewer uses lightweight Mozilla PDF.js library. It allows to render PDFs very fast and in high quality.
-</p>
+★★★★★
+>This plugin did a great job for me. I needed to reproduce high school yearbooks on a class reunion website. The resulting pdf flipbooks are fantastic! [elwoodie](https://codecanyon.net/item/interactive-3d-flipbook-powered-physics-engine-wordpress-plugin/reviews/19389832#review_3244543)
 
-<h4>Interactive</h4>
-<p>
-  Supporting HTML opens wide abilities for creating interactive books.
-  It allows to use CSS3 and JavaScript, create navigation, use hover effects and much more.
-  <a href="http://3dflipbook.net/">3D FlipBook</a> as PDF Viewer supports PDF links, highlighters and any HTMl as the second layer markup.
-</p>
-
-
-<h4>Responsive</h4>
-<p>
-  <a href="http://3dflipbook.net/">3D FlipBook</a> is designed to occupy whole container where you place it. So if the container size changes the plagin recompute its dimensions.
-  So keep the container responsive and plugin will be responsive too.
-</p>
-
-<h4>Easy to use and customize</h4>
-<p>
-  <a href="http://3dflipbook.net/">3D FlipBook</a> is well documented, has a lot of examples and getting started manual. It is easy to start.
-  Flipbook supports skins, so it is possible to create own skins or customize style or template files of existing.
-</p>
-<p>
-  <a href="http://3dflipbook.net/">3D FlipBook</a> has a lot of customization options. You can always watch our lessons on <a href="https://www.youtube.com/channel/UCRLxHMrRORwfPs9WvTOzlHQ/videos">our YouTube channel</a>.
-</p>
 
 == Installation ==
 
-To install the plugin use the regular WordPress plugin installation wizard. For more details see <a href="http://3dflipbook.net/wp-user-manual">the user manual</a>.
+To install the plugin use the regular WordPress plugin installation wizard:
 
-To understand how the plugin works watch next two videos:
+1. Go to Plugins-> Add New inside WordPress admin.
+2. Look for 3D FlipBook in the search plugins text box.
+3. Locate **3D FlipBook – PDF Flipbook WordPress** and click **Install Now**.
+4. Click **Activate** to activate the plugin.
+
+For more details see <a href="https://3dflipbook.net/wp-user-manual">the user manual</a>.
+
+To understand how the plugin works watch next two videos (the videos are a little outdated, but workflow is still the same):
 
 [youtube https://youtu.be/erwZIWCU2EE]
 <a href="https://youtu.be/erwZIWCU2EE">How to create 3D FlipBook from images</a>
@@ -211,21 +146,525 @@ More videos on <a href="https://www.youtube.com/channel/UCRLxHMrRORwfPs9WvTOzlHQ
 
 = How does the plugin works? =
 
-Read <a href="http://3dflipbook.net/wp-user-manual">the user manual</a>.
+Read <a href="https://3dflipbook.net/wp-user-manual">the user manual</a>.
+
+
+= How to install 3D FlipBook in my WordPress site? =
+
+Please check the installation tab for details.
+
+
+= How many pages can 3D Flipbook support and how big the PDF file can be? =
+
+At any given time 3D FlipBook requires only 6 pages of data at max. So the amount of pages in a PDF file doesn't really affect to the 3D FlipBook. Also, it only loads 6 Pages of data to start the flipbook and this makes it resource friendly and traffic friendly.
+
+
+= How to create a PDF flipbook in a WordPress Page? =
+
+1. Upload a pdf file to your WordPress site.
+2. Inside the Edit page/post, add the following shortcode:
+[3d-flip-book pdf="path\to\pdf-file.pdf"][/3d-flip-book].
+For more details use 3D FlipBook-> Shortcode Generator.
+
+
+= Creating a WordPress PDF Flipbook =
+
+1. Go to 3D FlipBook-> Add New.
+2. Enter the title of the PDF flipbook in Title box.
+3. Click **Select PDF** and select a PDF that you want to use to build your PDF Flipbook.
+4. Upload and select the PDF file.
+5. CLick **Publish**.
+
+
+= Creating a WordPress Image Flipbook =
+
+1. Go to 3D FlipBook-> Add New.
+2. Enter the title of the Image Flipbook in Title box.
+3. In **Source** select **Images, HTMLs files** to create a WordPress Flipbook from images.
+4. Go to **Pages tab**, click **Add image pages** and select the images you want to use for creating your flipbook.
+5. Click **Publish**.
+
+= Adding Flipbook to a WordPress Page =
+
+1. From the 3D FlipBook you just created, copy the shortcode from **Shortcode** box. Similar to [3d-flip-book id="1"][/3d-flip-book].
+2. Go to the page where you want to insert the flipbook and paste the shortcode.
+
+
+= Creating a PDF Flipbook with just PDF File URL =
+
+You can create a flipbook with just the link and without creating the 3D FlipBook post
+1. Go to the page where you want to create a flipbook from pdf.
+2. Use a shortcode to embed the flipbook: [3d-flip-book pdf="/wp-content/uploads/file.pdf"][/3d-flip-book].
+
+= Start or open 3D FlipBook at certain page? =
+
+You can set the opening page of a flipbook with shortcode:
+[3d-flip-book id="1" data-page-n="10"][/3d-flip-book].
+This will open your PDF Flipbook or Image Flipbook at page 10 when it starts.
+
 
 == Screenshots ==
 
-1. Closed book in Lightbox mode
-2. PDF search, volumetric book with paddings
-3. Pages flipping
-4. Corners flexibility demonstration
-5. Fullscreen mode, table of contents - thumbnails
-6. short-white-skin
-7. white-skin
-8. short-black-skin
-9. black-skin
+1. 3D FlipBook real time animation
+2. Tilted Flipbook & main skin (small screenshot)
+3. YouTube skin (small screenshot)
+4. PDF search, volumetric book with paddings (small screenshot)
+5. Closed Flipbook
+6. PDF search, volumetric book with paddings
+7. White-Hover skin
+8. Black-Hover skin
+9. YouTube skin
+10. White skin
+11. Black skin
+12. Symmetrically flipping pages
+13. Tilted symmetrically flipping pages
+14. Tilted symmetrically flipping pages & flexible corners
+15. Unrolling flipping pages
+16. Tilted unrolling flipping pages
+17. Tilted unrolling flipping pages & flexible corners
 
 == Changelog ==
+
+<h4>1.16.18</h4>
+<ul>
+  <li>
+    Filter denied flipbooks data from AJAX requests, that increase the plugin security
+  </li>
+</ul>
+
+<h4>1.16.17</h4>
+<ul>
+  <li>
+    Show only published books for users less than editor
+  </li>
+</ul>
+
+<h4>1.16.16</h4>
+<ul>
+  <li>
+    Updated parameters escaping to avoid security issues with some themes
+  </li>
+</ul>
+
+<h4>1.16.15</h4>
+<ul>
+  <li>
+    Added normalization of url protocol for client locale loader
+  </li>
+</ul>
+
+<h4>1.16.14</h4>
+<ul>
+  <li>
+    Fixed Wordfence Security warning
+  </li>
+</ul>
+
+<h4>1.16.13</h4>
+<ul>
+  <li>
+    Fixed fullScreen background urls
+  </li>
+</ul>
+
+<h4>1.16.12</h4>
+<ul>
+  <li>
+    Fixed book overlapping with toolbar
+  </li>
+  <li>
+    Removed extra margin when the toolbar is hidden
+  </li>
+  <li>
+    Fixed wrong current page when pages are turning
+  </li>
+  <li>
+    Fixed displaying unprocessed books
+  </li>
+</ul>
+
+<h4>1.16.11</h4>
+<ul>
+  <li>
+    Fixed issue with WooCommerce
+  </li>
+</ul>
+
+<h4>1.16.10</h4>
+<ul>
+  <li>
+    Fixed incompatibility with a SEO plugin
+  </li>
+</ul>
+
+<h4>1.16.9</h4>
+<ul>
+  <li>
+    Fixed jQuery.get is not a function
+  </li>
+</ul>
+
+<h4>1.16.8</h4>
+<ul>
+  <li>
+    Improved page with plugin loading speed
+  </li>
+  <li>
+    Fixed gray boxes instead of shadows in Safari
+  </li>
+</ul>
+
+<h4>1.16.7</h4>
+<ul>
+  <li>
+    Fixed Notice: Function _load_textdomain_just_in_time was called incorrectly
+  </li>
+</ul>
+
+<h4>1.16.6</h4>
+<ul>
+  <li>
+    Disabled mouse wheel zoom for inline mode
+  </li>
+</ul>
+
+<h4>1.16.5</h4>
+<ul>
+  <li>
+    Updated THREEJS to fix CVE-2020-28496
+  </li>
+</ul>
+
+<h4>1.16.4</h4>
+<ul>
+  <li>
+    Fixed rendering stuck when search hits are displayed
+  </li>
+</ul>
+
+<h4>1.16.3</h4>
+<ul>
+  <li>
+    Support PDFs in format w, 2w, ..., 2w, where w is page width
+  </li>
+  <li>
+    Fix errors like "Cannot read properties of null (reading 'plugin')"
+  </li>
+</ul>
+
+<h4>1.16.2</h4>
+<ul>
+  <li>
+    Single PDFJS initialization
+  </li>
+  <li>
+    Fix css layers position for Safari
+  </li>
+  <li>
+    Stretch / center source images, pdf pages, htmls on book pages
+  </li>
+</ul>
+
+<h4>1.16.1</h4>
+<ul>
+  <li>
+    New Single Page mode - it displays only one page
+  </li>
+  <li>
+    Added PDF search button on the toolbar
+  </li>
+  <li>
+    Added hits highlighting for search results
+  </li>
+  <li>
+    Clear hits when query is empty
+  </li>
+  <li>
+    Center page image instead of stretching
+  </li>
+  <li>
+    Using CSS classes to trigger 3D FlipBook lightbox activation
+  </li>
+  <li>
+    Added function to set all pages interactive
+  </li>
+  <li>
+    Fixed content security policy - 3D FlipBook did not appear in Safari
+  </li>
+  <li>
+    Fixed CSS layers order in RTL mode
+  </li>
+  <li>
+    Added the word "of" indicating the page number in the search status results in POT file
+  </li>
+  <li>
+    Added Goto first page and Goto last page in POT file
+  </li>
+</ul>
+
+<h4>1.15.8</h4>
+<ul>
+  <li>
+    Added stable FDFJS for old browsers
+  </li>
+</ul>
+
+<h4>1.15.7</h4>
+<ul>
+  <li>
+    Filter HTML and JS when DISALLOW_UNFILTERED_HTML === true
+  </li>
+</ul>
+
+<h4>1.15.6</h4>
+<ul>
+  <li>
+    PDFJS was updated to 4.3.136
+  </li>
+</ul>
+
+<h4>1.15.5</h4>
+<ul>
+  <li>
+    Protection from javascript: protocol in urls
+  </li>
+</ul>
+
+<h4>1.15.4</h4>
+<ul>
+  <li>
+    Escaping bookmark titles
+  </li>
+</ul>
+
+<h4>1.15.3</h4>
+<ul>
+  <li>
+    Filtering unsecured content (css layers, ready function) from users less then editor
+  </li>
+</ul>
+
+<h4>1.15.2</h4>
+<ul>
+  <li>
+    Reverted iframe initialisation changes - loading issue on Android internal browser
+  </li>
+</ul>
+
+<h4>1.15.1</h4>
+<ul>
+  <li>
+    Allowed editing PDF URL in Flipbook editor
+  </li>
+  <li>
+    Lightbox refactoring
+  </li>
+  <li>
+    Flipbook editor styles optimization
+  </li>
+  <li>
+    Two new predefined flipbook styles
+  </li>
+</ul>
+
+<h4>1.15.0</h4>
+<ul>
+  <li>
+    Visual page editor: AdSense, Audio, HTML, Link, iFrame, Image, Video, YouTube
+  </li>
+  <li>
+    Skin: updated design, added fade effect
+  </li>
+  <li>
+    Book background: color, image, CSS style
+  </li>
+  <li>
+    PDF links highlighting
+  </li>
+  <li>
+    Book 3d lighting options
+  </li>
+  <li>
+    Book gallery: mobile layout and center alignment
+  </li>
+  <li>
+    New commands: Goto first/last page
+  </li>
+  <li>
+    Order by last modified imported from media gallery files
+  </li>
+  <li>
+    Max book depth, limit for book thickness that recalculates cover and page depth
+  </li>
+  <li>
+    WP multisite: creating table for book pages
+  </li>
+  <li>
+    Fixed issues in PDF printing
+  </li>
+</ul>
+
+<h4>1.14.0</h4>
+<ul>
+  <li>
+    Book templates
+  </li>
+  <li>
+    Custom bookmarks
+  </li>
+  <li>
+    Auto play
+  </li>
+  <li>
+    Custom slug for plugin default page
+  </li>
+  <li>
+    WebP images
+  </li>
+  <li>
+    Improved displaying loading animation from skin
+  </li>
+</ul>
+
+<h4>1.13.2</h4>
+<ul>
+  <li>
+    Optimized PDF rendering, especially when zoom is changing
+  </li>
+</ul>
+
+<h4>1.13.0</h4>
+<ul>
+  <li>
+    Real colors
+  </li>
+  <li>
+    Book shadow
+  </li>
+  <li>
+    Toolbar shadow
+  </li>
+  <li>
+    Improved quality on mobile devices
+  </li>
+  <li>
+    Fixed rendering artifact: a line between pages
+  </li>
+  <li>
+    Fixed double tap on links
+  </li>
+  <li>
+    Added creation in hidden elements
+  </li>
+  <li>
+    Extra paddings for zoomed view
+  </li>
+  <li>
+    Auto resolution: added min and max resolution
+  </li>
+  <li>
+    Binder zero thickness
+  </li>
+  <li>
+    Book thumbnail: using image from media gallery instead of it's thumbnail
+  </li>
+  <li>
+    Inline size calculation on mobiles the same as on desktops
+  </li>
+  <li>
+    Plugin settings: thumbnail height option
+  </li>
+  <li>
+    Plugin settings: Google Analytics
+  </li>
+</ul>
+
+<h4>1.12.5</h4>
+<ul>
+  <li>
+    Resolved issue with squares instead of buttons in Safari
+  </li>
+</ul>
+
+<h4>1.12.4</h4>
+<ul>
+  <li>
+    Initializing plugin from plugins_loaded
+  </li>
+</ul>
+
+<h4>1.12.3</h4>
+<ul>
+  <li>
+    Short links were removed
+  </li>
+</ul>
+
+<h4>1.12.2</h4>
+<ul>
+  <li>
+    Fixed mouse events issue for CSS layers
+  </li>
+</ul>
+
+<h4>1.12.1</h4>
+<ul>
+  <li>
+    Added nonce field to avoid CSRF attack
+  </li>
+  <li>
+    Removed unused code
+  </li>
+</ul>
+
+<h4>1.12.0</h4>
+<ul>
+  <li>
+    Added new asymmetrical flip animation
+  </li>
+  <li>
+    Fixed graphic artifacts between pages
+  </li>
+  <li>
+    Arrow keys were binded on book pages turning
+  </li>
+  <li>
+    Added web page scrolling when user swipe book pages
+  </li>
+  <li>
+    Added web page scrolling by mouse wheel when book zoom is not available
+  </li>
+  <li>
+    Updated PDFJS library to 2.5.207
+  </li>
+  <li>
+    Fixed XSS issue
+  </li>
+</ul>
+
+<h4>1.11.5</h4>
+<ul>
+  <li>
+    Logo was removed
+  </li>
+  <li>
+    THREEJS was updated to 104 rev for Safari 15 compatibility
+  </li>
+</ul>
+
+<h4>1.11.3</h4>
+<ul>
+  <li>
+    Using react library from WordPress js includes if it is defined otherwise register react 17.0.2 from the plugin folder (actual for old WordPress)
+  </li>
+</ul>
+
+<h4>1.11.2</h4>
+<ul>
+  <li>
+    Using react library from WordPress js includes
+  </li>
+</ul>
 
 <h4>1.11.1</h4>
 <ul>

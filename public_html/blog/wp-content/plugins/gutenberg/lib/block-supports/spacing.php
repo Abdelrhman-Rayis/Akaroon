@@ -2,6 +2,10 @@
 /**
  * Spacing block support flag.
  *
+ * For backwards compatibility with core, this remains separate to the
+ * dimensions.php block support despite both belonging under a single panel in
+ * the editor.
+ *
  * @package gutenberg
  */
 
@@ -11,7 +15,7 @@
  * @param WP_Block_Type $block_type Block Type.
  */
 function gutenberg_register_spacing_support( $block_type ) {
-	$has_spacing_support = gutenberg_block_has_support( $block_type, array( 'spacing' ), false );
+	$has_spacing_support = block_has_support( $block_type, array( 'spacing' ), false );
 
 	// Setup attributes and styles within that if needed.
 	if ( ! $block_type->attributes ) {
@@ -35,44 +39,38 @@ function gutenberg_register_spacing_support( $block_type ) {
  * @return array Block spacing CSS classes and inline styles.
  */
 function gutenberg_apply_spacing_support( $block_type, $block_attributes ) {
-	$has_padding_support = gutenberg_has_spacing_feature_support( $block_type, 'padding' );
-	$has_margin_support  = gutenberg_has_spacing_feature_support( $block_type, 'margin' );
-	$styles              = array();
-
-	if ( $has_padding_support ) {
-		$padding_value = _wp_array_get( $block_attributes, array( 'style', 'spacing', 'padding' ), null );
-		if ( null !== $padding_value ) {
-			foreach ( $padding_value as $key => $value ) {
-				$styles[] = sprintf( 'padding-%s: %s;', $key, $value );
-			}
-		}
+	if ( wp_should_skip_block_supports_serialization( $block_type, 'spacing' ) ) {
+		return array();
 	}
 
-	if ( $has_margin_support ) {
-		$margin_value = _wp_array_get( $block_attributes, array( 'style', 'spacing', 'margin' ), null );
-		if ( null !== $margin_value ) {
-			foreach ( $margin_value as $key => $value ) {
-				$styles[] = sprintf( 'margin-%s: %s;', $key, $value );
-			}
-		}
+	$attributes          = array();
+	$has_padding_support = block_has_support( $block_type, array( 'spacing', 'padding' ), false );
+	$has_margin_support  = block_has_support( $block_type, array( 'spacing', 'margin' ), false );
+	$block_styles        = $block_attributes['style'] ?? null;
+
+	if ( ! $block_styles ) {
+		return $attributes;
 	}
 
-	return empty( $styles ) ? array() : array( 'style' => implode( ' ', $styles ) );
-}
+	$skip_padding         = wp_should_skip_block_supports_serialization( $block_type, 'spacing', 'padding' );
+	$skip_margin          = wp_should_skip_block_supports_serialization( $block_type, 'spacing', 'margin' );
+	$spacing_block_styles = array(
+		'padding' => null,
+		'margin'  => null,
+	);
+	if ( $has_padding_support && ! $skip_padding ) {
+		$spacing_block_styles['padding'] = $block_styles['spacing']['padding'] ?? null;
+	}
+	if ( $has_margin_support && ! $skip_margin ) {
+		$spacing_block_styles['margin'] = $block_styles['spacing']['margin'] ?? null;
+	}
+	$styles = gutenberg_style_engine_get_styles( array( 'spacing' => $spacing_block_styles ) );
 
-/**
- * Checks whether the current block type supports the spacing feature requested.
- *
- * @param WP_Block_Type $block_type Block type to check for support.
- * @param string        $feature    Name of the feature to check support for.
- * @param mixed         $default    Fallback value for feature support, defaults to false.
- *
- * @return boolean                  Whether or not the feature is supported.
- */
-function gutenberg_has_spacing_feature_support( $block_type, $feature, $default = false ) {
-	// Check if the specific feature has been opted into individually
-	// via nested flag under `spacing`.
-	return gutenberg_block_has_support( $block_type, array( 'spacing', $feature ), $default );
+	if ( ! empty( $styles['css'] ) ) {
+		$attributes['style'] = $styles['css'];
+	}
+
+	return $attributes;
 }
 
 // Register the block support.

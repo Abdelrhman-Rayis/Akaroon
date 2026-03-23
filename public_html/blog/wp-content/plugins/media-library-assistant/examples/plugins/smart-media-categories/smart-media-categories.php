@@ -14,7 +14,7 @@
  * Plugin Name: Smart Media Categories
  * Plugin URI:  http://davidlingren.com/
  * Description: Assigns taxonomy terms to Media Library items based on the terms of their parent post/page.
- * Version:     1.1.6
+ * Version:     1.1.8
  * Author:      David Lingren
  * Author URI:  http://davidlingren.com/
  * Text Domain: smart-media-categories
@@ -29,6 +29,9 @@
  * Enhanced for support topic "assign taxonomies to attachments for a standard WP gallery"
  * opened on  8/24/2017 by "maxgx".
  * https://wordpress.org/support/topic/assign-taxonomies-to-attachments-for-a-standard-wp-gallery/
+ *
+ * Enhanced (Reflected Cross-Site Scripting security fix) for Wordfence CVE ID: CVE-2024-11974 report
+ * opened on 12/03/2024 by "vgo0":
  *
  * Based on Tom McFarlin's "WordPress Plugin Boilerplate", v2.6.1
  *  - http://tommcfarlin.com/wordpress-plugin-boilerplate/
@@ -84,6 +87,15 @@ if ( is_admin() /* && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) */ ) {
 	add_action( 'plugins_loaded', array( 'Smart_Media_Categories_Admin', 'get_instance' ) );
 //error_log( __LINE__ . ' smart-media-categories.php is_admin() Support _REQUEST = ' . var_export( $_REQUEST, true ), 0 );
 }
+
+// WP REST API calls need everything loaded to process uploads
+if ( isset( $_SERVER['REQUEST_URI'] ) && 0 === strpos( $_SERVER['REQUEST_URI'], '/wp-json/' ) ) { // phpcs:ignore
+	require_once( plugin_dir_path( __FILE__ ) . 'admin/class-smart-media-categories-admin.php' );
+	add_action( 'plugins_loaded', array( 'Smart_Media_Categories_Admin', 'get_instance' ) );
+//error_log( __LINE__ . ' smart-media-categories.php /wp-json/ Support _REQUEST = ' . var_export( $_REQUEST, true ), 0 );
+}
+
+
 
 // Look for Postie chron job
 if ( isset( $_REQUEST['doing_wp_cron'] ) && class_exists( 'Postie', false ) ) {

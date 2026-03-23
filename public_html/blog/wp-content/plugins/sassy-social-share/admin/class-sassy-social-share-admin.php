@@ -3,14 +3,14 @@
 /**
  * Contains functions responsible for functionality at admin side
  *
- * @since      1.0.0
+ * @since      1.0
  *
  */
 
 /**
  * This class defines all code necessary for functionality at admin side
  *
- * @since      1.0.0
+ * @since      1.0
  *
  */
 class Sassy_Social_Share_Admin {
@@ -18,28 +18,28 @@ class Sassy_Social_Share_Admin {
 	/**
 	 * Options saved in database
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	private $options;
 
 	/**
 	 * Current version of the plugin
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	private $version;
 
 	/**
 	 * Flag to check if BuddyPress is active
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	private $is_bp_active = false;
 
 	/**
 	 * Get saved options
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
      * @param    array    $options    Plugin options saved in database
 	 */
 	public function __construct( $options, $version ) {
@@ -52,7 +52,7 @@ class Sassy_Social_Share_Admin {
 	/**
 	 * Creates plugin menu in admin area
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	public function create_admin_menu() {
 
@@ -65,6 +65,7 @@ class Sassy_Social_Share_Admin {
 		$rssc = add_submenu_page( 'heateor-sss-options', __( "Recover Social Share Counts", 'sassy-social-share' ), __( "Recover Social Share Counts", 'sassy-social-share' ), 'manage_options', 'heateor-sss-rssc-options', array( $this, 'rssc_option_page' ) );
 		//adding analytics addon in submenu
 		$ssga = add_submenu_page( 'heateor-sss-options', __( "Social Analytics", 'sassy-social-share' ), __( "Social Analytics", 'sassy-social-share' ), 'manage_options', 'heateor-sss-ssga-options', array( $this, 'ssga_option_page' ) );
+		$ssb = add_submenu_page( 'heateor-sss-options', __( "Social Share Buttons", 'sassy-social-share' ), __( "Social Share Buttons", 'sassy-social-share' ), 'manage_options', 'heateor-sss-ssb-options', array( $this, 'ssb_option_page' ) );
 		
 		add_action( 'admin_print_scripts-' . $page, array( $this, 'admin_scripts' ) );
 		add_action( 'admin_print_scripts-' . $page, array( $this, 'admin_style' ) );
@@ -78,6 +79,10 @@ class Sassy_Social_Share_Admin {
 		add_action( 'admin_print_styles-' . $rssc, array( $this, 'admin_options_style' ) );
 		add_action( 'admin_print_scripts-' . $my_cred, array( $this, 'admin_scripts' ) );
 		add_action( 'admin_print_scripts-' . $my_cred, array( $this, 'admin_style' ) );
+		add_action( 'admin_print_scripts-' . $ssb, array( $this, 'admin_scripts' ) );
+		add_action( 'admin_print_scripts-' . $ssb, array( $this, 'admin_style' ) );
+		add_action( 'admin_print_scripts-' . $ssb, array( $this, 'fb_sdk_script' ) );
+		add_action( 'admin_print_styles-' . $ssb, array( $this, 'admin_options_style' ) );
 		add_action( 'admin_print_scripts-' . $my_cred, array( $this, 'fb_sdk_script' ) );
 		add_action( 'admin_print_styles-' . $my_cred, array( $this, 'admin_options_style' ) );
 		add_action( 'admin_print_scripts-' . $page, array( $this, 'fb_sdk_script' ) );
@@ -93,58 +98,54 @@ class Sassy_Social_Share_Admin {
 	/**
 	 * myCRED integration options page
 	 *
-	 * @since    3.3.8
+	 * @since    3.3.51
 	 */
 	public function mycred_options_page() {
-		?>
-		<div class="metabox-holder columns-2" id="post-body">
-			<h1>Social Share myCRED Integration</h1>
-			<div class="heateor_sss_left_column">
-				<a href="https://www.heateor.com/sassy-social-share-premium/" target="_blank"><img src="<?php echo plugins_url( '../images/unlock/mycred-options.png', __FILE__ ) ?>" /></a>
-			</div>
-			<?php include 'partials/sassy-social-share-about.php'; ?>
-		</div>
-		<?php
+		
+		/**
+		 * The file rendering options page
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/sassy-social-share-my-cred-plugin-options.php';
+
 	}
 
 	/**
 	 * Options page for Recover Social Share Counts module
 	 *
-	 * @since    3.3.8
+	 * @since    3.3.51
 	 */
 	public function rssc_option_page() {
-		?>
-		<div class="metabox-holder columns-2" id="post-body">
-			<h1>Recover Social Share Counts</h1>
-			<div class="heateor_sss_left_column">
-				<a href="https://www.heateor.com/sassy-social-share-premium/" target="_blank"><img src="<?php echo plugins_url( '../images/unlock/rssc-options.png', __FILE__ ) ?>" /></a>
-			</div>
-			<?php include 'partials/sassy-social-share-about.php'; ?>
-		</div>
-		<?php
+		
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/sassy-social-share-rssc-plugin-options.php';
+
 	}
 
 	/**
 	 * Options page for Social Analytics module
 	 *
-	 * @since    3.3.8
+	 * @since    3.3.51
 	 */
 	public function ssga_option_page() {
-		?>
-		<div class="metabox-holder columns-2" id="post-body">
-			<h1>Social Analytics</h1>
-			<div class="heateor_sss_left_column">
-				<a href="https://www.heateor.com/sassy-social-share-premium/" target="_blank"><img src="<?php echo plugins_url( '../images/unlock/ssga-options.png', __FILE__ ) ?>" /></a>
-			</div>
-			<?php include 'partials/sassy-social-share-about.php'; ?>
-		</div>
-		<?php
+		
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/sassy-social-share-ssga-plugin-options.php';
+
+	}
+
+	/**
+	 * Options page for Social share buttons module
+	 *
+	 * @since    3.3.51
+	 */
+	public function ssb_option_page() {
+		
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/sassy-social-share-ssb-options.php';
+
 	}
 
 	/**
 	 * Register plugin settings and its sanitization callback.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	public function options_init() {
 
@@ -166,7 +167,7 @@ class Sassy_Social_Share_Admin {
 	/**
 	 * Update options in all the old blogs.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	public function update_old_blogs( $old_config ) {
 		
@@ -185,7 +186,7 @@ class Sassy_Social_Share_Admin {
 	/**
 	 * Replicate the options to the new blog created.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	public function replicate_settings( $blog_id ) {
 
@@ -196,7 +197,7 @@ class Sassy_Social_Share_Admin {
 	/**
 	 * Show sharing meta options
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	public function sharing_meta_setup() {
 
@@ -215,7 +216,7 @@ class Sassy_Social_Share_Admin {
 				<?php _e( 'Disable Floating Sharing interface on this ' . $postType, 'sassy-social-share' ) ?>
 			</label>
 			<?php
-			$valid_networks = array( 'facebook', 'twitter', 'linkedin', 'buffer', 'reddit', 'pinterest', 'vkontakte', 'Odnoklassniki', 'Fintel' );
+			$valid_networks = array( 'twitter', 'X', 'buffer', 'reddit', 'pinterest', 'vkontakte', 'Odnoklassniki', 'Fintel' );
 			if ( isset( $this->options['hor_enable'] ) && isset( $this->options['horizontal_counts'] ) && isset( $this->options['horizontal_re_providers'] ) && count( $this->options['horizontal_re_providers'] ) > 0 ) {
 				?>
 				<p>
@@ -224,9 +225,9 @@ class Sassy_Social_Share_Admin {
 				foreach ( array_intersect( $this->options['horizontal_re_providers'], $valid_networks ) as $network ) {
 					?>
 					<br/>
-					<label for="heateor_sss_<?php echo $network ?>_horizontal_sharing_count">
+					<label for="heateor_sss_<?php echo esc_attr( $network ) ?>_horizontal_sharing_count">
 						<span style="width: 242px; float:left"><?php _e( 'Starting share count for ' . ucfirst( str_replace ( '_', ' ', $network ) ), 'sassy-social-share' ) ?></span>
-						<input type="text" name="_heateor_sss_meta[<?php echo $network ?>_horizontal_count]" id="heateor_sss_<?php echo $network ?>_horizontal_sharing_count" value="<?php echo is_array( $sharing_meta ) && isset( $sharing_meta[$network . '_horizontal_count'] ) ? $sharing_meta[$network . '_horizontal_count'] : '' ?>" />
+						<input type="text" name="_heateor_sss_meta[<?php echo esc_attr( $network ) ?>_horizontal_count]" id="heateor_sss_<?php echo $network ?>_horizontal_sharing_count" value="<?php echo is_array( $sharing_meta ) && isset( $sharing_meta[$network . '_horizontal_count'] ) ? esc_attr( $sharing_meta[$network . '_horizontal_count'] ) : '' ?>" />
 					</label>
 					<?php
 				}
@@ -243,9 +244,9 @@ class Sassy_Social_Share_Admin {
 				foreach ( array_intersect( $this->options['vertical_re_providers'], $valid_networks ) as $network ) {
 					?>
 					<br/>
-					<label for="heateor_sss_<?php echo $network ?>_vertical_sharing_count">
+					<label for="heateor_sss_<?php echo esc_attr( $network ) ?>_vertical_sharing_count">
 						<span style="width: 242px; float:left"><?php _e( 'Starting share count for ' . ucfirst( str_replace ( '_', ' ', $network ) ), 'sassy-social-share' ) ?></span>
-						<input type="text" name="_heateor_sss_meta[<?php echo $network ?>_vertical_count]" id="heateor_sss_<?php echo $network ?>_vertical_sharing_count" value="<?php echo is_array( $sharing_meta ) && isset( $sharing_meta[$network . '_vertical_count'] ) ? $sharing_meta[$network . '_vertical_count'] : '' ?>" />
+						<input type="text" name="_heateor_sss_meta[<?php echo esc_attr( $network ) ?>_vertical_count]" id="heateor_sss_<?php echo $network ?>_vertical_sharing_count" value="<?php echo is_array( $sharing_meta ) && isset( $sharing_meta[$network . '_vertical_count'] ) ? esc_attr( $sharing_meta[$network . '_vertical_count'] ) : '' ?>" />
 					</label>
 					<?php
 				}
@@ -263,7 +264,7 @@ class Sassy_Social_Share_Admin {
 	/**
 	 * Save sharing meta fields.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	public function save_sharing_meta( $post_id ) {
 	    
@@ -281,11 +282,7 @@ class Sassy_Social_Share_Admin {
 				return $post_id;
 	    	}
 		}
-	    if ( isset( $_POST['_heateor_sss_meta'] ) ) {
-			$newData = $_POST['_heateor_sss_meta'];
-		} else {
-			$newData = array( 'sharing' => 0, 'vertical_sharing' => 0 );
-		}
+		$newData = isset( $_POST['_heateor_sss_meta'] ) && is_array( $_POST['_heateor_sss_meta'] ) ? array_map('sanitize_text_field', $_POST['_heateor_sss_meta'] ) : array( 'sharing' => 0, 'vertical_sharing' => 0 );
 		update_post_meta( $post_id, '_heateor_sss_meta', $newData );
 	    return $post_id;
 
@@ -296,7 +293,7 @@ class Sassy_Social_Share_Admin {
 	 *
 	 * IMPROVEMENT: complexity can be reduced (this function is called on each option page validation and "if ( $k == 'providers' ) {"
 	 * condition is being checked every time)
-     * @since    1.0.0
+     * @since    1.0
 	 */ 
 	public function validate_options( $heateorSssOptions ) {
 		
@@ -312,18 +309,24 @@ class Sassy_Social_Share_Admin {
 	/**
 	 * Include Javascript at plugin options page in admin area
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */	
 	public function admin_options_scripts() {
 
 		wp_enqueue_script( 'heateor_sss_admin_options_script', plugins_url( 'js/sassy-social-share-options.js', __FILE__ ), array( 'jquery', 'jquery-ui-sortable' ), $this->version );
+		wp_localize_script( 'heateor_sss_admin_options_script', 'heateor_sss_admin_options_script_object',
+	        array( 
+	            'plugin_page_url' => admin_url() . 'admin.php?page=heateor-sss-options',
+	            'nonce' => wp_create_nonce( 'heateor_sss_admin_options_script' ),
+	        )
+	    );
 	
 	}
 
 	/**
 	 * Include Javascript SDK in admin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */	
 	public function fb_sdk_script() {
 
@@ -334,7 +337,7 @@ class Sassy_Social_Share_Admin {
 	/**
 	 * Include CSS files in admin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */	
 	public function admin_style() {
 
@@ -345,34 +348,18 @@ class Sassy_Social_Share_Admin {
 	/**
 	 * Include CSS files at plugin options page in admin area
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */	
 	public function admin_options_style() {
 
 		wp_enqueue_style( 'heateor_sss_admin_svg', plugins_url( 'css/sassy-social-share-svg.css', __FILE__ ), false, $this->version );
-		if ( $this->options['horizontal_font_color_default'] != '' ) {
-			$updated = $this->update_css( 'horizontal_sharing_replace_color', 'horizontal_font_color_default', 'sassy-social-share-default-svg-horizontal' );
-			wp_enqueue_style( 'heateor_sss_admin_svg_horizontal', plugins_url( 'css/sassy-social-share-default-svg-horizontal.css', __FILE__ ), false, ( $updated === true ? rand() :  $this->version ) );
-		}
-		if ( $this->options['horizontal_font_color_hover'] != '' ) {
-			$updated = $this->update_css( 'horizontal_sharing_replace_color_hover', 'horizontal_font_color_hover', 'sassy-social-share-hover-svg-horizontal' );
-			wp_enqueue_style( 'heateor_sss_admin_svg_horizontal_hover', plugins_url( 'css/sassy-social-share-hover-svg-horizontal.css', __FILE__ ), false, ( $updated === true ? rand() :  $this->version ) );
-		}
-		if ( $this->options['vertical_font_color_default'] != '' ) {
-			$updated = $this->update_css( 'vertical_sharing_replace_color', 'vertical_font_color_default', 'sassy-social-share-default-svg-vertical' );
-			wp_enqueue_style( 'heateor_sss_admin_svg_vertical', plugins_url( 'css/sassy-social-share-default-svg-vertical.css', __FILE__ ), false, ( $updated === true ? rand() :  $this->version ) );
-		}
-		if ( $this->options['vertical_font_color_hover'] != '' ) {
-			$updated = $this->update_css( 'vertical_sharing_replace_color_hover', 'vertical_font_color_hover', 'sassy-social-share-hover-svg-vertical' );
-			wp_enqueue_style( 'heateor_sss_admin_svg_vertical_hover', plugins_url( 'css/sassy-social-share-hover-svg-vertical.css', __FILE__ ), false, ( $updated === true ? rand() :  $this->version ) );
-		}
 	
 	}
 
 	/**
 	 * Update CSS file
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	private function update_css( $replace_color_option, $logo_color_option, $css_file ) {
 		
@@ -401,7 +388,7 @@ class Sassy_Social_Share_Admin {
 	/**
 	 * Include javascript files in admin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */	
 	public function admin_scripts() {
 		
@@ -413,9 +400,73 @@ class Sassy_Social_Share_Admin {
 	}
 
 	/**
+	 * Export plugin configuration
+	 *
+	 * @since    3.3.22
+	 */
+	public function export_config() {
+		
+		if ( current_user_can( 'manage_options' ) ) {
+			if ( check_ajax_referer( 'heateor_sss_admin_options_script', 'nonce' ) === false ) {
+				die;
+			}
+			$config = get_option( 'heateor_sss' );
+			die( json_encode(
+				array(
+					'config' => json_encode( $config )
+				)
+			) );
+		}
+	
+	}
+
+	/**
+	 * Sanitize the value of the passed configuration array
+	 *
+	 * @since    3.3.41
+	 */
+	private function sanitize_configuration_array( $config_value ) {
+
+		if ( is_array( $config_value ) ) {
+			return array_map( array( $this, 'sanitize_configuration_array' ), $config_value );
+		} else {
+			return sanitize_text_field( $config_value );
+		}
+
+	}
+
+	/**
+	 * Import plugin configuration
+	 *
+	 * @since    3.3.22
+	 */
+	public function import_config() {
+		
+		if ( current_user_can( 'manage_options' ) ) {
+		    if ( check_ajax_referer( 'heateor_sss_admin_options_script', 'nonce' ) === false ) {
+				die;
+			}
+			if ( isset( $_POST['config'] ) && strlen( trim( $_POST['config'] ) ) > 0 ) {
+				$config = json_decode( stripslashes( trim( $_POST['config'] ) ), true );
+				if ( is_array( $config ) && count( $config ) > 0 ) {
+					$config = array_map( array( $this, 'sanitize_configuration_array' ), $config );
+					update_option( 'heateor_sss', $config );
+					die( json_encode(
+						array(
+							'success' => 1
+						)
+					) );
+				}
+			}
+			die;
+		}
+	
+	}
+
+	/**
 	 * Renders options page
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	public function options_page() {
 
@@ -432,14 +483,13 @@ class Sassy_Social_Share_Admin {
 	/**
 	 * Display notification message when plugin options are saved
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
      * @return   string    Notification after saving options
 	 */
 	private function settings_saved_notification() {
 
 		if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] == 'true' ) {
-			return '<div id="setting-error-settings_updated" class="updated settings-error notice is-dismissible below-h2"> 
-	<p><strong>' . __( 'Settings saved', 'sassy-social-share' ) . '</strong></p><button type="button" class="notice-dismiss"><span class="screen-reader-text">' . __( 'Dismiss this notice', 'sassy-social-share' ) . '</span></button></div>';
+			return '<div class="notice notice-success is-dismissible"><p><strong>' . __( 'Settings saved', 'sassy-social-share' ) . '</strong></p></div>';
 		}
 	
 	}
@@ -447,16 +497,18 @@ class Sassy_Social_Share_Admin {
 	/**
 	 * Check if plugin is active
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	private function is_plugin_active( $plugin_file ) {
+
 		return in_array( $plugin_file, apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) );
+	
 	}
 
 	/**
 	 * Set BuddyPress active flag to true
 	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	public function is_bp_loaded() {
 		
@@ -471,8 +523,13 @@ class Sassy_Social_Share_Admin {
 	 */
 	public function clear_shorturl_cache() {
 		
-		global $wpdb;
-		$wpdb->query( "DELETE FROM $wpdb->postmeta WHERE meta_key = '_heateor_sss_bitly_url'" );
+		if ( current_user_can( 'manage_options' ) ) {
+		    if ( check_ajax_referer( 'heateor_sss_admin_options_script', 'nonce' ) === false ) {
+				die;
+			}
+			global $wpdb;
+			$wpdb->query( "DELETE FROM $wpdb->postmeta WHERE meta_key = '_heateor_sss_bitly_url'" );
+		}
 		die;
 	
 	}
@@ -484,20 +541,13 @@ class Sassy_Social_Share_Admin {
 	 */
 	public function clear_share_count_cache() {
 		
-		global $wpdb;
-		$wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_heateor_sss_share_count_%'" );
-		die;
-	
-	}
-	
-	/**
-	 * Save Twitter share count notification flag in DB
-	 *
-	 * @since    3.2.5
-	 */
-	public function twitter_share_notification_read() {
-
-		update_option( 'heateor_sss_twitter_share_notification_read', '1' );
+		if ( current_user_can( 'manage_options' ) ) {
+		    if ( check_ajax_referer( 'heateor_sss_admin_options_script', 'nonce' ) === false ) {
+				die;
+			}
+			global $wpdb;
+			$wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_heateor_sss_share_count_%'" );
+		}
 		die;
 	
 	}
@@ -509,7 +559,12 @@ class Sassy_Social_Share_Admin {
 	 */
 	public function twitcount_notification_read() {
 
-		update_option( 'heateor_sss_twitcount_notification_read', '1' );
+		if ( current_user_can( 'manage_options' ) ) {
+			if ( check_ajax_referer( 'heateor_sss_admin_ajax_nonce', 'nonce' ) === false ) {
+				die;
+			}
+			update_option( 'heateor_sss_twitcount_notification_read', '1' );
+		}
 		die;
 	
 	}
@@ -521,19 +576,12 @@ class Sassy_Social_Share_Admin {
 	 */
 	public function gdpr_notification_read() {
 
-		update_option( 'heateor_sss_gdpr_notification_read', '1' );
-		die;
-	
-	}
-
-	/**
-	 * Save Facebook share count notification flag in DB
-	 *
-	 * @since    3.2.20
-	 */
-	public function fb_count_notification_read() {
-
-		update_option( 'heateor_sss_fb_count_notification_read', '1' );
+		if ( current_user_can( 'manage_options' ) ) {
+			if ( check_ajax_referer( 'heateor_sss_admin_ajax_nonce', 'nonce' ) === false ) {
+				die;
+			}
+			update_option( 'heateor_sss_gdpr_notification_read', '1' );
+		}
 		die;
 	
 	}
@@ -557,41 +605,22 @@ class Sassy_Social_Share_Admin {
 		        delete_transient( 'heateor-sss-admin-notice-on-activation' );
 		    }
 
-			if ( defined( 'HEATEOR_SOCIAL_SHARE_MYCRED_INTEGRATION_VERSION' ) && version_compare( '1.3.3', HEATEOR_SOCIAL_SHARE_MYCRED_INTEGRATION_VERSION ) > 0 ) {
+			if ( defined( 'HEATEOR_SOCIAL_SHARE_MYCRED_INTEGRATION_VERSION' ) && version_compare( '1.3.12', HEATEOR_SOCIAL_SHARE_MYCRED_INTEGRATION_VERSION ) > 0 ) {
 				?>
 				<div class="error notice">
 					<h3>Social Share - myCRED Integration</h3>
-					<p><?php _e( 'Update "Social Share myCRED Integration" add-on for maximum compatibility with current version of Sassy Social Share', 'sassy-social-share' ) ?></p>
+					<p><?php _e( 'Update "Social Share myCRED Integration" add-on for compatibility with the current version of Sassy Social Share', 'sassy-social-share' ) ?></p>
 				</div>
 				<?php
 			}
 
-			if ( version_compare( '3.2.20', $this->version ) <= 0 ) {
-				if ( ( ( isset( $this->options['horizontal_re_providers'] ) && in_array( 'facebook', $this->options['horizontal_re_providers'] ) && ( isset( $this->options['horizontal_counts'] ) || isset( $this->options['horizontal_total_shares'] ) ) ) || ( isset( $this->options['vertical_re_providers'] ) && in_array( 'facebook', $this->options['vertical_re_providers'] ) && ( isset( $this->options['vertical_counts'] ) || isset( $this->options['vertical_total_shares'] ) ) ) ) && ! get_option( 'heateor_sss_fb_count_notification_read' ) ) {
-					?>
-					<script type="text/javascript">
-					function heateorSssFBCountNotificationRead(){
-						jQuery.ajax({
-							type: 'GET',
-							url: '<?php echo get_admin_url() ?>admin-ajax.php',
-							data: {
-								action: 'heateor_sss_fb_count_notification_read'
-							},
-							success: function(data, textStatus, XMLHttpRequest){
-								jQuery('#heateor_sss_fb_count_notification').fadeOut();
-							}
-						});
-					}
-					</script>
-					<div id="heateor_sss_fb_count_notification" class="notice notice-warning">
-						<h3>Sassy Social Share</h3>
-						<p>
-							<?php _e( 'Save Facebook App ID and Secret keys in "Standard Interface" and/or "Floating Interface" section(s) to fix the issue with Facebook share count. After that, clear share counts cache from "Miscellaneous" section.', 'sassy-social-share' ); ?>
-							<p><input type="button" onclick="heateorSssFBCountNotificationRead()" style="margin-left: 5px;" class="button button-primary" value="<?php _e( 'Okay', 'sassy-social-share' ) ?>" /></p>
-						</p>
-					</div>
-					<?php
-				}
+			if ( defined( 'HEATEOR_SHARING_GOOGLE_ANALYTICS_VERSION' ) && version_compare( '1.1.7', HEATEOR_SHARING_GOOGLE_ANALYTICS_VERSION ) > 0 ) {
+				?>
+				<div class="error notice">
+					<h3>Social Sharing Analytics</h3>
+					<p><?php _e( 'Update "Social Sharing Analytics" add-on for compatibility with the current version of Sassy Social Share', 'sassy-social-share' ) ?></p>
+				</div>
+				<?php
 			}
 
 			if ( version_compare( '3.2.1', $this->version ) <= 0 ) {
@@ -603,6 +632,7 @@ class Sassy_Social_Share_Admin {
 							type: 'GET',
 							url: '<?php echo get_admin_url() ?>admin-ajax.php',
 							data: {
+								nonce: '<?php echo wp_create_nonce( 'heateor_sss_admin_ajax_nonce' ) ?>',
 								action: 'heateor_sss_gdpr_notification_read'
 							},
 							success: function(data, textStatus, XMLHttpRequest){
@@ -620,30 +650,7 @@ class Sassy_Social_Share_Admin {
 			}
 
 			if ( version_compare( '3.2.5', $this->version ) <= 0 ) {
-				if ( (isset( $this->options['hor_enable'] ) && isset( $this->options['horizontal_re_providers'] ) && in_array( 'twitter', $this->options['horizontal_re_providers'] ) && ( isset( $this->options['horizontal_counts'] ) || isset( $this->options['horizontal_total_shares'] ) ) ) || ( isset( $this->options['vertical_enable'] ) && isset( $this->options['vertical_re_providers'] ) && in_array( 'twitter', $this->options['vertical_re_providers'] ) && ( isset($this->options['vertical_counts'] ) || isset( $this->options['vertical_total_shares'] ) ) ) ) {
-					if ( ! get_option( 'heateor_sss_twitter_share_notification_read' ) ) {
-						?>
-						<script type="text/javascript">
-						function heateorSssTwitterShareNotificationRead(){
-							jQuery.ajax({
-								type: 'GET',
-								url: '<?php echo get_admin_url() ?>admin-ajax.php',
-								data: {
-									action: 'heateor_sss_twitter_share_notification_read'
-								},
-								success: function(data, textStatus, XMLHttpRequest){
-									jQuery('#heateor_sss_twitter_share_notification').fadeOut();
-								}
-							});
-						}
-						</script>
-						<div id="heateor_sss_twitter_share_notification" class="notice notice-warning">
-							<h3>Sassy Social Share</h3>
-							<p><?php echo sprintf( __( 'Twitter share counts are no longer working as newsharecounts.com is down. To continue showing the Twitter shares, just sign up <a href="%s" target="_blank">here</a> with this domain. No other steps needed.', 'sassy-social-share' ), 'https://opensharecount.com' ); ?><input type="button" onclick="heateorSssTwitterShareNotificationRead()" style="margin-left: 5px;" class="button button-primary" value="<?php _e( 'Okay', 'sassy-social-share' ) ?>" /></p>
-						</div>
-						<?php
-					}
-
+				if ( ( isset( $this->options['hor_enable'] ) && isset( $this->options['horizontal_re_providers'] ) && in_array( 'twitter', $this->options['horizontal_re_providers'] ) && ( isset( $this->options['horizontal_counts'] ) || isset( $this->options['horizontal_total_shares'] ) ) ) || ( isset( $this->options['vertical_enable'] ) && isset( $this->options['vertical_re_providers'] ) && in_array( 'twitter', $this->options['vertical_re_providers'] ) && ( isset($this->options['vertical_counts'] ) || isset( $this->options['vertical_total_shares'] ) ) ) ) {
 					if ( ! get_option( 'heateor_sss_twitcount_notification_read' ) ) {
 						?>
 						<script type="text/javascript">
@@ -652,6 +659,7 @@ class Sassy_Social_Share_Admin {
 								type: 'GET',
 								url: '<?php echo get_admin_url() ?>admin-ajax.php',
 								data: {
+									nonce: '<?php echo wp_create_nonce( 'heateor_sss_admin_ajax_nonce' ) ?>',
 									action: 'heateor_sss_twitcount_notification_read'
 								},
 								success: function(data, textStatus, XMLHttpRequest){
@@ -704,17 +712,53 @@ class Sassy_Social_Share_Admin {
 
 		$current_version = get_option( 'heateor_sss_version' );
 		if ( $current_version != $this->version ) {
-			if ( $this->options['horizontal_font_color_default'] ) {
-				heateor_sss_update_svg_css( $this->options['horizontal_font_color_default'], 'sassy-social-share-default-svg-horizontal' );
+			if ( version_compare( '3.3.77', $current_version ) > 0 ) {
+				$networks_to_remove = array( 'Webnews' );
+				if ( isset( $this->options['vertical_re_providers'] ) && $this->options['vertical_re_providers'] ) {
+					$this->options['vertical_re_providers'] = array_diff( $this->options['vertical_re_providers'], $networks_to_remove );
+				}
+				if ( isset( $this->options['horizontal_re_providers'] ) && $this->options['horizontal_re_providers'] ) {
+					$this->options['horizontal_re_providers'] = array_diff( $this->options['horizontal_re_providers'], $networks_to_remove );
+				}
+				update_option( 'heateor_sss', $this->options );
 			}
-			if ( $this->options['horizontal_font_color_hover'] ) {
-				heateor_sss_update_svg_css( $this->options['horizontal_font_color_hover'], 'sassy-social-share-hover-svg-horizontal' );
+
+			if ( version_compare( '3.3.75', $current_version ) > 0 ) {
+				$networks_to_remove = array( 'Yoolink' );
+				if ( isset( $this->options['vertical_re_providers'] ) && $this->options['vertical_re_providers'] ) {
+					$this->options['vertical_re_providers'] = array_diff( $this->options['vertical_re_providers'], $networks_to_remove );
+				}
+				if ( isset( $this->options['horizontal_re_providers'] ) && $this->options['horizontal_re_providers'] ) {
+					$this->options['horizontal_re_providers'] = array_diff( $this->options['horizontal_re_providers'], $networks_to_remove );
+				}
+				update_option( 'heateor_sss', $this->options );
 			}
-			if ( $this->options['vertical_font_color_default'] ) {
-				heateor_sss_update_svg_css( $this->options['vertical_font_color_default'], 'sassy-social-share-default-svg-vertical' );
+
+			if ( version_compare( '3.3.48', $current_version ) > 0 ) {
+				if ( ! isset( $this->options['google_news_url'] ) ) {
+					$this->options['google_news_url'] = '';
+				}
+				if ( ! isset( $this->options['vertical_google_news_url'] ) ) {
+					$this->options['vertical_google_news_url'] = '';
+				}
+				update_option( 'heateor_sss', $this->options );
 			}
-			if ( $this->options['vertical_font_color_hover'] ) {
-				heateor_sss_update_svg_css( $this->options['vertical_font_color_hover'], 'sassy-social-share-hover-svg-vertical' );
+
+			if ( version_compare( '3.3.44', $current_version ) > 0 ) {
+				$networks_to_remove = array( 'Google_Bookmarks' );
+				if ( isset( $this->options['vertical_re_providers'] ) && $this->options['vertical_re_providers'] ) {
+					$this->options['vertical_re_providers'] = array_diff( $this->options['vertical_re_providers'], $networks_to_remove );
+				}
+				if ( isset( $this->options['horizontal_re_providers'] ) && $this->options['horizontal_re_providers'] ) {
+					$this->options['horizontal_re_providers'] = array_diff( $this->options['horizontal_re_providers'], $networks_to_remove );
+				}
+				update_option( 'heateor_sss', $this->options );
+			}
+
+			if ( version_compare( '3.3.43', $current_version ) > 0 ) {
+				$this->options['rutube_username'] = '';
+				$this->options['vertical_rutube_username'] = '';
+				update_option( 'heateor_sss', $this->options );
 			}
 
 			if ( version_compare( '3.3.9', $current_version ) > 0 ) {

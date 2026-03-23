@@ -1,9 +1,21 @@
 <?php
+/**
+ * Tracks class.
+ *
+ * @package automattic/jetpack
+ */
+
 namespace Automattic\Jetpack\Plugin;
 
-use Automattic\Jetpack\Tracking as Tracks;
 use Automattic\Jetpack\Connection\Manager as Connection_Manager;
+use Automattic\Jetpack\Tracking as Tracks;
+use IXR_Error;
+use WP_Error;
+use WP_User;
 
+/**
+ * Tracks class.
+ */
 class Tracking {
 	/**
 	 * Tracking object.
@@ -13,30 +25,31 @@ class Tracking {
 	 * @access private
 	 */
 	private $tracking;
+
 	/**
-	 * Prevents the Tracking from being intialized more then once.
+	 * Prevents the Tracking from being initialized more than once.
 	 *
 	 * @var bool
 	 */
-	private $initalized = false;
+	private static $initialized = false;
 
+	/**
+	 * Initialization function.
+	 */
 	public function init() {
-		if ( $this->initalized ) {
+		if ( static::$initialized ) {
 			return;
 		}
-		$this->initalized = true;
-		$this->tracking   = new Tracks( 'jetpack' );
+
+		static::$initialized = true;
+		$this->tracking      = new Tracks( 'jetpack' );
 
 		// For tracking stuff via js/ajax.
 		add_action( 'admin_enqueue_scripts', array( $this->tracking, 'enqueue_tracks_scripts' ) );
 
-		// Universal ajax callback for all tracking events triggered via js.
-		add_action( 'wp_ajax_jetpack_tracks', array( $this->tracking, 'ajax_tracks' ) );
-
 		add_action( 'jetpack_activate_module', array( $this, 'jetpack_activate_module' ), 1, 1 );
 		add_action( 'jetpack_deactivate_module', array( $this, 'jetpack_deactivate_module' ), 1, 1 );
 		add_action( 'jetpack_user_authorized', array( $this, 'jetpack_user_authorized' ) );
-		add_action( 'wp_login_failed', array( $this, 'wp_login_failed' ) );
 
 		// Tracking XMLRPC server events.
 		add_action( 'jetpack_xmlrpc_server_event', array( $this, 'jetpack_xmlrpc_server_event' ), 10, 4 );
@@ -86,7 +99,7 @@ class Tracking {
 			$this->tracking->record_user_event( '_aliasUser', array( 'anonId' => $anon_id ) );
 			delete_user_meta( $user_id, 'jetpack_tracks_anon_id' );
 			if ( ! headers_sent() ) {
-				setcookie( 'tk_ai', 'expired', time() - 1000 );
+				setcookie( 'tk_ai', 'expired', time() - 1000, COOKIEPATH, COOKIE_DOMAIN, is_ssl(), false );  // phpcs:ignore Jetpack.Functions.SetCookie -- Want this accessible.
 			}
 		}
 
@@ -104,8 +117,8 @@ class Tracking {
 	 *
 	 * @access public
 	 *
-	 * @param string $action Type of secret (one of 'register', 'authorize', 'publicize').
-	 * @param \WP_User $user The user object.
+	 * @param string  $action Type of secret (one of 'register', 'authorize', 'publicize').
+	 * @param WP_User $user The user object.
 	 */
 	public function jetpack_verify_secrets_begin( $action, $user ) {
 		$this->tracking->record_user_event( "jpc_verify_{$action}_begin", array(), $user );
@@ -116,8 +129,8 @@ class Tracking {
 	 *
 	 * @access public
 	 *
-	 * @param string $action Type of secret (one of 'register', 'authorize', 'publicize').
-	 * @param \WP_User $user The user object.
+	 * @param string  $action Type of secret (one of 'register', 'authorize', 'publicize').
+	 * @param WP_User $user The user object.
 	 */
 	public function jetpack_verify_secrets_success( $action, $user ) {
 		$this->tracking->record_user_event( "jpc_verify_{$action}_success", array(), $user );
@@ -128,9 +141,9 @@ class Tracking {
 	 *
 	 * @access public
 	 *
-	 * @param string $action Type of secret (one of 'register', 'authorize', 'publicize').
-	 * @param \WP_User $user The user object.
-	 * @param \WP_Error $error Error object.
+	 * @param string   $action Type of secret (one of 'register', 'authorize', 'publicize').
+	 * @param WP_User  $user The user object.
+	 * @param WP_Error $error Error object.
 	 */
 	public function jetpack_verify_secrets_fail( $action, $user, $error ) {
 		$this->tracking->record_user_event(
@@ -146,19 +159,10 @@ class Tracking {
 	/**
 	 * Track a failed login attempt.
 	 *
-	 * @access public
-	 *
-	 * @param string $login Username or email address.
+	 * @deprecated 13.9 Method is not longer in use.
 	 */
-	public function wp_login_failed( $login ) {
-		require_once JETPACK__PLUGIN_DIR . 'modules/protect/shared-functions.php';
-		$this->tracking->record_user_event(
-			'failed_login',
-			array(
-				'origin_ip' => jetpack_protect_get_ip(),
-				'login'     => $login,
-			)
-		);
+	public function wp_login_failed() {
+		_deprecated_function( __METHOD__, '13.9' );
 	}
 
 	/**
@@ -167,13 +171,16 @@ class Tracking {
 	 * @access public
 	 *
 	 * @param string|int $error      The error code.
-	 * @param \WP_Error  $registered The error object.
+	 * @param WP_Error   $registered The error object.
 	 */
-	function jetpack_connection_register_fail( $error, $registered ) {
-		$this->tracking->record_user_event( 'jpc_register_fail', array(
-			'error_code'    => $error,
-			'error_message' => $registered->get_error_message()
-		) );
+	public function jetpack_connection_register_fail( $error, $registered ) {
+		$this->tracking->record_user_event(
+			'jpc_register_fail',
+			array(
+				'error_code'    => $error,
+				'error_message' => $registered->get_error_message(),
+			)
+		);
 	}
 
 	/**
@@ -183,10 +190,13 @@ class Tracking {
 	 *
 	 * @param string $from The 'from' GET parameter.
 	 */
-	function jetpack_connection_register_success( $from ) {
-		$this->tracking->record_user_event( 'jpc_register_success', array(
-			'from' => $from
-		) );
+	public function jetpack_connection_register_success( $from ) {
+		$this->tracking->record_user_event(
+			'jpc_register_success',
+			array(
+				'from' => $from,
+			)
+		);
 	}
 
 	/**
@@ -205,7 +215,7 @@ class Tracking {
 				'error_code'    => $parameters->get_error_code(),
 				'error_message' => $parameters->get_error_message(),
 			);
-		} elseif ( is_a( $parameters, '\\IXR_Error' ) ) {
+		} elseif ( is_a( $parameters, IXR_Error::class ) ) {
 			$parameters = array(
 				'error_code'    => $parameters->code,
 				'error_message' => $parameters->message,
@@ -220,7 +230,7 @@ class Tracking {
 	 *
 	 * @access public
 	 */
-	function jetpack_verify_api_authorization_request_error_double_encode() {
+	public function jetpack_verify_api_authorization_request_error_double_encode() {
 		$this->tracking->record_user_event( 'error_double_encode' );
 	}
 }

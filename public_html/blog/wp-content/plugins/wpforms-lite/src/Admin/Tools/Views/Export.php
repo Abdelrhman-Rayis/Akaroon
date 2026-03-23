@@ -91,7 +91,7 @@ class Export extends View {
 	 */
 	public function check_capability() {
 
-		return wpforms_current_user_can( [ 'view_forms', 'view_entries', 'create_forms' ] );
+		return wpforms_current_user_can( [ 'edit_forms', 'view_entries' ] );
 	}
 
 	/**
@@ -103,7 +103,7 @@ class Export extends View {
 	 */
 	public function get_forms() {
 
-		$forms = wpforms()->form->get( '', [ 'orderby' => 'title' ] );
+		$forms = wpforms()->obj( 'form' )->get( '', [ 'orderby' => 'title' ] );
 
 		return ! empty( $forms ) ? $forms : [];
 	}
@@ -141,20 +141,19 @@ class Export extends View {
 	private function forms_export_block() {
 		?>
 
-		<div class="wpforms-setting-row tools">
+		<div class="wpforms-setting-row tools wpforms-settings-row-divider">
 
-			<h4 id="form-export"><?php esc_html_e( 'Form Export', 'wpforms-lite' ); ?></h4>
+			<h4 id="form-export"><?php esc_html_e( 'Export Forms', 'wpforms-lite' ); ?></h4>
 
-			<p><?php esc_html_e( 'Form exports files can be used to create a backup of your forms or to import forms into another site.', 'wpforms-lite' ); ?></p>
+			<p><?php esc_html_e( 'Use form export files to create a backup of your forms or to import forms to another site.', 'wpforms-lite' ); ?></p>
 
 			<?php if ( ! empty( $this->forms ) ) { ?>
 
 				<form method="post" action="<?php echo esc_attr( $this->get_link() ); ?>">
 					<?php $this->forms_select_html( 'wpforms-tools-form-export', 'forms[]', esc_html__( 'Select Form(s)', 'wpforms-lite' ) ); ?>
-					<br>
 					<input type="hidden" name="action" value="export_form">
 					<?php $this->nonce_field(); ?>
-					<button name="submit-export" class="wpforms-btn wpforms-btn-md wpforms-btn-orange">
+					<button name="submit-export" class="wpforms-btn wpforms-btn-md wpforms-btn-orange" id="wpforms-export-form" aria-disabled="true">
 						<?php esc_html_e( 'Export', 'wpforms-lite' ); ?>
 					</button>
 				</form>
@@ -175,7 +174,7 @@ class Export extends View {
 
 		<div class="wpforms-setting-row tools">
 
-			<h4 id="template-export"><?php esc_html_e( 'Form Template Export', 'wpforms-lite' ); ?></h4>
+			<h4 id="template-export"><?php esc_html_e( 'Export a Form Template', 'wpforms-lite' ); ?></h4>
 
 			<?php
 			if ( $this->template ) {
@@ -196,7 +195,7 @@ class Export extends View {
 			?>
 			<p><?php esc_html_e( 'The following code can be used to register your custom form template. Copy and paste the following code to your theme\'s functions.php file or include it within an external file.', 'wpforms-lite' ); ?><p>
 			<p><?php echo $doc_link; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><p>
-			<textarea class="info-area" readonly><?php echo esc_textarea( $this->template ); ?></textarea><br>
+			<textarea class="info-area" readonly><?php echo esc_textarea( $this->template ); ?></textarea>
 			<?php
 			}
 			?>
@@ -206,10 +205,9 @@ class Export extends View {
 			<?php if ( ! empty( $this->forms ) ) { ?>
 				<form method="post" action="<?php echo esc_attr( $this->get_link() ); ?>">
 					<?php $this->forms_select_html( 'wpforms-tools-form-template', 'form', esc_html__( 'Select a Template', 'wpforms-lite' ), false ); ?>
-					<br>
 					<input type="hidden" name="action" value="export_template">
 					<?php $this->nonce_field(); ?>
-					<button name="submit-export" class="wpforms-btn wpforms-btn-md wpforms-btn-orange">
+					<button name="submit-export" class="wpforms-btn wpforms-btn-md wpforms-btn-orange" id="wpforms-export-template" aria-disabled="true">
 						<?php esc_html_e( 'Export Template', 'wpforms-lite' ); ?>
 					</button>
 				</form>
@@ -234,7 +232,7 @@ class Export extends View {
 		?>
 
 		<span class="choicesjs-select-wrap">
-			<select id="<?php echo esc_attr( $select_id ); ?>" class="choicesjs-select" name="<?php echo esc_attr( $select_name ); ?>" <?php if ( $multiple ) { //phpcs:ignore ?> multiple <?php } ?>>
+			<select id="<?php echo esc_attr( $select_id ); ?>" class="choicesjs-select" name="<?php echo esc_attr( $select_name ); ?>" <?php if ( $multiple ) { //phpcs:ignore ?> multiple size="1" <?php } ?> data-search="<?php echo esc_attr( wpforms_choices_js_is_search_enabled( $this->forms ) ); ?>">
 				<option value=""><?php echo esc_attr( $placeholder ); ?></option>
 				<?php foreach ( $this->forms as $form ) { ?>
 					<option value="<?php echo absint( $form->ID ); ?>"><?php echo esc_html( $form->post_title ); ?></option>
@@ -282,38 +280,31 @@ class Export extends View {
 	 *
 	 * @since 1.6.6
 	 */
-	private function process_template() {
+	private function process_template(): void {
 
-		$form_data = false;
+		// Nonce is checked in the caller: process() method.
+		//phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$form_id  = isset( $_POST['form'] ) ? absint( $_POST['form'] ) : 0;
+		$form_obj = wpforms()->obj( 'form' );
 
-		if ( isset( $_POST['form'] ) ) { //phpcs:ignore WordPress.Security.NonceVerification
-			$form_data = wpforms()->form->get(
-				absint( $_POST['form'] ), //phpcs:ignore WordPress.Security.NonceVerification
-				[ 'content_only' => true ]
-			);
-		}
-
-		if ( ! $form_data ) {
+		if ( ! $form_obj || ! $form_id ) {
 			return;
 		}
 
-		// Define basic data.
-		$name  = sanitize_text_field( $form_data['settings']['form_title'] );
-		$desc  = sanitize_text_field( $form_data['settings']['form_desc'] );
-		$slug  = sanitize_key( str_replace( [ ' ', '-' ], '_', $form_data['settings']['form_title'] ) );
+		$form_data = $form_obj->get( $form_id, [ 'content_only' => true ] );
+
+		// Define basic data with strict validation.
+		$name = sanitize_text_field( $form_data['settings']['form_title'] ?? '' );
+		$desc = sanitize_text_field( $form_data['settings']['form_desc'] ?? '' );
+		$slug = sanitize_key( str_replace( [ ' ', '-' ], '_', trim( $name ) ) );
+
+		if ( ! $slug ) {
+			// Slug is always empty when the $form_data is not valid.
+			return;
+		}
+
 		$class = 'WPForms_Template_' . $slug;
-
-		// Format template field and settings data.
-		$data                     = $form_data;
-		$data['meta']['template'] = $slug;
-		$data['fields']           = isset( $data['fields'] ) ? wpforms_array_remove_empty_strings( $data['fields'] ) : [];
-		$data['settings']         = wpforms_array_remove_empty_strings( $data['settings'] );
-
-		unset( $data['id'] );
-
-		$data = var_export( $data, true ); //phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_export
-		$data = str_replace( '  ', "\t", $data );
-		$data = preg_replace( '/([\t\r\n]+?)array/', 'array', $data );
+		$data  = $this->get_template_data( $slug, $form_data );
 
 		// Build the final template string.
 		$this->template = <<<EOT
@@ -349,4 +340,31 @@ endif;
 EOT;
 	}
 
+	/**
+	 * Get template data.
+	 *
+	 * @since 1.9.5
+	 *
+	 * @param string      $slug      Template slug.
+	 * @param array|mixed $form_data Form data.
+	 *
+	 * @return string
+	 */
+	private function get_template_data( string $slug, $form_data ): string {
+
+		// Format template field and settings data.
+		$data                     = [];
+		$data['meta']['template'] = $slug;
+		$data['fields']           = isset( $form_data['fields'] ) && is_array( $form_data['fields'] )
+			? wpforms_array_remove_empty_strings( $form_data['fields'] )
+			: [];
+		$data['settings']         = isset( $form_data['settings'] ) && is_array( $form_data['settings'] )
+			? wpforms_array_remove_empty_strings( $form_data['settings'] )
+			: [];
+
+		$template_data = (string) var_export( $data, true ); //phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_export
+		$template_data = str_replace( '  ', "\t", $template_data );
+
+		return preg_replace( '/([\t\r\n]+?)array/', 'array', $template_data );
+	}
 }

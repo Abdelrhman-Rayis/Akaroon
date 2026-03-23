@@ -54,7 +54,7 @@ class MLASettings_Shortcodes {
 
 		wp_enqueue_script( self::JAVASCRIPT_SHORTCODES_TAB_SLUG,
 			MLA_PLUGIN_URL . "js/mla-settings-shortcodes-tab-scripts{$suffix}.js", 
-			array( 'jquery' ), MLACore::CURRENT_MLA_VERSION, false );
+			array( 'jquery' ), MLACore::mla_script_version(), false );
 
 		wp_localize_script( self::JAVASCRIPT_SHORTCODES_TAB_SLUG,
 			self::JAVASCRIPT_SHORTCODES_TAB_OBJECT, $script_variables );
@@ -289,8 +289,6 @@ class MLASettings_Shortcodes {
 	 * Save Shortcodes settings to the options table
  	 *
 	 * @since 2.40
-	 *
-	 * @uses $_REQUEST
 	 *
 	 * @return	array	Message(s) reflecting the results of the operation
 	 */
@@ -610,6 +608,7 @@ class MLASettings_Shortcodes {
 					MLA_Template_Query::mla_put_shortcode_template_items();
 					break;
 				default:
+					/* translators: 1: admin action value */
 					$page_content['message'] = sprintf( __( 'Unknown mla_admin_action - "%1$s"', 'media-library-assistant' ), $mla_admin_action );
 					break;
 			} // switch ($_REQUEST['mla_admin_action'])
@@ -894,7 +893,7 @@ class MLA_Template_List_Table extends WP_List_Table {
 		// View arguments - see also mla_tabulate_template_items
 		if ( isset( $_REQUEST['mla_template_view'] ) ) {
 			$field = sanitize_text_field( wp_unslash( $_REQUEST['mla_template_view'] ) );
-			if ( in_array( $field, array( 'all', 'style', 'markup', 'gallery', 'tag-cloud', 'term-list' ) ) ) {
+			if ( in_array( $field, array( 'all', 'style', 'markup', 'gallery', 'tag-cloud', 'term-list', 'custom-list', 'archive-list' ) ) ) {
 				$submenu_arguments['mla_template_view'] = $field;
 			}
 		}
@@ -923,7 +922,7 @@ class MLA_Template_List_Table extends WP_List_Table {
 			$submenu_arguments['orderby'] = $field;
 		}
 
-		return $submenu_arguments;
+		return $submenu_arguments = apply_filters( 'mla_setting_table_submenu_arguments', $submenu_arguments, $include_filters, 'MLASettings_Shortcodes' );
 	}
 
 	/**
@@ -1129,7 +1128,7 @@ class MLA_Template_List_Table extends WP_List_Table {
 	 * @return	string	HTML markup to be placed inside the column
 	 */
 	function column_type( $item ) {
-		return esc_attr( 'style' === $item->type ? _x( 'Style', 'table_view_singular', 'media_library-assistant' ) : _x( 'Markup', 'table_view_singular', 'media_library-assistant' ) );
+		return esc_attr( 'style' === $item->type ? _x( 'Style', 'table_view_singular', 'media-library-assistant' ) : _x( 'Markup', 'table_view_singular', 'media-library-assistant' ) );
 	}
 
 	/**
@@ -1756,6 +1755,12 @@ class MLA_Template_Query {
 				case 'term-list':
 					$found = 'term-list' === $value['shortcode'];
 					break;
+				case 'custom-list':
+					$found = 'custom-list' === $value['shortcode'];
+					break;
+				case 'archive-list':
+					$found = 'archive-list' === $value['shortcode'];
+					break;
 				default:
 					$found = true;
 			}// $view
@@ -1978,31 +1983,38 @@ class MLA_Template_Query {
 		}
 
 		$items = self::mla_query_template_items( $request, 0, 0 );
-
 		$template_items = array(
 			'all' => array(
-				'singular' => _x( 'All', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'All', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'All', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'All', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 			'style' => array(
-				'singular' => _x( 'Style', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'Style', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'Style', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'Style', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 			'markup' => array(
-				'singular' => _x( 'Markup', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'Markup', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'Markup', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'Markup', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 			'gallery' => array(
-				'singular' => _x( 'Gallery', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'Gallery', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'Gallery', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'Gallery', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 			'tag-cloud' => array(
-				'singular' => _x( 'Tag Cloud', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'Tag Cloud', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'Tag Cloud', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'Tag Cloud', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 			'term-list' => array(
-				'singular' => _x( 'Term List', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'Term List', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'Term List', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'Term List', 'table_view_plural', 'media-library-assistant' ),
+				'count' => 0 ),
+			'custom-list' => array(
+				'singular' => _x( 'Custom Field List', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'Custom Field List', 'table_view_plural', 'media-library-assistant' ),
+				'count' => 0 ),
+			'archive-list' => array(
+				'singular' => _x( 'Archive List', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'Archive List', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 		);
 
@@ -2029,6 +2041,12 @@ class MLA_Template_Query {
 					break;
 				case 'term-list':
 					$template_items[ 'term-list' ]['count']++;
+					break;
+				case 'custom-list':
+					$template_items[ 'custom-list' ]['count']++;
+					break;
+				case 'archive-list':
+					$template_items[ 'archive-list' ]['count']++;
 					break;
 				default:
 					break;

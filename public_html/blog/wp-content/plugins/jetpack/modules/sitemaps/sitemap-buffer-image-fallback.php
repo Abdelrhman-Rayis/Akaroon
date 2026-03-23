@@ -1,4 +1,5 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
+// phpcs:disable Generic.Classes.DuplicateClassName.Found -- sitemap-builder.php will require correct class file.
 /**
  * Sitemaps (per the protocol) are essentially lists of XML fragments;
  * lists which are subject to size constraints. The Jetpack_Sitemap_Buffer_Image
@@ -9,13 +10,21 @@
  * @package automattic/jetpack
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 /**
  * A buffer for constructing sitemap image xml files for users that have no libxml support.
  *
  * @since 5.3.0
+ * @phan-suppress PhanRedefinedClassReference -- Don't conflict with real version.
  */
 class Jetpack_Sitemap_Buffer_Image extends Jetpack_Sitemap_Buffer_Fallback {
-
+	// @phan-suppress-previous-line UnusedSuppression -- It's used.
+	/**
+	 * Returns a DOM element that contains all image sitemap elements.
+	 */
 	protected function get_root_element() {
 		if ( ! isset( $this->root ) ) {
 
@@ -48,7 +57,7 @@ class Jetpack_Sitemap_Buffer_Image extends Jetpack_Sitemap_Buffer_Fallback {
 				'</urlset>',
 			);
 
-			$this->byte_capacity -= strlen( join( '', $this->root ) );
+			$this->byte_capacity -= strlen( implode( '', $this->root ) );
 		}
 
 		return $this->root;

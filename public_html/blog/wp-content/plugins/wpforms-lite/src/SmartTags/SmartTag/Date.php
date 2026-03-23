@@ -23,7 +23,12 @@ class Date extends SmartTag {
 	public function get_value( $form_data, $fields = [], $entry_id = '' ) {
 
 		$attributes = $this->get_attributes();
-		$format     = ! empty( $attributes['format'] ) ? $attributes['format'] : get_option( 'date_format' );
+
+		if ( empty( $attributes['format'] ) ) {
+			return wpforms_date_format( time(), '', true );
+		}
+
+		$format = strtolower( $attributes['format'] ) === 'timestamp' ? 'U' : $attributes['format'];
 
 		return wpforms_datetime_format( time(), $format, true );
 	}

@@ -1,117 +1,1185 @@
-body{
-    overflow-x: hidden;
-}
-.owt-btn-right{
-    float: right;
-}
-.owt-text-align{
-    text-align: right;
-}
-.owt-lib-btn{
-    padding: 0px 12px;
-    margin: -2px -12px 0px 0px;
-}
-.owt-col-3{
-    width: 24%;
-    overflow-y: hidden;
-}
-.owt-div-float-left{
-    float: left;
-}
-.owt-jumb-p{
-    font-size: 16px !important;
-}
-.owt-jumbotron-margin{
-    margin: 7px 0px 9px 0 !important;
-    padding:7px;
-}
-.owt-lib-btn-save{
-    float: right;
-    margin-right: 41px !important;
-}
-.owt-image-dash{
-    width: 188px;
-    margin: 3px 22px;
-    padding: 8px 33px 0px 10px;
-    object-fit: cover;
-    height: auto;
-}
-.owt-panel-head{
-    height: 180px;
-}
-.owt-inner-row{
-    width: 94%;
-    margin: 6px 1px 1px 0px;
-}
-.owt-btn-top{
-    margin: -7px -11px 0px 14px;
-}
-.owt-lib-breadcrumb-top{
-    margin-top: 25px;
-    margin-left: -42px;
-    width: 99%;
-}
-.wpowt-lib-cont #wpowt-lib-frm-create-new-student label.error,#wpowt-lib-frm-create-new-staff label.error,#frm-book-category label.error, #wpowt-frm-add-type label.error, #wpowt-frm-book-issue label.error, #wpowt-lib-frm-create-new-book label.error, #wpowt-frm-settings-panel label.error{
-    color:red;
-}
-.owt-lib-label{
-    display: block;
-    font-weight: normal;
-}
-.owt-lib-label span{
-    position: relative;
-    top: 3px;
-}
-.owt-lib-st-by-area{
-    display: block;
-}
-.owt-lib-st-by-area label{
-    font-weight: normal;
-}
-.owt-lib-st-by-area label span{
-    position: relative;
-    top: 2px;
-}
-.wpowt-lib-img-prev{
-    height: 100px;
-    width: 100px;
-    display: block;
-}
-#wpowt-frm-add-frm label.error{
-    color:red;
-}
-.wpowt-lib-bg{
-    color: #fff !important;
-    background-color: #5e5e5e !important;
-    border-color: #5e5e5e !important;
-}
-.wpowt-lib-btn{
-    color: #fff !important;
-    background-color: #292d34 !important;
-    border-color: #292d34 !important;
-}
-.wpowt-label-bold{
-    font-weight: bold;
-}
-ol.breadcrumb {
-    background: #5d5d5d38;
-}
-.breadcrumb>li+li:before {
-    padding: 0 5px;
-    color: #111010;
-    content: "/\00a0";
-}
-.wpowt-p-feature{
-    font-size: 15px;
-}
-.wpowt-pro-message{
-    margin:-14px 0px 11px 0px
+/* Parent class - Professional Design */
+
+.owt7-lms {
+    margin: 20px;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, sans-serif;
+    border: 1px solid #e2e8f0;
 }
 
-.wpowt-add-frm-point{
-    cursor: not-allowed;
-    opacity: 0.5;
+
+/* Page Header - Professional Design */
+
+.owt7-lms .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
 }
-.owt-lms-header-alert{
-    width:94%;
+
+.owt7-lms .page-actions {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.owt7-lms .breadcrumb {
+    font-size: 14px;
+    color: #6c757d;
+    padding: 8px 12px;
+    background: #ffffff;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #dee2e6;
+}
+
+.owt7-lms .breadcrumb::before {
+    content: '\f333';
+    font-family: 'dashicons';
+    margin-right: 8px;
+    color: #6c757d;
+    font-size: 16px;
+}
+
+.owt7-lms .breadcrumb .active {
+    color: #495057;
+    font-weight: 600;
+}
+
+.owt7-lms .page-title {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.owt7-lms .page-title h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #343a40;
+    margin: 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+
+/* Jumbotron */
+
+.owt7-lms .jumbotron {
+    background-color: #f8f9fa;
+    padding: 50px 0;
+    text-align: center;
+}
+
+.owt7-lms .jumbotron h1 {
+    font-weight: bold;
+}
+
+.jumbotron h1 sup,
+.owt7_library_about h1 sup,
+.owt7_library_free_vs_pro h1 sup {
+    font-size: 50%;
+    vertical-align: super;
+    margin-left: 4px;
+    padding: 5px 10px;
+    border: 2px solid #007bff;
+    border-radius: 20px;
+    background-color: #e9f5ff;
+    color: #007bff;
+    font-weight: bold;
+}
+
+.jumbotron h1 sup.premium,
+.owt7_library_about h1 sup.premium,
+.owt7_library_free_vs_pro h1 sup.premium {
+    margin-left: 5px;
+}
+
+
+/* Card Container */
+
+.owt7-lms .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+/* Professional Dashboard Styling */
+
+.owt7-lms .lms-dashboard .dashicons {
+    font-size: 32px;
+    margin-bottom: 15px;
+    color: #007cba;
+}
+
+.owt7-lms .lms-dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.owt7-lms .lms-dashboard .card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    transition: all 0.2s ease;
+    border: 1px solid #e2e8f0;
+}
+
+.owt7-lms .lms-dashboard .card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.owt7-lms .lms-dashboard .card span {
+    font-size: 36px;
+    color: #007cba;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.owt7-lms .lms-dashboard .card h2 {
+    font-size: 19px;
+    font-weight: 600;
+    color: #32373c;
+    margin: 0.5rem 0 1rem;
+}
+
+/* Professional Dashboard Buttons */
+.owt7-lms .lms-dashboard .card a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: #007cba;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.owt7-lms .lms-dashboard .card a::before {
+    content: '\f345';
+    font-family: 'dashicons';
+    font-size: 14px;
+}
+
+.owt7-lms .lms-dashboard .card a:hover {
+    background: #005a87;
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .owt7-lms .lms-dashboard {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .owt7-lms {
+        margin: 10px;
+        padding: 15px;
+    }
+
+    .owt7-lms .page-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .owt7-lms .page-actions {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .owt7-lms .form-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .owt7-lms .lms-dashboard {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        padding: 15px 0;
+    }
+
+    .owt7-lms .lms-dashboard .card {
+        height: auto;
+        min-height: 160px;
+    }
+
+    .owt7-lms .buttons-group {
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .owt7-lms .filter-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+    }
+
+    .owt7-lms .page-title h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Professional Button Styling with Dashicons */
+
+.owt7-lms .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: #007cba;
+    color: #fff;
+    border: 1px solid #007cba;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.owt7-lms .btn:hover {
+    background: #005a87;
+    border-color: #005a87;
+    color: #fff;
+    text-decoration: none;
+}
+
+.owt7-lms .btn:active {
+    background: #004567;
+    border-color: #004567;
+}
+
+/* Button Variants */
+.owt7-lms .btn.btn-preview {
+    background: #9b59b6;
+    border-color: #9b59b6;
+}
+
+.owt7-lms .btn.btn-preview:hover {
+    background: #7d3c98;
+    border-color: #7d3c98;
+}
+
+.owt7-lms .btn.btn-success {
+    background: #46b450;
+    border-color: #46b450;
+}
+
+.owt7-lms .btn.btn-success:hover {
+    background: #3c9c40;
+    border-color: #3c9c40;
+}
+
+.owt7-lms .btn.btn-warning {
+    background: #f39c12;
+    border-color: #f39c12;
+    color: #fff;
+}
+
+.owt7-lms .btn.btn-warning:hover {
+    background: #e08e0b;
+    border-color: #e08e0b;
+}
+
+.owt7-lms .btn.btn-danger {
+    background: #dc3232;
+    border-color: #dc3232;
+}
+
+.owt7-lms .btn.btn-danger:hover {
+    background: #c92c2c;
+    border-color: #c92c2c;
+}
+
+
+/* Professional Table Styling */
+
+.owt7-lms .owt7-lms-table,
+.owt7-lms .branch-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.owt7-lms .owt7-lms-table thead,
+.owt7-lms .branch-table thead {
+    background: #f8f9fa;
+}
+
+.owt7-lms .owt7-lms-table th,
+.owt7-lms .owt7-lms-table td,
+.owt7-lms .branch-table th,
+.owt7-lms .branch-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 14px;
+}
+
+.owt7-lms .owt7-lms-table th {
+    font-weight: 600;
+    color: #32373c;
+    text-transform: none;
+    letter-spacing: normal;
+    font-size: 14px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.owt7-lms .owt7-lms-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.owt7-lms .owt7-lms-table tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+
+/* Professional Action Buttons with Dashicons */
+
+.owt7-lms .action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px 10px;
+    border-radius: 3px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    margin-right: 5px;
+    transition: all 0.15s ease;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+/* View Button */
+.owt7-lms .view-btn {
+    background: #46b450;
+    color: #fff;
+    border: 1px solid #46b450;
+}
+
+.owt7-lms .view-btn:hover {
+    background: #3c9c40;
+    color: #fff;
+}
+
+.owt7-lms .view-btn::before {
+    content: '\f177';
+    font-family: 'dashicons';
+    font-size: 14px;
+}
+
+/* Edit Button */
+.owt7-lms .edit-btn {
+    background: #007cba;
+    color: #fff;
+    border: 1px solid #007cba;
+}
+
+.owt7-lms .edit-btn:hover {
+    background: #005a87;
+    color: #fff;
+}
+
+.owt7-lms .edit-btn::before {
+    content: '\f464';
+    font-family: 'dashicons';
+    font-size: 14px;
+}
+
+/* Delete Button */
+.owt7-lms .delete-btn {
+    background: #dc3232;
+    color: #fff;
+    border: 1px solid #dc3232;
+}
+
+.owt7-lms .delete-btn:hover {
+    background: linear-gradient(135deg, #c53030 0%, #e53e3e 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(229, 62, 62, 0.4);
+}
+
+.owt7-lms .delete-btn::before {
+    content: '\f182';
+    font-family: 'dashicons';
+    font-size: 14px;
+}
+
+
+/* Modern Form Styling */
+
+.owt7-lms .add-user-form {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.owt7-lms .form-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.owt7-lms .form-group {
+    flex: 1;
+    position: relative;
+}
+
+.owt7-lms .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #32373c;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.lms-borrow-history .filters {
+    margin-bottom: 20px;
+}
+
+.lms-borrow-history .filters select {
+    padding: 2px 25px 1px 16px;
+    margin-right: 10px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.owt7-lms div#tbl_branches_list_filter,
+.owt7-lms div#tbl_users_list_filter,
+.owt7-lms div#tbl_bookcases_list_filter,
+.owt7-lms div#tbl_sections_list_filter,
+.owt7-lms div#tbl_books_list_filter,
+.owt7-lms div#tbl_books_borrow_history_filter,
+#tbl_books_return_history_filter {
+    margin-bottom: 13px;
+}
+
+.owt7-lms-loading-icon {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #333;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.owt7-lms .form-group input[type="text"],
+.owt7-lms .form-group input[type="email"],
+.owt7-lms .form-group input[type="file"],
+.owt7-lms .form-group input[type="number"],
+.owt7-lms .form-group input[type="date"],
+.owt7-lms .form-group textarea,
+.owt7-lms .form-group select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #32373c;
+    background: #fff;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    outline: none;
+}
+
+.owt7-lms .form-group input:focus,
+.owt7-lms .form-group select:focus,
+.owt7-lms .form-group textarea:focus {
+    border-color: #007cba;
+    box-shadow: 0 0 0 1px #007cba;
+}
+
+.owt7-lms .form-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;charset=utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23888"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+    padding-right: 30px;
+}
+
+.owt7-lms .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+}
+
+.owt7-lms .checkbox-group label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.owt7-lms .checkbox-group input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.owt7-lms .form-books-borrow {
+    width: 25%;
+    background-color: #fff;
+    padding: 20px;
+    margin: 0 auto;
+}
+
+.owt7-lms form label.error,
+.owt7_lms_form_settings label.error {
+    margin-top: 8px;
+    color: red !important;
+}
+
+.owt7-lms form span.required {
+    color: red !important;
+}
+
+.input-mask-opacity {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.owt7-lms .form-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;charset=utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    font-size: 16px;
+}
+
+#owt7_library_image_preview {
+    height: 159px;
+    display: block;
+    margin-top: 10px;
+}
+
+.owt7-lms .hide-input {
+    display: none !important;
+}
+
+.owt7-lms input.disabled,
+.owt7-lms input:disabled,
+.owt7-lms select.disabled,
+.owt7-lms select:disabled,
+.owt7-lms textarea.disabled {
+    color: #3d3737 !important;
+}
+
+
+/* Buttons */
+
+.owt7-lms .btn {
+    display: inline-block;
+    background-color: #007bff;
+    /* Button background color */
+    color: #fff;
+    /* Button text color */
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 16px;
+    /* Button font size */
+    text-decoration: none;
+    /* Remove default button underline */
+    cursor: pointer;
+}
+
+.owt7-lms .btn:hover {
+    background-color: #0056b3;
+    /* Button background color on hover */
+}
+
+
+/* Enhanced Save Draft Button */
+
+.owt7-lms .save-draft-btn {
+    background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
+    box-shadow: 0 4px 15px rgba(160, 174, 192, 0.3);
+}
+
+.owt7-lms .save-draft-btn:hover {
+    background: linear-gradient(135deg, #718096 0%, #a0aec0 100%);
+    box-shadow: 0 6px 20px rgba(160, 174, 192, 0.4);
+}
+
+.owt7-lms .save-draft-btn::before {
+    content: '\f326';
+    font-family: 'dashicons';
+    font-size: 16px;
+}
+
+.owt7-lms .buttons-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin: 30px 0;
+    padding: 25px 0;
+    border-top: 2px solid #e2e8f0;
+}
+
+
+/* Enhanced Submit & Save Button */
+
+.owt7-lms .submit-save-btn {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+    font-size: 15px;
+    padding: 14px 28px;
+}
+
+.owt7-lms .submit-save-btn:hover {
+    background: linear-gradient(135deg, #38a169 0%, #48bb78 100%);
+    box-shadow: 0 8px 25px rgba(72, 187, 120, 0.4);
+}
+
+.owt7-lms .submit-save-btn::before {
+    content: '\f147';
+    font-family: 'dashicons';
+    font-size: 18px;
+}
+
+#owt7_txt_borrow_date {
+    width: 81%;
+}
+
+
+/* Settings Page */
+
+.lms-settings .card h2 {
+    font-size: 15px;
+}
+
+a.owt7-lms-anc-settings {
+    background-color: #007bff;
+    color: #fff !important;
+    padding: 7px 7px 7px 7px;
+    border-radius: 7px;
+}
+
+a.owt7-lms-anc-settings:hover {
+    text-decoration: none !important;
+}
+
+
+/* Modal styles */
+
+.owt7_lms_modal_section .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    animation: fadeIn 0.5s;
+}
+
+.owt7_lms_modal_section .modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+    max-width: 450px;
+    border-radius: 5px;
+    animation: slideIn 0.5s;
+}
+
+.owt7_lms_modal_section .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.owt7_lms_modal_section .close:hover,
+.owt7_lms_modal_section .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+
+/* Form styles */
+
+.owt7_lms_modal_section .form-group {
+    margin-bottom: 15px;
+}
+
+.owt7_lms_modal_section .form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.owt7_lms_modal_section .form-group .form-control {
+    width: 100%;
+    padding: 1px 0px 1px 6px;
+    box-sizing: border-box;
+}
+
+.owt7_lms_modal_section .btn {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #0073aa;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.owt7_lms_modal_section .btn:hover {
+    background-color: #005b8a;
+}
+
+.owt7_lms_modal_section span.owt7_lms_modal_section_values {
+    font-size: 16px;
+}
+
+table.owt7-lms-table {
+    font-size: 15px;
+}
+
+.owt7_lms_modal_section .owt7_lms_backup_list li {
+    background: #ffffff;
+    margin: 10px 0;
+    padding: 7px;
+    border-left: 4px solid #0073aa;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.owt7_lms_modal_section .owt7_lms_backup_list li:hover {
+    background-color: #f0f8ff;
+    border-color: #005082;
+}
+
+
+/* Professional Filter Container */
+
+.owt7-lms .filter-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+}
+
+.owt7-lms .filter-container label {
+    font-weight: 600;
+    color: #32373c;
+    font-size: 14px;
+}
+
+.owt7-lms .filter-container select {
+    padding: 6px 10px;
+    min-width: 150px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 14px;
+    color: #32373c;
+    transition: border-color 0.15s ease-in-out;
+}
+
+.owt7-lms .filter-container select:focus {
+    border-color: #007cba;
+    outline: none;
+}
+
+
+/* Addon */
+
+.owt7_library_addon-header {
+    text-align: center;
+    padding: 20px 0;
+    background-color: #f8f9fa;
+}
+
+.owt7_library_addon-header h1 {
+    font-size: 26px;
+    margin: 0;
+    color: #333;
+}
+
+.owt7_library_addon-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 20px;
+}
+
+.owt7_library_addon-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 28%;
+    margin: 20px 0;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.owt7_library_addon-card:hover {
+    transform: translateY(-10px);
+}
+
+.owt7_library_addon-card .dashicons {
+    font-size: 50px;
+    color: #0073aa;
+}
+
+.owt7_library_addon-card h2 {
+    font-size: 16px;
+    margin: 46px 0 10px 10px;
+    color: #333;
+}
+
+.owt7_library_addon-card p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.owt7_library_addon-get-addon-btn {
+    background-color: #0073aa;
+    color: #fff;
+    border: none;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.owt7_library_addon-get-addon-btn:hover {
+    background-color: #fff;
+    border: 1px solid #135e96;
+}
+
+
+/* About */
+
+.owt7_library_about,
+.owt7_library_free_vs_pro {
+    padding: 20px;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+.owt7_library_about .header,
+.owt7_library_free_vs_pro .header {
+    background-color: #0073aa;
+    color: #fff;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.owt7_library_about .header h1,
+.owt7_library_free_vs_pro .header h1 {
+    font-size: 26px;
+    margin: 0;
+}
+
+.owt7_library_about .header p,
+.owt7_library_free_vs_pro .header p {
+    font-size: 18px;
+}
+
+.owt7_library_about .introduction,
+.owt7_library_about .features,
+.owt7_library_about .benefits,
+.owt7_library_about .cta,
+.owt7_library_free_vs_pro .introduction,
+.owt7_library_free_vs_pro .features,
+.owt7_library_free_vs_pro .benefits,
+.owt7_library_free_vs_pro .cta {
+    padding: 20px;
+    background-color: #fff;
+    margin: 20px 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.owt7_library_about .introduction h2,
+.owt7_library_about .features h2,
+.owt7_library_about .benefits h2,
+.owt7_library_about .cta h2,
+.owt7_library_free_vs_pro .introduction h2,
+.owt7_library_free_vs_pro .features h2,
+.owt7_library_free_vs_pro .benefits h2,
+.owt7_library_free_vs_pro .cta h2 {
+    font-size: 22px;
+    margin-top: 0;
+}
+
+.owt7_library_about .features-container,
+.owt7_library_free_vs_pro .features-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.owt7_library_about .feature,
+.owt7_library_free_vs_pro .feature {
+    width: 27%;
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.owt7_library_about .feature span,
+.owt7_library_free_vs_pro .feature span {
+    font-size: 40px;
+    color: #0073aa;
+}
+
+.owt7_library_about .feature h3,
+.owt7_library_free_vs_pro .feature h3 {
+    font-size: 17px;
+    margin: 10px 0;
+}
+
+.owt7_library_about .feature p,
+.owt7_library_free_vs_pro .feature p {
+    font-size: 15px;
+    color: #666;
+}
+
+.owt7_library_about .benefits ul,
+.owt7_library_free_vs_pro .benefits ul {
+    list-style: disc;
+    padding-left: 20px;
+}
+
+.owt7_library_about .benefits li,
+.owt7_library_free_vs_pro .benefits li {
+    margin-bottom: 10px;
+}
+
+.owt7_library_about .cta,
+.owt7_library_free_vs_pro .cta {
+    text-align: center;
+    background-color: #0073aa;
+    color: #fff;
+    padding: 40px 20px;
+    border-radius: 8px;
+}
+
+.owt7_library_about .cta p,
+.owt7_library_free_vs_pro .cta p {
+    font-size: 15px;
+}
+
+.owt7_library_about .cta-btn,
+.owt7_library_free_vs_pro .cta-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 15px;
+    background-color: #fff;
+    color: #0073aa;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-top: 20px;
+}
+
+.owt7_library_about .cta-btn:hover,
+.owt7_library_free_vs_pro .cta-btn:hover {
+    background-color: #005a8c;
+    color: #fff;
+}
+
+@media (max-width: 1200px) {
+    .owt7_library_about .feature,
+    .owt7_library_free_vs_pro .feature {
+        width: 45%;
+    }
+}
+
+@media (max-width: 768px) {
+    .owt7_library_about .feature,
+    .owt7_library_free_vs_pro .feature {
+        width: 90%;
+    }
+}
+
+.owt7-lms .dashicons,
+.owt7-lms .dashicons-before:before {
+    vertical-align: bottom;
+}
+
+.owt7_library_about header h1,
+.owt7_library_about .cta h2,
+.owt7_library_free_vs_pro header h1,
+.owt7_library_free_vs_pro .cta h2 {
+    color: #fff;
+}
+
+.owt7_library_about section p,
+.owt7_library_free_vs_pro section p {
+    font-size: 15px;
+}
+
+.owt7_library_about .cta h2,
+.owt7_library_free_vs_pro .cta h2 {
+    font-size: 24px;
+}
+
+#owt7_lms_refresh_test_data,
+#owt7_lms_remove_test_data {
+    margin-top: 9px;
+    margin-right: 19px;
+}
+
+span.owt7_label_text {
+    cursor: text !important;
+}
+
+
+/* Free Vs Pro */
+
+.owt7_library_free_vs_pro .comparison-table {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.owt7_library_free_vs_pro .comparison-column {
+    width: 45%;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.owt7_library_free_vs_pro .comparison-title {
+    text-align: left;
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #0073aa;
+}
+
+.owt7_library_free_vs_pro .feature-list {
+    list-style: none;
+    padding: 0;
+}
+
+.owt7_library_free_vs_pro .feature-list li {
+    font-size: 1.2em;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.owt7_library_free_vs_pro .feature-list li .icon {
+    font-size: 15px;
+    margin-right: 10px;
+}
+
+.owt7_library_free_vs_pro.feature-list li .icon {
+    color: #0073aa;
+}
+
+.owt7_library_free_vs_pro .feature-list li .icon {
+    color: #ffb400;
+}
+
+span.owt7_late_fine_text {
+    display: block;
+    margin-top: 5px;
+    color: red;
+}
+
+
+/* Define the loader */
+
+.owt7_loader:before {
+    background: rgba(0, 0, 0, 0.55) url('loader.gif') no-repeat 50% 50%;
+    top: 0;
+    left: 0;
+    position: fixed;
+    content: "";
+    z-index: 100000000000000;
+    height: 100%;
+    width: 100%;
+}
+
+.owt7_loader {
+    position: relative;
 }

@@ -8,7 +8,7 @@
  * opened on 6/6/2015 by "pikaren":
  * https://wordpress.org/support/topic/changed-alt-text-doesnt-not-reflect-in-published-posts
  *
- * Created for support topic "alt text reconciliation"
+ * Enhanced for support topic "alt text reconciliation"
  * opened on 6/19/2015 by "fredmr"
  * https://wordpress.org/support/topic/alt-text-reconciliation
  *
@@ -48,8 +48,16 @@
  * opened on 2/20/2021 by "jamiedelaney"
  * https://wordpress.org/support/topic/updating-alt-text-for-images-already-in-post-insert-fixit-tools/
  *
+ * Enhanced for support topic "post parent, link images"
+ * opened on 5/20/2021 by "ellabtz"
+ * https://wordpress.org/support/topic/post-parent-link-images/
+ *
+ * Enhanced for support topic "Insert Fixit Tool – "no-clobber" option?"
+ * opened on 7/22/2023 by "dan-kirshner"
+ * https://wordpress.org/support/topic/insert-fixit-tool-no-clobber-option/
+ *
  * @package Insert Fixit
- * @version 1.18
+ * @version 1.28
  */
 
 /*
@@ -57,10 +65,10 @@ Plugin Name: MLA Insert Fixit
 Plugin URI: http://davidlingren.com/
 Description: Synchronizes Media Library values to and from post/page inserted/featured/attached images
 Author: David Lingren
-Version: 1.18
+Version: 1.28
 Author URI: http://davidlingren.com/
 
-Copyright 2015-2020 David Lingren
+Copyright 2015-2023 David Lingren
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -90,7 +98,16 @@ class Insert_Fixit {
 	 *
 	 * @var	string
 	 */
-	const CURRENT_VERSION = '1.18';
+	const CURRENT_VERSION = '1.28';
+
+	/**
+	 * Constant to log this plugin's debug activity
+	 *
+	 * @since 1.19
+	 *
+	 * @var	integer
+	 */
+	const MLA_DEBUG_CATEGORY = 0x00008000;
 
 	/**
 	 * Slug prefix for registering and enqueueing submenu pages, style sheets and scripts
@@ -100,6 +117,16 @@ class Insert_Fixit {
 	 * @var	string
 	 */
 	const SLUG_PREFIX = 'insertfixit-';
+
+	/**
+	 * Make "Attach" tools unconditional, i.e., overwrite existing parent values
+	 *
+	 * @since 1.06
+	 *
+	 * @var	boolean
+	 */
+	private static $replace_existing_alt_text = true;
+	const INPUT_REPLACE_EXISTING_ALT_TEXT = 'replace-existing-alt-text';
 
 	/**
 	 * Make "Attach" tools unconditional, i.e., overwrite existing parent values
@@ -122,15 +149,6 @@ class Insert_Fixit {
 	const INPUT_FIRST_ITEM = 'first-item';
 
 	/**
-	 * WordPress version test for $wpdb->esc_like() Vs esc_sql()
-	 *
-	 * @since 1.00
-	 *
-	 * @var	boolean
-	 */
-	private static $wp_4dot0_plus = true;
-
-	/**
 	 * Initialization function, similar to __construct()
 	 *
 	 * @since 1.00
@@ -138,8 +156,6 @@ class Insert_Fixit {
 	 * @return	void
 	 */
 	public static function initialize() {
-		self::$wp_4dot0_plus = version_compare( get_bloginfo('version'), '4.0', '>=' );
-
 		add_action( 'admin_menu', 'Insert_Fixit::admin_menu_action' );
 		add_filter( 'mla_evaluate_custom_data_source', 'Insert_Fixit::mla_evaluate_custom_data_source', 10, 5 );
 	}
@@ -167,7 +183,7 @@ class Insert_Fixit {
 	 * @return	array	Updated array of links for the Plugin
 	 */
 	public static function add_plugin_links_filter( $links, $file ) {
-		if ( $file == 'mla-insert-fixit.php' ) {
+		if ( 0 === strpos( $file, 'mla-insert-fixit' ) ) {
 			$tools_link = sprintf( '<a href="%s">%s</a>', admin_url( 'tools.php?page=' . self::SLUG_PREFIX . 'tools' ), 'Tools' );
 			array_unshift( $links, $tools_link );
 		}
@@ -183,33 +199,59 @@ class Insert_Fixit {
 	 * @return	void Echoes HTML markup for the submenu page
 	 */
 	public static function render_tools_page() {
-		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::render_tools_page() $_REQUEST = ' . var_export( $_REQUEST, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::render_tools_page() $_REQUEST = ' . var_export( $_REQUEST, true ), self::MLA_DEBUG_CATEGORY );
 		if ( !current_user_can( 'manage_options' ) ) {
 			echo "Insert Fixit - Error</h2>\n";
 			wp_die( 'You do not have permission to manage plugin settings.' );
 		}
 
 		// Extract relevant query arguments - post/page and item restrictions
-		$old_post_lower = isset( $_REQUEST[ self::SLUG_PREFIX . 'old_post_lower' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'old_post_lower' ] : '';
-		$post_lower = isset( $_REQUEST[ self::SLUG_PREFIX . 'post_lower' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'post_lower' ] : '';
-		$old_post_upper = isset( $_REQUEST[ self::SLUG_PREFIX . 'old_post_upper' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'old_post_upper' ] : '';
-		$post_upper = isset( $_REQUEST[ self::SLUG_PREFIX . 'post_upper' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'post_upper' ] : '';
-		$old_attachment_lower = isset( $_REQUEST[ self::SLUG_PREFIX . 'old_attachment_lower' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'old_attachment_lower' ] : '';
-		$attachment_lower = isset( $_REQUEST[ self::SLUG_PREFIX . 'attachment_lower' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'attachment_lower' ] : '';
-		$old_attachment_upper = isset( $_REQUEST[ self::SLUG_PREFIX . 'old_attachment_upper' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'old_attachment_upper' ] : '';
-		$attachment_upper = isset( $_REQUEST[ self::SLUG_PREFIX . 'attachment_upper' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'attachment_upper' ] : '';
+		$old_post_lower = isset( $_REQUEST[ self::SLUG_PREFIX . 'old_post_lower' ] ) ? absint( $_REQUEST[ self::SLUG_PREFIX . 'old_post_lower' ] ) : '';
+		$old_post_lower = $old_post_lower ? $old_post_lower : '';
+
+		$post_lower = isset( $_REQUEST[ self::SLUG_PREFIX . 'post_lower' ] ) ? absint( $_REQUEST[ self::SLUG_PREFIX . 'post_lower' ] ) : '';
+		$post_lower = $post_lower ? $post_lower : '';
+
+		$old_post_upper = isset( $_REQUEST[ self::SLUG_PREFIX . 'old_post_upper' ] ) ? absint( $_REQUEST[ self::SLUG_PREFIX . 'old_post_upper' ] ) : '';
+		$old_post_upper = $old_post_upper ? $old_post_upper : '';
+
+		$post_upper = isset( $_REQUEST[ self::SLUG_PREFIX . 'post_upper' ] ) ? absint( $_REQUEST[ self::SLUG_PREFIX . 'post_upper' ] ) : '';
+		$post_upper = $post_upper ? $post_upper : '';
+
+		$old_attachment_lower = isset( $_REQUEST[ self::SLUG_PREFIX . 'old_attachment_lower' ] ) ? absint( $_REQUEST[ self::SLUG_PREFIX . 'old_attachment_lower' ] ) : '';
+		$old_attachment_lower = $old_attachment_lower ? $old_attachment_lower : '';
+
+		$attachment_lower = isset( $_REQUEST[ self::SLUG_PREFIX . 'attachment_lower' ] ) ? absint( $_REQUEST[ self::SLUG_PREFIX . 'attachment_lower' ] ) : '';
+		$attachment_lower = $attachment_lower ? $attachment_lower : '';
+
+		$old_attachment_upper = isset( $_REQUEST[ self::SLUG_PREFIX . 'old_attachment_upper' ] ) ? absint( $_REQUEST[ self::SLUG_PREFIX . 'old_attachment_upper' ] ) : '';
+		$old_attachment_upper = $old_attachment_upper ? $old_attachment_upper : '';
+
+		$attachment_upper = isset( $_REQUEST[ self::SLUG_PREFIX . 'attachment_upper' ] ) ? absint( $_REQUEST[ self::SLUG_PREFIX . 'attachment_upper' ] ) : '';
+		$attachment_upper = $attachment_upper ? $attachment_upper : '';
+
 		// Copy ALT Text between Media Library items and Post/Page inserts
-		$old_post_types = isset( $_REQUEST[ self::SLUG_PREFIX . 'old_post_types' ] ) ? stripslashes( $_REQUEST[ self::SLUG_PREFIX . 'old_post_types' ] ) : '';
-		$post_types = isset( $_REQUEST[ self::SLUG_PREFIX . 'post_types' ] ) ? stripslashes( $_REQUEST[ self::SLUG_PREFIX . 'post_types' ] ) : "'post', 'page'";
+		$old_post_types = isset( $_REQUEST[ self::SLUG_PREFIX . 'old_post_types' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'old_post_types' ] ), 'post' ) ) : '';
+		$post_types = isset( $_REQUEST[ self::SLUG_PREFIX . 'post_types' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'post_types' ] ), 'post' ) ) : "'post', 'page'";
+		$old_post_status = isset( $_REQUEST[ self::SLUG_PREFIX . 'old_post_status' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'old_post_status' ] ), 'post' ) ) : '';
+		$post_status = isset( $_REQUEST[ self::SLUG_PREFIX . 'post_status' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'post_status' ] ), 'post' ) ) : "'publish'";
 
+		// Copy ALT Text tools - replace non-empty (existing) text - default is true
+		if ( isset( $_REQUEST[ self::SLUG_PREFIX . 'post_types' ] ) ) {
+			self::$replace_existing_alt_text = isset( $_REQUEST[ self::SLUG_PREFIX . self::INPUT_REPLACE_EXISTING_ALT_TEXT ] ) ? true : false;
+		} else {
+			self::$replace_existing_alt_text = true;
+		}
+		$replace_existing_alt_text_attr = self::$replace_existing_alt_text ? ' checked="checked" ' : ' ';
+		
 		// Post/Page Item Insert Modification
-		$old_data_source = isset( $_REQUEST[ self::SLUG_PREFIX . 'old_data_source' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'old_data_source' ] : '';
-		$data_source = isset( $_REQUEST[ self::SLUG_PREFIX . 'data_source' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'data_source' ] : '[+alt_text+]';
-		$old_attribute_name = isset( $_REQUEST[ self::SLUG_PREFIX . 'old_attribute_name' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'old_attribute_name' ] : '';
-		$attribute_name = isset( $_REQUEST[ self::SLUG_PREFIX . 'attribute_name' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'attribute_name' ] : 'data-pin-description';
+		$old_data_source = isset( $_REQUEST[ self::SLUG_PREFIX . 'old_data_source' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'old_data_source' ] ), 'post' ) ) : '';
+		$data_source = isset( $_REQUEST[ self::SLUG_PREFIX . 'data_source' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'data_source' ] ), 'post' ) ) : '[+alt_text+]';
+		$old_attribute_name = isset( $_REQUEST[ self::SLUG_PREFIX . 'old_attribute_name' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'old_attribute_name' ] ), 'post' ) ) : '';
+		$attribute_name = isset( $_REQUEST[ self::SLUG_PREFIX . 'attribute_name' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'attribute_name' ] ), 'post' ) ) : 'data-pin-description';
 
-		$old_figcaption_template = isset( $_REQUEST[ self::SLUG_PREFIX . 'old_figcaption_template' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'old_figcaption_template' ] : '';
-		$figcaption_template = isset( $_REQUEST[ self::SLUG_PREFIX . 'figcaption_template' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'figcaption_template' ] : '([+post_excerpt+])';
+		$old_figcaption_template = isset( $_REQUEST[ self::SLUG_PREFIX . 'old_figcaption_template' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'old_figcaption_template' ] ), 'post' ) ) : '';
+		$figcaption_template = isset( $_REQUEST[ self::SLUG_PREFIX . 'figcaption_template' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'figcaption_template' ] ), 'post' ) ) : '([+post_excerpt+])';
 
 		// Attach Media Library items
 		self::$attach_all = isset( $_REQUEST[ self::SLUG_PREFIX . self::INPUT_ATTACH_ALL ] ) ? true : false;
@@ -218,20 +260,26 @@ class Insert_Fixit {
 		$lowest_attr = self::$reverse_sort ? ' ' : ' selected="selected" ';
 		$highest_attr = self::$reverse_sort ? ' selected="selected" ' : ' ';
 
+		$old_reference_shortcodes = isset( $_REQUEST[ self::SLUG_PREFIX . 'old_reference_shortcodes' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'old_reference_shortcodes' ] ), 'post' ) ) : '';
+		$reference_shortcodes = isset( $_REQUEST[ self::SLUG_PREFIX . 'reference_shortcodes' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'reference_shortcodes' ] ), 'post' ) ) : 'gallery,mla_gallery';
+
+		$old_reference_parameter = isset( $_REQUEST[ self::SLUG_PREFIX . 'old_reference_parameter' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'old_reference_parameter' ] ), 'post' ) ) : '';
+		$reference_parameter = isset( $_REQUEST[ self::SLUG_PREFIX . 'reference_parameter' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'reference_parameter' ] ), 'post' ) ) : 'ids';
+
 		// Copy Post/Page values to inserted Media Library items
-		$page_library_template = isset( $_REQUEST[ self::SLUG_PREFIX . 'page_library_template' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'page_library_template' ] : '([+page_terms:category,single+]: )([+page_title+] )[+index+]';
+		$page_library_template = isset( $_REQUEST[ self::SLUG_PREFIX . 'page_library_template' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'page_library_template' ] ), 'post' ) ) : '([+page_terms:category,single+]: )([+page_title+] )[+index+]';
 
 		// Copy Parent values to attached Media Library items
-		$parent_library_template = isset( $_REQUEST[ self::SLUG_PREFIX . 'parent_library_template' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'parent_library_template' ] : '([+parent_terms:category,single+]: )([+parent_title+] )[+index+]';
-		$from_parent_taxonomy = isset( $_REQUEST[ self::SLUG_PREFIX . 'from_parent_taxonomy' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'from_parent_taxonomy' ] : 'category';
-		$to_item_taxonomy = isset( $_REQUEST[ self::SLUG_PREFIX . 'to_item_taxonomy' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'to_item_taxonomy' ] : 'attachment_category';
+		$parent_library_template = isset( $_REQUEST[ self::SLUG_PREFIX . 'parent_library_template' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'parent_library_template' ] ), 'post' ) ) : '([+parent_terms:category,single+]: )([+parent_title+] )[+index+]';
+		$from_parent_taxonomy = isset( $_REQUEST[ self::SLUG_PREFIX . 'from_parent_taxonomy' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'from_parent_taxonomy' ] ), 'post' ) ) : 'category';
+		$to_item_taxonomy = isset( $_REQUEST[ self::SLUG_PREFIX . 'to_item_taxonomy' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'to_item_taxonomy' ] ), 'post' ) ) : 'attachment_category';
 
 		// Copy attached Media Library item values to Parent Post/Page
-		$item_taxonomy = isset( $_REQUEST[ self::SLUG_PREFIX . 'item_taxonomy' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'item_taxonomy' ] : 'attachment_tag';
-		$parent_taxonomy = isset( $_REQUEST[ self::SLUG_PREFIX . 'parent_taxonomy' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'parent_taxonomy' ] : 'post_tag';
+		$item_taxonomy = isset( $_REQUEST[ self::SLUG_PREFIX . 'item_taxonomy' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'item_taxonomy' ] ), 'post' ) ) : 'attachment_tag';
+		$parent_taxonomy = isset( $_REQUEST[ self::SLUG_PREFIX . 'parent_taxonomy' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'parent_taxonomy' ] ), 'post' ) ) : 'post_tag';
 
-		$item_fields = isset( $_REQUEST[ self::SLUG_PREFIX . 'item_fields' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'item_fields' ] : '';
-		$fields_option = isset( $_REQUEST[ self::SLUG_PREFIX . 'fields_option' ] ) ? $_REQUEST[ self::SLUG_PREFIX . 'fields_option' ] : 'text';
+		$item_fields = isset( $_REQUEST[ self::SLUG_PREFIX . 'item_fields' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'item_fields' ] ), 'post' ) ) : '';
+		$fields_option = isset( $_REQUEST[ self::SLUG_PREFIX . 'fields_option' ] ) ? trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'fields_option' ] ), 'post' ) ) : 'text';
 		$fields_option_text = ( 'text' === $fields_option ) ? 'selected="selected" ' : '';
 		$fields_option_single = ( 'single' === $fields_option ) ? 'selected="selected" ' : '';
 //		$fields_option_export = ( 'export' === $fields_option ) ? 'selected="selected" ' : '';
@@ -239,17 +287,27 @@ class Insert_Fixit {
 
 		$setting_actions = array(
 			'help' => array( 'handler' => '', 'comment' => '<strong>Enter first and (optional) last ID values above to restrict tool application range</strong>. To operate on one ID, enter just the "First ID". The default is to perform the operation on <strong>all posts/pages</strong> and <strong>all Media Library items (attachments)</strong>.<br />&nbsp;<br />You can find post/page ID values by hovering over the post/page title in the "Title" column of the All Posts/All Pages submenu tables; look for the number following <code>post=</code>.<br />' ),
-			'warning' => array( 'handler' => '', 'comment' => '<strong>These tools make permanent updates to your database.</strong> Make a backup before you use the tools so you can restore your old values if you don&rsquo;t like the results.' ),
-
-			'c00' => array( 'handler' => '', 'comment' => '<h3>Copy ALT Text between Media Library items and Post/Page inserts</h3>' ),
-			'c01' => array( 'handler' => '', 'comment' => '<strong>NOTE:</strong> Tools in this section use the post type values below. Single quotes and commas are required.' ),
+			'c01' => array( 'handler' => '', 'comment' => '<strong>NOTE:</strong> The tools in this plugin use the post type and post status values in the text boxes below. Single quotes and commas are required.' ),
 			't1501' => array( 'open' => '<table><tr>' ),
 			't1502' => array( 'continue' => '  <td style="text-align: right; padding-right: 5px" valign="middle">Post Type(s)</td>' ),
 			't1503' => array( 'continue' => '  <td style="text-align: left">' ),
 			't1504' => array( 'continue' => '    <input name="' . self::SLUG_PREFIX . 'old_post_types" type="hidden" value="' . $post_types . '">' ),
 			't1505' => array( 'continue' => '    <input name="' . self::SLUG_PREFIX . 'post_types" type="text" size="30" value="' . $post_types . '">' ),
-			't1506' => array( 'continue' => '  </td>' ),
-			't1507' => array( 'close' => '</tr></table>' ),
+			't1506' => array( 'continue' => '  </td></tr>' ),
+			't1507' => array( 'continue' => '<tr><td style="text-align: right; padding-right: 5px" valign="middle">Post Status(es)</td>' ),
+			't1508' => array( 'continue' => '  <td style="text-align: left">' ),
+			't1509' => array( 'continue' => '    <input name="' . self::SLUG_PREFIX . 'old_post_status" type="hidden" value="' . $post_status . '">' ),
+			't1510' => array( 'continue' => '    <input name="' . self::SLUG_PREFIX . 'post_status" type="text" size="30" value="' . $post_status . '">' ),
+			't1511' => array( 'continue' => '  </td>' ),
+			't1512' => array( 'close' => '</tr></table>' ),
+			'warning' => array( 'handler' => '', 'comment' => '<strong>These tools make permanent updates to your database.</strong> Make a backup before you use the tools so you can restore your old values if you don&rsquo;t like the results.' ),
+
+			'c00' => array( 'handler' => '', 'comment' => '<h3>Copy ALT Text between Media Library items and Post/Page inserts</h3>' ),
+			't1701' => array( 'open' => '<table><tr>' ),
+			't1702' => array( 'continue' => '  <td style="text-align: right; padding-right: 5px" valign="middle"><input name="' . self::SLUG_PREFIX . self::INPUT_REPLACE_EXISTING_ALT_TEXT . '" type="checkbox"' . $replace_existing_alt_text_attr . 'value="' . self::INPUT_REPLACE_EXISTING_ALT_TEXT . '"></td>' ),
+			't1703' => array( 'continue' => '  <td style="text-align: left; padding-right: 5px" valign="middle">Replace existing ALT Text values</td>' ),
+			't1704' => array( 'continue' => '</tr><tr>' ),
+			't1732' => array( 'close' => '</tr></table>&nbsp;<br>' ),
 			'ALT from Item' => array( 'handler' => '_copy_alt_from_media_library',
 				'comment' => 'Copy ALT Text from Media Library item to Post/Page inserts.' ),
 			'ALT to Item' => array( 'handler' => '_copy_alt_to_media_library',
@@ -306,8 +364,24 @@ class Insert_Fixit {
 			't1212' => array( 'continue' => '    </select>' ),
 			't1213' => array( 'continue' => '  </td>' ),
 			't1214' => array( 'continue' => '</tr><tr>' ),
-			't1215' => array( 'continue' => '  <td>&nbsp;</td><td >Select the definition of "first" item from the dropdown above.</td>' ),
-			't1216' => array( 'close' => '</tr></table>&nbsp;<br>' ),
+			't1215' => array( 'continue' => '  <td>&nbsp;</td><td >Select the definition of "first" item from the dropdown above.<br />&nbsp;</td>' ),
+			't1216' => array( 'continue' => '</tr><tr>' ),
+			't1617' => array( 'continue' => '  <td style="text-align: right; padding-right: 5px" valign="middle">Shortcode(s)</td>' ),
+			't1618' => array( 'continue' => '  <td style="text-align: left">' ),
+			't1619' => array( 'continue' => '    <input name="' . self::SLUG_PREFIX . 'old_reference_shortcodes" type="hidden" value="' . $reference_shortcodes . '">' ),
+			't1620' => array( 'continue' => '    <input name="' . self::SLUG_PREFIX . 'reference_shortcodes" type="text" size="60" value="' . $reference_shortcodes . '">' ),
+			't1621' => array( 'continue' => '  </td>' ),
+			't1222' => array( 'continue' => '</tr><tr>' ),
+			't1223' => array( 'continue' => '  <td>&nbsp;</td><td >Enter a comma-separated list of shortcode names for the "Attach Referenced in" tool.</td>' ),
+			't1224' => array( 'continue' => '</tr><tr>' ),
+			't1625' => array( 'continue' => '  <td style="text-align: right; padding-right: 5px" valign="middle">Parameter</td>' ),
+			't1626' => array( 'continue' => '  <td style="text-align: left">' ),
+			't1627' => array( 'continue' => '    <input name="' . self::SLUG_PREFIX . 'old_reference_parameter" type="hidden" value="' . $reference_parameter . '">' ),
+			't1628' => array( 'continue' => '    <input name="' . self::SLUG_PREFIX . 'reference_parameter" type="text" size="60" value="' . $reference_parameter . '">' ),
+			't1629' => array( 'continue' => '  </td>' ),
+			't1230' => array( 'continue' => '</tr><tr>' ),
+			't1231' => array( 'continue' => '  <td>&nbsp;</td><td >Enter the desired parameter name (e.g. "ids" without quotes) for the "Attach Referenced in" tool.</td>' ),
+			't1232' => array( 'close' => '</tr></table>&nbsp;<br>' ),
 			'Attach Inserted In' => array( 'handler' => '_attach_inserted_in',
 				'comment' => 'Attach items to the first Post/Page they are inserted in' ),
 			'Attach Featured In' => array( 'handler' => '_attach_featured_in',
@@ -407,7 +481,7 @@ class Insert_Fixit {
 		echo "\t\t" . '<h2>Insert Fixit Tools v' . self::CURRENT_VERSION . '</h2>' . "\n";
 
 		if ( isset( $_REQUEST[ self::SLUG_PREFIX . 'action' ] ) ) {
-			$label = $_REQUEST[ self::SLUG_PREFIX . 'action' ];
+			$label = trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'action' ] ), 'post' ) );
 			if( isset( $setting_actions[ $label ] ) ) {
 				$action = $setting_actions[ $label ]['handler'];
 				if ( ! empty( $action ) ) {
@@ -426,10 +500,14 @@ class Insert_Fixit {
 		}
 
 		// Invalidate the caches if anything has changed
-		if ( $old_post_lower !== $post_lower || $old_post_upper !== $post_upper || $old_attachment_lower !== $attachment_lower || $old_attachment_upper !== $attachment_upper || $old_post_types !== $post_types || $old_data_source !== $data_source || $old_attribute_name !== $attribute_name || $old_figcaption_template !== $figcaption_template ) {
+		if ( $old_post_lower !== $post_lower || $old_post_upper !== $post_upper || $old_attachment_lower !== $attachment_lower || $old_attachment_upper !== $attachment_upper || $old_post_types !== $post_types || $old_post_status !== $post_status || $old_data_source !== $data_source || $old_attribute_name !== $attribute_name || $old_figcaption_template !== $figcaption_template ) {
 			delete_transient( self::SLUG_PREFIX . 'figure_inserts' );
 			delete_transient( self::SLUG_PREFIX . 'image_inserts' );
 			delete_transient( self::SLUG_PREFIX . 'image_objects' );
+		}
+
+		if ( $old_reference_shortcodes !== $reference_shortcodes || $old_reference_parameter !== $reference_parameter ) {
+			delete_transient( self::SLUG_PREFIX . 'item_references' );
 		}
 
 		echo "\t\t" . '<div style="width:700px">' . "\n";
@@ -502,6 +580,66 @@ class Insert_Fixit {
 	 */
 	private static $attached_items = array();
 
+	/**
+	 * Validate Post Type(s) user input text to prevent SQL injectioin attacks
+ 	 *
+	 * @since 1.24
+	 *
+	 * @param	string	$post_types Input text; should have comma-separated, single-quoted post type names
+	 *
+	 * @return	string	Sanitized post type(s) string
+	 */
+	private static function _validate_post_types( $post_types ) {
+		$post_type_array = explode( ',', $post_types );
+		
+		$valid_post_types = get_post_types();
+		
+		$output_post_types = array();
+		foreach ( $post_type_array as $post_type ) {
+			$post_type = trim( $post_type, " '" );
+			
+			if ( in_array( $post_type, $valid_post_types ) ) {
+				$output_post_types[] = "'" . $post_type . "'";
+			}
+		}
+
+		if ( count( $output_post_types ) ) {
+			return implode( ',', $output_post_types );
+		} else {
+			return "'post', 'page'";
+		}
+	}
+	
+	/**
+	 * Validate Post Status(es) user input text to prevent SQL injectioin attacks
+ 	 *
+	 * @since 1.27
+	 *
+	 * @param	string	$post_status Input text; should have comma-separated, single-quoted post status names
+	 *
+	 * @return	string	Sanitized post type(s) string
+	 */
+	private static function _validate_post_status( $post_status ) {
+		$post_status_array = explode( ',', $post_status );
+		
+		$valid_post_status = get_post_statuses();
+		
+		$output_post_status = array();
+		foreach ( $post_status_array as $post_status ) {
+			$post_status = trim( $post_status, " '" );
+			
+			if ( array_key_exists( $post_status, $valid_post_status ) ) {
+				$output_post_status[] = "'" . $post_status . "'";
+			}
+		}
+
+		if ( count( $output_post_status ) ) {
+			return implode( ',', $output_post_status );
+		} else {
+			return "'publish'";
+		}
+	}
+	
 	/**
 	 * Compile array of post/page IDs giving attached item IDs
  	 *
@@ -600,13 +738,12 @@ class Insert_Fixit {
 		if ( $use_cache ) {
 			self::$image_inserts = get_transient( self::SLUG_PREFIX . 'image_inserts' );
 			if ( is_array( self::$image_inserts ) ) {
-				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_image_inserts_cache using cached self::\$image_inserts " . var_export( self::$image_inserts, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_image_inserts_cache using cached self::\$image_inserts " . var_export( self::$image_inserts, true ), self::MLA_DEBUG_CATEGORY );
 				return 'Using cached image inserts with ' . count( self::$image_inserts ) . ' post/page elements.';
 			}
 		}
 
 		$return = delete_transient( self::SLUG_PREFIX . 'image_inserts' );
-//error_log( __LINE__ . " Insert_Fixit::_build_image_inserts_cache delete_transient return = " . var_export( $return, true ), 0 );
 
 		if ( ! empty( $_REQUEST[ self::SLUG_PREFIX . 'post_lower' ] ) ) {
 			$lower_bound = (integer) $_REQUEST[ self::SLUG_PREFIX . 'post_lower' ];
@@ -627,22 +764,31 @@ class Insert_Fixit {
 		} else {
 			$post_types = "'post', 'page'";
 		}
-//error_log( __LINE__ . " Insert_Fixit::_build_image_inserts_cache post_types = " . var_export( $post_types, true ), 0 );
 
-		$query = sprintf( 'SELECT ID, post_content FROM %1$s WHERE ( post_type IN ( %2$s ) AND ( post_status = \'publish\' ) AND ( ID >= %3$d ) AND ( ID <= %4$d ) AND ( post_content LIKE \'%5$s\' ) ) ORDER BY ID', $wpdb->posts, $post_types, $lower_bound, $upper_bound, '%<img%' );
-		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_image_inserts_cache() $query = ' . var_export( $query, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		$post_types = self::_validate_post_types( $post_types );
+		
+		if ( ! empty( $_REQUEST[ self::SLUG_PREFIX . 'post_status' ] ) ) {
+			$post_status = stripslashes( $_REQUEST[ self::SLUG_PREFIX . 'post_status' ] );
+		} else {
+			$post_status = "'publish'";
+		}
+
+		$post_status = self::_validate_post_status( $post_status );
+		
+		$query = sprintf( 'SELECT ID, post_content FROM %1$s WHERE ( post_type IN ( %2$s ) AND ( post_status IN ( %3$s ) ) AND ( ID >= %4$d ) AND ( ID <= %5$d ) AND ( post_content LIKE \'%6$s\' ) ) ORDER BY ID', $wpdb->posts, $post_types, $post_status, $lower_bound, $upper_bound, '%<img%' );
+		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_image_inserts_cache() $query = ' . var_export( $query, true ), self::MLA_DEBUG_CATEGORY );
 		$results = $wpdb->get_results( $query );
-		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_image_inserts_cache() $results = ' . var_export( $results, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_image_inserts_cache() $results = ' . var_export( $results, true ), self::MLA_DEBUG_CATEGORY );
 
 		$upload_dir = wp_upload_dir();
-		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_image_inserts_cache() $upload_dir = ' . var_export( $upload_dir, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_image_inserts_cache() $upload_dir = ' . var_export( $upload_dir, true ), self::MLA_DEBUG_CATEGORY );
 		$upload_dir = $upload_dir['baseurl'] . '/';
 		$site_url = get_site_url();
-		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_image_inserts_cache() $site_url = ' . var_export( $site_url, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_image_inserts_cache() $site_url = ' . var_export( $site_url, true ), self::MLA_DEBUG_CATEGORY );
 		$upload_subdir = str_replace( $site_url, '', $upload_dir );
-		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_image_inserts_cache() $upload_subdir = ' . var_export( $upload_subdir, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_image_inserts_cache() $upload_subdir = ' . var_export( $upload_subdir, true ), self::MLA_DEBUG_CATEGORY );
 
-		// Use two uoload directory URLs to handle HTTP/HTTPS mismatches
+		// Use two upload directory URLs to handle HTTP/HTTPS mismatches
 		$root_dir = str_replace( 'http', '', str_replace( 'https', '', $upload_dir ) );
 		$http_dir = 'http' . $root_dir;
 		$https_dir = 'https' . $root_dir;
@@ -650,8 +796,8 @@ class Insert_Fixit {
 		$image_inserts = array();
 		foreach ( $results as $result ) {
 			$match_count = preg_match_all( '/\<img .*?(src="([^"]*?)")[^\>]*?\>/', $result->post_content, $matches, PREG_OFFSET_CAPTURE );
-			MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_image_inserts_cache( {$result->ID} ) count = {$match_count}, src \$matches = " . var_export( $matches, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
-//error_log( __LINE__ . " Insert_Fixit::_build_image_inserts_cache( {$result->ID} ) count = {$match_count}, src \$matches = " . var_export( $matches, true ), 0 );
+			MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_image_inserts_cache( {$result->ID} ) count = {$match_count}, src \$matches = " . var_export( $matches, true ), self::MLA_DEBUG_CATEGORY );
+
 			if ( $match_count ) {
 				$image_inserts[ $result->ID ]['content'] = $result->post_content;
 
@@ -678,7 +824,7 @@ class Insert_Fixit {
 				// alt= value if present
 				foreach ( $image_inserts[ $result->ID ]['inserts'] as $index => $insert ) {
 					$match_count = preg_match( '/alt="([^"]*)"/', $insert['img'], $matches, PREG_OFFSET_CAPTURE );
-					MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_image_inserts_cache( {$result->ID} ) count = {$match_count}, alt \$matches = " . var_export( $matches, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+					MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_image_inserts_cache( {$result->ID}, {$index} ) count = {$match_count}, alt \$matches = " . var_export( $matches, true ), self::MLA_DEBUG_CATEGORY );
 					if ( $match_count ) {
 						$image_inserts[ $result->ID ]['inserts'][ $index ]['alt'] = $matches[1][0];
 						$image_inserts[ $result->ID ]['inserts'][ $index ]['alt_offset'] = $insert['img_offset'] + $matches[1][1];
@@ -690,11 +836,9 @@ class Insert_Fixit {
 		}
 
 		$return = set_transient( self::SLUG_PREFIX . 'image_inserts', $image_inserts, 900 ); // fifteen minutes
-//error_log( __LINE__ . " Insert_Fixit::_build_image_inserts_cache set_transient return = " . var_export( $return, true ), 0 );
-		MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_image_inserts_cache() return = {$return}, \$image_inserts = " . var_export( $image_inserts, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_image_inserts_cache() return = {$return}, \$image_inserts = " . var_export( $image_inserts, true ), self::MLA_DEBUG_CATEGORY );
 		self::$image_inserts = $image_inserts;
 
-//error_log( __LINE__ . " Insert_Fixit::_build_image_inserts_cache image_inserts = " . var_export( $image_inserts, true ), 0 );
 		return 'Image inserts cache refreshed with ' . count( self::$image_inserts ) . ' post/page elements.';
 	} // _build_image_inserts_cache
 
@@ -739,13 +883,12 @@ class Insert_Fixit {
 		if ( $use_cache ) {
 			self::$figcaption_inserts = get_transient( self::SLUG_PREFIX . 'figcaption_inserts' );
 			if ( is_array( self::$figcaption_inserts ) ) {
-				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_figcaption_inserts_cache using cached self::\$figcaption_inserts " . var_export( self::$figcaption_inserts, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_figcaption_inserts_cache using cached self::\$figcaption_inserts " . var_export( self::$figcaption_inserts, true ), self::MLA_DEBUG_CATEGORY );
 				return 'Using cached figcaption inserts with ' . count( self::$figcaption_inserts ) . ' post/page elements.';
 			}
 		}
 
 		$return = delete_transient( self::SLUG_PREFIX . 'figcaption_inserts' );
-//error_log( __LINE__ . " Insert_Fixit::_build_figcaption_inserts_cache delete_transient return = " . var_export( $return, true ), 0 );
 
 		if ( ! empty( $_REQUEST[ self::SLUG_PREFIX . 'post_lower' ] ) ) {
 			$lower_bound = (integer) $_REQUEST[ self::SLUG_PREFIX . 'post_lower' ];
@@ -766,12 +909,21 @@ class Insert_Fixit {
 		} else {
 			$post_types = "'post', 'page'";
 		}
-//error_log( __LINE__ . " Insert_Fixit::_build_figcaption_inserts_cache post_types = " . var_export( $post_types, true ), 0 );
+		
+		$post_types = self::_validate_post_types( $post_types );
 
-		$query = sprintf( 'SELECT ID, post_content FROM %1$s WHERE ( post_type IN ( %2$s ) AND ( post_status = \'publish\' ) AND ( ID >= %3$d ) AND ( ID <= %4$d ) AND ( post_content LIKE \'%5$s\' ) ) ORDER BY ID', $wpdb->posts, $post_types, $lower_bound, $upper_bound, '%<figcaption%' );
-		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_figcaption_inserts_cache() $query = ' . var_export( $query, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		if ( ! empty( $_REQUEST[ self::SLUG_PREFIX . 'post_status' ] ) ) {
+			$post_status = stripslashes( $_REQUEST[ self::SLUG_PREFIX . 'post_status' ] );
+		} else {
+			$post_status = "'publish'";
+		}
+
+		$post_status = self::_validate_post_status( $post_status );
+		
+		$query = sprintf( 'SELECT ID, post_content FROM %1$s WHERE ( post_type IN ( %2$s ) AND ( post_status IN ( %3$s ) ) AND ( ID >= %4$d ) AND ( ID <= %5$d ) AND ( post_content LIKE \'%6$s\' ) ) ORDER BY ID', $wpdb->posts, $post_types, $post_status, $lower_bound, $upper_bound, '%<figcaption%' );
+		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_figcaption_inserts_cache() $query = ' . var_export( $query, true ), self::MLA_DEBUG_CATEGORY );
 		$results = $wpdb->get_results( $query );
-		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_figcaption_inserts_cache() $results = ' . var_export( $results, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_figcaption_inserts_cache() $results = ' . var_export( $results, true ), self::MLA_DEBUG_CATEGORY );
 
 		$gallery_items = array();
 		$figcaption_inserts = array();
@@ -779,8 +931,8 @@ class Insert_Fixit {
 
 			// Items within a gallery require a different <figcaption> tag
 			$match_count = preg_match_all( '/\<\!-- wp:gallery \{"ids":\[([^\]]*?)\]/', $result->post_content, $matches );
-			MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_figcaption_inserts_cache( {$result->ID} ) count = {$match_count}, src \$matches = " . var_export( $matches, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
-//error_log( __LINE__ . " Insert_Fixit::_build_figcaption_inserts_cache( {$result->ID} ) count = {$match_count}, src \$matches = " . var_export( $matches, true ), 0 );
+			MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_figcaption_inserts_cache( {$result->ID} ) count = {$match_count}, src \$matches = " . var_export( $matches, true ), self::MLA_DEBUG_CATEGORY );
+
 			if ( $match_count ) {
 				foreach( $matches[1] as $match ) {
 					$match = explode( ',', $match );
@@ -789,11 +941,9 @@ class Insert_Fixit {
 					}
 				}
 			}
-//error_log( __LINE__ . " Insert_Fixit::_build_figcaption_inserts_cache( {$result->ID} ) count = {$match_count}, src \$gallery_items = " . var_export( $gallery_items, true ), 0 );
 			
 			$match_count = preg_match_all( '/\<figure[^\>]*?\>\<img.*?(wp-image-([0-9]*)).*?(\<figcaption.*?\>(.*?)\<\/figcaption\>|)\<\/figure\>/', $result->post_content, $matches, PREG_OFFSET_CAPTURE );
-			MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_figcaption_inserts_cache( {$result->ID} ) count = {$match_count}, src \$matches = " . var_export( $matches, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
-//error_log( __LINE__ . " Insert_Fixit::_build_figcaption_inserts_cache( {$result->ID} ) count = {$match_count}, src \$matches = " . var_export( $matches, true ), 0 );
+			MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_figcaption_inserts_cache( {$result->ID} ) count = {$match_count}, src \$matches = " . var_export( $matches, true ), self::MLA_DEBUG_CATEGORY );
 
 			if ( $match_count ) {
 				$figcaption_inserts[ $result->ID ]['content'] = $result->post_content;
@@ -823,11 +973,9 @@ class Insert_Fixit {
 		}
 
 		$return = set_transient( self::SLUG_PREFIX . 'figcaption_inserts', $figcaption_inserts, 900 ); // fifteen minutes
-//error_log( __LINE__ . " Insert_Fixit::_build_figcaption_inserts_cache set_transient return = " . var_export( $return, true ), 0 );
-		MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_figcaption_inserts_cache() return = {$return}, \$figcaption_inserts = " . var_export( $figcaption_inserts, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_figcaption_inserts_cache() return = {$return}, \$figcaption_inserts = " . var_export( $figcaption_inserts, true ), self::MLA_DEBUG_CATEGORY );
 		self::$figcaption_inserts = $figcaption_inserts;
 
-//error_log( __LINE__ . " Insert_Fixit::_build_figcaption_inserts_cache figcaption_inserts = " . var_export( $figcaption_inserts, true ), 0 );
 		return 'Image inserts cache refreshed with ' . count( self::$figcaption_inserts ) . ' post/page elements.';
 	} // _build_figcaption_inserts_cache
 
@@ -852,19 +1000,18 @@ class Insert_Fixit {
 	 *
 	 * @return	string	Cache or rebuild results
 	 */
-	private static function _build_featured_objects_cache( $use_cache = false, $unattached_only = false, $reverse_sort ) {
+	private static function _build_featured_objects_cache( $use_cache = false, $unattached_only = false, $reverse_sort = false ) {
 		global $wpdb;
 
 		if ( $use_cache ) {
 			self::$featured_objects = get_transient( self::SLUG_PREFIX . 'featured_objects' );
 			if ( is_array( self::$featured_objects ) ) {
-				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_featured_objects_cache using cached self::\$featured_objects " . var_export( self::$featured_objects, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_featured_objects_cache using cached self::\$featured_objects " . var_export( self::$featured_objects, true ), self::MLA_DEBUG_CATEGORY );
 				return 'Using cached featured objects with ' . count( self::$featured_objects ) . ' attachment elements.';
 			}
 		}
 
 		$return = delete_transient( self::SLUG_PREFIX . 'featured_objects' );
-//error_log( __LINE__ . " Insert_Fixit::_build_featured_objects_cache delete_transient return = " . var_export( $return, true ), 0 );
 
 		if ( ! empty( $_REQUEST[ self::SLUG_PREFIX . 'attachment_lower' ] ) ) {
 			$lower_bound = (integer) $_REQUEST[ self::SLUG_PREFIX . 'attachment_lower' ];
@@ -893,9 +1040,9 @@ class Insert_Fixit {
 		$query[] = "AND ( ID >= {$lower_bound} ) AND ( ID <= {$upper_bound} ) ) ORDER BY ID ) AS p ON m.meta_value = p.ID";
 		$query[] = "WHERE m.meta_key = '_thumbnail_id'";
 		$query = implode( ' ', $query );
-		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_featured_objects_cache() $query = ' . var_export( $query, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_featured_objects_cache() $query = ' . var_export( $query, true ), self::MLA_DEBUG_CATEGORY );
 		$results = $wpdb->get_results( $query );
-		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_featured_objects_cache() $results = ' . var_export( $results, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_featured_objects_cache() $results = ' . var_export( $results, true ), self::MLA_DEBUG_CATEGORY );
 
 		$references = array();
 		if ( is_array( $results ) ) {
@@ -906,7 +1053,7 @@ class Insert_Fixit {
 			}
 
 			foreach( $references as $id => $result ) {
-				if ( $reverse_sort ) {
+				if ( self::$reverse_sort ) {
 					krsort( $references[ $id ] );
 				} else {
 					ksort( $references[ $id ] );
@@ -915,8 +1062,7 @@ class Insert_Fixit {
 		}
 
 		$return = set_transient( self::SLUG_PREFIX . 'featured_objects', $references, 900 ); // fifteen minutes
-//error_log( __LINE__ . " Insert_Fixit::_build_featured_objects_cache set_transient return = " . var_export( $return, true ), 0 );
-		MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_featured_objects_cache return = {$return}, references = " . var_export( $references, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_featured_objects_cache return = {$return}, references = " . var_export( $references, true ), self::MLA_DEBUG_CATEGORY );
 		self::$featured_objects = $references;
 
 		return 'Featured objects cache refreshed with ' . count( self::$featured_objects ) . ' attachment elements.';
@@ -949,13 +1095,12 @@ class Insert_Fixit {
 		if ( $use_cache ) {
 			self::$item_references = get_transient( self::SLUG_PREFIX . 'item_references' );
 			if ( is_array( self::$item_references ) ) {
-				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_item_references_cache using cached self::\$item_references " . var_export( self::$item_references, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_item_references_cache using cached self::\$item_references " . var_export( self::$item_references, true ), self::MLA_DEBUG_CATEGORY );
 				return 'Using cached item references with ' . count( self::$item_references ) . ' attachment elements.';
 			}
 		}
 
 		$return = delete_transient( self::SLUG_PREFIX . 'item_references' );
-//error_log( __LINE__ . " Insert_Fixit::_build_item_references_cache delete_transient return = " . var_export( $return, true ), 0 );
 
 		if ( ! empty( $_REQUEST[ self::SLUG_PREFIX . 'post_lower' ] ) ) {
 			$lower_bound = (integer) $_REQUEST[ self::SLUG_PREFIX . 'post_lower' ];
@@ -976,41 +1121,65 @@ class Insert_Fixit {
 		} else {
 			$post_types = "'post', 'page'";
 		}
-//error_log( __LINE__ . " Insert_Fixit::_build_item_references_cache post_types = " . var_export( $post_types, true ), 0 );
 
-		$query = sprintf( 'SELECT ID, post_content FROM %1$s WHERE ( post_type IN ( %2$s ) AND ( post_status = \'publish\' ) AND ( ID >= %3$d ) AND ( ID <= %4$d ) AND ( ( post_content LIKE \'%5$s\' ) OR ( post_content LIKE \'%6$s\' ) ) ) ORDER BY ID', $wpdb->posts, $post_types, $lower_bound, $upper_bound, '%wp-image-%', '%ids=%' );
-		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_item_references_cache() $query = ' . var_export( $query, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		$post_types = self::_validate_post_types( $post_types );
+
+		if ( ! empty( $_REQUEST[ self::SLUG_PREFIX . 'post_status' ] ) ) {
+			$post_status = stripslashes( $_REQUEST[ self::SLUG_PREFIX . 'post_status' ] );
+		} else {
+			$post_status = "'publish'";
+		}
+
+		$post_status = self::_validate_post_status( $post_status );
+		
+		$query = sprintf( 'SELECT ID, post_content FROM %1$s WHERE ( post_type IN ( %2$s ) AND ( post_status IN ( %3$s ) ) AND ( ID >= %4$d ) AND ( ID <= %5$d ) AND ( ( post_content LIKE \'%6$s\' ) OR ( post_content LIKE \'%7$s\' ) ) ) ORDER BY ID', $wpdb->posts, $post_types, $post_status, $lower_bound, $upper_bound, '%wp-image-%', '%ids=%' );
+		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_item_references_cache() $query = ' . var_export( $query, true ), self::MLA_DEBUG_CATEGORY );
 		$results = $wpdb->get_results( $query );
-		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_item_references_cache() $results = ' . var_export( $results, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_item_references_cache() $results = ' . var_export( $results, true ), self::MLA_DEBUG_CATEGORY );
+
+		$reference_shortcodes = isset( $_REQUEST[ self::SLUG_PREFIX . 'reference_shortcodes' ] ) ? trim( $_REQUEST[ self::SLUG_PREFIX . 'reference_shortcodes' ] ) : 'gallery,mla_gallery';
+		$reference_parameter = isset( $_REQUEST[ self::SLUG_PREFIX . 'reference_parameter' ] ) ? trim( $_REQUEST[ self::SLUG_PREFIX . 'reference_parameter' ] ) : 'ids';
 
 		self::$item_references = array();
 		foreach ( $results as $result ) {
 			// Find the class="wp-image-" references
 			$match_count = preg_match_all( '/wp-image-([0-9]{1,6})/', $result->post_content, $matches );
-			MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_item_references_cache( {$result->ID} ) class \$matches = " . var_export( $matches, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+			MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_item_references_cache( {$result->ID} ) class \$matches = " . var_export( $matches, true ), self::MLA_DEBUG_CATEGORY );
 			if ( $match_count ) {
 				foreach ( $matches[1] as $match ) {
 					self::$item_references[ absint( $match ) ][ absint( $result->ID ) ] = absint( $result->ID );
 				}
 			}
 
-			// Find the ids= references
-			$match_count = preg_match_all( '/(\[gallery|\[mla_gallery)[^\]]*ids=([0-9,\\\'\"]*)/', $result->post_content, $matches );
-			MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_item_references_cache( {$result->ID} ) ids \$matches = " . var_export( $matches, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
-			if ( $match_count ) {
-				foreach ( $matches[2] as $match ) {
-					$items = explode( ',', trim( $match, '\'"' ) );
-					foreach ( $items as $item ) {
-						self::$item_references[ absint( $item ) ][ absint( $result->ID ) ] = absint( $result->ID );
+			// Find the reference_parameter values
+			if ( !empty( $reference_shortcodes ) ) {
+				$match_shortcodes = array();
+				$shortcodes = explode( ',', $reference_shortcodes );				
+
+				foreach ( $shortcodes as $shortcode ) {
+					$match_shortcodes[] = '\\[' . $shortcode;
+				}
+
+				$match_shortcodes = implode( '|', $match_shortcodes );
+				$match_shortcodes = '/(' . $match_shortcodes . ')[^\]]*' . $reference_parameter . '=([0-9,\\\'\"]*)/';
+				
+	//			$match_count = preg_match_all( '/(\[gallery|\[mla_gallery)[^\]]*ids=([0-9,\\\'\"]*)/', $result->post_content, $matches );
+				$match_count = preg_match_all( $match_shortcodes, $result->post_content, $matches );
+				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_item_references_cache( {$result->ID} ) ids \$matches = " . var_export( $matches, true ), self::MLA_DEBUG_CATEGORY );
+				if ( $match_count ) {
+					foreach ( $matches[2] as $match ) {
+						$items = explode( ',', trim( $match, '\'"' ) );
+						foreach ( $items as $item ) {
+							self::$item_references[ absint( $item ) ][ absint( $result->ID ) ] = absint( $result->ID );
+						}
 					}
 				}
 			}
-		}
+		} // !empty( $reference_shortcodes )
 
 		$return = set_transient( self::SLUG_PREFIX . 'item_references', self::$item_references, 900 ); // fifteen minutes
-		MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_item_references_cache return = {$return}, self::\$item_references " . var_export( self::$item_references, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_item_references_cache return = {$return}, self::\$item_references " . var_export( self::$item_references, true ), self::MLA_DEBUG_CATEGORY );
 
-//error_log( __LINE__ . " Insert_Fixit::_build_item_references_cache item_references = " . var_export( self::$item_references, true ), 0 );
 		return 'Item references cache refreshed with ' . count( self::$item_references ) . ' items referenced in ' . count( $results ) . ' post/page elements.';
 	} // _build_item_references_cache
 
@@ -1047,7 +1216,7 @@ class Insert_Fixit {
 		if ( $use_cache ) {
 			self::$image_objects = get_transient( self::SLUG_PREFIX . 'image_objects' );
 			if ( is_array( self::$image_objects ) ) {
-				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_image_objects_cache using cached self::\$image_objects " . var_export( self::$image_objects, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_image_objects_cache using cached self::\$image_objects " . var_export( self::$image_objects, true ), self::MLA_DEBUG_CATEGORY );
 				return 'Using cached image objects with ' . count( self::$image_objects ) . ' attachment elements.';
 			}
 		}
@@ -1076,9 +1245,9 @@ class Insert_Fixit {
 		}
 
 		$query = sprintf( 'SELECT ID, post_parent FROM %1$s WHERE ( ( post_type = \'attachment\' ) %2$s AND ( ID >= %3$d ) AND ( ID <= %4$d ) ) ORDER BY ID', $wpdb->posts, $where, $lower_bound, $upper_bound );
-		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_image_objects_cache() $query = ' . var_export( $query, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_image_objects_cache() $query = ' . var_export( $query, true ), self::MLA_DEBUG_CATEGORY );
 		$results = $wpdb->get_results( $query );
-		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_image_objects_cache() $results = ' . var_export( $results, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_image_objects_cache() $results = ' . var_export( $results, true ), self::MLA_DEBUG_CATEGORY );
 
 		// Load the image_inserts array
 		self::_build_image_inserts_cache( true );
@@ -1117,7 +1286,7 @@ class Insert_Fixit {
 			} else {
 				$original_file = false;
 			}
-			MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_image_objects_cache() $original_file = ' . var_export( $original_file, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+			MLACore::mla_debug_add( __LINE__ . ' Insert_Fixit::_build_image_objects_cache() $original_file = ' . var_export( $original_file, true ), self::MLA_DEBUG_CATEGORY );
 
 			$attachment_metadata = get_metadata( 'post', $result->ID, '_wp_attachment_metadata', true );
 			if ( empty( $attachment_metadata ) ) {
@@ -1125,7 +1294,7 @@ class Insert_Fixit {
 			}
 
 			$sizes = isset( $attachment_metadata['sizes'] ) ? $attachment_metadata['sizes'] : NULL;
-			MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_array_image_inserts_references( {$result->ID} ) sizes = " . var_export( $sizes, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+			MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_array_image_inserts_references( {$result->ID} ) sizes = " . var_export( $sizes, true ), self::MLA_DEBUG_CATEGORY );
 			if ( ! empty( $sizes ) && is_array( $sizes ) ) {
 				// Using the path and name as the array key ensures each name is added only once
 				foreach ( $sizes as $size => $size_info ) {
@@ -1137,7 +1306,7 @@ class Insert_Fixit {
 				//$files[ $path . $base_file ] = $path . $base_file;
 				$files[ $base_file ] = $base_file;
 			}
-			MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_array_image_inserts_references( {$result->ID} ) files = " . var_export( $files, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+			MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_array_image_inserts_references( {$result->ID} ) files = " . var_export( $files, true ), self::MLA_DEBUG_CATEGORY );
 
 			/*
 			 * inserts	Array of specific files (i.e., sizes) found in one or more posts/pages
@@ -1147,9 +1316,9 @@ class Insert_Fixit {
 			$inserts = array();
 
 			foreach( $files as $file ) {
-				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_array_image_inserts_references( {$result->ID} ) file = " . var_export( $file, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_array_image_inserts_references( {$result->ID} ) file = " . var_export( $file, true ), self::MLA_DEBUG_CATEGORY );
 				foreach ( self::$image_inserts as $insert_id => $value ) {
-					MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_array_image_inserts_references( {$insert_id} ) value = " . var_export( $value, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+					MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_array_image_inserts_references( {$insert_id} ) value = " . var_export( $value, true ), self::MLA_DEBUG_CATEGORY );
 					if ( in_array( $file, $value['files'] ) ) {
 						$inserts[ $insert_id ][] = $file;
 					}
@@ -1157,7 +1326,7 @@ class Insert_Fixit {
 			} // foreach file
 
 			if ( ! empty( $inserts ) ) {
-				if ( $reverse_sort ) {
+				if ( self::$reverse_sort ) {
 					krsort( $inserts );
 				} else {
 					ksort( $inserts );
@@ -1172,7 +1341,7 @@ class Insert_Fixit {
 		} // each result
 
 		$return = set_transient( self::SLUG_PREFIX . 'image_objects', $references, 900 ); // fifteen minutes
-		MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_image_objects_cache return = {$return}, self::\$image_objects = " . var_export( $references, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+		MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_build_image_objects_cache return = {$return}, self::\$image_objects = " . var_export( $references, true ), self::MLA_DEBUG_CATEGORY );
 		self::$image_objects = $references;
 
 //error_log( __LINE__ . " Insert_Fixit::_build_image_objects_cache image_objects = " . var_export( $references, true ), 0 );
@@ -1377,14 +1546,10 @@ class Insert_Fixit {
 	 * @return	string	HTML markup for results/messages
 	 */
 	private static function _copy_alt_from_media_library() {
-		/*
-		 * Load the image_inserts array
-		 */
+		// Load the image_inserts array
 		self::_build_image_inserts_cache( true );
 
-		/*
-		 * Load the image_objects array
-		 */
+		// Load the image_objects array
 		self::_build_image_objects_cache( true );
 
 		// Initialize statistics
@@ -1405,18 +1570,20 @@ class Insert_Fixit {
 				$inserts = self::$image_inserts[ $post_id ];
 				foreach ( $files as $file ) {
 					foreach ( $inserts['inserts'] as $insert ) {
-						MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_copy_alt_from_media_library file test '{$file}' == " . var_export( $insert['src'], true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+						MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_copy_alt_from_media_library file test '{$file}' == " . var_export( $insert['src'], true ), self::MLA_DEBUG_CATEGORY );
 						if ( $file != $insert['src'] || ! isset( $insert['alt'] ) ) {
 							continue;
 						}
 
-						MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_copy_alt_from_media_library ALT text test '{$alt_text}' ==  " . var_export( $insert['alt'], true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+						MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_copy_alt_from_media_library ALT text test '{$alt_text}' ==  " . var_export( $insert['alt'], true ), self::MLA_DEBUG_CATEGORY );
 						if ( $alt_text == $insert['alt'] ) {
 							continue;
 						}
 
 						// Queue replacement
-						self::$image_inserts[ $post_id ]['replacements'][ $insert['alt_offset'] ] = array( 'length' => strlen( $insert['alt'] ), 'text' => $alt_text );
+						if ( ( $alt_text !== $insert['alt'] ) && ( self::$replace_existing_alt_text || ( 0 === strlen( $insert['alt'] ) ) ) ) {
+							self::$image_inserts[ $post_id ]['replacements'][ $insert['alt_offset'] ] = array( 'length' => strlen( $insert['alt'] ), 'text' => $alt_text );
+						}
 					} // foreach file
 				} // foreach reference
 			} // foreach insert
@@ -1427,28 +1594,26 @@ class Insert_Fixit {
 			$replacements = $inserts['replacements'];
 			if ( ! empty( $replacements ) ) {
 				krsort( $replacements );
-				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_copy_alt_from_media_library( {$post_id} ) replacements =  " . var_export( $replacements, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_copy_alt_from_media_library( {$post_id} ) replacements =  " . var_export( $replacements, true ), self::MLA_DEBUG_CATEGORY );
 				$post_content = $inserts['content'];
 				foreach ( $replacements as $offset => $replacement ) {
 					$post_content = substr_replace( $post_content, $replacement['text'], $offset, $replacement['length'] );
 					$updates++;
 				} // foreach replacement
 				$new_content = array( 'ID' => $post_id, 'post_content' => $post_content );
-				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_copy_alt_from_media_library( {$post_id} ) new post_content =  " . var_export( $post_content, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_copy_alt_from_media_library( {$post_id} ) new post_content =  " . var_export( $post_content, true ), self::MLA_DEBUG_CATEGORY );
 				$result = wp_update_post( $new_content, true );
-				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_copy_alt_from_media_library( {$post_id} ) update result =  " . var_export( $result, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_copy_alt_from_media_library( {$post_id} ) update result =  " . var_export( $result, true ), self::MLA_DEBUG_CATEGORY );
 				if ( is_wp_error( $result ) ) {
 					$errors++;
 				}
 				$updated_posts++;
 			} else { // has replacements
-				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_copy_alt_from_media_library( {$post_id} ) no replacements =  " . var_export( $replacements, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_copy_alt_from_media_library( {$post_id} ) no replacements =  " . var_export( $replacements, true ), self::MLA_DEBUG_CATEGORY );
 			} // no replacements
 		} // foreach post/page
 
-		/*
-		 * Invalidate the image_inserts cache, since post/page content has changed.
-		 */
+		// Invalidate the image_inserts cache, since post/page content has changed.
 		if ( $updated_posts ) {		
 			delete_transient( self::SLUG_PREFIX . 'image_inserts' );
 		}
@@ -1464,14 +1629,10 @@ class Insert_Fixit {
 	 * @return	string	HTML markup for results/messages
 	 */
 	private static function _copy_alt_to_media_library() {
-		/*
-		 * Load the image_inserts array
-		 */
+		// Load the image_inserts array
 		self::_build_image_inserts_cache( true );
 
-		/*
-		 * Load the image_objects array
-		 */
+		// Load the image_objects array
 		self::_build_image_objects_cache( true );
 
 		$image_inserts = count( self::$image_inserts );
@@ -1494,25 +1655,27 @@ class Insert_Fixit {
 				$inserts = self::$image_inserts[ $post_id ];
 				foreach ( $files as $file ) {
 					foreach ( $inserts['inserts'] as $insert ) {
-//error_log( __LINE__ . " Insert_Fixit::_copy_alt_to_media_library file test '{$file}' == " . var_export( $insert['src'], true ), 0 );
-						if ( $file != $insert['src'] || ! isset( $insert['alt'] ) ) {
+						MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_copy_alt_to_media_library file test '{$file}' = " . var_export( $insert['src'], true ), self::MLA_DEBUG_CATEGORY );
+						if ( $file !== $insert['src'] || ! isset( $insert['alt'] ) ) {
 							continue;
 						}
 
-//error_log( __LINE__ . " Insert_Fixit::_copy_alt_to_media_library ALT text test '{$alt_text}' ==  " . var_export( $insert['alt'], true ), 0 );
-						if ( $alt_text == $insert['alt'] ) {
+						MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_copy_alt_to_media_library ALT text test '{$alt_text}' = " . var_export( $insert['alt'], true ), self::MLA_DEBUG_CATEGORY );
+						if ( $alt_text === $insert['alt'] ) {
 							continue;
 						}
 
 						// Queue replacement
-						$replacement = $insert['alt'];
+						if ( self::$replace_existing_alt_text || ( 0 === strlen( $alt_text ) ) ) {
+							$replacement = $insert['alt'];
+						}
 					} // foreach file
 				} // foreach reference
 			} // foreach insert
 
 			// Apply replacement
 			if ( ! is_null( $replacement ) ) {
-//error_log( __LINE__ . " Insert_Fixit::_copy_alt_to_media_library( {$attachment_id} ) replacement =  " . var_export( $replacement, true ), 0 );
+				MLACore::mla_debug_add( __LINE__ . " Insert_Fixit::_copy_alt_to_media_library( {$attachment_id} ) replacement = " . var_export( $replacement, true ), self::MLA_DEBUG_CATEGORY );
 				if ( update_metadata( 'post', $attachment_id, '_wp_attachment_image_alt', $replacement ) ) {
 					$updated_attachments++;
 				} else {
@@ -1521,9 +1684,7 @@ class Insert_Fixit {
 			}
 		} // foreach attachment
 
-		/*
-		 * Invalidate the image_objects cache, since Media Library item content has changed.
-		 */
+		// Invalidate the image_objects cache, since Media Library item content has changed.
 		if ( $updated_attachments ) {		
 			delete_transient( self::SLUG_PREFIX . 'image_objects' );
 		}
@@ -1799,7 +1960,7 @@ class Insert_Fixit {
 			$referenced_items++;
 
 			// Define "first"; oldest = ksort, newest = krsort
-			if ( $reverse_sort ) {
+			if ( self::$reverse_sort ) {
 				krsort( $references, SORT_NUMERIC );
 			} else {
 				ksort( $references, SORT_NUMERIC );

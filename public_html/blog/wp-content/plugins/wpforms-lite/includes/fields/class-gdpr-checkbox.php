@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * GDPR Checkbox field.
  *
@@ -15,24 +19,29 @@ class WPForms_Field_GDPR_Checkbox extends WPForms_Field {
 	public function init() {
 
 		// Define field type information.
-		$this->name     = esc_html__( 'GDPR Agreement', 'wpforms-lite' );
-		$this->type     = 'gdpr-checkbox';
-		$this->icon     = 'fa-check-square-o';
-		$this->order    = 500;
-		$this->defaults = array(
-			1 => array(
+		$this->name            = esc_html__( 'GDPR Agreement', 'wpforms-lite' );
+		$this->type            = 'gdpr-checkbox';
+		$this->icon            = 'fa-check-square-o';
+		$this->order           = 500;
+		$this->allow_read_only = false;
+		$this->defaults        = [
+			1 => [
 				'label'   => esc_html__( 'I consent to having this website store my submitted information so they can respond to my inquiry.', 'wpforms-lite' ),
 				'value'   => '',
 				'image'   => '',
 				'default' => '',
-			),
-		);
+			],
+		];
 
-		// Set field to default to required.
-		add_filter( 'wpforms_field_new_required', array( $this, 'field_default_required' ), 10, 2 );
+		$this->default_settings = [
+			'choices' => $this->defaults,
+		];
+
+		// Set field to default to the required.
+		add_filter( 'wpforms_field_new_required', [ $this, 'field_default_required' ], 10, 2 );
 
 		// Define additional field properties.
-		add_filter( 'wpforms_field_properties_gdpr-checkbox', array( $this, 'field_properties' ), 5, 3 );
+		add_filter( 'wpforms_field_properties_gdpr-checkbox', [ $this, 'field_properties' ], 5, 3 );
 	}
 
 	/**
@@ -72,47 +81,47 @@ class WPForms_Field_GDPR_Checkbox extends WPForms_Field {
 		$field_id = absint( $field['id'] );
 		$choices  = ! empty( $field['choices'] ) ? $field['choices'] : [];
 
-		// Remove primary input.
-		unset( $properties['inputs']['primary'] );
+		// Remove primary input, unset for attribute for label.
+		unset( $properties['inputs']['primary'], $properties['label']['attr']['for'] );
 
 		// Set input container (ul) properties.
-		$properties['input_container'] = array(
-			'class' => array(),
-			'data'  => array(),
-			'attr'  => array(),
+		$properties['input_container'] = [
+			'class' => [],
+			'data'  => [],
+			'attr'  => [],
 			'id'    => "wpforms-{$form_id}-field_{$field_id}",
-		);
+		];
 
 		// Set input properties.
 		foreach ( $choices as $key => $choice ) {
 
-			$properties['inputs'][ $key ] = array(
-				'container' => array(
-					'attr'  => array(),
-					'class' => array( "choice-{$key}" ),
-					'data'  => array(),
+			$properties['inputs'][ $key ] = [
+				'container' => [
+					'attr'  => [],
+					'class' => [ "choice-{$key}" ],
+					'data'  => [],
 					'id'    => '',
-				),
-				'label'     => array(
-					'attr'  => array(
+				],
+				'label'     => [
+					'attr'  => [
 						'for' => "wpforms-{$form_id}-field_{$field_id}_{$key}",
-					),
-					'class' => array( 'wpforms-field-label-inline' ),
-					'data'  => array(),
+					],
+					'class' => [ 'wpforms-field-label-inline' ],
+					'data'  => [],
 					'id'    => '',
 					'text'  => $choice['label'],
-				),
-				'attr'      => array(
+				],
+				'attr'      => [
 					'name'  => "wpforms[fields][{$field_id}][]",
 					'value' => $choice['label'],
-				),
-				'class'     => array(),
-				'data'      => array(),
+				],
+				'class'     => [],
+				'data'      => [],
 				'id'        => "wpforms-{$form_id}-field_{$field_id}_{$key}",
 				'image'     => '',
 				'required'  => ! empty( $field['required'] ) ? 'required' : '',
 				'default'   => '',
-			);
+			];
 		}
 
 		// Required class for pagebreak validation.
@@ -124,9 +133,16 @@ class WPForms_Field_GDPR_Checkbox extends WPForms_Field {
 	}
 
 	/**
-	 * @inheritdoc
+	 * Whether the current field can be populated dynamically.
+	 *
+	 * @since 1.9.4
+	 *
+	 * @param array $properties Field properties.
+	 * @param array $field      Current field specific data.
+	 *
+	 * @return bool
 	 */
-	public function is_dynamic_population_allowed( $properties, $field ) {
+	public function is_dynamic_population_allowed( $properties, $field ): bool {
 
 		return false;
 	}
@@ -144,11 +160,11 @@ class WPForms_Field_GDPR_Checkbox extends WPForms_Field {
 		$this->field_element(
 			'text',
 			$field,
-			array(
+			[
 				'type'  => 'hidden',
 				'slug'  => 'required',
 				'value' => '1',
-			)
+			]
 		);
 
 		// -------------------------------------------------------------------//
@@ -159,9 +175,9 @@ class WPForms_Field_GDPR_Checkbox extends WPForms_Field {
 		$this->field_option(
 			'basic-options',
 			$field,
-			array(
+			[
 				'markup' => 'open',
-			)
+			]
 		);
 
 		// Label.
@@ -171,9 +187,9 @@ class WPForms_Field_GDPR_Checkbox extends WPForms_Field {
 		$this->field_option(
 			'choices',
 			$field,
-			array(
+			[
 				'label' => esc_html__( 'Agreement', 'wpforms-lite' ),
-			)
+			]
 		);
 
 		// Description.
@@ -183,9 +199,9 @@ class WPForms_Field_GDPR_Checkbox extends WPForms_Field {
 		$this->field_option(
 			'basic-options',
 			$field,
-			array(
+			[
 				'markup' => 'close',
-			)
+			]
 		);
 
 		// -------------------------------------------------------------------//
@@ -196,24 +212,24 @@ class WPForms_Field_GDPR_Checkbox extends WPForms_Field {
 		$this->field_option(
 			'advanced-options',
 			$field,
-			array(
+			[
 				'markup' => 'open',
-			)
+			]
 		);
-
-		// Hide label.
-		$this->field_option( 'label_hide', $field );
 
 		// Custom CSS classes.
 		$this->field_option( 'css', $field );
+
+		// Hide label.
+		$this->field_option( 'label_hide', $field );
 
 		// Options close markup.
 		$this->field_option(
 			'advanced-options',
 			$field,
-			array(
+			[
 				'markup' => 'close',
-			)
+			]
 		);
 	}
 
@@ -244,6 +260,8 @@ class WPForms_Field_GDPR_Checkbox extends WPForms_Field {
 	 * @param array $field      Field settings.
 	 * @param array $deprecated Deprecated array.
 	 * @param array $form_data  Form data and settings.
+	 *
+	 * @noinspection HtmlUnknownAttribute
 	 */
 	public function field_display( $field, $deprecated, $form_data ) {
 
@@ -256,9 +274,9 @@ class WPForms_Field_GDPR_Checkbox extends WPForms_Field {
 			wpforms_html_attributes( $container['id'], $container['class'], $container['data'], $container['attr'] )
 		);
 
-			foreach ( $choices as $key => $choice ) {
-
+			foreach ( $choices as $choice ) {
 				$required = '';
+
 				if ( ! empty( $choice['required'] ) && ! empty( $field['label_hide'] ) ) {
 					$required = wpforms_get_field_required_label();
 				}
@@ -279,8 +297,8 @@ class WPForms_Field_GDPR_Checkbox extends WPForms_Field {
 						'<label %s>%s%s</label>',
 						wpforms_html_attributes( $choice['label']['id'], $choice['label']['class'], $choice['label']['data'], $choice['label']['attr'] ),
 						wp_kses_post( $choice['label']['text'] ),
-						$required
-					); // WPCS: XSS ok.
+						wp_kses_post( $required )
+					);
 
 				echo '</li>';
 			}
@@ -299,12 +317,12 @@ class WPForms_Field_GDPR_Checkbox extends WPForms_Field {
 	 */
 	public function format( $field_id, $field_submit, $form_data ) {
 
-		wpforms()->process->fields[ $field_id ] = array(
+		wpforms()->obj( 'process' )->fields[ $field_id ] = [
 			'name'  => ! empty( $form_data['fields'][ $field_id ]['label'] ) ? sanitize_text_field( $form_data['fields'][ $field_id ]['label'] ) : '',
 			'value' => $form_data['fields'][ $field_id ]['choices'][1]['label'],
-			'id'    => absint( $field_id ),
+			'id'    => wpforms_validate_field_id( $field_id ),
 			'type'  => $this->type,
-		);
+		];
 	}
 }
 

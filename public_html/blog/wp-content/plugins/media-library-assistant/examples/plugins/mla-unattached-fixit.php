@@ -4,8 +4,15 @@
  *
  * Adds a Tools/Unattached Fixit submenu with buttons to perform the operations.
  *
+ * Created for support topic "Bulk delete Unattached images/media"
+ * opened on 11/24/2015 by "lododicesimo":
+ * https://wordpress.org/support/topic/bulk-delete-unattached-imagesmedia/
+ *
+ * Enhanced (Reflected Cross-Site Scripting security fix) for Wordfence CVE ID: CVE-2024-11974 report
+ * opened on 12/03/2024 by "vgo0":
+ *
  * @package Unattached Fixit
- * @version 1.02
+ * @version 1.05
  */
 
 /*
@@ -13,7 +20,7 @@ Plugin Name: MLA Unattached Fixit
 Plugin URI: http://davidlingren.com/
 Description: Removes Unattached items from the Media Library
 Author: David Lingren
-Version: 1.02
+Version: 1.05
 Author URI: http://davidlingren.com/
 
 Copyright 2015 David Lingren
@@ -50,7 +57,7 @@ class Unattached_Fixit {
 	 *
 	 * @var	string
 	 */
-	const CURRENT_VERSION = '1.01';
+	const CURRENT_VERSION = '1.05';
 
 	/**
 	 * Slug prefix for registering and enqueueing submenu pages, style sheets and scripts
@@ -62,15 +69,6 @@ class Unattached_Fixit {
 	const SLUG_PREFIX = 'unattachfixit-';
 
 	/**
-	 * WordPress version test for $wpdb->esc_like() Vs esc_sql()
-	 *
-	 * @since 1.00
-	 *
-	 * @var	boolean
-	 */
-	private static $wp_4dot0_plus = true;
-
-	/**
 	 * Initialization function, similar to __construct()
 	 *
 	 * @since 1.00
@@ -78,8 +76,6 @@ class Unattached_Fixit {
 	 * @return	void
 	 */
 	public static function initialize() {
-		self::$wp_4dot0_plus = version_compare( get_bloginfo('version'), '4.0', '>=' );
-		
 		//add_action( 'admin_init', 'Unattached_Fixit::admin_init_action' );
 		add_action( 'admin_menu', 'Unattached_Fixit::admin_menu_action' );
 	}
@@ -117,7 +113,7 @@ class Unattached_Fixit {
 	 * @return	array	Updated array of links for the Plugin
 	 */
 	public static function add_plugin_links_filter( $links, $file ) {
-		if ( $file == 'mla-unattached-fixit.php' ) {
+		if ( 0 === strpos( $file, 'mla-unattached-fixit' ) ) {
 			$tools_link = sprintf( '<a href="%s">%s</a>', admin_url( 'tools.php?page=' . self::SLUG_PREFIX . 'tools' ), 'Tools' );
 			array_unshift( $links, $tools_link );
 		}
@@ -133,7 +129,7 @@ class Unattached_Fixit {
 	 * @return	void Echoes HTML markup for the submenu page
 	 */
 	public static function render_tools_page() {
-error_log( 'Unattached_Fixit::render_tools_page() $_REQUEST = ' . var_export( $_REQUEST, true ), 0 );
+//error_log( __LINE__ . ' Unattached_Fixit::render_tools_page() $_REQUEST = ' . var_export( $_REQUEST, true ), 0 );
 		if ( !current_user_can( 'manage_options' ) ) {
 			echo "Unattached Fixit - Error</h2>\n";
 			wp_die( 'You do not have permission to manage plugin settings.' );
@@ -151,9 +147,7 @@ error_log( 'Unattached_Fixit::render_tools_page() $_REQUEST = ' . var_export( $_
 				'comment' => 'Permanently delete unattached items.' ),
  		);
 
-		/*
-		 * Conditional display of the "Trash" action
-		 */
+		// Conditional display of the "Trash" action
 		if ( ! ( defined('MEDIA_TRASH') && MEDIA_TRASH ) ) {
 			unset( $setting_actions['Trash Unattached'] );
 		}
@@ -168,7 +162,7 @@ error_log( 'Unattached_Fixit::render_tools_page() $_REQUEST = ' . var_export( $_
 		}
 
 		if ( isset( $_REQUEST[ self::SLUG_PREFIX . 'action' ] ) ) {
-			$label = $_REQUEST[ self::SLUG_PREFIX . 'action' ];
+			$label = trim( wp_kses( wp_unslash( $_REQUEST[ self::SLUG_PREFIX . 'action' ] ), 'post' ) );
 			if( isset( $setting_actions[ $label ] ) ) {
 				$action = $setting_actions[ $label ]['handler'];
 				if ( ! empty( $action ) ) {
@@ -258,9 +252,9 @@ error_log( 'Unattached_Fixit::render_tools_page() $_REQUEST = ' . var_export( $_
 		}
 
 		$query = sprintf( 'SELECT ID FROM %1$s WHERE %2$s( post_type = \'attachment\' ) AND ( post_status = \'inherit\' ) AND ( post_parent = 0 ) ORDER BY ID %3$s', $wpdb->posts, $range_clause, $limit_clause );
-error_log( __LINE__ . ' Unattached_Fixit::_get_attachment_ids() $query = ' . var_export( $query, true ), 0 );
+//error_log( __LINE__ . ' Unattached_Fixit::_get_attachment_ids() $query = ' . var_export( $query, true ), 0 );
 		$results = $wpdb->get_col( $query );
-error_log( __LINE__ . ' Unattached_Fixit::_get_attachment_ids() $results = ' . var_export( $results, true ), 0 );
+//error_log( __LINE__ . ' Unattached_Fixit::_get_attachment_ids() $results = ' . var_export( $results, true ), 0 );
 
 		return $results;
 	} // _get_attachment_ids

@@ -4,7 +4,7 @@ Plugin Name: Hide Page And Post Title
 Plugin URI: https://profiles.wordpress.org/arjunthakur#content-plugins/
 Description: Hide the title on single pages and posts.
 Author: Arjun Thakur
-Version: 1.5.6
+Version: 1.5.8
 License: GPLv2 or later
 Author URI: https://profiles.wordpress.org/arjunthakur
 Text Domain: hpt

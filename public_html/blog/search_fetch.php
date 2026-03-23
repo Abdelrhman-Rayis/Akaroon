@@ -173,7 +173,14 @@ foreach ($results as $row) {
             <?php if ($field): ?><div>🔬 <?= $field ?></div><?php endif; ?>
           </div>
           <?php if ($mode === 'deep' && !empty($row['ocr_text'])): ?>
-            <?php $ocr_dl = $_media_base ? "{$_media_base}/ocr/{$row['Category']}/{$id}.md" : ''; ?>
+            <?php
+              $ocr_raw = $_media_base ? "{$_media_base}/ocr/{$row['Category']}/{$id}.md" : '';
+              $ocr_dl  = $ocr_raw
+                ? '/blog/ocr_viewer.php?src=' . urlencode($ocr_raw)
+                  . '&title=' . urlencode($row['The_Title_of_Paper_Book'])
+                  . '&author=' . urlencode($row['The_number_of_the_Author'])
+                : '';
+            ?>
             <div class="ak-ocr-snippet">
               <div class="ak-ocr-header">
                 <span class="ak-ocr-label">🔬 من نص الوثيقة</span>

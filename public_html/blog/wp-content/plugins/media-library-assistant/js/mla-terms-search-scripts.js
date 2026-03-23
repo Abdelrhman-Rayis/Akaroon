@@ -35,16 +35,16 @@ var jQuery, wpAjax, ajaxurl,
 	mlaTaxonomy.termsSearch = {
 		init: function() {
 			// Suppress form "submit" action for the "Terms Search" button
-			$( '#mla-terms-search-open' ).click( function( event ) {
+			$( '#mla-terms-search-open' ).on( 'click', function( event ) {
 				event.preventDefault();
 			});
 
-			$( '#mla-terms-search-submit' ).click( function() {
+			$( '#mla-terms-search-submit' ).on( 'click', function() {
 				mlaTaxonomy.termsSearch.close();
 			});
 
 			// Close the termsSearch pop-up
-			$( '#mla-terms-search-close-div' ).click( mlaTaxonomy.termsSearch.close );
+			$( '#mla-terms-search-close-div' ).on( 'click', mlaTaxonomy.termsSearch.close );
 
 		},
 
@@ -63,16 +63,18 @@ var jQuery, wpAjax, ajaxurl,
 			} else {
 				$( '#mla-terms-search-close-div' ).html( 'x' );
 			}
-			/* if ( ! mlaTaxonomy.settings.useDashicons ) {
-				$( '#mla-terms-search-close-div' ).html( 'x' );
-			} */
 
 			$( '#mla-terms-search-div' ).show();
 
-			$( '#mla-terms-search-input ' ).focus().keyup( function( event ){
-				if ( event.which == 27 ) {
+			$( '#mla-terms-search-input ' ).focus().on( 'keyup', function( event ){
+				if ( 27 === event.which ) {
 					mlaTaxonomy.termsSearch.close();
 				} // close on Escape
+
+				if ( 13 === event.which ) {
+					event.preventDefault();
+					$( '#mla-terms-search-form' ).trigger('submit');
+				}
 			});
 
 			return false;

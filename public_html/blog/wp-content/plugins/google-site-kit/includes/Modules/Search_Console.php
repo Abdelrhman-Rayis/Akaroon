@@ -10,37 +10,43 @@
 
 namespace Google\Site_Kit\Modules;
 
+use Google\Site_Kit\Core\Assets\Script;
+use Google\Site_Kit\Core\Authentication\Clients\Google_Site_Kit_Client;
 use Google\Site_Kit\Core\Modules\Module;
 use Google\Site_Kit\Core\Modules\Module_Settings;
 use Google\Site_Kit\Core\Modules\Module_With_Debug_Fields;
 use Google\Site_Kit\Core\Modules\Module_With_Owner;
 use Google\Site_Kit\Core\Modules\Module_With_Owner_Trait;
-use Google\Site_Kit\Core\Modules\Module_With_Screen;
-use Google\Site_Kit\Core\Modules\Module_With_Screen_Trait;
 use Google\Site_Kit\Core\Modules\Module_With_Scopes;
 use Google\Site_Kit\Core\Modules\Module_With_Scopes_Trait;
-use Google\Site_Kit\Core\Authentication\Clients\Google_Site_Kit_Client;
 use Google\Site_Kit\Core\Modules\Module_With_Settings;
 use Google\Site_Kit\Core\Modules\Module_With_Settings_Trait;
 use Google\Site_Kit\Core\Modules\Module_With_Assets;
 use Google\Site_Kit\Core\Modules\Module_With_Assets_Trait;
+use Google\Site_Kit\Core\Modules\Module_With_Service_Entity;
+use Google\Site_Kit\Core\Modules\Module_With_Data_Available_State;
+use Google\Site_Kit\Core\Modules\Module_With_Data_Available_State_Trait;
 use Google\Site_Kit\Core\Permissions\Permissions;
-use Google\Site_Kit\Core\REST_API\Exception\Invalid_Datapoint_Exception;
-use Google\Site_Kit\Core\Assets\Script;
 use Google\Site_Kit\Core\REST_API\Data_Request;
+use Google\Site_Kit\Core\REST_API\Exception\Invalid_Datapoint_Exception;
+use Google\Site_Kit\Core\Util\Date;
 use Google\Site_Kit\Core\Util\Google_URL_Matcher_Trait;
 use Google\Site_Kit\Core\Util\Google_URL_Normalizer;
+use Google\Site_Kit\Core\Util\Sort;
 use Google\Site_Kit\Modules\Search_Console\Settings;
-use Google\Site_Kit_Dependencies\Google_Service_Exception;
-use Google\Site_Kit_Dependencies\Google_Service_SearchConsole;
-use Google\Site_Kit_Dependencies\Google_Service_SearchConsole_SitesListResponse;
-use Google\Site_Kit_Dependencies\Google_Service_SearchConsole_WmxSite;
-use Google\Site_Kit_Dependencies\Google_Service_SearchConsole_SearchAnalyticsQueryRequest;
-use Google\Site_Kit_Dependencies\Google_Service_SearchConsole_ApiDimensionFilter;
-use Google\Site_Kit_Dependencies\Google_Service_SearchConsole_ApiDimensionFilterGroup;
+use Google\Site_Kit\Modules\Search_Console\Datapoints\SearchAnalyticsBatch;
+use Google\Site_Kit\Modules\Search_Console\Datapoints\SearchAnalytics;
+use Google\Site_Kit_Dependencies\Google\Service\Exception as Google_Service_Exception;
+use Google\Site_Kit_Dependencies\Google\Service\SearchConsole as Google_Service_SearchConsole;
+use Google\Site_Kit_Dependencies\Google\Service\SearchConsole\SitesListResponse as Google_Service_SearchConsole_SitesListResponse;
+use Google\Site_Kit_Dependencies\Google\Service\SearchConsole\WmxSite as Google_Service_SearchConsole_WmxSite;
+use Google\Site_Kit_Dependencies\Google\Service\SearchConsole\SearchAnalyticsQueryRequest as Google_Service_SearchConsole_SearchAnalyticsQueryRequest;
+use Google\Site_Kit_Dependencies\Google\Service\SearchConsole\ApiDimensionFilter as Google_Service_SearchConsole_ApiDimensionFilter;
+use Google\Site_Kit_Dependencies\Google\Service\SearchConsole\ApiDimensionFilterGroup as Google_Service_SearchConsole_ApiDimensionFilterGroup;
 use Google\Site_Kit_Dependencies\Psr\Http\Message\ResponseInterface;
 use Google\Site_Kit_Dependencies\Psr\Http\Message\RequestInterface;
 use WP_Error;
+use Exception;
 
 /**
  * Class representing the Search Console module.
@@ -49,9 +55,18 @@ use WP_Error;
  * @access private
  * @ignore
  */
-final class Search_Console extends Module
-	implements Module_With_Screen, Module_With_Scopes, Module_With_Settings, Module_With_Assets, Module_With_Debug_Fields, Module_With_Owner {
-	use Module_With_Screen_Trait, Module_With_Scopes_Trait, Module_With_Settings_Trait, Google_URL_Matcher_Trait, Module_With_Assets_Trait, Module_With_Owner_Trait;
+final class Search_Console extends Module implements Module_With_Scopes, Module_With_Settings, Module_With_Assets, Module_With_Debug_Fields, Module_With_Owner, Module_With_Service_Entity, Module_With_Data_Available_State {
+	use Module_With_Scopes_Trait;
+	use Module_With_Settings_Trait;
+	use Google_URL_Matcher_Trait;
+	use Module_With_Assets_Trait;
+	use Module_With_Owner_Trait;
+	use Module_With_Data_Available_State_Trait;
+
+	/**
+	 * Module slug name.
+	 */
+	const MODULE_SLUG = 'search-console';
 
 	/**
 	 * Registers functionality through WordPress hooks.
@@ -61,18 +76,19 @@ final class Search_Console extends Module
 	public function register() {
 		$this->register_scopes_hook();
 
-		$this->register_screen_hook();
-
 		// Detect and store Search Console property when receiving token for the first time.
 		add_action(
 			'googlesitekit_authorize_user',
-			function( array $token_response ) {
+			function ( array $token_response ) {
 				if ( ! current_user_can( Permissions::SETUP ) ) {
 					return;
 				}
 
 				// If the response includes the Search Console property, set that.
-				if ( ! empty( $token_response['search_console_property'] ) ) {
+				// But only if it is being set for the first time or if Search Console
+				// has no owner or the current user is the owner.
+				if ( ! empty( $token_response['search_console_property'] ) &&
+				( empty( $this->get_property_id() ) || ( in_array( $this->get_owner_id(), array( 0, get_current_user_id() ), true ) ) ) ) {
 					$this->get_settings()->merge(
 						array( 'propertyID' => $token_response['search_console_property'] )
 					);
@@ -91,10 +107,23 @@ final class Search_Console extends Module
 			}
 		);
 
+		// Ensure that the data available state is reset when the property changes.
+		$this->get_settings()->on_change(
+			function ( $old_value, $new_value ) {
+				if (
+					is_array( $old_value ) &&
+					is_array( $new_value ) &&
+					isset( array_diff_assoc( $new_value, $old_value )['propertyID'] )
+				) {
+					$this->reset_data_available();
+				}
+			}
+		);
+
 		// Ensure that a Search Console property must be set at all times.
 		add_filter(
 			'googlesitekit_setup_complete',
-			function( $complete ) {
+			function ( $complete ) {
 				if ( ! $complete ) {
 					return $complete;
 				}
@@ -138,7 +167,7 @@ final class Search_Console extends Module
 	public function get_debug_fields() {
 		return array(
 			'search_console_property' => array(
-				'label' => __( 'Search Console property', 'google-site-kit' ),
+				'label' => __( 'Search Console: Property', 'google-site-kit' ),
 				'value' => $this->get_property_id(),
 			),
 		);
@@ -153,10 +182,36 @@ final class Search_Console extends Module
 	 */
 	protected function get_datapoint_definitions() {
 		return array(
-			'GET:matched-sites'   => array( 'service' => 'searchconsole' ),
-			'GET:searchanalytics' => array( 'service' => 'searchconsole' ),
-			'POST:site'           => array( 'service' => 'searchconsole' ),
-			'GET:sites'           => array( 'service' => 'searchconsole' ),
+			'GET:matched-sites'          => array( 'service' => 'searchconsole' ),
+			'GET:searchanalytics'        => new SearchAnalytics(
+				array(
+					'service'        => 'searchconsole',
+					'shareable'      => true,
+					'prepare_args'   => function ( array $request_data ) {
+						return $this->prepare_search_analytics_request_args( $request_data );
+					},
+					'create_request' => function ( array $args ) {
+						return $this->create_search_analytics_data_request( $args );
+					},
+				)
+			),
+			'POST:searchanalytics-batch' => new SearchAnalyticsBatch(
+				array(
+					'service'        => 'searchconsole',
+					'shareable'      => true,
+					'get_service'    => function () {
+						return $this->get_searchconsole_service();
+					},
+					'prepare_args'   => function ( array $request_data ) {
+						return $this->prepare_search_analytics_request_args( $request_data );
+					},
+					'create_request' => function ( array $args ) {
+						return $this->create_search_analytics_data_request( $args );
+					},
+				)
+			),
+			'POST:site'                  => array( 'service' => 'searchconsole' ),
+			'GET:sites'                  => array( 'service' => 'searchconsole' ),
 		);
 	}
 
@@ -174,36 +229,6 @@ final class Search_Console extends Module
 		switch ( "{$data->method}:{$data->datapoint}" ) {
 			case 'GET:matched-sites':
 				return $this->get_searchconsole_service()->sites->listSites();
-			case 'GET:searchanalytics':
-				$start_date = $data['startDate'];
-				$end_date   = $data['endDate'];
-				if ( ! strtotime( $start_date ) || ! strtotime( $end_date ) ) {
-					list ( $start_date, $end_date ) = $this->parse_date_range(
-						$data['dateRange'] ?: 'last-28-days',
-						$data['compareDateRanges'] ? 2 : 1,
-						1 // Offset.
-					);
-				}
-
-				$data_request = array(
-					'start_date' => $start_date,
-					'end_date'   => $end_date,
-				);
-
-				if ( ! empty( $data['url'] ) ) {
-					$data_request['page'] = ( new Google_URL_Normalizer() )->normalize_url( $data['url'] );
-				}
-
-				if ( isset( $data['limit'] ) ) {
-					$data_request['row_limit'] = $data['limit'];
-				}
-
-				$dimensions = $this->parse_string_list( $data['dimensions'] );
-				if ( is_array( $dimensions ) && ! empty( $dimensions ) ) {
-					$data_request['dimensions'] = $dimensions;
-				}
-
-				return $this->create_search_analytics_data_request( $data_request );
 			case 'POST:site':
 				if ( empty( $data['siteURL'] ) ) {
 					return new WP_Error(
@@ -275,9 +300,11 @@ final class Search_Console extends Module
 		switch ( "{$data->method}:{$data->datapoint}" ) {
 			case 'GET:matched-sites':
 				/* @var Google_Service_SearchConsole_SitesListResponse $response Response object. */
-				$entries = $this->map_sites( (array) $response->getSiteEntry() );
-				$strict  = filter_var( $data['strict'], FILTER_VALIDATE_BOOLEAN );
-
+				$entries     = Sort::case_insensitive_list_sort(
+					$this->map_sites( (array) $response->getSiteEntry() ),
+					'siteURL' // Must match the mapped value.
+				);
+				$strict      = filter_var( $data['strict'], FILTER_VALIDATE_BOOLEAN );
 				$current_url = $this->context->get_reference_site_url();
 				if ( ! $strict ) {
 					$current_url = untrailingslashit( $current_url );
@@ -310,14 +337,53 @@ final class Search_Console extends Module
 						}
 					)
 				);
-			case 'GET:searchanalytics':
-				return $response->getRows();
 			case 'GET:sites':
 				/* @var Google_Service_SearchConsole_SitesListResponse $response Response object. */
 				return $this->map_sites( (array) $response->getSiteEntry() );
 		}
 
 		return parent::parse_data_response( $data, $response );
+	}
+
+	/**
+	 * Prepares Search Console analytics request arguments from request data.
+	 *
+	 * @since 1.170.0
+	 *
+	 * @param array $data_request Request data parameters.
+	 * @return array Parsed request arguments.
+	 */
+	protected function prepare_search_analytics_request_args( array $data_request ) {
+		$start_date = isset( $data_request['startDate'] ) ? $data_request['startDate'] : '';
+		$end_date   = isset( $data_request['endDate'] ) ? $data_request['endDate'] : '';
+
+		if ( ! strtotime( $start_date ) || ! strtotime( $end_date ) ) {
+			list ( $start_date, $end_date ) = Date::parse_date_range( 'last-28-days', 1, 1 );
+		}
+
+		$parsed_request = array(
+			'start_date' => $start_date,
+			'end_date'   => $end_date,
+		);
+
+		if ( ! empty( $data_request['url'] ) ) {
+			$parsed_request['page'] = ( new Google_URL_Normalizer() )->normalize_url( $data_request['url'] );
+		}
+
+		if ( isset( $data_request['rowLimit'] ) ) {
+			$parsed_request['row_limit'] = $data_request['rowLimit'];
+		}
+
+		if ( isset( $data_request['limit'] ) ) {
+			$parsed_request['row_limit'] = $data_request['limit'];
+		}
+
+		$dimensions = $this->parse_string_list( isset( $data_request['dimensions'] ) ? $data_request['dimensions'] : array() );
+		if ( is_array( $dimensions ) && ! empty( $dimensions ) ) {
+			$parsed_request['dimensions'] = $dimensions;
+		}
+
+		return $parsed_request;
 	}
 
 	/**
@@ -452,7 +518,7 @@ final class Search_Console extends Module
 		if ( count( $properties ) > 1 ) {
 			$url_properties = array_filter(
 				$properties,
-				function( $property ) {
+				function ( $property ) {
 					return 0 !== strpos( $property['siteURL'], 'sc-domain:' );
 				}
 			);
@@ -474,12 +540,11 @@ final class Search_Console extends Module
 	 */
 	protected function setup_info() {
 		return array(
-			'slug'         => 'search-console',
-			'name'         => _x( 'Search Console', 'Service name', 'google-site-kit' ),
-			'description'  => __( 'Google Search Console and helps you understand how Google views your site and optimize its performance in search results.', 'google-site-kit' ),
-			'order'        => 1,
-			'homepage'     => __( 'https://search.google.com/search-console', 'google-site-kit' ),
-			'force_active' => true,
+			'slug'        => 'search-console',
+			'name'        => _x( 'Search Console', 'Service name', 'google-site-kit' ),
+			'description' => __( 'Google Search Console and helps you understand how Google views your site and optimize its performance in search results.', 'google-site-kit' ),
+			'order'       => 1,
+			'homepage'    => __( 'https://search.google.com/search-console', 'google-site-kit' ),
 		);
 	}
 
@@ -543,12 +608,50 @@ final class Search_Console extends Module
 						'googlesitekit-vendor',
 						'googlesitekit-api',
 						'googlesitekit-data',
+						'googlesitekit-datastore-user',
 						'googlesitekit-modules',
-						'googlesitekit-google-charts',
+						'googlesitekit-components',
+						'googlesitekit-modules-data',
 					),
 				)
 			),
 		);
 	}
 
+	/**
+	 * Returns TRUE to indicate that this module should be always active.
+	 *
+	 * @since 1.49.0
+	 *
+	 * @return bool Returns `true` indicating that this module should be activated all the time.
+	 */
+	public static function is_force_active() {
+		return true;
+	}
+
+	/**
+	 * Checks if the current user has access to the current configured service entity.
+	 *
+	 * @since 1.70.0
+	 *
+	 * @return boolean|WP_Error
+	 */
+	public function check_service_entity_access() {
+		$data_request = array(
+			'start_date' => gmdate( 'Y-m-d' ),
+			'end_date'   => gmdate( 'Y-m-d' ),
+			'row_limit'  => 1,
+		);
+
+		try {
+			$this->create_search_analytics_data_request( $data_request );
+		} catch ( Exception $e ) {
+			if ( $e->getCode() === 403 ) {
+				return false;
+			}
+			return $this->exception_to_error( $e );
+		}
+
+		return true;
+	}
 }

@@ -45,15 +45,14 @@ var jQuery;
 				});
 
 				// On [enter] submit the taxonomy.
-				$( '#new' + taxonomy, context ).keypress( function(event){
+				$( '#new' + taxonomy, context ).on( 'keypress', function(event){
 					if( 13 === event.keyCode ) {
 						event.preventDefault();
-						$( '#' + taxonomy + '-add-submit', context ).click();
-					}
+						$( '#' + taxonomy + '-add-submit', context ).trigger('click');					}
 				});
 
 				// After submitting a new taxonomy, re-focus the input field.
-				$( '#' + taxonomy + '-add-submit', context ).click( function() {
+				$( '#' + taxonomy + '-add-submit', context ).on( 'click', function() {
 					$( '#new' + taxonomy, context ).focus();
 				});
 
@@ -105,8 +104,7 @@ var jQuery;
 				$( '#' + taxonomy + 'checklist', context ).mlaList({
 					alt: '',
 					context: context,
-					// response: taxonomy + '-ajax-response',
-					response: 'add-term-ajax-response',
+					response: 'ajax-response',
 					addBefore: catAddBefore,
 					addAfter: catAddAfter
 				});
@@ -114,7 +112,7 @@ var jQuery;
 				$( '#' + taxonomy + '-add-toggle', context ).off();
 
 				// Add new taxonomy button toggles input form visibility.
-				$( '#' + taxonomy + '-add-toggle', context ).click( function( e ) {
+				$( '#' + taxonomy + '-add-toggle', context ).on( 'click', function( e ) {
 					e.preventDefault();
 					$( '#' + taxonomy + '-adder', context ).toggleClass( 'wp-hidden-children' );
 					$( '#new' + taxonomy, context ).focus();
@@ -314,7 +312,7 @@ var jQuery;
 				target:  list.get( 0 )
 			}, settings || {} );
 
-			if ( $.isFunction( settings.confirm ) ) {
+			if ( typeof settings.confirm === 'function' ) {
 				$element = $( '#' + settings.element, mla.mlaList.settings.context );
 
 				if ( 'add' !== action ) {
@@ -379,14 +377,15 @@ var jQuery;
 				action:      settings.action
 			}, wpAjax.unserialize( data[4] || '' ) ) );
 
+			settings.data += '&mla_source=add-flat-checklist-term';
 			formValues = $( '#' + settings.element + ' :input', mla.mlaList.settings.context ).not( '[name="_ajax_nonce"], [name="_wpnonce"], [name="action"]' );
-			formData   = $.isFunction( formValues.fieldSerialize ) ? formValues.fieldSerialize() : formValues.serialize();
+			formData   = typeof formValues.fieldSerialize === 'function' ? formValues.fieldSerialize() : formValues.serialize();
 
 			if ( formData ) {
 				settings.data += '&' + formData;
 			}
 
-			if ( $.isFunction( settings.addBefore ) ) {
+			if ( typeof settings.addBefore === 'function' ) {
 				settings = settings.addBefore( settings );
 
 				if ( ! settings ) {
@@ -399,9 +398,7 @@ var jQuery;
 			}
 
 			settings.success = function( response ) {
-				var contextId = mla.mlaList.settings.context.selector.substring(1);
-
-				parsedResponse   = wpAjax.parseAjaxResponse( response, contextId + ' #' + settings.response, settings.element );
+				parsedResponse   = wpAjax.parseAjaxResponse( response, settings.response, settings.element );
 				returnedResponse = response;
 
 				if ( ! parsedResponse || parsedResponse.errors ) {
@@ -428,7 +425,7 @@ var jQuery;
 
 			// The addAfter function uses the supplemental data to update the "Parent Term" dropdown ontrol
 			settings.complete = function( jqXHR, status ) {
-				if ( $.isFunction( settings.addAfter ) ) {
+				if ( typeof settings.addAfter === 'function' ) {
 					settings.addAfter( returnedResponse, $.extend( {
 						xml:    jqXHR,
 						status: status,
@@ -463,7 +460,7 @@ var jQuery;
 			$( '.edit-fields-div' ).each( function() {
 				var $thisDiv = $( this ),
 					thisId = $thisDiv.attr( 'id' ),
-					targetId = settings.context.selector.substring(1),
+					targetId = settings.element,
 					$checklist, $element, old, position, reference;
 
 				if ( targetId !== thisId ) {

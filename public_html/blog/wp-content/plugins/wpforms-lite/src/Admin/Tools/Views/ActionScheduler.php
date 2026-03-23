@@ -2,6 +2,8 @@
 
 namespace WPForms\Admin\Tools\Views;
 
+use ActionScheduler_AdminView;
+
 /**
  * Class ActionScheduler view.
  *
@@ -26,8 +28,25 @@ class ActionScheduler extends View {
 	public function init() {
 
 		if ( $this->admin_view_exists() ) {
-			\ActionScheduler_AdminView::instance()->process_admin_ui();
+			ActionScheduler_AdminView::instance()->process_admin_ui();
 		}
+	}
+
+	/**
+	 * Get link to the view.
+	 *
+	 * @since 1.6.9
+	 *
+	 * @return string
+	 */
+	public function get_link() {
+
+		return add_query_arg(
+			[
+				's' => 'wpforms',
+			],
+			parent::get_link()
+		);
 	}
 
 	/**
@@ -61,9 +80,11 @@ class ActionScheduler extends View {
 	 */
 	public function display() {
 
-		if ( $this->admin_view_exists() ) {
-			\ActionScheduler_AdminView::instance()->render_admin_ui();
+		if ( ! $this->admin_view_exists() ) {
+			return;
 		}
+
+		( new ActionSchedulerList() )->display_page();
 	}
 
 	/**

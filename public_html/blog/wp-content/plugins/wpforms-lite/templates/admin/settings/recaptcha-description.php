@@ -1,4 +1,15 @@
-<p><?php esc_html_e( 'reCAPTCHA is a free anti-spam service from Google which helps to protect your website from spam and abuse while letting real people pass through with ease.', 'wpforms-lite' ); ?></p>
+<?php
+/**
+ * Description template for reCAPTCHA.
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+?>
+
+<p class="wpforms-strong"><?php esc_html_e( 'reCAPTCHA is a free anti-spam service from Google which helps to protect your website from spam and abuse while letting real people pass through with ease.', 'wpforms-lite' ); ?></p>
 <p><?php esc_html_e( 'Google offers 3 versions of reCAPTCHA (all supported within WPForms):', 'wpforms-lite' ); ?></p>
 <ul style="list-style: disc;margin-left: 20px;">
 	<li>
@@ -40,7 +51,7 @@
 				],
 			]
 		),
-		'http://wpforms.com/docs/how-to-set-up-and-use-recaptcha-in-wpforms/'
+		esc_url( wpforms_utm_link( 'https://wpforms.com/docs/how-to-set-up-and-use-recaptcha-in-wpforms/', 'Settings - Captcha', 'reCAPTCHA Documentation' ) )
 	);
 	?>
 </p>

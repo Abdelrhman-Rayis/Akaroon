@@ -36,11 +36,49 @@
     }
   }
 
+  function fetch_js_data() {
+    global $fb3d;
+    $posts = client_posts_in($fb3d['jsData']['posts']['ids_mis'], $fb3d['jsData']['posts']['ids']);
+    $fb3d['jsData']['posts']['ids_mis'] = [];
+    $fb3d['jsData']['posts']['ids'] = [];
+
+    $pages = client_posts_in_pages($fb3d['jsData']['pages']);
+    $fb3d['jsData']['pages'] = [];
+
+    $firstPages = client_posts_in_first_page($fb3d['jsData']['firstPages']);
+    $fb3d['jsData']['firstPages'] = [];
+
+    $jsData = [
+      'posts'=> [],
+      'pages'=> [],
+      'firstPages'=> []
+    ];
+
+    foreach ($posts as $post) {
+      $jsData['posts'][$post['ID']] = $post;
+    }
+
+    foreach ($pages as $page) {
+      if(!isset($jsData['pages'][$page['page_post_ID']])) {
+        $jsData['pages'][$page['page_post_ID']] = [];
+      }
+      array_push($jsData['pages'][$page['page_post_ID']], $page);
+    }
+
+    foreach ($firstPages as $page) {
+      $jsData['firstPages'][$page['page_post_ID']] = $page;
+    }
+
+    return $jsData;
+  }
+
   function load_js_data($a) {
     global $fb3d;
+    $jsData = null;
 
-    if($a['mode']!=='thumbnail' && !isset($fb3d['jsData']['bookCtrlProps'])) {
-      $fb3d['jsData']['bookCtrlProps'] = client_book_control_props();
+    if($a['mode']!=='thumbnail') {
+      client_book_control_props();
+      get_book_templates();
     }
 
     if($a['id']!=='0') {
@@ -52,6 +90,8 @@
       else {
         array_push($fb3d['jsData']['firstPages'], $a['id']);
       }
+
+      $jsData = fetch_js_data();
     }
 
     if($a['mode']!=='thumbnail') {
@@ -70,59 +110,28 @@
       }
 
       if($a['lightbox']==='default') {
-        $a['lightbox'] = aa(aa($fb3d['jsData']['bookCtrlProps'], 'lightbox'), 'default', 'dark');
+        $a['lightbox'] = aa(aa($fb3d['jsData']['bookCtrlProps'], 'lightbox'), 'default', 'auto');
         if($a['lightbox']==='auto') {
-          $a['lightbox'] = 'dark';
+          $a['lightbox'] = 'dark-shadow';
         }
-      }
-      $template = $fb3d['templates'][$template];
-      fetch_url_to_js_data($template['html']);
-      fetch_url_to_js_data($template['script']);
-      foreach($template['styles'] as $style) {
-        fetch_url_to_js_data($style);
       }
     }
 
-    return $a;
+    return ['atts'=> $a, 'jsData'=> $jsData];
   }
 
-  function enqueue_client_scripts() {
-    global $fb3d;
-    if(isset($fb3d['load_client_scripts']) && !isset($fb3d['enqueued_client_scripts'])) {
-      $fb3d['enqueued_client_scripts'] = TRUE;
-
-      $posts = client_posts_in($fb3d['jsData']['posts']['ids_mis'], $fb3d['jsData']['posts']['ids']);
-      $fb3d['jsData']['posts'] = [];
-      foreach ($posts as $post) {
-        $fb3d['jsData']['posts'][$post['ID']] = $post;
-      }
-
-      $pages = client_posts_in_pages($fb3d['jsData']['pages']);
-      $fb3d['jsData']['pages'] = [];
-      foreach ($pages as $page) {
-        if(!isset($fb3d['jsData']['pages'][$page['page_post_ID']])) {
-          $fb3d['jsData']['pages'][$page['page_post_ID']] = [];
-        }
-        array_push($fb3d['jsData']['pages'][$page['page_post_ID']], $page);
-      }
-
-      $pages = client_posts_in_first_page($fb3d['jsData']['firstPages']);
-      $fb3d['jsData']['firstPages'] = [];
-      foreach ($pages as $page) {
-        $fb3d['jsData']['firstPages'][$page['page_post_ID']] = $page;
-      }
-
+  function enqueue_client_locale_loader() {
       register_scripts_and_styles();
-      wp_enqueue_style(POST_ID.'-client');
-      wp_enqueue_script(POST_ID.'-client');
-    }
+      wp_enqueue_script(POST_ID.'-client-locale-loader');
   }
 
-  add_action('wp_footer', '\iberezansky\fb3d\enqueue_client_scripts');
+  add_action('wp_enqueue_scripts', '\iberezansky\fb3d\enqueue_client_locale_loader');
+
+  function to_single_quotes($s) {
+    return str_replace('"', '\'', $s);
+  }
 
   function shortcode_handler($atts, $content='') {
-    global $fb3d;
-    $fb3d['load_client_scripts'] = TRUE;
     $atts = shortcode_atts([
       'id'=> '0',
       'mode'=> 'fullscreen',
@@ -137,7 +146,9 @@
       'thumbnail'=> '',
       'cols'=> '3',
       'style'=> '',
-      'query'=> ''
+      'query'=> '',
+      'book-template'=> 'default',
+      'trigger'=> ''
     ], $atts);
 
     if($atts['tax']==='null') {
@@ -151,37 +162,45 @@
       }
       $classes = implode(' ', $classes);
 
-      $atts = load_js_data($atts);
+      $r = load_js_data($atts);
+      $atts = $r['atts'];
+      $jsData = $r['jsData'];
 
-      $r = sprintf('<%s class="%s %s"', $is_link? 'a href="#"': 'div', '_'.POST_ID, $classes);
+      $r = sprintf('<%s class="%s %s"', $is_link? 'a ': 'div', '_'.POST_ID, esc_attr($classes));
       foreach($atts as $k=> $v) {
-        if($k!=='classes' && $k!=='style') {
-          $r .= sprintf(' data-%s="%s"', $k, $v);
+        if($k!=='classes' && $k!=='style' && $k!=='query') {
+          $r .= sprintf(' data-%s="%s"', $k, esc_attr($v));
         }
       }
       if($atts['style']!=='') {
-        $r .= sprintf(' style="%s"', $atts['style']);
+        $r .= sprintf(' style="%s"', esc_attr($atts['style']));
       }
 
-      $res = $is_link? $r.'>'.$content.'</a>' :$r.'></div>'.$content;
+      $res = ($is_link? $r.'>'.$content.'</a>' :$r.'></div>'.$content).($jsData? implode([
+      '<script type="text/javascript">',
+        'window.FB3D_CLIENT_DATA = window.FB3D_CLIENT_DATA || [];',
+        'FB3D_CLIENT_DATA.push(\''.base64_encode(json_encode($jsData)).'\');',
+        'window.FB3D_CLIENT_LOCALE && FB3D_CLIENT_LOCALE.render && FB3D_CLIENT_LOCALE.render();',
+      '</script>']): '');
     }
     else {
-      $params = array('post_type'=> '3d-flip-book', 'posts_per_page'=>-1);
+      $params = ['posts_per_page'=>-1];
   		if($atts['tax']!=='') {
         if(substr($atts['tax'], 0, 1)==='{') {
-          $params['tax_query'] = json_decode(str_replace("'", '"', $atts['tax']), true);
+          $params['tax_query'] = convert_query_to_array($atts['tax']);
         }
   			else {
           $params['tax_query'] = convert_tax_to_tax_query($atts['tax']);
         }
   		}
-      $q_params = array_merge($params, convert_query_to_array($atts['query']));
+      $q_params = array_merge($params, convert_query_to_array($atts['query']), ['post_type'=> POST_ID]);
   		$q = new WP_Query($q_params);
   		$params = $atts;
   		$cols = intval($atts['cols']);
   		unset($params['tax']);
+      unset($params['style']);
       ob_start();
-  		echo('<table data-query="'.str_replace('"', '\'', json_encode($q_params)).'"><tr>');
+  		echo('<table class="fb3d-categories" data-query="'.esc_attr(to_single_quotes(json_encode($q_params))).'" data-raw-query="'.esc_attr(to_single_quotes($atts['query'])).'" style="'.esc_attr($atts['style']).'"><tr>');
   		for($i=0; $i<$q->post_count; ++$i) {
   			if($i%$cols===0 && $i) {
   				echo('</tr><tr>');

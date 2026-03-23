@@ -39,15 +39,38 @@ class MLASettings_IPTCEXIF {
 		}
 
 		if ( $wp_locale->is_rtl() ) {
-			wp_register_style( MLACore::STYLESHEET_SLUG, MLA_PLUGIN_URL . 'css/mla-style-rtl.css', false, MLACore::CURRENT_MLA_VERSION );
+			wp_register_style( MLACore::STYLESHEET_SLUG, MLA_PLUGIN_URL . 'css/mla-style-rtl.css', false, MLACore::mla_script_version() );
 		} else {
-			wp_register_style( MLACore::STYLESHEET_SLUG, MLA_PLUGIN_URL . 'css/mla-style.css', false, MLACore::CURRENT_MLA_VERSION );
+			wp_register_style( MLACore::STYLESHEET_SLUG, MLA_PLUGIN_URL . 'css/mla-style.css', false, MLACore::mla_script_version() );
 		}
 
 		wp_enqueue_style( MLACore::STYLESHEET_SLUG );
 
 		$use_spinner_class = version_compare( get_bloginfo( 'version' ), '4.2', '>=' );
 		$suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
+
+		// Compute totalItems that will match the mapping query
+		$query = array (
+			'orderby' => 'none',
+			'post_parent' => 'all',
+			'post_mime_type' => 'image,application/*pdf*',
+			'cache_results' => false,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'post_type' => 'attachment',
+			'post_status' => 'inherit',
+			'posts_per_page' => 1,
+			'fields' =>  'ids',
+		);
+
+		$posts = MLAShortcodes::mla_get_shortcode_attachments( 0, $query, true );
+		MLACore::mla_debug_add( __LINE__ . " MLASettings_IPTCEXIF::mla_admin_enqueue_scripts \$posts = " . var_export( $posts, true ), MLACore::MLA_DEBUG_CATEGORY_METADATA );
+
+		if ( isset( $posts['found_rows'] ) ) {
+			$total_items = $posts['found_rows'];
+		} else {
+			$total_items = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE `post_type` = 'attachment' AND `post_status` = 'inherit' AND ( `post_mime_type` LIKE 'image/%' OR `post_mime_type` LIKE 'application/%pdf%' )" ); // phpcs:ignore
+		}
 
 		// Initialize variables for mapping scripts
 		$script_variables = array(
@@ -56,7 +79,7 @@ class MLASettings_IPTCEXIF {
 			'notitle' => '(' . __( 'no slug', 'media-library-assistant' ) . ')',
 			'comma' => _x( ',', 'tag_delimiter', 'media-library-assistant' ),
 			'useSpinnerClass' => $use_spinner_class,
-			'ajax_nonce' => wp_create_nonce( MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME ),
+			'ajax_nonce' => wp_create_nonce( MLASettings::JAVASCRIPT_INLINE_MAPPING_IPTC_EXIF_SLUG, MLACore::MLA_ADMIN_NONCE_NAME ),
 			'bulkChunkSize' => MLACore::mla_get_option( MLACoreOptions::MLA_BULK_CHUNK_SIZE ),
 			'bulkWaiting' => __( 'Waiting', 'media-library-assistant' ),
 			'bulkRunning' => __( 'Running', 'media-library-assistant' ),
@@ -72,12 +95,13 @@ class MLASettings_IPTCEXIF {
 			'screen' => 'settings_page_mla-settings-menu-iptc_exif',
 			'ajax_action' => MLASettings::JAVASCRIPT_INLINE_MAPPING_IPTC_EXIF_SLUG,
 			'fieldsId' => '#mla-display-settings-iptc-exif-tab',
-			'totalItems' => $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE `post_type` = 'attachment' AND ( `post_mime_type` LIKE 'image/%' OR `post_mime_type` LIKE 'application/%pdf%' )" )
+			'totalItems' => $total_items,
 		);
+		MLACore::mla_debug_add( __LINE__ . " MLASettings_IPTCEXIF::mla_admin_enqueue_scripts \$script_variables = " . var_export( $script_variables, true ), MLACore::MLA_DEBUG_CATEGORY_METADATA );
 
 		wp_enqueue_script( MLASettings::JAVASCRIPT_INLINE_MAPPING_IPTC_EXIF_SLUG,
 			MLA_PLUGIN_URL . "js/mla-inline-mapping-scripts{$suffix}.js", 
-			array( 'jquery' ), MLACore::CURRENT_MLA_VERSION, false );
+			array( 'jquery' ), MLACore::mla_script_version(), false );
 
 		wp_localize_script( MLASettings::JAVASCRIPT_INLINE_MAPPING_IPTC_EXIF_SLUG,
 			MLASettings::JAVASCRIPT_INLINE_MAPPING_OBJECT, $script_variables );
@@ -89,7 +113,7 @@ class MLASettings_IPTCEXIF {
 			'notitle' => '(' . __( 'no slug', 'media-library-assistant' ) . ')',
 			'comma' => _x( ',', 'tag_delimiter', 'media-library-assistant' ),
 			'useSpinnerClass' => $use_spinner_class,
-			'ajax_nonce' => wp_create_nonce( MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME ),
+			'ajax_nonce' => wp_create_nonce( MLASettings::JAVASCRIPT_INLINE_EDIT_IPTC_EXIF_SLUG, MLACore::MLA_ADMIN_NONCE_NAME ),
 			'tab' => 'iptc_exif',
 			'fields' => array( 'type', 'name', 'rule_name', 'type', 'iptc_value', 'exif_value', 'iptc_first', 'keep_existing', 'active', 'delimiters', 'parent_options', 'parent', 'format', 'tax_option', 'option' ),
 			'checkboxes' => array( 'no_null' ),
@@ -98,18 +122,16 @@ class MLASettings_IPTCEXIF {
 
 		wp_enqueue_script( MLASettings::JAVASCRIPT_INLINE_EDIT_IPTC_EXIF_SLUG,
 			MLA_PLUGIN_URL . "js/mla-inline-edit-settings-scripts{$suffix}.js", 
-			array( 'wp-lists', 'suggest', 'jquery' ), MLACore::CURRENT_MLA_VERSION, false );
+			array( 'wp-lists', 'suggest', 'jquery' ), MLACore::mla_script_version(), false );
 
 		wp_localize_script( MLASettings::JAVASCRIPT_INLINE_EDIT_IPTC_EXIF_SLUG,
 			self::JAVASCRIPT_INLINE_EDIT_IPTC_EXIF_OBJECT, $script_variables );
 	}
 
 	/**
-	 * Save IPTC/EXIF settings to the options table
+	 * Save IPTC/EXIF/WP settings to the options table
  	 *
 	 * @since 1.00
-	 *
-	 * @uses $_REQUEST
 	 *
 	 * @return	array	Message(s) reflecting the results of the operation
 	 */
@@ -137,9 +159,9 @@ class MLASettings_IPTCEXIF {
 		//$message_list = $option_messages . '<br>';
 
 		if ( $changed ) {
-			$message_list .= __( 'IPTC/EXIF mapping settings updated.', 'media-library-assistant' ) . "\r\n";
+			$message_list .= __( 'IPTC/EXIF/WP mapping settings updated.', 'media-library-assistant' ) . "\r\n";
 		} else {
-			$message_list .= __( 'IPTC/EXIF no mapping changes detected.', 'media-library-assistant' ) . "\r\n";
+			$message_list .= __( 'IPTC/EXIF/WP no mapping changes detected.', 'media-library-assistant' ) . "\r\n";
 		}
 
 		return array( 'message' => $message_list, 'body' => '' );
@@ -176,13 +198,21 @@ class MLASettings_IPTCEXIF {
 			);
 		}
 
-		$query = array( 'orderby' => 'none', 'post_parent' => 'all', 'post_mime_type' => 'image,application/*pdf*' );
+		$query = array(
+			'orderby' => 'none',
+			'post_parent' => 'all',
+			'post_mime_type' => 'image,application/*pdf*',
+			'cache_results' => false,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			);
 
 		if ( $length > 0 ) {
 			$query['numberposts'] = $length;
 			$query['offset'] = $offset;
 		}
 
+		MLACore::mla_debug_add( __LINE__ . " MLASettings_IPTCEXIF::_process_iptc_exif_mapping \$query = " . var_export( $query, true ), MLACore::MLA_DEBUG_CATEGORY_METADATA );
 		do_action( 'mla_begin_mapping', $source, NULL );
 		$posts = MLAShortcodes::mla_get_shortcode_attachments( 0, $query );
 
@@ -221,7 +251,6 @@ class MLASettings_IPTCEXIF {
 	 * Add a IPTC EXIF custom field rule from values in $_REQUEST
  	 *
 	 * @since 2.60
-	 * @uses $_REQUEST for field-level values
 	 *
 	 * @return string Message(s) reflecting the results of the operation
 	 */
@@ -232,11 +261,13 @@ class MLASettings_IPTCEXIF {
 			'key' => '',
 			'rule_name' => '',
 			'name' => '',
+			'description' => '',
 			'hierarchical' => false,
 			'iptc_value' => '',
 			'exif_value' => '',
 			'iptc_first' => false,
 			'keep_existing' => false,
+			'replace_all' => false,
 			'format' => '',
 			'option' => '',
 			'no_null' => false,
@@ -264,10 +295,20 @@ class MLASettings_IPTCEXIF {
 		$new_rule['key'] = $new_name;
 		$new_rule['rule_name'] = $new_name;
 		$new_rule['name'] = $new_name;
+		$new_rule['description'] = sanitize_text_field( isset( $_REQUEST['mla_iptc_exif_rule']['description'] ) ? wp_unslash( $_REQUEST['mla_iptc_exif_rule']['description'] ) : '' );
 		$new_rule['iptc_value'] = sanitize_text_field( isset( $_REQUEST['mla_iptc_exif_rule']['iptc_value'] ) ? wp_unslash( $_REQUEST['mla_iptc_exif_rule']['iptc_value'] ) : 'none' );
 		$new_rule['exif_value'] = wp_kses( isset( $_REQUEST['mla_iptc_exif_rule']['exif_value'] ) ? wp_unslash( $_REQUEST['mla_iptc_exif_rule']['exif_value'] ) : '', 'post' );
 		$new_rule['iptc_first'] = isset( $_REQUEST['mla_iptc_exif_rule']['iptc_first'] ) && '1' === $_REQUEST['mla_iptc_exif_rule']['iptc_first'];
-		$new_rule['keep_existing'] = isset( $_REQUEST['mla_iptc_exif_rule']['keep_existing'] ) && '1' === $_REQUEST['mla_iptc_exif_rule']['keep_existing'];
+
+		if ( isset( $_REQUEST['mla_iptc_exif_rule']['keep_existing'] ) ) {
+			$keep_existing = absint( $_REQUEST['mla_iptc_exif_rule']['keep_existing'] );
+			if ( 2 === $keep_existing ) {
+				$new_rule['replace_all'] = true;
+			} else {
+				$new_rule['keep_existing'] = 1 === $keep_existing;
+			}
+		}
+
 		$new_rule['format'] = sanitize_text_field( isset( $_REQUEST['mla_iptc_exif_rule']['format'] ) ? wp_unslash( $_REQUEST['mla_iptc_exif_rule']['format'] ) : 'native' );
 		$new_rule['option'] = sanitize_text_field( isset( $_REQUEST['mla_iptc_exif_rule']['option'] ) ? wp_unslash( $_REQUEST['mla_iptc_exif_rule']['option'] ) : 'text' );
 		$new_rule['no_null'] = isset( $_REQUEST['mla_iptc_exif_rule']['no_null'] ) && '1' === $_REQUEST['mla_iptc_exif_rule']['no_null'];
@@ -284,7 +325,6 @@ class MLASettings_IPTCEXIF {
 	 * Update a IPTC EXIF rule from full-screen Edit Rule values in $_REQUEST
  	 *
 	 * @since 2.60
-	 * @uses $_REQUEST for field-level values
 	 *
 	 * @param integer $post_id ID value of rule to update
 	 * @param	array	&$template Display templates.
@@ -298,11 +338,13 @@ class MLASettings_IPTCEXIF {
 			'key' => '',
 			'rule_name' => '',
 			'name' => '',
+			'description' => '',
 			'hierarchical' => false,
 			'iptc_value' => '',
 			'exif_value' => '',
 			'iptc_first' => false,
 			'keep_existing' => false,
+			'replace_all' => false,
 			'format' => '',
 			'option' => '',
 			'no_null' => false,
@@ -338,11 +380,21 @@ class MLASettings_IPTCEXIF {
 			$new_rule['key'] = $new_name ? $new_name : sanitize_text_field( isset( $_REQUEST['mla_iptc_exif_rule']['key'] ) ? wp_unslash( $_REQUEST['mla_iptc_exif_rule']['key'] ) : '' );
 			$new_rule['rule_name'] = $new_name ? $new_name : sanitize_text_field( isset( $_REQUEST['mla_iptc_exif_rule']['rule_name'] ) ? wp_unslash( $_REQUEST['mla_iptc_exif_rule']['rule_name'] ) : '' );
 			$new_rule['name'] = $new_name ? $new_name : sanitize_text_field( isset( $_REQUEST['mla_iptc_exif_rule']['name'] ) ? wp_unslash( $_REQUEST['mla_iptc_exif_rule']['name'] ) : '' );
+			$new_rule['description'] = sanitize_text_field( isset( $_REQUEST['mla_iptc_exif_rule']['description'] ) ? wp_unslash( $_REQUEST['mla_iptc_exif_rule']['description'] ) : '' );
 			$new_rule['hierarchical'] = isset( $_REQUEST['mla_iptc_exif_rule']['hierarchical'] ) && '1' === $_REQUEST['mla_iptc_exif_rule']['hierarchical'];
 			$new_rule['iptc_value'] = sanitize_text_field( isset( $_REQUEST['mla_iptc_exif_rule']['iptc_value'] ) ? wp_unslash( $_REQUEST['mla_iptc_exif_rule']['iptc_value'] ) : 'none' );
 			$new_rule['exif_value'] = wp_kses( isset( $_REQUEST['mla_iptc_exif_rule']['exif_value'] ) ? wp_unslash( $_REQUEST['mla_iptc_exif_rule']['exif_value'] ) : '', 'post' );
 			$new_rule['iptc_first'] = isset( $_REQUEST['mla_iptc_exif_rule']['iptc_first'] ) && '1' === $_REQUEST['mla_iptc_exif_rule']['iptc_first'];
-			$new_rule['keep_existing'] = isset( $_REQUEST['mla_iptc_exif_rule']['keep_existing'] ) && '1' === $_REQUEST['mla_iptc_exif_rule']['keep_existing'];
+
+			if ( isset( $_REQUEST['mla_iptc_exif_rule']['keep_existing'] ) ) {
+				$keep_existing = absint( $_REQUEST['mla_iptc_exif_rule']['keep_existing'] );
+				if ( 2 === $keep_existing ) {
+					$new_rule['replace_all'] = true;
+				} else {
+					$new_rule['keep_existing'] = 1 === $keep_existing;
+				}
+			}
+	
 			$new_rule['format'] = sanitize_text_field( isset( $_REQUEST['mla_iptc_exif_rule']['format'] ) ? wp_unslash( $_REQUEST['mla_iptc_exif_rule']['format'] ) : 'native' );
 
 			if ( 'taxonomy' === $new_rule['type'] ) {
@@ -387,19 +439,26 @@ class MLASettings_IPTCEXIF {
 	 */
 	private static function _delete_iptc_exif_rule( $post_id ) {
 		$rule = MLA_IPTC_EXIF_Query::mla_find_iptc_exif_rule( $post_id );
+
 		if ( false === $rule ) {
 			return "ERROR: _delete_iptc_exif_rule( {$post_id} ) rule not found.";
 		}
 
 		MLA_IPTC_EXIF_Query::mla_update_iptc_exif_rule( $post_id, 'deleted', true );
-		return sprintf( __( 'Custom Field Rule "%1$s" deleted.', 'media-library-assistant' ), $rule['rule_name'] );
+
+		if ( 'custom' === $rule['type'] ) {
+			/* translators: 1: rule name */
+			return sprintf( __( 'Custom Field Rule "%1$s" deleted.', 'media-library-assistant' ), $rule['rule_name'] );
+		} else {
+			/* translators: 1: rule name */
+			return sprintf( __( 'Rule "%1$s"; reverted to standard', 'media-library-assistant' ), $rule['rule_name'] );
+		}
 	} // _delete_iptc_exif_rule
 
 	/**
 	 * Update a IPTC EXIF rule from Bulk Edit action values in $_REQUEST
  	 *
 	 * @since 2.60
-	 * @uses $_REQUEST for field-level values
 	 *
 	 * @param integer $post_id ID value of rule to update
 	 * @return string status/error message
@@ -411,42 +470,52 @@ class MLASettings_IPTCEXIF {
 		}
 
 		// Convert dropdown controls to field values
-		$field = sanitize_text_field( isset( $_REQUEST['iptc_first'] ) ? wp_unslash( $_REQUEST['iptc_first'] ) : '-1' );
-		if ( '-1' !== $field ) {
+		$field = intval( isset( $_REQUEST['iptc_first'] ) ? wp_unslash( $_REQUEST['iptc_first'] ) : '-1' );
+		if ( -1 !== $field ) {
 			$rule['iptc_first'] = '1' === $field;
 		}
 
-		$field = sanitize_text_field( isset( $_REQUEST['keep_existing'] ) ? wp_unslash( $_REQUEST['keep_existing'] ) : '-1' );
-		if ( '-1' !== $field ) {
-			$rule['keep_existing'] = '1' === $field;
+		$field = intval( isset( $_REQUEST['keep_existing'] ) ? wp_unslash( $_REQUEST['keep_existing'] ) : '-1' );
+		if ( -1 !== $field ) {
+			if ( 2 === $field ) {
+				$rule['keep_existing'] = false;
+				$rule['replace_all'] = true;
+			} else {
+				$rule['keep_existing'] = 1 === $field;
+				$rule['replace_all'] = false;
+			}
 		}
 
 		$field = sanitize_text_field( isset( $_REQUEST['format'] ) ? wp_unslash( $_REQUEST['format'] ) : '-1' );
 		if ( '-1' !== $field ) {
-			$rule['format'] = $field;
+			if ( in_array( $field, array( 'native', 'commas', 'raw' ) ) ) {
+				$rule['format'] = $field;
+			}
 		}
 
 		$field = sanitize_text_field( isset( $_REQUEST['option'] ) ? wp_unslash( $_REQUEST['option'] ) : '-1' );
 		if ( '-1' !== $field ) {
-			// Only custom and taxonomy types use this value
-			if ( 'custom' === $rule['type'] ) {
-				$rule['option'] = $field;
-			} elseif ( 'taxonomy' === $rule['type'] ) {
-				// Taxonomy rules have limited options; array or text
-				if ( ( 'array' === $field ) || ( 'text' === $field ) ) {
+			if ( in_array( $field, array( 'text', 'single', 'export', 'array', 'multi' ) ) ) {
+				// Only custom and taxonomy types use this value
+				if ( 'custom' === $rule['type'] ) {
 					$rule['option'] = $field;
+				} elseif ( 'taxonomy' === $rule['type'] ) {
+					// Taxonomy rules have limited options; array or text
+					if ( ( 'array' === $field ) || ( 'text' === $field ) ) {
+						$rule['option'] = $field;
+					}
 				}
 			}
 		}
 
-		$field = sanitize_text_field( isset( $_REQUEST['no_null'] ) ? wp_unslash( $_REQUEST['no_null'] ) : '-1' );
-		if ( '-1' !== $field ) {
-			$rule['no_null'] = '1' === $field;
+		$field = intval( isset( $_REQUEST['no_null'] ) ? wp_unslash( $_REQUEST['no_null'] ) : '-1' );
+		if ( -1 !== $field ) {
+			$rule['no_null'] = 1 === $field;
 		}
 
-		$field = sanitize_text_field( isset( $_REQUEST['active'] ) ? wp_unslash( $_REQUEST['active'] ) : '-1' );
-		if ( '-1' !== $field ) {
-			$rule['active'] = '1' === $field;
+		$field = intval( isset( $_REQUEST['active'] ) ? wp_unslash( $_REQUEST['active'] ) : '-1' );
+		if ( -1 !== $field ) {
+			$rule['active'] = 1 === $field;
 		}
 
 		$rule['changed'] = true;
@@ -494,6 +563,10 @@ class MLASettings_IPTCEXIF {
 			'Cancel Name Change' => __( 'Cancel Name Change', 'media-library-assistant' ),
 			'Enter new field' => __( 'Enter new field', 'media-library-assistant' ),
 			'Cancel new field' => __( 'Cancel new field', 'media-library-assistant' ),
+			'Description' => __( 'Description', 'media-library-assistant' ),
+			'description' => $item['description'],
+			'description_rows' => 3,
+			'description_help' => __( 'Notes for the IPTC/EXIF/WP tab submenu table.', 'media-library-assistant' ),
 			'IPTC Value' => __( 'IPTC Value', 'media-library-assistant' ),
 			'iptc_field_options' => MLAOptions::mla_compose_iptc_option_list( $item['iptc_value'] ),
 			'EXIF/Template Value' => __( 'EXIF/Template Value', 'media-library-assistant' ),
@@ -510,6 +583,8 @@ class MLASettings_IPTCEXIF {
 			'Keep' => __( 'Keep', 'media-library-assistant' ),
 			'replace_selected' => '', // Set below
 			'Replace' => __( 'Replace', 'media-library-assistant' ),
+			'replace_all_selected' => '', // Set below
+			'Replace All' => __( 'Replace All', 'media-library-assistant' ),
 			// Taxonomy values
 			'taxonomy_class' => 'hidden', // Set below
 			'Delimiters' => __( 'Delimiters', 'media-library-assistant' ),
@@ -561,6 +636,8 @@ class MLASettings_IPTCEXIF {
 
 		if ( $item['keep_existing'] ) {
 			$page_values['keep_selected'] = 'selected="selected"';
+		} elseif ( $item['replace_all'] ) {
+			$page_values['replace_all_selected'] = 'selected="selected"';
 		} else {
 			$page_values['replace_selected'] = 'selected="selected"';
 		}
@@ -627,6 +704,7 @@ class MLASettings_IPTCEXIF {
 				if ( $item['no_null'] ) {
 					$page_values['no_null'] = 'checked="checked"';
 				}
+
 				break;
 			default:
 				$page_values['Edit Rule'] .= '(unknown type)';
@@ -657,6 +735,7 @@ class MLASettings_IPTCEXIF {
 				$result = MLASettings::mla_delete_custom_field( $rule );
 			}
 
+			/* translators: 1: rule name */
 			$message .=  sprintf( __( 'Custom Field Rule "%1$s": %2$s', 'media-library-assistant' ), $rule['name'], $result );
 		}
 
@@ -708,6 +787,7 @@ class MLASettings_IPTCEXIF {
 				if ( isset( $_REQUEST['cb_mla_item_ID'] ) ) {
 					$post_ids = !empty( $_REQUEST['cb_mla_item_ID'] ) ? array_map( 'absint', stripslashes_deep( $_REQUEST['cb_mla_item_ID'] ) ) : array();
 					if ( 'execute' === $bulk_action ) {
+						/* translators: 1: bulk action value */
 						$page_content['message'] = sprintf( __( 'Unknown bulk action %1$s', 'media-library-assistant' ), $bulk_action );
 					} elseif ( 'purge' === $bulk_action ) {
 						$page_content['message'] = MLASettings_IPTCEXIF::_purge_custom_field_values( $post_ids );
@@ -760,6 +840,7 @@ class MLASettings_IPTCEXIF {
 					MLA_IPTC_EXIF_Query::mla_put_iptc_exif_rules();
 					break;
 				default:
+					/* translators: 1: admin action value */
 					$page_content['message'] = sprintf( __( 'Unknown mla_admin_action - "%1$s"', 'media-library-assistant' ), sanitize_text_field( wp_unslash( $_REQUEST['mla_admin_action'] ) ) );
 					break;
 			} // switch ($_REQUEST['mla_admin_action'])
@@ -780,7 +861,7 @@ class MLASettings_IPTCEXIF {
 			}
 
 			$page_values = array(
-				'Support is disabled' => __( 'IPTC/EXIF Mapping Support is disabled', 'media-library-assistant' ),
+				'Support is disabled' => __( 'IPTC/EXIF/WP Mapping Support is disabled', 'media-library-assistant' ),
 				'form_url' => admin_url( 'options-general.php' ) . '?page=mla-settings-menu-iptc_exif&mla_tab=iptc_exif',
 				'options_list' => $options_list,
 				'Save Changes' => __( 'Save Changes', 'media-library-assistant' ),
@@ -869,7 +950,7 @@ class MLASettings_IPTCEXIF {
 			'mla-progress-div' => $progress_div,
 			'IPTC EXIF Options' => __( 'IPTC &amp; EXIF Processing Options', 'media-library-assistant' ),
 			/* translators: 1: Documentation hyperlink */
-			'In this tab' => __( 'In this tab you can define the rules for mapping IPTC (International Press Telecommunications Council) and EXIF (EXchangeable Image File) metadata to WordPress standard attachment fields, taxonomy terms and custom fields.', 'media-library-assistant' ),
+			'In this tab' => __( 'In this tab you can define the rules for mapping IPTC (International Press Telecommunications Council) and EXIF (EXchangeable Image File) metadata to WordPress standard attachment fields, taxonomy terms and custom fields.', 'media-library-assistant' ) . ' ' . __( 'You can also use a Content Template to compose a value from field-level data sources like Title, Author, ALT Text and File Name.', 'media-library-assistant' ),
 			/* translators: 1: Documentation hyperlink */
 			'You can find' => __( 'You can find more information about using the controls in this tab to define mapping rules and apply them by clicking the "Help" control in the upper-right corner of the screen.', 'media-library-assistant' ),
 			'settingsURL' => admin_url('options-general.php'),
@@ -906,6 +987,8 @@ class MLASettings_IPTCEXIF {
 			'Keep' => __( 'Keep', 'media-library-assistant' ),
 			'replace_selected' => '',
 			'Replace' => __( 'Replace', 'media-library-assistant' ),
+			'replace_all_selected' => '',
+			'Replace All' => __( 'Replace All', 'media-library-assistant' ),
 			'Delimiters' => __( 'Delimiters', 'media-library-assistant' ),
 			'delimiters_size' => 4,
 			'Parent' => __( 'Parent', 'media-library-assistant' ),
@@ -966,12 +1049,12 @@ class MLASettings_IPTCEXIF {
 	 * @return	void	echo json response object, then die()
 	 */
 	public static function mla_inline_mapping_iptc_exif_action() {
-		MLACore::mla_debug_add( 'MLASettings_IPTCEXIF::mla_inline_mapping_custom_action $_REQUEST = ' . var_export( $_REQUEST, true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
+		// MLACore::mla_debug_add( __LINE__ . ' MLASettings_IPTCEXIF::mla_inline_mapping_custom_action $_REQUEST = ' . var_export( $_REQUEST, true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
 		if ( isset( $_REQUEST['screen'] ) ) {
 			set_current_screen( sanitize_text_field( wp_unslash( $_REQUEST['screen'] ) ) );
 		}
 
-		check_ajax_referer( MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME );
+		check_ajax_referer( MLASettings::JAVASCRIPT_INLINE_MAPPING_IPTC_EXIF_SLUG, MLACore::MLA_ADMIN_NONCE_NAME );
 
 		// Find the current chunk
 		$offset = isset( $_REQUEST['offset'] ) ? absint( $_REQUEST['offset'] ) : 0;
@@ -1030,7 +1113,7 @@ class MLASettings_IPTCEXIF {
 			'refresh' => isset( $page_content['refresh'] ) && true == $page_content['refresh'],
 		);
 
-		MLACore::mla_debug_add( 'MLASettings::mla_inline_mapping_custom_action $chunk_results = ' . var_export( $chunk_results, true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
+		MLACore::mla_debug_add( __LINE__ . ' MLASettings::mla_inline_mapping_custom_action $chunk_results = ' . var_export( $chunk_results, true ), MLACore::MLA_DEBUG_CATEGORY_AJAX );
 		wp_send_json_success( $chunk_results );
 	} // mla_inline_mapping_iptc_exif_action
 
@@ -1048,7 +1131,7 @@ class MLASettings_IPTCEXIF {
 			set_current_screen( sanitize_text_field( wp_unslash( $_REQUEST['screen'] ) ) );
 		}
 
-		check_ajax_referer( MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME );
+		check_ajax_referer( MLASettings::JAVASCRIPT_INLINE_EDIT_IPTC_EXIF_SLUG, MLACore::MLA_ADMIN_NONCE_NAME );
 
 		$error_message = '';
 		if ( empty( $_REQUEST['post_ID'] ) ) {
@@ -1068,7 +1151,18 @@ class MLASettings_IPTCEXIF {
 		$rule['iptc_value'] = sanitize_text_field( isset( $_REQUEST['iptc_value'] ) ? wp_unslash( $_REQUEST['iptc_value'] ) : 'none' );
 		$rule['exif_value'] = wp_kses( isset( $_REQUEST['exif_value'] ) ? wp_unslash( $_REQUEST['exif_value'] ) : '', 'post' );
 		$rule['iptc_first'] = isset( $_REQUEST['iptc_first'] ) && '1' === $_REQUEST['iptc_first'];
-		$rule['keep_existing'] = isset( $_REQUEST['keep_existing'] ) && '1' === $_REQUEST['keep_existing'];
+
+		if ( isset( $_REQUEST['keep_existing'] ) ) {
+			$keep_existing = absint( $_REQUEST['keep_existing'] );
+			if ( 2 === $keep_existing ) {
+				$rule['keep_existing'] = false;
+				$rule['replace_all'] = true;
+			} else {
+				$rule['keep_existing'] = 1 === $keep_existing;
+				$rule['replace_all'] = false;
+			}
+		}
+
 		$rule['delimiters'] = sanitize_text_field( !empty( $_REQUEST['delimiters'] ) ? wp_unslash( $_REQUEST['delimiters'] ) : '' );
 		$rule['parent'] = !empty( $_REQUEST['parent'] ) ? absint( $_REQUEST['parent'] ) : 0;
 		$rule['format'] = sanitize_text_field( isset( $_REQUEST['format'] ) ? wp_unslash( $_REQUEST['format'] ) : 'native' );
@@ -1178,7 +1272,8 @@ class MLA_IPTC_EXIF_List_Table extends WP_List_Table {
 		'parent',
 		'delete_null',
 		'format',
-		'option'
+		'option',
+		'description',
 	);
 
 	/**
@@ -1214,6 +1309,7 @@ class MLA_IPTC_EXIF_List_Table extends WP_List_Table {
 		'delete_null' => array('delete_null',false),
 		'format' => array('format',false),
 		'option' => array('option',false),
+		'description' => array('description',false),
 		);
 
 	/**
@@ -1286,7 +1382,7 @@ class MLA_IPTC_EXIF_List_Table extends WP_List_Table {
 			$submenu_arguments['orderby'] = $field;
 		}
 
-		return $submenu_arguments;
+		return $submenu_arguments = apply_filters( 'mla_setting_table_submenu_arguments', $submenu_arguments, $include_filters, 'MLASettings_IPTCEXIF' );
 	}
 
 	/**
@@ -1352,6 +1448,7 @@ class MLA_IPTC_EXIF_List_Table extends WP_List_Table {
 				'delete_null'  => _x( 'Delete NULL', 'list_table_column', 'media-library-assistant' ),
 				'format'  => _x( 'Format', 'list_table_column', 'media-library-assistant' ),
 				'option'  => _x( 'Option', 'list_table_column', 'media-library-assistant' ),
+				'description' => _x( 'Description', 'list_table_column', 'media-library-assistant' ),
 			);
 		}
 	}
@@ -1483,9 +1580,9 @@ class MLA_IPTC_EXIF_List_Table extends WP_List_Table {
 			$view_args['orderby'] = urlencode( $field );
 		}
 
-			$actions['edit'] = '<a href="' . add_query_arg( $view_args, MLACore::mla_nonce_url( '?mla_admin_action=' . MLACore::MLA_ADMIN_SINGLE_EDIT_DISPLAY, MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME ) ) . '" title="' . __( 'Edit this item', 'media-library-assistant' ) . '">' . __( 'Edit', 'media-library-assistant' ) . '</a>';
+		$actions['edit'] = '<a href="' . add_query_arg( $view_args, MLACore::mla_nonce_url( '?mla_admin_action=' . MLACore::MLA_ADMIN_SINGLE_EDIT_DISPLAY, MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME ) ) . '" title="' . __( 'Edit this item', 'media-library-assistant' ) . '">' . __( 'Edit', 'media-library-assistant' ) . '</a>';
 
-		if ( !$item->read_only ) {
+		if ( ! $item->read_only ) {
 			$actions['inline hide-if-no-js'] = '<a class="editinline" href="#" title="' . __( 'Edit this item inline', 'media-library-assistant' ) . '">' . __( 'Quick Edit', 'media-library-assistant' ) . '</a>';
 
 			$actions['execute hide-if-no-js'] = '<a class="execute" id="' . 
@@ -1493,10 +1590,14 @@ class MLA_IPTC_EXIF_List_Table extends WP_List_Table {
 
 			if ( 'custom' === $item->type ) {
 				$actions['purge'] = '<a class="purge"' . ' href="' . add_query_arg( $view_args, MLACore::mla_nonce_url( '?mla_admin_action=' . MLACore::MLA_ADMIN_SINGLE_PURGE, MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME ) ) . '" title="' . __( 'Purge IPTC EXIF values', 'media-library-assistant' ) . '">' . __( 'Purge Values', 'media-library-assistant' ) . '</a>';
-			}
-		}
 
-		$actions['delete'] = '<a class="delete-tag"' . ' href="' . add_query_arg( $view_args, MLACore::mla_nonce_url( '?mla_admin_action=' . MLACore::MLA_ADMIN_SINGLE_DELETE, MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME ) ) . '" title="' . __( 'Delete this item Permanently', 'media-library-assistant' ) . '">' . __( 'Delete Permanently', 'media-library-assistant' ) . '</a>';
+				$actions['delete'] = '<a class="delete-tag"' . ' href="' . add_query_arg( $view_args, MLACore::mla_nonce_url( '?mla_admin_action=' . MLACore::MLA_ADMIN_SINGLE_DELETE, MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME ) ) . '" title="' . __( 'Delete this item Permanently', 'media-library-assistant' ) . '">' . __( 'Delete Permanently', 'media-library-assistant' ) . '</a>';
+			} else {
+				$actions['delete'] = '<a class="delete-tag"' . ' href="' . add_query_arg( $view_args, MLACore::mla_nonce_url( '?mla_admin_action=' . MLACore::MLA_ADMIN_SINGLE_DELETE, MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME ) ) . '" title="' . __( 'Revert to standard item', 'media-library-assistant' ) . '">' . __( 'Revert to Standard', 'media-library-assistant' ) . '</a>';
+			}
+		} else {
+			$actions['delete'] = '<a class="delete-tag"' . ' href="' . add_query_arg( $view_args, MLACore::mla_nonce_url( '?mla_admin_action=' . MLACore::MLA_ADMIN_SINGLE_DELETE, MLACore::MLA_ADMIN_NONCE_ACTION, MLACore::MLA_ADMIN_NONCE_NAME ) ) . '" title="' . __( 'Delete this item Permanently', 'media-library-assistant' ) . '">' . __( 'Delete Permanently', 'media-library-assistant' ) . '</a>';
+		}
 
 		return $actions;
 	}
@@ -1520,7 +1621,15 @@ class MLA_IPTC_EXIF_List_Table extends WP_List_Table {
 		$inline_data .= '	<div class="iptc_value">' . esc_attr( $item->iptc_value ) . "</div>\r\n";
 		$inline_data .= '	<div class="exif_value">' . esc_attr( $item->exif_value ) . "</div>\r\n";
 		$inline_data .= '	<div class="iptc_first">' . esc_attr( $item->iptc_first ) . "</div>\r\n";
-		$inline_data .= '	<div class="keep_existing">' . esc_attr( $item->keep_existing ) . "</div>\r\n";
+
+		if ( $item->keep_existing ) {
+			$inline_data .= '	<div class="keep_existing">1' . "</div>\r\n";
+		} elseif ( $item->replace_all ) {
+			$inline_data .= '	<div class="keep_existing">2' . "</div>\r\n";
+		} else {
+			$inline_data .= '	<div class="keep_existing">0' . "</div>\r\n";
+		}
+
 		$inline_data .= '	<div class="active">' . esc_attr( $item->active ) . "</div>\r\n";
 
 		$inline_data .= '	<div class="delimiters">' . esc_attr( $item->delimiters ) . "</div>\r\n";
@@ -1623,6 +1732,8 @@ class MLA_IPTC_EXIF_List_Table extends WP_List_Table {
 	function column_existing_text( $item ) {
 		if ( $item->keep_existing ) {
 			return __( 'Keep', 'media-library-assistant' );
+		} elseif ( $item->replace_all ) {
+			return __( 'Replace All', 'media-library-assistant' );
 		} else {
 			return __( 'Replace', 'media-library-assistant' );
 		}
@@ -1711,6 +1822,18 @@ class MLA_IPTC_EXIF_List_Table extends WP_List_Table {
 	 */
 	function column_option( $item ) {
 		return $item->option;
+	}
+
+	/**
+	 * Populate the Description column
+	 *
+	 * @since 2.97
+	 * 
+	 * @param object	An MLA custom_field_rule object
+	 * @return	string	HTML markup to be placed inside the column
+	 */
+	function column_description( $item ) {
+		return esc_html( $item->description );
 	}
 
 	/**
@@ -2028,6 +2151,7 @@ class MLA_IPTC_EXIF_Query {
 	 *             @type string $key Field or taxonomy slug, custom field name the rule applies to.
 	 *             @type string $rule_name Rule name, to accomodate an old custom fields bug.
 	 *             @type string $name Field or taxonomy name the rule applies to.
+	 *             @type string $description Notes for the IPTC/EXIF/WP tab submenu table.
 	 *             @type boolean $hierarchical True if taxonomy is hierarchical.
 	 *             @type string $iptc_value IPTC tag, e.g., ‘2#025’ or 'none'.
 	 *             @type string $exif_value EXIF field name or Content Template begining "template:".
@@ -2091,11 +2215,15 @@ class MLA_IPTC_EXIF_Query {
 				'key' => $key,
 				'rule_name' => $current_value['name'],
 				'name' => $current_value['name'],
+				// description added in v2.97
+				'description' => isset( $current_value['description'] ) ? $current_value['description'] : '',
 				'hierarchical' => false,
 				'iptc_value' => $current_value['iptc_value'],
 				'exif_value' => $current_value['exif_value'],
 				'iptc_first' => $current_value['iptc_first'],
 				'keep_existing' => $current_value['keep_existing'],
+				// replace_all added in v3.19
+				'replace_all' => isset( $current_value['replace_all'] ) ? $current_value['replace_all'] : false,
 				'format' => 'native',
 				'option' => 'text',
 				'no_null' => false,
@@ -2135,10 +2263,14 @@ class MLA_IPTC_EXIF_Query {
 				unset( $current_values['taxonomy'][ $key ] );
 
 				$current_value = array_merge( $current_value, array(
+					// description added in v2.97
+					'description' => isset( $existing_values['description'] ) ? $existing_values['description'] : '',
 					'iptc_value' => $existing_values['iptc_value'],
 					'exif_value' => $existing_values['exif_value'],
 					'iptc_first' => $existing_values['iptc_first'],
 					'keep_existing' => $existing_values['keep_existing'],
+					// replace_all added in v3.19
+					'replace_all' => isset( $existing_values['replace_all'] ) ? $existing_values['replace_all'] : false,
 					'delimiters' => $existing_values['delimiters'],
 					'option' => isset( $existing_values['option'] ) ? $existing_values['option'] : 'array',
 					'parent' => $existing_values['parent'],
@@ -2146,10 +2278,12 @@ class MLA_IPTC_EXIF_Query {
 				) );
 			} else {
 				$current_value = array_merge( $current_value, array(
+					'description' => '',
 					'iptc_value' => 'none',
 					'exif_value' => '',
 					'iptc_first' => true,
 					'keep_existing' => true,
+					'replace_all' => false,
 					'delimiters' => '',
 					'parent' => 0,
 					'active' => false,
@@ -2172,6 +2306,11 @@ class MLA_IPTC_EXIF_Query {
 			$value['read_only'] = false;
 			$value['changed'] = false;
 			$value['deleted'] = false;
+
+			// description added in v2.97
+			if ( !isset( $value['description'] ) ) {
+				$value['description']= '';
+			}
 
 			if ( isset( $value['active'] ) && $value['active'] ) {
 				$value['active'] = false;
@@ -2211,11 +2350,15 @@ class MLA_IPTC_EXIF_Query {
 						'key' => $rule_name,
 						'rule_name' => $rule_name,
 						'name' => $current_value['name'],
+						// description added in v2.97
+						'description' => isset( $current_value['description'] ) ? $current_value['description'] : '',
 						'hierarchical' => false,
 						'iptc_value' => $current_value['iptc_value'],
 						'exif_value' => $current_value['exif_value'],
 						'iptc_first' => $current_value['iptc_first'],
 						'keep_existing' => $current_value['keep_existing'],
+						// replace_all added in v3.19
+						'replace_all' => isset( $current_value['replace_all'] ) ? $current_value['replace_all'] : false,
 						'format' => $current_value['format'],
 						'option' => $current_value['option'],
 						'no_null' => $current_value['no_null'],
@@ -2263,10 +2406,12 @@ class MLA_IPTC_EXIF_Query {
 
 			$new_value = array(
 				'name' => $current_value['name'],
+				'description' => $current_value['description'],
 				'iptc_value' => $current_value['iptc_value'],
 				'exif_value' => $current_value['exif_value'],
 				'iptc_first' => $current_value['iptc_first'],
 				'keep_existing' => $current_value['keep_existing'],
+				'replace_all' => $current_value['replace_all'],
 				'active' => $current_value['active'],
 			);
 
@@ -2400,6 +2545,7 @@ class MLA_IPTC_EXIF_Query {
 				foreach ( $keywords as $keyword ) {
 					$found |= false !== stripos( $value['rule_name'], $keyword );
 					$found |= false !== stripos( $value['name'], $keyword );
+					$found |= false !== stripos( $value['description'], $keyword );
 					$found |= false !== stripos( $iptc_text, $keyword );
 					$found |= false !== stripos( $value['iptc_value'], $keyword );
 					$found |= false !== stripos( $value['exif_value'], $keyword );
@@ -2489,6 +2635,9 @@ class MLA_IPTC_EXIF_Query {
 					break;
 				case 'option':
 					$sortable_items[ ( empty( $value['option'] ) ? chr(1) : $value['option'] ) . $ID ] = (object) $value;
+					break;
+				case 'description':
+					$sortable_items[ ( empty( $value['description'] ) ? chr(1) : $value['description'] ) . $ID ] = (object) $value;
 					break;
 				default:
 					$sortable_items[ absint( $ID ) ] = (object) $value;
@@ -2769,24 +2918,24 @@ class MLA_IPTC_EXIF_Query {
 
 		$template_items = array(
 			'all' => array(
-				'singular' => _x( 'All', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'All', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'All', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'All', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 			'standard' => array(
-				'singular' => _x( 'Standard', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'Standard', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'Standard', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'Standard', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 			'taxonomy' => array(
-				'singular' => _x( 'Taxonomy', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'Taxonomy', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'Taxonomy', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'Taxonomy', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 			'custom' => array(
-				'singular' => _x( 'Custom', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'Custom', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'Custom', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'Custom', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 			'read_only' => array(
-				'singular' => _x( 'Read Only', 'table_view_singular', 'media_library-assistant' ),
-				'plural' => _x( 'Read Only', 'table_view_plural', 'media_library-assistant' ),
+				'singular' => _x( 'Read Only', 'table_view_singular', 'media-library-assistant' ),
+				'plural' => _x( 'Read Only', 'table_view_plural', 'media-library-assistant' ),
 				'count' => 0 ),
 		);
 
@@ -2810,6 +2959,11 @@ class MLA_IPTC_EXIF_Query {
 			if ( $value->read_only ) {
 					$template_items[ 'read_only' ]['count']++;
 			}
+		}
+
+		// Read Only fields are a historical (MLA defect) artifact of interest to very few MLA users
+		if ( 0 === $template_items[ 'read_only' ]['count'] ) {
+			unset( $template_items[ 'read_only' ] );
 		}
 
 		return $template_items;

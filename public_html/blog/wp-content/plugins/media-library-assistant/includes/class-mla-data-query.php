@@ -55,22 +55,11 @@ class MLAQuery {
 	const MLA_TABLE_VIEW_SUBQUERY = 'use_postmeta_view'; // see mla-custom-field-search-example.php
 
 	/**
-	 * WordPress version test for $wpdb->esc_like() Vs esc_sql()
-	 *
-	 * @since 2.13
-	 *
-	 * @var	boolean
-	 */
-	public static $wp_4dot0_plus = true;
-
-	/**
 	 * Initialization function, similar to __construct()
 	 *
 	 * @since 0.1
 	 */
 	public static function initialize() {
-		self::$wp_4dot0_plus = version_compare( get_bloginfo('version'), '4.0', '>=' );
-
 		self::_localize_default_columns_array();
 
 		// Set up the Media/Assistant submenu table column definitions
@@ -349,7 +338,7 @@ class MLAQuery {
 	 * @param	mixed	single taxonomy (string) or taxonomy list (array of strings)
 	 * @param	array	arguments for taxonomy terms query
 	 *
-	 * @return	array|int|WP_Error) List of WP_Term instances and their children. Will return WP_Error, if any of $taxonomies do not exist.
+	 * @return	array|int|WP_Error List of WP_Term instances and their children. Will return WP_Error, if any of $taxonomies do not exist.
 	 */
 	public static function mla_wp_get_terms( $taxonomy, $args ) {
 		if ( version_compare( get_bloginfo('version'), '4.5.0', '>=' ) ) {
@@ -543,6 +532,7 @@ class MLAQuery {
 		}
 
 		$attached_file = NULL;
+		$previous_key = '';
 		$results = array();
 		$post_meta = get_metadata( 'post', $post_id );
 
@@ -556,14 +546,33 @@ class MLAQuery {
 					if ( stripos( $post_meta_key, '_wp_attached_file' ) === 0 ) {
 						$key = 'mla_wp_attached_file';
 						$attached_file = $post_meta_value[0];
+
+						// multiple values are not valid
+						if ( 1 < count( $post_meta_value ) ) {
+							$post_meta_value = array( $attached_file );
+						}
 					} elseif ( stripos( $post_meta_key, '_wp_attachment_metadata' ) === 0 ) {
 						$key = 'mla_wp_attachment_metadata';
 					} elseif ( stripos( $post_meta_key, '_wp_attachment_image_alt' ) === 0 ) {
 						$key = 'mla_wp_attachment_image_alt';
+					} elseif ( stripos( $post_meta_key, '_thumbnail_id' ) === 0 ) {
+						$key = 'mla_thumbnail_id';
 					} else {
-						continue;
+						// Look for and preserve ACF field references
+						if ( !empty( $previous_key ) && !empty( $post_meta_value[0] ) ) {
+							if ( ( stripos( $post_meta_key, $previous_key ) === 1 ) && ( stripos( $post_meta_value[0], 'field_' ) === 0 ) ) {
+								$key = 'mla_item_' . $post_meta_key;
+							}
+						} else {
+							$previous_key = '';
+							continue;
+						}
 					}
+					
+					$previous_key = '';
 				} else {
+					$previous_key = $post_meta_key;
+
 					if ( stripos( $post_meta_key, 'mla_' ) === 0 ) {
 						$key = $post_meta_key;
 					} else {
@@ -631,6 +640,7 @@ class MLAQuery {
 	 * in class-mla-shortcodes.php. This array passes the relevant parameters to the filter.
 	 *
 	 * Array index values are:
+	 * ['mla_terms_search']['filter']
 	 * ['mla_terms_search']['phrases']
 	 * ['mla_terms_search']['taxonomies']
 	 * ['mla_terms_search']['radio_phrases'] => AND/OR
@@ -833,7 +843,7 @@ class MLAQuery {
 	 * @return	array	revised arguments suitable for WP_Query
 	 */
 	private static function _prepare_list_table_query( $raw_request, $offset = 0, $count = 0 ) {
-//error_log( __LINE__ . " _prepare_list_table_query( $offset, $count ) raw_request = " . var_export( $raw_request, true ), 0 );
+//error_log( __LINE__ . " MLAQuery::_prepare_list_table_query( $offset, $count ) raw_request = " . var_export( $raw_request, true ), 0 );
 		/*
 		 * Go through the $raw_request, take only the arguments that are used in the query and
 		 * sanitize or validate them.
@@ -882,6 +892,12 @@ class MLAQuery {
 			'mla_search_fields' => array()
 		);
 
+		// Restore nested taxonomies array from submenu argukments
+		if ( isset( $raw_request['mla_terms_search_taxonomies'] ) ) {
+			$raw_request['mla_terms_search']['taxonomies'] = $raw_request['mla_terms_search_taxonomies'];
+			unset( $raw_request['mla_terms_search_taxonomies'] );
+		}
+
 		foreach ( $raw_request as $key => $value ) {
 			switch ( $key ) {
 				/*
@@ -897,7 +913,7 @@ class MLAQuery {
 					break;
 				case 'orderby':
 					// 'rml' is for Real Media Library compatibility
-					if ( in_array( $value, array( 'none', 'post__in', 'rml' ) ) ) {
+					if ( in_array( $value, array( 'none', 'post__in', 'menu_order ID', 'rml' ) ) ) {
 						$clean_request[ $key ] = $value;
 					} else {
 						$orderby = NULL;
@@ -950,9 +966,10 @@ class MLAQuery {
 				case 'post_parent':
 					$clean_request[ 'post_parent' ] = absint( $value );
 					break;
-				// ['m'] - filter by year and month of post, e.g., 201204
-				case 'author':
-				case 'm':
+				case 'author': // userid of item owner
+				case 'm': // year and month of post, e.g., 201204
+				case 'year': // 4 digit year, e.g., 2021
+				case 'monthnum': // Month number (from 1 to 12)
 					$clean_request[ $key ] = absint( $value );
 					break;
 				// ['mla_filter_term'] - filter by taxonomy term ID (-1 allowed), or by custom field
@@ -1022,6 +1039,16 @@ class MLAQuery {
 
 					break;
 				case 'mla_terms_search':
+					// MLA::mla_render_admin_page can have 'mla_terms_search' => 'Terms Search'
+					if ( is_string( $value ) ) {
+						break;
+					}
+					
+					// Search on filter term only is valid, so make sure filter is defined
+					if ( empty( $value['filter'] ) ) {
+						$value['filter'] = 0;
+					}
+
 					if ( ! empty( $value['phrases'] ) && ! empty( $value['taxonomies'] ) ) {
 						$value['phrases'] = stripslashes( trim( $value['phrases'] ) );
 						if ( ! empty( $value['phrases'] ) ) {
@@ -1042,7 +1069,10 @@ class MLAQuery {
 								$clean_request[ $key ] = $value;
 							}
 						}
+					} elseif ( 0 !== $value['filter'] ) {
+						$clean_request[ $key ] = $value;
 					}
+
 					break;
 				case 'mla_search_connector':
 				case 'mla_search_fields':
@@ -1052,6 +1082,7 @@ class MLAQuery {
 				case 'mla-metavalue':
 					$clean_request[ $key ] = stripslashes( html_entity_decode( $value ) );
 					break;
+				case 'tax_query':
 				case 'meta_query':
 					if ( ! empty( $value ) ) {
 						if ( is_array( $value ) ) {
@@ -1076,6 +1107,7 @@ class MLAQuery {
 					// ignore anything else in $_REQUEST
 			} // switch $key
 		} // foreach $raw_request
+//error_log( __LINE__ . " MLAQuery::_prepare_list_table_query( $offset, $count ) clean_request = " . var_export( $clean_request, true ), 0 );
 
 		// Pass query and search parameters to the filters for _execute_list_table_query
 		self::$query_parameters = array( self::MLA_ALT_TEXT_SUBQUERY => false, self::MLA_FILE_SUBQUERY => false, self::MLA_TABLE_VIEW_SUBQUERY => false, self::MLA_ORDERBY_SUBQUERY => false, 'orderby' => $clean_request['orderby'], 'order' => $clean_request['order'] );
@@ -1088,7 +1120,7 @@ class MLAQuery {
 		 */
 		if ( isset( $clean_request['meta_query']['key'] ) ) {
 			self::$query_parameters[self::MLA_TABLE_VIEW_SUBQUERY] = true;
-			self::$query_parameters['postmeta_key'] = $clean_request['meta_query']['key'];
+			self::$query_parameters['postmeta_key'] = implode( ',', (array) $clean_request['meta_query']['key'] );
 			self::$query_parameters['postmeta_value'] = NULL;
 			unset( $clean_request['meta_query'] );
 		} elseif ( isset( $clean_request['meta_query']['patterns'] ) ) {
@@ -1110,6 +1142,12 @@ class MLAQuery {
 
 		// We will handle "Terms Search" in the mla_query_posts_search_filter.
 		if ( isset( $clean_request['mla_terms_search'] ) ) {
+			// MLA_List_Table submenu arguments breaks this out in URLs
+			if ( isset( $clean_request['mla_terms_search_taxonomies'] ) ) {
+				$clean_request['mla_terms_search']['taxonomies'] = $clean_request['mla_terms_search_taxonomies'];
+				unset( $clean_request['mla_terms_search_taxonomies'] );
+			}
+			
 			self::$search_parameters['mla_terms_search'] = $clean_request['mla_terms_search'];
 
 			// The Terms Search overrides any terms-based keyword search for now; too complicated.
@@ -1178,15 +1216,8 @@ class MLAQuery {
 				case '_wp_attachment_image_alt':
 					self::$query_parameters[self::MLA_ORDERBY_SUBQUERY] = true;
 					self::$query_parameters['orderby_key'] = '_wp_attachment_image_alt';
-
-					if ( isset($clean_request['orderby']) ) {
-						unset($clean_request['orderby']);
-					}
-
-					if ( isset($clean_request['order']) ) {
-						unset($clean_request['order']);
-					}
-
+					unset($clean_request['orderby']);
+					unset($clean_request['order']);
 					break;
 				case '_wp_attached_file':
 					$clean_request['meta_key'] = '_wp_attached_file';
@@ -1204,6 +1235,53 @@ class MLAQuery {
 			$clean_request['posts_per_page'] = $count;
 		}
 
+		// Prepare to combine MLA's tax_query with any existing query
+		$mla_tax_query = NULL;
+		
+		/*
+		 * ['mla_terms_search']['filter'] - filter a Terms Search by taxonomy
+		 *
+		 * cat =  0 is "All Categories", i.e., no filtering
+		 * cat = -1 is "No Categories"
+		 */
+		if ( isset( $clean_request['mla_terms_search'] ) && !empty( $clean_request['mla_terms_search']['filter'] ) ) {
+			if ( $clean_request['mla_terms_search']['filter'] != 0 ) {
+				$tax_filter = MLACore::mla_get_option( MLACoreOptions::MLA_TERMS_SEARCH_FILTER_TAXONOMY );
+				if ( $clean_request['mla_terms_search']['filter'] == -1 ) {
+					$term_list = MLAQuery::mla_wp_get_terms( $tax_filter, array(
+						'fields' => 'ids',
+						'hide_empty' => false
+					) );
+					$mla_tax_query = array(
+						array(
+							'taxonomy' => $tax_filter,
+							'field' => 'id',
+							'terms' => $term_list,
+							'operator' => 'NOT IN' 
+						) 
+					);
+				} else { // ['mla_terms_search']['filter'] == -1
+					$mla_tax_query = array(
+						array(
+							'taxonomy' => $tax_filter,
+							'field' => 'id',
+							'terms' => array(
+								(int) $clean_request['mla_terms_search']['filter']
+							),
+							'include_children' => ( 'checked' == MLACore::mla_get_option( MLACoreOptions::MLA_TERMS_SEARCH_FILTER_INCLUDE_CHILDREN ) )
+						) 
+					);
+				} // ['mla_terms_search']['filter'] != -1
+	
+				// A filtered Terms Search overrides the other taxonomy-related parameters
+				unset( $clean_request['mla_filter_term'] );
+				unset( $clean_request['mla-metakey'] );
+				unset( $clean_request['mla-metavalue'] );
+				unset( $clean_request['mla-tax'] );
+				unset( $clean_request['mla-term'] );
+			} // non-zero $clean_request['mla_terms_search']['filter']
+		} // !empty( $clean_request['mla_terms_search']['filter'] )
+
 		/*
 		 * ['mla_filter_term'] - filter by taxonomy
 		 *
@@ -1218,7 +1296,7 @@ class MLAQuery {
 						'fields' => 'ids',
 						'hide_empty' => false
 					) );
-					$clean_request['tax_query'] = array(
+					$mla_tax_query = array(
 						array(
 							'taxonomy' => $tax_filter,
 							'field' => 'id',
@@ -1227,7 +1305,7 @@ class MLAQuery {
 						) 
 					);
 				} else { // mla_filter_term == -1
-					$clean_request['tax_query'] = array(
+					$mla_tax_query = array(
 						array(
 							'taxonomy' => $tax_filter,
 							'field' => 'id',
@@ -1243,8 +1321,9 @@ class MLAQuery {
 			unset( $clean_request['mla_filter_term'] );
 		} // isset mla_filter_term
 
+		// Filter by a term clicked in a submenu table taxonomy column
 		if ( isset( $clean_request['mla-tax'] ) && isset( $clean_request['mla-term'] )) {
-			$clean_request['tax_query'] = array(
+			$mla_tax_query = array(
 				array(
 					'taxonomy' => $clean_request['mla-tax'],
 					'field' => 'slug',
@@ -1256,6 +1335,25 @@ class MLAQuery {
 			unset( $clean_request['mla-tax'] );
 			unset( $clean_request['mla-term'] );
 		} // isset mla_tax
+
+		// Add our tax_query to the clean request
+		if ( !empty( $mla_tax_query ) ) {
+			if ( !empty( $clean_request['tax_query'] ) ) {
+				foreach( $clean_request['tax_query'] as $key => $value ) {
+					if ( is_integer( $key ) ) {
+					    $mla_tax_query[] = $value;
+					} else {
+					    $mla_tax_query[ $key ] = $value;
+					}
+				}
+
+				if ( empty( $mla_tax_query['relation'] ) ) {
+				    $mla_tax_query['relation'] = 'AND';
+				}
+			} // existing query
+			
+			$clean_request['tax_query'] = $mla_tax_query;
+		} // mla_tax_query
 
 		if ( isset( $clean_request['mla-metakey'] ) && isset( $clean_request['mla-metavalue'] ) ) {
 			$clean_request['meta_key'] = $clean_request['mla-metakey'];
@@ -1310,6 +1408,7 @@ class MLAQuery {
 		}
 		
 //error_log( __LINE__ . " MLAQuery::_prepare_list_table_query clean_request = " . var_export( $clean_request, true ), 0 );
+//error_log( __LINE__ . " MLAQuery::_prepare_list_table_query query_parameters = " . var_export( self::$query_parameters, true ), 0 );
 //error_log( __LINE__ . " MLAQuery::_prepare_list_table_query search_parameters = " . var_export( self::$search_parameters, true ), 0 );
 		return $clean_request;
 	}
@@ -1357,7 +1456,7 @@ class MLAQuery {
 		}
 
 		if ( isset( self::$query_parameters['debug'] ) ) {
-			$debug_array = array( 'posts_search' => MLACore::mla_decode_wp_filter('posts_search'), 'posts_join' => MLACore::mla_decode_wp_filter('posts_join'), 'posts_where' => MLACore::mla_decode_wp_filter('posts_where'), 'posts_orderby' => MLACore::mla_decode_wp_filter('posts_orderby') );
+			$debug_array = array( 'posts_search' => MLACore::mla_display_wp_filter('posts_search'), 'posts_join' => MLACore::mla_display_wp_filter('posts_join'), 'posts_where' => MLACore::mla_display_wp_filter('posts_where'), 'posts_orderby' => MLACore::mla_display_wp_filter('posts_orderby') );
 
 			/* translators: 1: DEBUG tag 2: query filter details */
 			MLACore::mla_debug_add( __LINE__ . sprintf( _x( ' %1$s: _execute_list_table_query $wp_filter = "%2$s".', 'error_log', 'media-library-assistant' ), __( 'DEBUG', 'media-library-assistant' ), var_export( $debug_array, true ) ) );
@@ -1366,6 +1465,7 @@ class MLAQuery {
 			add_filter( 'posts_clauses_request', 'MLAQuery::mla_query_posts_clauses_request_filter', 0x7FFFFFFF, 1 );
 		} // debug
 
+//error_log( __LINE__ . ' MLAQuery::_execute_list_table_query() request = ' . var_export( $request, true ), 0 );
 		$results = new WP_Query( $request );
 
 		if ( isset( self::$query_parameters['debug'] ) ) {
@@ -1752,8 +1852,15 @@ class MLAQuery {
 			self::$search_parameters['tax_terms_count'] = self::_generate_tax_clause( self::$search_parameters['mla_terms_search'], $tax_clause );
 //error_log( __LINE__ . " MLAQuery::mla_query_posts_search_filter tax_clause = " . var_export( $tax_clause, true ), 0 );
 			
-			if ( '1=0' === $tax_clause && !empty( self::$search_parameters['mla_terms_search']['exclude'] ) ) {
-				$tax_clause = '';
+			if ( '1=0' === $tax_clause ) {
+				if ( !empty( self::$search_parameters['mla_terms_search']['exclude'] ) ) {
+					$tax_clause = '';
+				}
+
+				// Search on filter term only, no phrases
+				if ( !empty( self::$search_parameters['mla_terms_search']['filter'] ) ) {
+					$tax_clause = '';
+				}
 			}
 		}
 
@@ -1794,22 +1901,14 @@ class MLAQuery {
 				foreach ( $keyword_array as $phrase ) {
 					if ( $is_wildcard_search ) {
 						// Escape any % in the source string
-						if ( self::$wp_4dot0_plus ) {
-							$sql_phrase = $wpdb->esc_like( $phrase );
-							$sql_phrase = $wpdb->prepare( '%s', $sql_phrase );
-						} else {
-							$sql_phrase = "'" . esc_sql( like_escape( $phrase ) ) . "'";
-						}
+						$sql_phrase = $wpdb->esc_like( $phrase );
+						$sql_phrase = $wpdb->prepare( '%s', $sql_phrase );
 
 						// Convert wildcard * to SQL %
 						$sql_phrase = str_replace( '*', '%', $sql_phrase );
 					} else {
-						if ( self::$wp_4dot0_plus ) {
-							$sql_phrase = $percent . $wpdb->esc_like( $phrase ) . $percent;
-							$sql_phrase = $wpdb->prepare( '%s', $sql_phrase );
-						} else {
-							$sql_phrase = "'" . $percent . esc_sql( like_escape( $phrase ) ) . $percent . "'";
-						}
+						$sql_phrase = $percent . $wpdb->esc_like( $phrase ) . $percent;
+						$sql_phrase = $wpdb->prepare( '%s', $sql_phrase );
 					}
 
 					$inner_connector = '';
@@ -2102,7 +2201,7 @@ class MLAQuery {
 		}
 
 		if ( isset( self::$query_parameters['orderby'] ) ) {
-			if ( 'c_' == substr( self::$query_parameters['orderby'], 0, 2 ) ) {
+			if ( 'c_' === substr( self::$query_parameters['orderby'], 0, 2 ) ) {
 				$orderby = self::MLA_ORDERBY_SUBQUERY . '.meta_value';
 			} /* custom field sort */ else { 
 				switch ( self::$query_parameters['orderby'] ) {
@@ -2113,6 +2212,9 @@ class MLAQuery {
 					// post__in is passed from Media Manager Modal Window
 					case 'post__in':
 						return $orderby_clause;
+					// menu_order ID is passed from Media Manager Modal Window
+					case 'menu_order ID':
+						return "{$wpdb->posts}.menu_order,{$wpdb->posts}.ID";
 					/*
 					 * There are two columns defined that end up sorting on post_title,
 					 * so we can't use the database column to identify the column but
@@ -2130,7 +2232,7 @@ class MLAQuery {
 						break;
 					/*
 					 * The _wp_attachment_image_alt value is only present for images, so we have to
-					 * use the view we prepared to get attachments with no meta data value
+					 * use the subquery to get attachments with no meta data value
 					 */
 					case '_wp_attachment_image_alt':
 						$orderby = self::MLA_ORDERBY_SUBQUERY . '.meta_value';
@@ -2204,12 +2306,8 @@ class MLAQuery {
 		$term = $args['name__like'];
 
 		// Escape any % in the source string
-		if ( self::$wp_4dot0_plus ) {
-			$sql_term = $wpdb->esc_like( $term );
-			$sql_term = $wpdb->prepare( '%s', $sql_term );
-		} else {
-			$sql_term = "'" . esc_sql( like_escape( $term ) ) . "'";
-		}
+		$sql_term = $wpdb->esc_like( $term );
+		$sql_term = $wpdb->prepare( '%s', $sql_term );
 
 		// Convert wildcard * to SQL %
 		$sql_term = str_replace( '*', '%', $sql_term );

@@ -21,7 +21,16 @@ class MLACore {
 	 *
 	 * @var	string
 	 */
-	const CURRENT_MLA_VERSION = '2.95';
+	const CURRENT_MLA_VERSION = '3.33';
+
+	/**
+	 * Current date for Development Versions, empty for production versions
+	 *
+	 * @since 2.99
+	 *
+	 * @var	string
+	 */
+	const MLA_DEVELOPMENT_VERSION = '';
 
 	/**
 	 * Slug for registering and enqueueing plugin style sheets (moved from class-mla-main.php)
@@ -87,7 +96,7 @@ class MLACore {
 	const MLA_DEBUG_CATEGORY_THUMBNAIL = 0x00000008;
 
 	/**
-	 * Constant to log IPTC/EXIF/XMP/PDF metadata activity
+	 * Constant to log IPTC/EXIF/WP/XMP/PDF metadata activity
 	 *
 	 * @since 2.41
 	 *
@@ -130,6 +139,15 @@ class MLACore {
 	 * @var	integer
 	 */
 	const MLA_DEBUG_CATEGORY_MMMW = 0x00000100;
+
+	/**
+	 * Constant to log Intermediate Image Size activity
+	 *
+	 * @since 3.25
+	 *
+	 * @var	integer
+	 */
+	const MLA_DEBUG_CATEGORY_IMAGE_SIZE = 0x00000200;
 
 	/**
 	 * Slug for adding plugin submenu
@@ -186,7 +204,7 @@ class MLACore {
 	const MLA_ADMIN_SINGLE_CUSTOM_FIELD_PURGE = 'single_item_custom_field_purge';
 
 	/**
-	 * mla_admin_action value for mapping IPTC/EXIF metadata
+	 * mla_admin_action value for mapping IPTC/EXIF/WP metadata
 	 *
 	 * @since 1.00
 	 *
@@ -195,7 +213,7 @@ class MLACore {
 	const MLA_ADMIN_SINGLE_MAP = 'single_item_map';
 
 	/**
-	 * mla_admin_action value for purging IPTC/EXIF metadata
+	 * mla_admin_action value for purging IPTC/EXIF/WP metadata
 	 *
 	 * @since 2.60
 	 *
@@ -267,6 +285,33 @@ class MLACore {
 	const MLA_ADMIN_SINGLE_ADD = 'single_item_add';
 
 	/**
+	 * Action name; gives a context for the 'download-zip'/'mla_download_file' nonce
+	 *
+	 * @since 3.00
+	 *
+	 * @var	string
+	 */
+	const MLA_DOWNLOAD_NONCE_ACTION = 'mla_download_nonce_action';
+
+	/**
+	 * Action name; gives a context for the 'mla_download_example_plugin' nonce
+	 *
+	 * @since 3.00
+	 *
+	 * @var	string
+	 */
+	const MLA_DOWNLOAD_EXAMPLE_NONCE_ACTION = 'mla_download_example_nonce_action';
+
+	/**
+	 * Action name; gives a context for the 'mla_download_error_log' nonce
+	 *
+	 * @since 3.00
+	 *
+	 * @var	string
+	 */
+	const MLA_ERROR_LOG_NONCE_ACTION = 'mla_error_log_nonce_action';
+
+	/**
 	 * Action name; gives a context for the nonce
 	 *
 	 * @since 0.1
@@ -292,6 +337,24 @@ class MLACore {
 	 * @var	string
 	 */
 	const JAVASCRIPT_INLINE_EDIT_SLUG = 'mla-inline-edit-scripts';
+
+	/**
+	 * Slug for "Find Posts" - fetch candidates for the "Set Parent" popup window
+	 *
+	 * @since 2.99
+	 *
+	 * @var	string
+	 */
+	const JAVASCRIPT_FIND_POSTS_SLUG = 'mla-find-posts';
+
+	/**
+	 * Slug for the Upload Bulk Edit presets "export" action
+	 *
+	 * @since 2.99
+	 *
+	 * @var	string
+	 */
+	const JAVASCRIPT_EXPORT_PRESETS_SLUG = 'mla-export-presets';
 
 	/**
 	 * Slug for the "query attachments" action - Add Media and related dialogs
@@ -372,7 +435,28 @@ class MLACore {
 	 * @return	void
 	 */
 	public static function initialize( ) {
-		//error_log( __LINE__ . ' DEBUG: MLACore::initialize $_REQUEST = ' . var_export( $_REQUEST, true ), 0 );
+		// error_log( __LINE__ . ' DEBUG: MLACore::initialize $_REQUEST = ' . var_export( $_REQUEST, true ), 0 );
+		// if ( isset( $_SERVER['REQUEST_URI'] ) ) error_log( __LINE__ . ' DEBUG: MLACore::initialize $_SERVER[REQUEST_URI] = ' . var_export( $_SERVER['REQUEST_URI'], true ), 0 );
+
+		$text_domain = 'media-library-assistant';
+		$locale = function_exists( 'get_user_locale' ) ? get_user_locale() : get_locale();
+		$locale = apply_filters( 'mla_plugin_locale', $locale, $text_domain );
+
+		if ( is_admin() && 'en_US' === $locale ) {
+			$result = unload_textdomain( $text_domain );
+		}
+
+		/*
+		 * To override the plugin's translation files for one, some or all strings,
+		 * create a sub-directory named 'media-library-assistant' in the WordPress
+		 * WP_LANG_DIR (e.g., /wp-content/languages) directory.
+		 */
+		load_textdomain( $text_domain, trailingslashit( WP_LANG_DIR ) . $text_domain . '/' . $text_domain . '-' . $locale . '.mo' );
+		load_plugin_textdomain( $text_domain, false, MLA_PLUGIN_BASENAME . '/languages/' );
+
+		MLACoreOptions::mla_localize_option_definitions_array();
+		MLAObjects::mla_build_taxonomies();
+
 		if ( 'disabled' == MLACore::mla_get_option( MLACoreOptions::MLA_FEATURED_IN_TUNING ) ) {
 			MLACore::$process_featured_in = false;
 		}
@@ -389,9 +473,17 @@ class MLACore {
 			MLACore::$process_mla_gallery_in = false;
 		}
 
-		// Look for Postie chron job
+		// Load mapping rule support for Postie chron job
 		if ( isset( $_REQUEST['doing_wp_cron'] ) && class_exists( 'Postie', false ) ) {
-			add_action( 'postie_session_start', 'MLACore::mla_postie_session_start' );
+			add_action( 'postie_session_start', 'MLACore::mla_cron_mapping_support' );
+		}
+
+		// Load mapping rule support for Bulk Media Register
+		if ( ( defined( 'DOING_CRON' ) && DOING_CRON ) && class_exists( 'BulkMediaRegister', false ) ) {
+			add_action( 'bmr_regist', 'MLACore::mla_cron_mapping_support', 9 );
+		} elseif ( class_exists( 'BulkMediaRegisterCron', false ) ) {
+			// Load mapping rule support for Bulk Media Register Add On Wp Cron
+			add_action( 'bmr_cron_cli', 'MLACore::mla_cron_mapping_support', 9 );
 		}
 
 		/*
@@ -447,8 +539,8 @@ class MLACore {
 						$cookie = http_build_query( $cookie_array, '', '&' );
 						$current = time();
 						$secure = ( 'https' === parse_url( admin_url(), PHP_URL_SCHEME ) );
-						setcookie( 'wp-settings-' . $user_id, $cookie, time() + YEAR_IN_SECONDS, SITECOOKIEPATH, null, $secure );
-						setcookie( 'wp-settings-time-' . $user_id, $current, $current + YEAR_IN_SECONDS, SITECOOKIEPATH, null, $secure );
+						setcookie( 'wp-settings-' . $user_id, $cookie, time() + YEAR_IN_SECONDS, SITECOOKIEPATH, '', $secure );
+						setcookie( 'wp-settings-time-' . $user_id, $current, $current + YEAR_IN_SECONDS, SITECOOKIEPATH, '', $secure );
 						$_COOKIE['wp-settings-' . $user_id] = $cookie;
 						$_COOKIE['wp-settings-time-' . $user_id] = $current;
 					}
@@ -468,23 +560,29 @@ class MLACore {
 	 *
 	 * @since 2.90
 	 */
-	public static function mla_postie_session_start() {
-		// Template file and database access functions.
-		require_once( MLA_PLUGIN_PATH . 'includes/class-mla-data-query.php' );
-		MLAQuery::initialize();
-
-		require_once( MLA_PLUGIN_PATH . 'includes/class-mla-data.php' );
-		MLAData::initialize();
-
-		// Shortcode shim functions
-		require_once( MLA_PLUGIN_PATH . 'includes/class-mla-shortcodes.php' );
-		MLAShortcodes::initialize();
-
-		require_once( MLA_PLUGIN_PATH . 'includes/class-mla-shortcode-support.php' );
-
-		// Plugin settings management
-		require_once( MLA_PLUGIN_PATH . 'includes/class-mla-options.php' );
-		MLAOptions::initialize();
+	public static function mla_cron_mapping_support() {
+		static $first_call = true;
+		
+		if ( $first_call ) {
+			// Template file and database access functions.
+			require_once( MLA_PLUGIN_PATH . 'includes/class-mla-data-query.php' );
+			MLAQuery::initialize();
+	
+			require_once( MLA_PLUGIN_PATH . 'includes/class-mla-data.php' );
+			MLAData::initialize();
+	
+			// Shortcode shim functions
+			require_once( MLA_PLUGIN_PATH . 'includes/class-mla-shortcodes.php' );
+			MLAShortcodes::initialize();
+	
+			require_once( MLA_PLUGIN_PATH . 'includes/class-mla-shortcode-support.php' );
+	
+			// Plugin settings management
+			require_once( MLA_PLUGIN_PATH . 'includes/class-mla-options.php' );
+			MLAOptions::initialize();
+			
+			$first_call = false;
+		}
 	}
 
 	/**
@@ -537,9 +635,9 @@ class MLACore {
 		global $wp_locale;
 
 		if ( $wp_locale->is_rtl() ) {
-			wp_register_style( MLAModal::JAVASCRIPT_MEDIA_MODAL_STYLES . '-bb', MLA_PLUGIN_URL . 'css/mla-beaver-builder-style-rtl.css', false, MLACore::CURRENT_MLA_VERSION );
+			wp_register_style( MLAModal::JAVASCRIPT_MEDIA_MODAL_STYLES . '-bb', MLA_PLUGIN_URL . 'css/mla-beaver-builder-style-rtl.css', false, MLACore::mla_script_version() );
 		} else {
-			wp_register_style( MLAModal::JAVASCRIPT_MEDIA_MODAL_STYLES . '-bb', MLA_PLUGIN_URL . 'css/mla-beaver-builder-style.css', false, MLACore::CURRENT_MLA_VERSION );
+			wp_register_style( MLAModal::JAVASCRIPT_MEDIA_MODAL_STYLES . '-bb', MLA_PLUGIN_URL . 'css/mla-beaver-builder-style.css', false, MLACore::mla_script_version() );
 		}
 
 		wp_enqueue_style( MLAModal::JAVASCRIPT_MEDIA_MODAL_STYLES . '-bb' );
@@ -586,24 +684,7 @@ class MLACore {
 	 * @return	void
 	 */
 	public static function mla_plugins_loaded_action(){
-		$text_domain = 'media-library-assistant';
-		$locale = function_exists( 'get_user_locale' ) ? get_user_locale() : get_locale();
-		$locale = apply_filters( 'mla_plugin_locale', $locale, $text_domain );
-
-		if ( is_admin() && 'en_US' === $locale ) {
-			$result = unload_textdomain( $text_domain );
-		}
-
-		/*
-		 * To override the plugin's translation files for one, some or all strings,
-		 * create a sub-directory named 'media-library-assistant' in the WordPress
-		 * WP_LANG_DIR (e.g., /wp-content/languages) directory.
-		 */
-		load_textdomain( $text_domain, trailingslashit( WP_LANG_DIR ) . $text_domain . '/' . $text_domain . '-' . $locale . '.mo' );
-		load_plugin_textdomain( $text_domain, false, MLA_PLUGIN_BASENAME . '/languages/' );
-
-		// This must/will be repeated in class-mla-tests.php to reflect translations
-		MLACoreOptions::mla_localize_option_definitions_array();
+		// error_log( __LINE__ . ' DEBUG: MLACore::mla_plugins_loaded_action', 0 );
 
 		MLACore::$original_php_log = ini_get( 'error_log' );
 		MLACore::$original_php_reporting = sprintf( '0x%1$04X', error_reporting() );
@@ -611,12 +692,12 @@ class MLACore {
 		// Do not process debug options unless MLA_DEBUG_LEVEL is set in wp-config.php
 		if ( MLA_DEBUG_LEVEL & 1 ) {
 			// Set up alternate MLA debug log file
-			$error_log_name = MLACore::mla_get_option( MLACoreOptions::MLA_DEBUG_FILE ); 
+			$error_log_name = MLACore::mla_get_option( MLACoreOptions::MLA_DEBUG_FILE, false, false, MLACoreOptions::$mla_prelocalize_option_definitions ); 
 			if ( ! empty( $error_log_name ) ) {
 				MLACore::mla_debug_file( $error_log_name );
 
 				// Override PHP error_log file
-				if ( 'checked' === MLACore::mla_get_option( MLACoreOptions::MLA_DEBUG_REPLACE_PHP_LOG ) ) {
+				if ( 'checked' === MLACore::mla_get_option( MLACoreOptions::MLA_DEBUG_REPLACE_PHP_LOG, false, false, MLACoreOptions::$mla_prelocalize_option_definitions ) ) {
 					$result = ini_set('error_log', WP_CONTENT_DIR . self::$mla_debug_file );
 				}
 			}
@@ -626,7 +707,7 @@ class MLACore {
 			 * Override MLA debug levels
 			 */
 			MLACore::$mla_debug_level = 0; // MLA_DEBUG_LEVEL;
-			$mla_reporting = trim( MLACore::mla_get_option( MLACoreOptions::MLA_DEBUG_REPLACE_LEVEL ) );
+			$mla_reporting = trim( MLACore::mla_get_option( MLACoreOptions::MLA_DEBUG_REPLACE_LEVEL, false, false, MLACoreOptions::$mla_prelocalize_option_definitions ) );
 			if ( strlen( $mla_reporting ) ) {
 				if ( ctype_digit( $mla_reporting ) ) {
 					$mla_reporting = (int) $mla_reporting; 
@@ -637,7 +718,7 @@ class MLACore {
 				if ( $mla_reporting )  {
 					MLACore::$mla_debug_level = $mla_reporting | 1;
 					if ( class_exists( 'MLA' ) && ! ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] === 'heartbeat' ) ) {
-						MLACore::mla_debug_add( __LINE__ . sprintf( ' MLACore::mla_plugins_loaded_action() MLA %s (%s) mla_debug_level 0x%X', MLACore::CURRENT_MLA_VERSION, MLA::MLA_DEVELOPMENT_VERSION, MLACore::$mla_debug_level, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
+						MLACore::mla_debug_add( __LINE__ . sprintf( ' MLACore::mla_plugins_loaded_action() MLA %s (%s) mla_debug_level 0x%X', MLACore::CURRENT_MLA_VERSION, MLACore::MLA_DEVELOPMENT_VERSION, MLACore::$mla_debug_level, true ), MLACore::MLA_DEBUG_CATEGORY_ANY );
 
 						if ( ( MLACore::$mla_debug_level & MLACore::MLA_DEBUG_CATEGORY_METADATA ) && isset( $_SERVER['REQUEST_URI'] ) ) {
 							$is_wplr_sync = false !== strpos( $_SERVER['REQUEST_URI'], '/?wplr-sync-api' ); // phpcs:ignore
@@ -676,6 +757,20 @@ class MLACore {
 	}
 
 	/**
+	 * Create version number for script files with/without Development Version date
+	 *
+	 * @since 2.99
+	 *
+	 * @return string Version number for wp_enqueue_script()
+	 */
+	public static function mla_script_version() {
+		$script_version =  MLACore::CURRENT_MLA_VERSION;
+		$script_version .=  ( strlen( MLACore::MLA_DEVELOPMENT_VERSION ) ) ? '.' . MLACore::MLA_DEVELOPMENT_VERSION : '';
+		
+		return $script_version;
+	}
+
+	/**
 	 * Create a NONCE URL that works in WP 3.5.x and later
 	 *
 	 * @since 2.71
@@ -709,7 +804,7 @@ class MLACore {
 		// Check for Update, Trash or Delete Permanently on Media/Edit Media screen,
 		if ( ( false !== strpos( $location, 'upload.php?' ) ) || ( false !== strpos( $location, 'post.php?' ) ) ) {
 			if ( isset( $_REQUEST['mla_source'] ) ) {
-				$location = add_query_arg( array( 'mla_source' => sanitize_text_field( wp_unslash( $_REQUEST['mla_source'] ) ) ), $location );
+				$location = add_query_arg( array( 'mla_source' => esc_attr( sanitize_text_field( wp_unslash( $_REQUEST['mla_source'] ) ) ) ), $location );
 			}
 		}
 
@@ -755,7 +850,7 @@ class MLACore {
 	 * @return	mixed	Value(s) for the option or false if the option is not a defined MLA option
 	 */
 	public static function mla_get_option( $option, $get_default = false, $get_stored = false, &$option_table = NULL ) {
-		if ( NULL == $option_table ) {
+		if ( NULL === $option_table ) {
 			if ( empty( MLACoreOptions::$mla_option_definitions ) ) {
 				MLACoreOptions::mla_localize_option_definitions_array();
 			}
@@ -926,9 +1021,8 @@ class MLACore {
 			$template_key = preg_split( '#"#', $value[0] );
 			$template_key = $template_key[1];
 			$template_value = substr( $template, $value[1] + strlen( $value[0] ), $current_offset - ( $value[1] + strlen( $value[0] ) ) );
-			/*
-			 * Trim exactly one newline sequence from the start of the value
-			 */
+
+			// Trim exactly one newline sequence from the start of the value
 			if ( 0 === strpos( $template_value, "\r\n" ) ) {
 				$offset = 2;
 			} elseif ( 0 === strpos( $template_value, "\n\r" ) ) {
@@ -943,9 +1037,7 @@ class MLACore {
 
 			$template_value = substr( $template_value, $offset );
 
-			/*
-			 * Trim exactly one newline sequence from the end of the value
-			 */
+			// Trim exactly one newline sequence from the end of the value
 			$length = strlen( $template_value );
 			if ( $length > 2) {
 				$postfix = substr( $template_value, ($length - 2), 2 );
@@ -968,6 +1060,83 @@ class MLACore {
 		} // foreach $matches
 
 		return $template_array;
+	}
+
+	/**
+	 * Generates or retrieves the encryption key for named transfer items
+ 	 *
+	 * @since 3.30
+	 *
+	 * @return	string 32-byte random string for 'AES-256-CBC' encryption
+	 */
+	private static function _get_named_transfer_encryption_key() {
+		$option_value = MLACore::mla_get_option( MLACoreOptions::MLA_NAMED_TRANSFER_ITEM_KEY );
+		
+		if ( empty( $option_value ) || ( 32 !== strlen( (string) $option_value ) ) ) {
+			if( function_exists( 'random_bytes' ) ) {
+				$option_value = bin2hex( random_bytes(16) );
+			} elseif ( function_exists( 'openssl_random_pseudo_bytes' ) ) {
+				$secure = false;
+				$option_value = bin2hex( openssl_random_pseudo_bytes( 16, $secure ) );
+			} else {
+				$hex_characters = '0123456789abcdef';
+				$option_value = '';
+				for ( $i = 0; $i < 32; $i++ ) {
+					$option_value .= $hex_characters[ mt_rand( 0, 15 ) ];
+				}
+			}
+			
+			MLACore::mla_update_option( MLACoreOptions::MLA_NAMED_TRANSFER_ITEM_KEY, $option_value );
+		}
+
+		return $option_value;
+	}
+
+	/**
+	 * Encrypts a named transfer or stream image item
+ 	 *
+	 * @since 3.30
+	 *
+	 * @param	string	item name
+	 *
+	 * @return	string encrypted item name
+	 */
+	public static function mla_encrypt_item( $mla_item ) {
+		if ( function_exists( 'openssl_encrypt' ) ) {
+			$key = self::_get_named_transfer_encryption_key();
+			$ivLength = openssl_cipher_iv_length('AES-256-CBC');
+			$iv = openssl_random_pseudo_bytes( $ivLength );
+			$hex = bin2hex( $iv );
+			$mla_item = openssl_encrypt( $mla_item, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
+			$hex = bin2hex( $mla_item );
+			$mla_item = base64_encode( $iv . $mla_item );
+		}
+
+		return $mla_item;
+	}
+
+	/**
+	 * Decrypts a named transfer or stream image item
+ 	 *
+	 * @since 3.30
+	 *
+	 * @param	string encrypted item name
+	 *
+	 * @return	string decrypted item name
+	 */
+	public static function mla_decrypt_item( $mla_item ) {
+		if ( function_exists( 'openssl_encrypt' ) ) {
+			$key = self::_get_named_transfer_encryption_key();
+	        $data = base64_decode( $mla_item );
+        	$ivLength = openssl_cipher_iv_length('AES-256-CBC');
+        	$iv = substr( $data, 0, $ivLength );
+			$hex = bin2hex( $iv );
+       		$ciphertext = substr( $data, $ivLength );
+			$hex = bin2hex( $ciphertext );
+        	$mla_item = openssl_decrypt( $ciphertext, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
+		}
+
+		return $mla_item;
 	}
 
 	/**
@@ -1090,6 +1259,7 @@ class MLACore {
 	 */
 	public static function mla_supported_taxonomies( $support_type = 'support' ) {
 		$tax_options =  MLACore::mla_get_option( MLACoreOptions::MLA_TAXONOMY_SUPPORT );
+
 		switch ( $support_type ) {
 			case 'support': 
 				if ( !empty( $_REQUEST['mla-general-options-save'] ) ) {
@@ -1181,8 +1351,11 @@ class MLACore {
 		$index = 0;
 
 		foreach ( $option_values as $key => $value ) {
+			if ( isset( $value['active'] ) &&( false === $value['active'] ) ) {
+				continue;
+			}
+			
 			$slug = 'c_' . $index++; // sanitize_title( $key ); Didn't handle HTML in name, e.g., "R><B"
-//error_log( __LINE__ . " mla_custom_field_support( {$key}, {$slug} ) value = " . var_export( $value, true ), 0 );
 
 			switch( $support_type ) {
 				case 'custom_columns':
@@ -1247,15 +1420,17 @@ class MLACore {
 		);
 
 		$specification = self::mla_parse_view_specification( $specification );
-		if ( 'mime' == $specification['prefix'] ) {
-			$query['post_mime_type'] = $specification['value'];
-		} else {
+		if ( !empty( $specification['mime'] ) ) {
+			$query['post_mime_type'] = $specification['mime']['value'];
+		}
+		
+		if ( !empty( $specification['custom'] ) ) {
 			$meta_query = array( 'slug' => $slug , 'relation' => 'OR', 'patterns' => array () );
-			switch( $specification['option'] ) {
+			switch( $specification['custom']['option'] ) {
 				case 'match':
-					$patterns = array_map( 'trim', explode( ',', $specification['value'] ) );
+					$patterns = array_map( 'trim', explode( ',', $specification['custom']['value'] ) );
 					foreach ( (array) $patterns as $pattern ) {
-						$meta_key = ( !empty( $specification['name'] ) ) ? array( 'key' => $specification['name'] ) : array();
+						$meta_key = ( !empty( $specification['custom']['name'] ) ) ? array( 'key' => $specification['custom']['name'] ) : array();
 						$pattern = preg_replace( '/\*+/', '%', $pattern );
 						if ( false !== strpos( $pattern, '%' ) ) {
 							// Preserve the pattern - it will be used in the "where" filter
@@ -1272,15 +1447,15 @@ class MLACore {
 
 					break;
 				case 'null':
-					if ( !empty( $specification['name'] ) ) {
-						$meta_query['key'] = $specification['name'];
+					if ( !empty( $specification['custom']['name'] ) ) {
+						$meta_query['key'] = $specification['custom']['name'];
 					}
 
 					$meta_query['value'] = 'NULL';
 					break;
 				default: // '', 'any'
-					if ( !empty( $specification['name'] ) ) {
-						$meta_query[] = array( 'key' => $specification['name'], 'value' => NULL, 'compare' => '!=' );
+					if ( !empty( $specification['custom']['name'] ) ) {
+						$meta_query[] = array( 'key' => $specification['custom']['name'], 'value' => NULL, 'compare' => '!=' );
 					} else {
 						$meta_query[] = array( 'value' => NULL, 'compare' => '!=' );
 					}
@@ -1289,7 +1464,7 @@ class MLACore {
 			$query['meta_query'] = $meta_query;
 		} // custom field specification
 
-//error_log( __LINE__ . ' MLACore::mla_prepare_view_query query = ' . var_export( $query, true ), 0 );
+//error_log( __LINE__ . " MLACore::mla_prepare_view_query( {$slug} ) query = " . var_export( $query, true ), 0 );
 		return $query;
 	}
 
@@ -1303,15 +1478,34 @@ class MLACore {
 	 * @return	array	( ['prefix'] => string, ['name'] => string, ['value'] => string, ['option'] => string, optional ['error'] => string )
 	 */
 	public static function mla_parse_view_specification( $specification ) {
-			if ( is_array( $specification ) ) {
-				$specification = @implode( ',', $specification );
-			}
+		if ( is_array( $specification ) ) {
+			$specification = @implode( ',', $specification );
+		}
 //error_log( __LINE__ . ' MLACore::mla_parse_view_specification specification = ' . var_export( $specification, true ), 0 );
 
-			$result = array( 'prefix' => '', 'name' => '', 'value' => '', 'option' => '' );
-			$match_count = preg_match( '/^(.+):(.+)/', $specification, $matches );
+		$result = array( 'mime' => NULL, 'custom' => NULL );
+
+		// look for custom field query, must be at the end of the specification
+		$custom_offset = strpos( $specification, 'custom:' );
+		if ( false === $custom_offset ) {
+			$result['mime'] = array( 'prefix' => 'mime', 'name' => '', 'value' => $specification, 'option' => '' );
+		} else {
+			$result['custom'] = array( 'prefix' => 'custom', 'name' => '', 'value' => substr( $specification, $custom_offset ), 'option' => '' );
+
+			if ( 0 < $custom_offset ) {
+				// A MIME specification can precede the custom field query
+				$result['mime'] = array( 'prefix' => 'mime', 'name' => '', 'value' => substr( $specification, 0, $custom_offset - 1 ), 'option' => '' );
+			}
+		}
+//error_log( __LINE__ . ' MLACore::mla_parse_view_specification result = ' . var_export( $result, true ), 0 );
+		
+		if ( !empty( $result['custom'] ) ) {
+			$match_count = preg_match( '/^(.+):(.+)/', $result['custom']['value'], $matches );
+			$result['custom']['value'] = '';
+			
 			if ( 1 == $match_count ) {
-				$result['prefix'] = trim( strtolower( $matches[1] ) );
+//error_log( __LINE__ . ' MLACore::mla_parse_view_specification matches = ' . var_export( $matches, true ), 0 );
+				$result['custom']['prefix'] = trim( strtolower( $matches[1] ) );
 				$tail = $matches[2];
 //error_log( __LINE__ . ' MLACore::mla_parse_view_specification tail = ' . var_export( $tail, true ), 0 );
 
@@ -1320,9 +1514,9 @@ class MLACore {
 				$match_count = preg_match( '/([^=]+)((=)(.*))$/', $tail, $matches );
 				if ( 1 == $match_count ) {
 //error_log( __LINE__ . ' MLACore::mla_parse_view_specification matches = ' . var_export( $matches, true ), 0 );
-					$result['name'] = explode( ',', $matches[1] );
+					$result['custom']['name'] = explode( ',', $matches[1] );
 					// Flag multiple field names for preservation
-					if ( 1 < count( $result['name'] ) ) {
+					if ( 1 < count( $result['custom']['name'] ) ) {
 						$tail = $flag . $matches[2];
 					}
 				}
@@ -1332,50 +1526,52 @@ class MLACore {
 //error_log( __LINE__ . ' MLACore::mla_parse_view_specification matches = ' . var_export( $matches, true ), 0 );
 					// Preserve multiple field names, handle "any field"; name = *
 					if ( $flag !== $matches[1] ) {
-						$result['name'] = ( '*' === $matches[1] ) ? '' : $matches[1];
+						$result['custom']['name'] = ( '*' === $matches[1] ) ? '' : $matches[1];
 					}
 
 					if ( ',' == $matches[3] ) {
-						$result['option'] = trim( strtolower( $matches[4] ));
+						$result['custom']['option'] = trim( strtolower( $matches[4] ));
 					} else {
 						if ( empty( $matches[4] ) ) {
-							$result['option'] = 'null';
+							$result['custom']['option'] = 'null';
 						} elseif ( '*' == $matches[4] ) {
-							$result['option'] = 'any';
+							$result['custom']['option'] = 'any';
 						} else {
-							$result['option'] = 'match';
-							$result['value'] = $matches[4];
+							$result['custom']['option'] = 'match';
+							$result['custom']['value'] = $matches[4];
 						}
 					}
 				} else {
-					$result['option'] = 'any';
-					$result['name'] = $tail;
+					$result['custom']['option'] = 'any';
+					$result['custom']['name'] = $tail;
 				}
-			} else {
-				$result['prefix'] = 'mime';
-				$result['value'] = $specification;
 			}
+		} // !empty( $result['custom']
 
-			// Validate the results
-			if ( 'mime' == $result['prefix'] ) {
-				$mime_types = array_map( 'trim', explode( ',', $result['value'] ) );
-				foreach ( (array) $mime_types as $raw_mime_type ) {
-					$no_wildcards = str_replace( '*', 'X', $raw_mime_type );
-					$clean_mime_type = sanitize_mime_type( $no_wildcards );
-					if ( $clean_mime_type != $no_wildcards ) {
-						/* translators: 1: ERROR tag 2: raw_mime_type */
-						$result['error'] = '<br>' . sprintf( __( '%1$s: Bad specification part "%2$s"', 'media-library-assistant' ), __( 'ERROR', 'media-library-assistant' ), $raw_mime_type );
-					}
-				} // foreach
-			} elseif ( 'custom' == $result['prefix'] ) {
-				if ( ! in_array( $result['option'], array( '', 'any', 'match', 'null' ) ) ) {
+		// Validate the results
+		if ( !empty( $result['mime'] ) ) {
+			$mime_types = array_map( 'trim', explode( ',', $result['mime']['value'] ) );
+			foreach ( (array) $mime_types as $raw_mime_type ) {
+				$no_wildcards = str_replace( '*', 'X', $raw_mime_type );
+				$clean_mime_type = sanitize_mime_type( $no_wildcards );
+				if ( $clean_mime_type != $no_wildcards ) {
+					/* translators: 1: ERROR tag 2: raw_mime_type */
+					$result['mime']['error'] = '<br>' . sprintf( __( '%1$s: Bad specification part "%2$s"', 'media-library-assistant' ), __( 'ERROR', 'media-library-assistant' ), $raw_mime_type );
+				}
+			} // foreach
+		} 
+			
+		if ( !empty( $result['custom'] ) ) {
+			if ( 'custom' === $result['custom']['prefix'] ) {
+				if ( ! in_array( $result['custom']['option'], array( '', 'any', 'match', 'null' ) ) ) {
 					/* translators: 1: ERROR tag 2: option, e.g., any, match, null */
-					$result['error'] = '<br>' . sprintf( __( '%1$s: Bad specification option "%2$s"', 'media-library-assistant' ), __( 'ERROR', 'media-library-assistant' ), $result['option'] );
+					$result['custom']['error'] = '<br>' . sprintf( __( '%1$s: Bad specification option "%2$s"', 'media-library-assistant' ), __( 'ERROR', 'media-library-assistant' ), $result['custom']['option'] );
 				}
 			} else {
 				/* translators: 1: ERROR tag 2: prefix, e.g., custom */
-				$result['error'] = '<br>' . sprintf( __( '%1$s: Bad specification prefix "%2$s"', 'media-library-assistant' ), __( 'ERROR', 'media-library-assistant' ), $result['prefix'] );
+				$result['custom']['error'] = '<br>' . sprintf( __( '%1$s: Bad specification prefix "%2$s"', 'media-library-assistant' ), __( 'ERROR', 'media-library-assistant' ), $result['custom']['prefix'] );
 			}
+		}
 
 //error_log( __LINE__ . ' MLACore::mla_parse_view_specification result = ' . var_export( $result, true ), 0 );
 		return $result;
@@ -1393,10 +1589,11 @@ class MLACore {
 	 *
 	 * @param object The current post
 	 * @param array The meta box parameters
+	 * @param string Optional prefix to make HTML ID unique
 	 *
 	 * @return void Echoes HTML for the form fields
 	 */
-	public static function mla_checklist_meta_box( $target_post, $box ) {
+	public static function mla_checklist_meta_box( $target_post, $box, $prefix = '' ) {
 		global $post;
 
 		$defaults = array('taxonomy' => 'category', 'in_modal' => false );
@@ -1421,30 +1618,31 @@ class MLACore {
 				$post = $target_post; // for wp_popular_terms_checklist
 			}
 
+			$id_prefix = "mla-{$prefix}-{$taxonomy}";
 			$div_taxonomy_id = "mla-taxonomy-{$taxonomy}";
-			$tabs_ul_id = "mla-{$taxonomy}-tabs";
-			$tab_all_id = "mla-{$taxonomy}-all";
-			$tab_all_ul_id = "mla-{$taxonomy}-checklist";
-			$tab_pop_id = "mla-{$taxonomy}-pop";
-			$tab_pop_ul_id = "mla-{$taxonomy}-checklist-pop";
+			$tabs_ul_id = "{$id_prefix}-tabs";
+			$tab_all_id = "{$id_prefix}-all";
+			$tab_all_ul_id = "{$id_prefix}-checklist"; // wp-lists
+			$tab_pop_id = "{$id_prefix}-pop";
+			$tab_pop_ul_id = "{$id_prefix}-checklist-pop";
 			$input_terms_name = "mla_attachments[{$post_id}][{$name}][]";
 			$input_terms_id = "mla-{$name}-id";
-			$div_adder_id = "mla-{$taxonomy}-adder";
+			$div_adder_id = "{$id_prefix}-adder";
 			$div_adder_class = "mla-hidden-children";
-			$link_adder_id = "mla-{$taxonomy}-add-toggle";
-			$link_adder_p_id = "mla-{$taxonomy}-add";
-			$div_search_id = "mla-{$taxonomy}-searcher";
+			$link_adder_id = "{$id_prefix}-add-toggle";
+			$link_adder_p_id = "{$id_prefix}-add"; // wp-lists
+			$div_search_id = "{$id_prefix}-searcher";
 			$div_search_class = "mla-hidden-children";
-			$link_search_id = "mla-{$taxonomy}-search-toggle";
-			$link_search_p_id = "mla-{$taxonomy}-search";
+			$link_search_id = "{$id_prefix}-search-toggle";
+			$link_search_p_id = "{$id_prefix}-search";
 			$input_new_name = "new{$taxonomy}";
 			$input_new_id = "mla-new-{$taxonomy}";
 			$input_new_parent_name = "new{$taxonomy}_parent";
-			$input_new_submit_id = "mla-{$taxonomy}-add-submit";
-			$span_new_ajax_id = "mla-{$taxonomy}-ajax-response";
+			$input_new_submit_id = "{$id_prefix}-add-submit";
+			$span_new_ajax_id = "{$id_prefix}-ajax-response";
 			$input_search_name = "search-{$taxonomy}";
 			$input_search_id = "mla-search-{$taxonomy}";
-			$span_search_ajax_id = "mla-{$taxonomy}-search-ajax-response";
+			$span_search_ajax_id = "{$id_prefix}-search-ajax-response";
 		} else {
 			$div_taxonomy_id = "taxonomy-{$taxonomy}";
 			$tabs_ul_id = "{$taxonomy}-tabs";
@@ -1489,7 +1687,7 @@ class MLACore {
 				// Allows for an empty term set to be sent. 0 is an invalid Term ID and will be ignored by empty() checks.
 				echo "<input type='hidden' name='" . esc_html( $input_terms_name) . "' id='" . esc_html( $input_terms_id ) . "' value='0' />";
 				?>
-				<ul id="<?php echo esc_html( $tab_all_ul_id ); ?>" data-wp-lists="list:<?php echo esc_html( $taxonomy )?>" class="categorychecklist form-no-clear">
+				<ul id="<?php echo esc_html( $tab_all_ul_id ); ?>" data-wp-lists="list:<?php echo esc_html( $prefix . '-' . $taxonomy )?>" class="categorychecklist form-no-clear">
 					<?php if ( $tax->hierarchical ): ?>
 					<?php wp_terms_checklist($post->ID, array( 'taxonomy' => $taxonomy, 'popular_cats' => $popular_ids, 'checked_ontop'=> MLACore::mla_taxonomy_support( $taxonomy, 'checked-on-top' ) ) ) ?>
 					<?php else: ?>
@@ -1551,13 +1749,13 @@ class MLACore {
 	 * 
 	 * @param	string	$filter The name of the action/filter to be decoded
 	 *
-	 * @return	string	List of functions hooking the action/filter
+	 * @return	array	List of functions hooking the action/filter
 	 */
 	public static function mla_decode_wp_filter( $filter ) {
 		global $wp_filter;
 //error_log( __LINE__ . " mla_decode_wp_filter( $filter ) wp_filter = " . var_export( $wp_filter[ $filter ], true ), 0 );
 
-		$hook_list = '';
+		$hook_array = array();
 		if ( isset( $wp_filter[ $filter ] ) ) {
 			// WordPress 4.7+ uses WP_Hook, earlier versions use an array
 			if ( is_object( $wp_filter[ $filter ] ) ) {
@@ -1566,23 +1764,47 @@ class MLACore {
 				$callback_array = $wp_filter[ $filter ];
 			}
 
+//error_log( __LINE__ . " mla_decode_wp_filter( $filter ) callback_array = " . var_export( $callback_array, true ), 0 );
 			foreach ( $callback_array as $priority => $callbacks ) {
-				$hook_list .= "Priority: {$priority}\n";
 				foreach ( $callbacks as $tag => $reference ) {
-					$hook_list .= "{$tag} => ";
 					if ( is_string( $reference['function'] ) ) {
-						$hook_list .= $reference['function'] . "()\n";
+						$hook_array[ $priority ][ $tag ] = array( 'class' => '', 'function' => $reference['function'] );
 					} elseif ( is_array( $reference['function'] ) ) {
 						if ( is_object( $reference['function'][0] ) ) {
-							$hook_list .= get_class( $reference['function'][0] ) . '->';
+							$class = get_class( $reference['function'][0] ) . '->';
 						} else {
-							$hook_list .= $reference['function'][0] . '::';
+							$class = $reference['function'][0] . '::';
 						}
 
-						$hook_list .= $reference['function'][1] . "()\n";
+						$hook_array[ $priority ][ $tag ] = array( 'class' => $class, 'function' => $reference['function'][1] );
 					} else {
-						$hook_list .= 'unknown reference type: ' . gettype( $reference['function'] ) . "\n";
+						$hook_array[ $priority ][ $tag ] = array( 'class' => '', 'function' => 'unknown reference type: ' . gettype( $reference['function'] ) );
 					}
+				} // foreach tag
+			} // foreach proprity
+		} // filters exist
+
+//error_log( __LINE__ . " mla_decode_wp_filter( $filter ) hook_array = " . var_export( $hook_array, true ), 0 );
+		return $hook_array;
+	}
+
+	/**
+	 * Display the list of functions hooking an action/filter
+	 * 
+	 * @since 2.74
+	 * 
+	 * @param	string	$filter The name of the action/filter to be decoded
+	 *
+	 * @return	string	List of functions hooking the action/filter
+	 */
+	public static function mla_display_wp_filter( $filter ) {
+		$hook_array = self::mla_decode_wp_filter( $filter );
+		$hook_list = '';
+		if ( isset( $wp_filter[ $filter ] ) ) {
+			foreach ( $hook_array as $priority => $callbacks ) {
+				$hook_list .= "Priority: {$priority}\n";
+				foreach ( $callbacks as $tag => $reference ) {
+					$hook_list .= "{$tag} => " . $reference['class'] . $reference['function'];
 				} // foreach tag
 			} // foreach proprity
 		} // filters exist
@@ -1856,9 +2078,12 @@ class MLACore {
 		if ( function_exists( 'ACP' ) ) {
 			$legacy_version = version_compare( ACP()->get_version(), '5.0.0', '<' );
 
-			if ( version_compare( ACP()->get_version(), '4.5', '>=' ) ) {
-				// Load the latest version, with bulk edit changes
+			if ( version_compare( ACP()->get_version(), '6.0', '>=' ) ) {
+				// Load the latest version, with PHP 7.2 changes
 				require_once( MLA_PLUGIN_PATH . 'includes/class-mla-admin-columns-pro-support.php' );
+			} elseif ( version_compare( ACP()->get_version(), '4.5', '>=' ) ) {
+				// Load the interim version, with bulk edit support
+				require_once( MLA_PLUGIN_PATH . 'includes/class-mla-admin-columns-pro-support-45.php' );
 			} elseif ( version_compare( ACP()->get_version(), '4.3', '>=' ) ) {
 				// Load the interim version, with namespace support, without bulk edit support
 				require_once( MLA_PLUGIN_PATH . 'includes/class-mla-admin-columns-pro-support-44.php' );
@@ -1955,22 +2180,19 @@ class MLA_Checklist_Walker extends Walker_Category {
 	}
 }// Class MLA_Checklist_Walker
 
-/*
- * Custom Taxonomies and WordPress objects.
- */
+// Custom Taxonomies and WordPress objects.
 require_once( MLA_PLUGIN_PATH . 'includes/class-mla-objects.php' );
-add_action( 'init', 'MLAObjects::mla_build_taxonomies', 5 );
-add_action( 'init', 'MLAObjects::initialize', 0x7FFFFFFF );
+add_action( 'init', 'MLAObjects::initialize', 0x800 ); // 0x7FFFFFFF );
 
-/*
- * MIME Type functions; some filters required in all modes.
- */
+// MIME Type functions; some filters required in all modes.
 require_once( MLA_PLUGIN_PATH . 'includes/class-mla-mime-types.php' );
-add_action( 'init', 'MLAMime::initialize', 0x7FFFFFFF );
+add_action( 'init', 'MLAMime::initialize', 0x800 ); // 0x7FFFFFFF );
 
-/*
- * Admin Columns plugin support
- */
+// Intermediate image sizes functions; some filters required in all modes.
+require_once( MLA_PLUGIN_PATH . 'includes/class-mla-image-sizes.php' );
+add_action( 'init', 'MLAImage_Size::initialize', 0x800 ); // 0x7FFFFFFF );
+
+// Admin Columns plugin support
 add_filter( 'cac/storage_models', 'MLACore::admin_columns_support_deprecated', 10, 2 );
 add_action( 'ac/list_screens', 'MLACore::register_list_screen', 10, 0 );
 ?>

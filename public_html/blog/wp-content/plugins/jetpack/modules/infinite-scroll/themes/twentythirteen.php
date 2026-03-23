@@ -3,17 +3,26 @@
  * Infinite Scroll Theme Assets
  *
  * Register support for Twenty Thirteen.
+ *
+ * @package jetpack
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
 
 /**
  * Add theme support for infinite scroll
  */
 function jetpack_twentythirteen_infinite_scroll_init() {
-	add_theme_support( 'infinite-scroll', array(
-		'container'      => 'content',
-		'footer'         => 'page',
-		'footer_widgets' => array( 'sidebar-1' ),
-	) );
+	add_theme_support(
+		'infinite-scroll',
+		array(
+			'container'      => 'content',
+			'footer'         => 'page',
+			'footer_widgets' => array( 'sidebar-1' ),
+		)
+	);
 }
 add_action( 'after_setup_theme', 'jetpack_twentythirteen_infinite_scroll_init' );
 

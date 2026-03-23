@@ -12,8 +12,9 @@ namespace Automattic\Jetpack\Extensions\Eventbrite;
 use Automattic\Jetpack\Blocks;
 use Jetpack_Gutenberg;
 
-const FEATURE_NAME = 'eventbrite';
-const BLOCK_NAME   = 'jetpack/' . FEATURE_NAME;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
 
 /**
  * Registers the block for use in Gutenberg
@@ -22,7 +23,7 @@ const BLOCK_NAME   = 'jetpack/' . FEATURE_NAME;
  */
 function register_block() {
 	Blocks::jetpack_register_block(
-		BLOCK_NAME,
+		__DIR__,
 		array( 'render_callback' => __NAMESPACE__ . '\render_block' )
 	);
 }
@@ -88,7 +89,7 @@ function render_embed_block( $widget_id, $is_amp, $attr ) {
 
 	// $content contains a fallback link to the event that's saved in the post_content.
 	// Append a div that will hold the iframe embed created by the Eventbrite widget.js.
-	$classes = Blocks::classes( FEATURE_NAME, $attr );
+	$classes = Blocks::classes( Blocks::get_block_feature( __DIR__ ), $attr );
 
 	$classes .= ' wp-block-jetpack-eventbrite--embed';
 
@@ -120,15 +121,15 @@ function render_embed_block( $widget_id, $is_amp, $attr ) {
 		wp_enqueue_script( 'eventbrite-widget', 'https://www.eventbrite.com/static/widgets/eb_widgets.js', array(), JETPACK__VERSION, true );
 
 		// Add CSS to hide direct link.
-		Jetpack_Gutenberg::load_assets_as_required( FEATURE_NAME );
+		Jetpack_Gutenberg::load_assets_as_required( __DIR__ );
 
 		wp_add_inline_script(
 			'eventbrite-widget',
 			"window.EBWidgets.createWidget( {
 				widgetType: 'checkout',
-				eventId: " . absint( $attr['eventId'] ) . ",
-				iframeContainerId: '" . esc_js( $widget_id ) . "',
-			} );"
+				eventId: " . absint( $attr['eventId'] ) . ',
+				iframeContainerId: ' . wp_json_encode( $widget_id, JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ) . ',
+			} );'
 		);
 	}
 
@@ -155,7 +156,7 @@ function render_modal_block( $widget_id, $is_amp, $attr, $content ) {
 		$lightbox_id = "{$widget_id}-lightbox";
 
 		// Add CSS to for lightbox.
-		Jetpack_Gutenberg::load_assets_as_required( FEATURE_NAME );
+		Jetpack_Gutenberg::load_assets_as_required( __DIR__ );
 
 		$content = preg_replace(
 			'/\shref="#" target="_blank/',
@@ -213,10 +214,10 @@ function render_modal_block( $widget_id, $is_amp, $attr, $content ) {
 		'eventbrite-widget',
 		"window.EBWidgets.createWidget( {
 			widgetType: 'checkout',
-			eventId: " . absint( $attr['eventId'] ) . ",
+			eventId: " . absint( $attr['eventId'] ) . ',
 			modal: true,
-			modalTriggerElementId: '" . esc_js( $widget_id ) . "',
-		} );"
+			modalTriggerElementId: ' . wp_json_encode( $widget_id, JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ) . ',
+		} );'
 	);
 
 	// Modal button is saved as an `<a>` element with `role="button"` because `<button>` is not allowed
@@ -224,8 +225,8 @@ function render_modal_block( $widget_id, $is_amp, $attr, $content ) {
 	// @link https://www.w3.org/TR/wai-aria-practices/examples/button/button.html.
 	wp_add_inline_script(
 		'eventbrite-widget',
-		"( function() {
-			var widget = document.getElementById( '" . esc_js( $widget_id ) . "' );
+		'( function() {
+			var widget = document.getElementById( ' . wp_json_encode( $widget_id, JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ) . " );
 			if ( widget ) {
 				widget.addEventListener( 'click', function( event ) {
 					event.preventDefault();

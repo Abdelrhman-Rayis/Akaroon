@@ -24,6 +24,28 @@ jQuery( document ).ready( function($) {
 	$( ".slick-on" ).click( function() {
 		$( "#slick-custom" ).show();
 	});
+	
+	// Placeholder selector buttons
+	$('body').on('click', '.lbs_placeholder', function(e) {
+		e.preventDefault();
+		var selector =  $(this).parent( '.lbs_placeholder_uploader' );
+		var custom_uploader = wp.media({
+			title: 'Select or upload a placeholder image',
+			multiple: false,
+		})
+		.on('select', function() {
+			var attachment = custom_uploader.state().get('selection').first().toJSON();
+			$( '.lbs_placeholder_uploader input' ).attr( 'value', attachment.url).show();
+			$( '.lbs_placeholder_uploader img' ).attr( 'src', attachment.url).show();
+		})
+		.open();
+	});
+	
+	$('body').on('click', '.lbs_placeholder_reset', function(e) {
+		e.preventDefault();
+		$( '.lbs_placeholder_uploader input' ).attr( 'value', '').show();
+		$( '.lbs_placeholder_uploader img' ).hide();
+	});	
 });
 
 /*

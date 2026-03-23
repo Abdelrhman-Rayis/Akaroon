@@ -10,6 +10,25 @@
     }
   }
 
+  function filter_denied_posts($ids) {
+    global $fb3d, $wpdb;
+    if(get_current_user_level()<$fb3d['user_levels']['editor']) {
+      $posts = $wpdb->get_results("
+        SELECT ID
+        FROM ".$wpdb->prefix.'posts'."
+        WHERE post_type='".POST_ID."' AND ID IN ".a_to_sql_list($ids)." AND (post_status='publish' AND post_password='' OR post_author=".get_current_user_id().")
+      ", ARRAY_A);
+      $ids = [];
+      foreach($posts as $post) {
+        array_push($ids, (int)$post['ID']);
+      }
+      if(!count($ids)) {
+        array_push($ids, -1);
+      }
+    }
+    return $ids;
+  }
+
   function post_to_user_post($post, $isMeta) {
     if($isMeta) {
       $meta = get_post_meta($post->ID);
@@ -19,12 +38,14 @@
     }
     $def = get_post_data($post->ID, array());
     $def = $def['3dfb']['post'];
-    return array(
+    return apply_filters('fb3d_post', [
       'ID'=> $post->ID,
       'title'=> $post->post_title,
       'type'=> isset($meta[META_PREFIX.'type'][0])? $meta[META_PREFIX.'type'][0]: 'pdf',
       'ready_function'=> isset($meta[META_PREFIX.'ready_function'][0])? $meta[META_PREFIX.'ready_function'][0]: '',
       'book_style'=> isset($meta[META_PREFIX.'book_style'][0])? $meta[META_PREFIX.'book_style'][0]: 'volume',
+      'book_template'=> isset($meta[META_PREFIX.'book_template'][0])? $meta[META_PREFIX.'book_template'][0]: 'none',
+      'outline'=> isset($meta[META_PREFIX.'outline'][0])? unserialize($meta[META_PREFIX.'outline'][0]): [],
       'data'=> unserialize(isset($meta[META_PREFIX.'data'][0])? $meta[META_PREFIX.'data'][0]: serialize($def['data'])),
       'thumbnail'=> unserialize(isset($meta[META_PREFIX.'thumbnail'][0])? $meta[META_PREFIX.'thumbnail'][0]: serialize($def['thumbnail'])),
       'props'=> unserialize(isset($meta[META_PREFIX.'props'][0])? $meta[META_PREFIX.'props'][0]: serialize($def['props'])),
@@ -32,7 +53,7 @@
       'autoThumbnail'=> get_auto_thumbnail_url($post->ID),
       'post_name'=> $post->post_name,
       'post_type'=> $post->post_type
-    );
+    ]);
   }
 
   function send_taxonomy_terms_json() {
@@ -42,7 +63,12 @@
   add_action('wp_ajax_fb3d_send_taxonomy_terms', '\iberezansky\fb3d\send_taxonomy_terms_json');
 
   function send_posts_json() {
-    $q = new WP_Query(array('post_type'=> POST_ID, 'posts_per_page'=>-1));
+    global $fb3d;
+    $rq = ['post_type'=> POST_ID, 'posts_per_page'=>-1];
+    if(get_current_user_level()<$fb3d['user_levels']['editor']) {
+      $rq['post_status'] = 'publish';
+    }
+    $q = new WP_Query($rq);
     $r = array();
     for($i=0; $i<$q->post_count; ++$i) {
       array_push($r, post_to_user_post($q->posts[$i], false));
@@ -72,7 +98,8 @@
         'image/jpeg',
         'image/pjpeg',
         'image/png',
-        'image/svg+xml'
+        'image/svg+xml',
+        'image/webp',
       )
     ));
     if($q->post_count) {
@@ -114,7 +141,7 @@
   add_action('wp_ajax_nopriv_fb3d_send_post', '\iberezansky\fb3d\send_post_json');
 
   function client_posts_in($ids_mis, $ids) {
-    $ids = array_merge($ids_mis, $ids);
+    $ids = filter_denied_posts(array_merge($ids_mis, $ids));
     $posts = [];
     if(count($ids)) {
       $q = new WP_Query(array('post_type'=> POST_ID, 'post__in'=> $ids, 'posts_per_page'=>-1));
@@ -140,7 +167,8 @@
   add_action('wp_ajax_nopriv_fb3d_send_posts_in', '\iberezansky\fb3d\send_posts_in_json');
 
   function client_post_pages($id) {
-    $id = intval($id);
+    $ids = filter_denied_posts([intval($id)]);
+    $id = $ids[0];
     $pages = NULL;
     if($id) {
       $pages = select_post_pages_by_page_post_ID($id);
@@ -157,7 +185,7 @@
   add_action('wp_ajax_nopriv_fb3d_send_post_pages', '\iberezansky\fb3d\send_post_pages_json');
 
   function client_posts_in_pages($ids) {
-    return select_post_pages_by_page_posts_IDs_in($ids);
+    return select_post_pages_by_page_posts_IDs_in(filter_denied_posts($ids));
   }
 
   function send_posts_in_pages_json() {
@@ -169,7 +197,7 @@
   add_action('wp_ajax_nopriv_fb3d_send_posts_in_pages', '\iberezansky\fb3d\send_posts_in_pages_json');
 
   function client_posts_in_first_page($ids) {
-    return select_post_first_page_by_page_post_IDs_in($ids);
+    return select_post_first_page_by_page_post_IDs_in(filter_denied_posts($ids));
   }
 
   function send_posts_in_first_page_json() {
@@ -182,7 +210,8 @@
 
   function client_post_first_page($id) {
     $page = NULL;
-    $id = intval($id);
+    $ids = filter_denied_posts([intval($id)]);
+    $id = $ids[0];
     if($id) {
       $page = select_post_first_page_by_page_post_ID($id);
     }
@@ -190,7 +219,7 @@
   }
 
   function send_post_first_page_json() {
-    $page = client_post_first_page($id);
+    $page = client_post_first_page($_GET['id']);
     wp_send_json(['code'=> $page!==NULL? CODE_OK: CODE_ERROR, 'page'=> $page]);
   }
 
@@ -216,11 +245,26 @@
   add_action('wp_ajax_fb3d_send_media_image', '\iberezansky\fb3d\send_media_image_json');
   add_action('wp_ajax_nopriv_fb3d_send_media_image', '\iberezansky\fb3d\send_media_image_json');
 
+  function get_unserialized_option($name, $def) {
+    $op = get_option($name);
+    $op = gettype($op)==='string'? unserialize($op): $op;
+    return $op? $op: $def;
+  }
+
+  function get_book_templates() {
+    global $fb3d;
+    if(!isset($fb3d['jsData']['bookTemplates'])) {
+      $fb3d['jsData']['bookTemplates'] = get_unserialized_option(META_PREFIX.'book_templates', []);
+    }
+    return $fb3d['jsData']['bookTemplates'];
+  }
+
   function client_book_control_props() {
-    $props = get_option(META_PREFIX.'book_control_props');
-    $props = unserialize($props);
-    $props = $props? $props: [];
-    return $props;
+    global $fb3d;
+    if(!isset($fb3d['jsData']['bookCtrlProps'])) {
+      $fb3d['jsData']['bookCtrlProps'] = get_unserialized_option(META_PREFIX.'book_control_props', []);
+    }
+    return $fb3d['jsData']['bookCtrlProps'];
   }
 
   function send_book_control_props_json() {

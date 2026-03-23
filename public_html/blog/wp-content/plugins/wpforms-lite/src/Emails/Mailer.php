@@ -12,7 +12,7 @@ use WPForms\Emails\Templates\General;
 class Mailer {
 
 	/**
-	 * Array or comma-separated list of email addresses to send message.
+	 * Array or comma-separated list of email addresses to send a message.
 	 *
 	 * @since 1.5.4
 	 *
@@ -36,7 +36,7 @@ class Mailer {
 	 *
 	 * @var string
 	 */
-	private $from_address;
+	private $from_address = '';
 
 	/**
 	 * From name.
@@ -79,7 +79,7 @@ class Mailer {
 	 *
 	 * @since 1.5.4
 	 *
-	 * @var string
+	 * @var string|string[]
 	 */
 	private $attachments;
 
@@ -115,10 +115,10 @@ class Mailer {
 	 *
 	 * @since 1.5.4
 	 *
-	 * @param string $key   Property name.
-	 * @param string $value Property value.
+	 * @param string       $key   Property name.
+	 * @param string|array $value Property value.
 	 */
-	public function __set( $key, $value ) {
+	public function __set( string $key, $value ) {
 
 		$this->$key = $value;
 	}
@@ -172,28 +172,29 @@ class Mailer {
 	 */
 	public function is_email_disabled() {
 
-		return (bool) \apply_filters( 'wpforms_emails_mailer_is_email_disabled', false, $this );
+		// phpcs:ignore WPForms.Comments.PHPDocHooks.RequiredHookDocumentation
+		return (bool) apply_filters( 'wpforms_emails_mailer_is_email_disabled', false, $this );
 	}
 
 	/**
 	 * Sanitize the string.
 	 *
-	 * @uses \wpforms_decode_string()
-	 *
 	 * @since 1.5.4
 	 * @since 1.6.0 Deprecated param: $linebreaks. This is handled by wpforms_decode_string().
 	 *
-	 * @param string $string String that may contain tags.
+	 * @param string $input   String that may contain tags.
+	 * @param string $context Context of the string.
 	 *
 	 * @return string
+	 * @uses  wpforms_decode_string()
 	 */
-	public function sanitize( $string = '' ) {
+	public function sanitize( $input = '', $context = '' ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
-		return \wpforms_decode_string( $string );
+		return wpforms_decode_string( $input );
 	}
 
 	/**
-	 * Get the email from name.
+	 * Get the email from the name.
 	 *
 	 * @since 1.5.4
 	 *
@@ -201,13 +202,14 @@ class Mailer {
 	 */
 	public function get_from_name() {
 
-		$this->from_name = $this->from_name ? $this->sanitize( $this->from_name ) : \get_bloginfo( 'name' );
+		$this->from_name = $this->from_name ? $this->sanitize( $this->from_name ) : get_bloginfo( 'name' );
 
-		return \apply_filters( 'wpforms_emails_mailer_get_from_name', $this->from_name, $this );
+		// phpcs:ignore WPForms.Comments.PHPDocHooks.RequiredHookDocumentation
+		return apply_filters( 'wpforms_emails_mailer_get_from_name', $this->from_name, $this );
 	}
 
 	/**
-	 * Get the email from address.
+	 * Get the email from the address.
 	 *
 	 * @since 1.5.4
 	 *
@@ -215,13 +217,15 @@ class Mailer {
 	 */
 	public function get_from_address() {
 
-		$this->from_address = $this->from_address ? $this->sanitize( $this->from_address ) : \get_option( 'admin_email' );
+		$from_address = $this->sanitize( $this->from_address, 'notification-from' );
+		$from_address = $from_address ? $from_address : get_option( 'admin_email' );
 
-		return \apply_filters( 'wpforms_emails_mailer_get_from_address', $this->from_address, $this );
+		// phpcs:ignore WPForms.Comments.PHPDocHooks.RequiredHookDocumentation
+		return apply_filters( 'wpforms_emails_mailer_get_from_address', $from_address, $this );
 	}
 
 	/**
-	 * Get the email reply to address.
+	 * Get the email reply to the address.
 	 *
 	 * @since 1.5.4
 	 *
@@ -229,45 +233,54 @@ class Mailer {
 	 */
 	public function get_reply_to_address() {
 
-		if ( empty( $this->reply_to ) || ! \is_email( $this->reply_to ) ) {
+		if ( empty( $this->reply_to ) || ! is_email( $this->reply_to ) ) {
 			$this->reply_to = $this->from_address;
 		}
 
-		$this->reply_to = $this->sanitize( $this->reply_to );
+		$this->reply_to = $this->sanitize( $this->reply_to, 'notification-reply-to' );
 
-		if ( empty( $this->reply_to ) || ! \is_email( $this->reply_to ) ) {
-			$this->reply_to = \get_option( 'admin_email' );
+		if ( empty( $this->reply_to ) || ! is_email( $this->reply_to ) ) {
+			$this->reply_to = get_option( 'admin_email' );
 		}
 
-		return \apply_filters( 'wpforms_emails_mailer_get_reply_to_address', $this->reply_to, $this );
+		// phpcs:ignore WPForms.Comments.PHPDocHooks.RequiredHookDocumentation
+		return apply_filters( 'wpforms_emails_mailer_get_reply_to_address', $this->reply_to, $this );
 	}
 
 	/**
 	 * Get the email carbon copy addresses.
 	 *
 	 * @since 1.5.4
+	 * @since 1.8.9 Allow using CC field as an array.
 	 *
 	 * @return string The email carbon copy addresses.
 	 */
 	public function get_cc_address() {
 
+		if ( is_array( $this->cc ) ) {
+			$this->cc = implode( ',', $this->cc );
+		}
+
 		if ( empty( $this->cc ) ) {
-			return \apply_filters( 'wpforms_emails_mailer_get_cc_address', $this->cc, $this );
+			/**
+			 * Filters the email carbon copy addresses.
+			 *
+			 * @since 1.5.4
+			 *
+			 * @param string $cc   Carbon copy addresses.
+			 * @param Mailer $this Mailer instance.
+			 */
+			return apply_filters( 'wpforms_emails_mailer_get_cc_address', $this->cc, $this );
 		}
 
 		$this->cc = $this->sanitize( $this->cc );
 
-		$addresses = \array_map( 'trim', \explode( ',', $this->cc ) );
+		$addresses = array_filter( array_map( 'sanitize_email', explode( ',', $this->cc ) ) );
 
-		foreach ( $addresses as $key => $address ) {
-			if ( ! \is_email( $address ) ) {
-				unset( $addresses[ $key ] );
-			}
-		}
+		$this->cc = implode( ',', $addresses );
 
-		$this->cc = \implode( ',', $addresses );
-
-		return \apply_filters( 'wpforms_emails_mailer_get_cc_address', $this->cc, $this );
+		/** This filter is documented in src/Emails/Mailer.php. */
+		return apply_filters( 'wpforms_emails_mailer_get_cc_address', $this->cc, $this );
 	}
 
 	/**
@@ -279,15 +292,41 @@ class Mailer {
 	 */
 	public function get_content_type() {
 
-		$is_html = 'default' === \wpforms_setting( 'email-template', 'default' );
+		$is_html = ! Helpers::is_plain_text_template();
 
 		if ( ! $this->content_type && $is_html ) {
-			$this->content_type = \apply_filters( 'wpforms_emails_mailer_get_content_type_default', 'text/html', $this );
+			// phpcs:ignore WPForms.Comments.PHPDocHooks.RequiredHookDocumentation
+			$this->content_type = apply_filters( 'wpforms_emails_mailer_get_content_type_default', 'text/html', $this );
 		} elseif ( ! $is_html ) {
 			$this->content_type = 'text/plain';
 		}
 
-		return \apply_filters( 'wpforms_emails_mailer_get_content_type', $this->content_type, $this );
+		// phpcs:ignore WPForms.Comments.PHPDocHooks.RequiredHookDocumentation
+		return apply_filters( 'wpforms_emails_mailer_get_content_type', $this->content_type, $this );
+	}
+
+	/**
+	 * Get the email subject.
+	 *
+	 * @since 1.8.9
+	 *
+	 * @return string The email subject.
+	 */
+	private function get_subject() {
+
+		if ( empty( $this->subject ) ) {
+			$this->subject = __( 'New Email Submit', 'wpforms-lite' );
+		}
+
+		/**
+		 * Filters the email subject.
+		 *
+		 * @since 1.8.9
+		 *
+		 * @param string $subject Email subject.
+		 * @param Mailer $this    Mailer instance.
+		 */
+		return apply_filters( 'wpforms_emails_mailer_get_subject', $this->subject, $this );
 	}
 
 	/**
@@ -303,7 +342,15 @@ class Mailer {
 			$this->message = $this->template->get();
 		}
 
-		return \apply_filters( 'wpforms_emails_mailer_get_message', $this->message, $this );
+		/**
+		 * Filters the email message.
+		 *
+		 * @since 1.5.4
+		 *
+		 * @param string $message Email message.
+		 * @param Mailer $this    Mailer instance.
+		 */
+		return apply_filters( 'wpforms_emails_mailer_get_message', $this->message, $this );
 	}
 
 	/**
@@ -315,23 +362,29 @@ class Mailer {
 	 */
 	public function get_headers() {
 
-		if ( $this->headers ) {
-			return \apply_filters( 'wpforms_emails_mailer_get_headers', $this->headers, $this );
-		}
-
 		$this->headers = "From: {$this->get_from_name()} <{$this->get_from_address()}>\r\n";
 
 		if ( $this->get_reply_to_address() ) {
 			$this->headers .= "Reply-To: {$this->get_reply_to_address()}\r\n";
 		}
 
-		if ( $this->get_cc_address() ) {
-			$this->headers .= "Cc: {$this->get_cc_address()}\r\n";
+		$cc = $this->get_cc_address();
+
+		if ( $cc ) {
+			$this->headers .= "Cc: {$cc}\r\n";
 		}
 
 		$this->headers .= "Content-Type: {$this->get_content_type()}; charset=utf-8\r\n";
 
-		return \apply_filters( 'wpforms_emails_mailer_get_headers', $this->headers, $this );
+		/**
+		 * Filters the email headers.
+		 *
+		 * @since 1.5.4
+		 *
+		 * @param string $headers Email headers.
+		 * @param Mailer $this    Mailer instance.
+		 */
+		return apply_filters( 'wpforms_emails_mailer_get_headers', $this->headers, $this );
 	}
 
 	/**
@@ -339,19 +392,31 @@ class Mailer {
 	 *
 	 * @since 1.5.4
 	 *
-	 * @return string
+	 * @return string|string[]
 	 */
 	public function get_attachments() {
 
-		return \apply_filters( 'wpforms_emails_mailer_get_attachments', $this->attachments, $this );
+		if ( $this->attachments === null ) {
+			$this->attachments = [];
+		}
+
+		/**
+		 * Filters the email attachments.
+		 *
+		 * @since 1.5.4
+		 *
+		 * @param string|string[] $attachments Array or string with attachment paths.
+		 * @param Mailer          $this        Mailer instance.
+		 */
+		return apply_filters( 'wpforms_emails_mailer_get_attachments', $this->attachments, $this );
 	}
 
 	/**
-	 * Set email address to send to.
+	 * Set an email address to send to.
 	 *
 	 * @since 1.5.4
 	 *
-	 * @param string|string[] $email Array or comma-separated list of email addresses to send message.
+	 * @param string|string[] $email Array or comma-separated list of email addresses to send a message.
 	 *
 	 * @return Mailer
 	 */
@@ -361,13 +426,14 @@ class Mailer {
 			$email = explode( ',', $email );
 		}
 
-		$this->to_email = \apply_filters( 'wpforms_emails_mailer_to_email', $email, $this );
+		// phpcs:ignore WPForms.Comments.PHPDocHooks.RequiredHookDocumentation
+		$this->to_email = apply_filters( 'wpforms_emails_mailer_to_email', $email, $this );
 
 		return $this;
 	}
 
 	/**
-	 * Set email subject.
+	 * Set an email subject.
 	 *
 	 * @since 1.5.4
 	 *
@@ -379,13 +445,14 @@ class Mailer {
 
 		$subject = $this->sanitize( $subject );
 
-		$this->subject = \apply_filters( 'wpforms_emails_mailer_subject', $subject, $this );
+		// phpcs:ignore WPForms.Comments.PHPDocHooks.RequiredHookDocumentation
+		$this->subject = apply_filters( 'wpforms_emails_mailer_subject', $subject, $this );
 
 		return $this;
 	}
 
 	/**
-	 * Set email message (body).
+	 * Set an email message (body).
 	 *
 	 * @since 1.5.4
 	 *
@@ -395,7 +462,8 @@ class Mailer {
 	 */
 	public function message( $message ) {
 
-		$this->message = \apply_filters( 'wpforms_emails_mailer_message', $message, $this );
+		// phpcs:ignore WPForms.Comments.PHPDocHooks.RequiredHookDocumentation
+		$this->message = apply_filters( 'wpforms_emails_mailer_message', $message, $this );
 
 		return $this;
 	}
@@ -411,7 +479,8 @@ class Mailer {
 	 */
 	public function template( General $template ) {
 
-		$this->template = \apply_filters( 'wpforms_emails_mailer_template', $template, $this );
+		// phpcs:ignore WPForms.Comments.PHPDocHooks.RequiredHookDocumentation
+		$this->template = apply_filters( 'wpforms_emails_mailer_template', $template, $this );
 
 		return $this;
 	}
@@ -428,17 +497,27 @@ class Mailer {
 		$errors = [];
 
 		foreach ( (array) $this->to_email as $email ) {
-			if ( ! \is_email( $email ) ) {
-				$errors[] = sprintf( /* translators: %s - invalid email. */ esc_html__( '[WPForms\Emails\Mailer] Invalid email address %s.', 'wpforms-lite' ), $email );
+			if ( ! is_email( $email ) ) {
+				$errors[] = sprintf( /* translators: %1$s - namespaced class name, %2$s - invalid email. */
+					esc_html__( '%1$s Invalid email address %2$s.', 'wpforms-lite' ),
+					'[WPForms\Emails\Mailer]',
+					$email
+				);
 			}
 		}
 
-		if ( empty( $this->subject ) ) {
-			$errors[] = \esc_html__( '[WPForms\Emails\Mailer] Empty subject line.', 'wpforms-lite' );
+		if ( empty( $this->get_subject() ) ) {
+			$errors[] = sprintf( /* translators: %s - namespaced class name. */
+				esc_html__( '%s Empty subject line.', 'wpforms-lite' ),
+				'[WPForms\Emails\Mailer]'
+			);
 		}
 
 		if ( empty( $this->get_message() ) ) {
-			$errors[] = \esc_html__( '[WPForms\Emails\Mailer] Empty message.', 'wpforms-lite' );
+			$errors[] = sprintf( /* translators: %s - namespaced class name. */
+				esc_html__( '%s Empty message.', 'wpforms-lite' ),
+				'[WPForms\Emails\Mailer]'
+			);
 		}
 
 		return $errors;
@@ -451,23 +530,23 @@ class Mailer {
 	 *
 	 * @param array $errors Errors to log.
 	 */
-	protected function log_errors( $errors ) {
+	protected function log_errors( $errors ): void {
 
-		if ( empty( $errors ) || ! \is_array( $errors ) ) {
+		if ( empty( $errors ) || ! is_array( $errors ) ) {
 			return;
 		}
 
 		foreach ( $errors as $error ) {
-			\wpforms_log(
+			wpforms_log(
 				$error,
-				array(
+				[
 					'to_email' => $this->to_email,
 					'subject'  => $this->subject,
-					'message'  => \wp_trim_words( $this->get_message() ),
-				),
-				array(
+					'message'  => wp_trim_words( $this->get_message() ),
+				],
+				[
 					'type' => 'error',
-				)
+				]
 			);
 		}
 	}
@@ -481,8 +560,8 @@ class Mailer {
 	 */
 	public function send() {
 
-		if ( ! \did_action( 'init' ) && ! \did_action( 'admin_init' ) ) {
-			\_doing_it_wrong( __FUNCTION__, \esc_html__( 'You cannot send emails with WPForms\Emails\Mailer until init/admin_init has been reached.', 'wpforms-lite' ), null );
+		if ( ! did_action( 'init' ) && ! did_action( 'admin_init' ) ) {
+			_doing_it_wrong( __FUNCTION__, esc_html__( 'You cannot send emails with WPForms\Emails\Mailer until init/admin_init has been reached.', 'wpforms-lite' ), null );
 
 			return false;
 		}
@@ -496,14 +575,15 @@ class Mailer {
 
 		if ( $errors ) {
 			$this->log_errors( $errors );
+
 			return false;
 		}
 
 		$this->send_before();
 
-		$sent = \wp_mail(
+		$sent = wp_mail(
 			$this->to_email,
-			$this->subject,
+			$this->get_subject(),
 			$this->get_message(),
 			$this->get_headers(),
 			$this->get_attachments()
@@ -519,12 +599,14 @@ class Mailer {
 	 *
 	 * @since 1.5.4
 	 */
-	public function send_before() {
+	public function send_before(): void { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
 
-		\do_action( 'wpforms_emails_mailer_send_before', $this );
-		\add_filter( 'wp_mail_from', array( $this, 'get_from_address' ) );
-		\add_filter( 'wp_mail_from_name', array( $this, 'get_from_name' ) );
-		\add_filter( 'wp_mail_content_type', array( $this, 'get_content_type' ) );
+		// phpcs:ignore WPForms.Comments.PHPDocHooks.RequiredHookDocumentation
+		do_action( 'wpforms_emails_mailer_send_before', $this );
+
+		add_filter( 'wp_mail_from', [ $this, 'get_from_address' ] );
+		add_filter( 'wp_mail_from_name', [ $this, 'get_from_name' ] );
+		add_filter( 'wp_mail_content_type', [ $this, 'get_content_type' ] );
 	}
 
 	/**
@@ -532,11 +614,13 @@ class Mailer {
 	 *
 	 * @since 1.5.4
 	 */
-	public function send_after() {
+	public function send_after(): void { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
 
-		\do_action( 'wpforms_emails_mailer_send_after', $this );
-		\remove_filter( 'wp_mail_from', array( $this, 'get_from_address' ) );
-		\remove_filter( 'wp_mail_from_name', array( $this, 'get_from_name' ) );
-		\remove_filter( 'wp_mail_content_type', array( $this, 'get_content_type' ) );
+		// phpcs:ignore WPForms.Comments.PHPDocHooks.RequiredHookDocumentation
+		do_action( 'wpforms_emails_mailer_send_after', $this );
+
+		remove_filter( 'wp_mail_from', [ $this, 'get_from_address' ] );
+		remove_filter( 'wp_mail_from_name', [ $this, 'get_from_name' ] );
+		remove_filter( 'wp_mail_content_type', [ $this, 'get_content_type' ] );
 	}
 }

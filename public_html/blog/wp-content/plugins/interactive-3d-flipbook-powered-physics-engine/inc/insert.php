@@ -38,8 +38,8 @@
     ?>
     <script type="text/javascript">
       window.FB3D_MCE_LOCALE = {
-        key: '<?php echo(POST_ID)?>',
-        icon: '<?php echo(ASSETS_IMAGES.'icon.ico')?>'
+        key: '<?php echo(esc_js(POST_ID))?>',
+        icon: '<?php echo(esc_js(ASSETS_IMAGES.'icon.ico'))?>'
       };
     </script>
     <?php

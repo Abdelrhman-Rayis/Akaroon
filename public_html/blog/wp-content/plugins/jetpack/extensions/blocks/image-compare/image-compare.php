@@ -12,8 +12,9 @@ namespace Automattic\Jetpack\Extensions\ImageCompare;
 use Automattic\Jetpack\Blocks;
 use Jetpack_Gutenberg;
 
-const FEATURE_NAME = 'image-compare';
-const BLOCK_NAME   = 'jetpack/' . FEATURE_NAME;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
 
 /**
  * Registers the block for use in Gutenberg
@@ -22,7 +23,7 @@ const BLOCK_NAME   = 'jetpack/' . FEATURE_NAME;
  */
 function register_block() {
 	Blocks::jetpack_register_block(
-		BLOCK_NAME,
+		__DIR__,
 		array( 'render_callback' => __NAMESPACE__ . '\load_assets' )
 	);
 }
@@ -37,9 +38,9 @@ add_action( 'init', __NAMESPACE__ . '\register_block' );
  * @return string
  */
 function load_assets( $attr, $content ) {
-	Jetpack_Gutenberg::load_assets_as_required( FEATURE_NAME );
+	Jetpack_Gutenberg::load_assets_as_required( __DIR__ );
 	wp_localize_script(
-		'jetpack-block-' . sanitize_title_with_dashes( FEATURE_NAME ),
+		'jetpack-block-' . sanitize_title_with_dashes( Blocks::get_block_feature( __DIR__ ) ),
 		'imageCompareHandle',
 		array(
 			'msg' => __( 'Slide to compare images', 'jetpack' ),
@@ -80,11 +81,11 @@ function render_amp( $attr ) {
 		'<amp-image-slider layout="responsive" width="%1$s" height="%2$s"> <amp-img id="%3$d" src="%4$s" alt="%5$s" layout="fill"></amp-img> <amp-img id="%6$d" src="%7$s" alt="%8$s" layout="fill"></amp-img></amp-image-slider>',
 		esc_attr( $width ),
 		esc_attr( $height ),
-		absint( $img_before['id'] ),
-		esc_url( $img_before['url'] ),
-		esc_attr( $img_before['alt'] ),
-		absint( $img_after['id'] ),
-		esc_url( $img_after['url'] ),
-		esc_attr( $img_after['alt'] )
+		absint( $img_before['id'] ?? 0 ),
+		esc_url( $img_before['url'] ?? '' ),
+		esc_attr( $img_before['alt'] ?? '' ),
+		absint( $img_after['id'] ?? 0 ),
+		esc_url( $img_after['url'] ?? '' ),
+		esc_attr( $img_after['alt'] ?? '' )
 	);
 }
