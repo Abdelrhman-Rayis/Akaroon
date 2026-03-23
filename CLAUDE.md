@@ -527,6 +527,43 @@ gcloud logging read 'resource.type="cloud_run_revision" AND textPayload:"fix-men
 
 ---
 
+### Session: March 2026 (OCR Markdown Viewer)
+
+**OCR text reader implementation:**
+- `public_html/blog/ocr_viewer.php` — NEW: standalone styled markdown reader
+  - GET params: `src` (GCS URL), `title`, `author`
+  - URL validation: rejects non-akaroon-media URLs (SSRF prevention)
+  - Fetches .md file with `file_get_contents()` + handles fetch errors gracefully
+  - YAML frontmatter parsing: extracts title, author, year, category, keywords from header
+  - Client-side rendering: marked.js library renders markdown body
+  - RTL-aware layout: Tajawal font, Arabic typography, `dir="rtl"`, right-aligned metadata
+  - Toolbar: font size controls (A−/A+, ±0.1 rem per click), print button, download .md link
+  - @media print hides toolbar for clean PDF export when user prints/saves
+  - Error handling: displays user-friendly Arabic error messages for missing/invalid files
+  - Design: teal header (#0B3D38), cream background, earthy palette matching site theme
+
+**Link updates across all search entry points:**
+- `public_html/blog/search_fetch.php` — changed raw GCS .md link to viewer URL:
+  - Constructs: `/blog/ocr_viewer.php?src=<GCS_URL>&title=<TITLE>&author=<AUTHOR>`
+  - Parameters URL-encoded to prevent breakage with special characters
+- All 7 `public_html/files/*/fetch_data.php` — same link pattern applied to category pages:
+  - التأصيل, التعليم, الفلسفة, السياسة, المجتمع, الدولة, منظمات
+  - Maintains existing UI structure (only href changed from raw .md to viewer)
+
+**Deployment:**
+- Committed as `fc31442`: "feat: OCR markdown viewer with styled reader interface"
+- Pushed to GitHub → Cloud Run build triggered
+- All 1,574 modified WordPress files also included (maintenance updates)
+
+**User flow:**
+1. User performs عميق (deep) search across documents
+2. Results show OCR snippets with highlighted search term + "النص الكامل" link
+3. Click link → opens ocr_viewer.php with styled markdown
+4. Can adjust font size, print to PDF, or download original .md file
+5. No edits saved to database (client-side viewing only, as requested)
+
+---
+
 ## 14. What To Work On Next (Backlog)
 
 - [ ] Replace professor avatar photo — user wants to update `public_html/img/professor.jpg` with a new photo (ask them to save it to a local path first)
