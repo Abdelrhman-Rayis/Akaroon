@@ -147,6 +147,7 @@ include('database_connection.php');
 
 <footer class="ak-footer">
   <p>© عكارون — جميع الحقوق محفوظة | <a href="../../">الصفحة الرئيسية</a></p>
+  <p>حقوق النشر والتأليف محفوظه لأصحابها تبعاَ لأسماءهم وتصنيفاتهم</p>
 </footer>
 
 <script src="js/jquery-1.10.2.min.js"></script>

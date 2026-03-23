@@ -125,6 +125,7 @@ $term_safe   = htmlspecialchars($search_term, ENT_QUOTES, 'UTF-8');
 
 <footer class="ak-footer">
   <p>© عكارون — جميع الحقوق محفوظة | <a href="../">الصفحة الرئيسية</a></p>
+  <p>حقوق النشر والتأليف محفوظه لأصحابها تبعاَ لأسماءهم وتصنيفاتهم</p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

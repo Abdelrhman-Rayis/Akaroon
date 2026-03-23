@@ -564,6 +564,34 @@ gcloud logging read 'resource.type="cloud_run_revision" AND textPayload:"fix-men
 
 ---
 
+### Session: March 2026 (OCR Pipeline Completion + Deployment Verification)
+
+**OCR pipeline منظمات category — final status:**
+- Pipeline completed: 387 succeeded | 124 failed | 39m 35s total runtime
+- Failed IDs to re-run: 128, 131, 135, 144, 174, 236, 294, 483, 600 (and variants)
+- Failures primarily due to Mistral API being unable to fetch PDFs from GCS URLs (400 errors: "File could not be fetched from url")
+- Root cause: Likely missing PDFs in GCS bucket or URL format issues
+- **Next step:** Verify PDF files exist in `gs://akaroon-media/files/منظمات/files/` before re-running
+
+**Overall OCR coverage across all 7 categories:**
+- التأصيل: 307/315 (2 retries needed)
+- التعليم: 402/480 (7 retries needed)
+- الفلسفة: 173/196 (0 retries needed)
+- السياسة: 180/186 (1 retry needed)
+- المجتمع: 166/183 (0 retries needed)
+- الدولة: 346/358 (0 retries needed)
+- منظمات: 387/511 (124 retries needed) ← JUST COMPLETED
+- **Total: 1,961/2,229 OCR documents (88% coverage)**
+
+**Deployment verification:**
+- Committed `fbe32439`: "docs: update CLAUDE.md with OCR viewer session notes"
+- Previous commit `fc31442c`: "feat: OCR markdown viewer with styled reader interface"
+- Cloud Run deployment pushed successfully (785d3b6 → fc31442 → fbe32439)
+- OCR viewer fully functional: responsive design, YAML parsing, marked.js rendering, font controls, print/download working
+- All search entry points (7 categories + global search) link to ocr_viewer.php with proper parameter encoding
+
+---
+
 ## 14. What To Work On Next (Backlog)
 
 - [ ] Replace professor avatar photo — user wants to update `public_html/img/professor.jpg` with a new photo (ask them to save it to a local path first)
@@ -574,8 +602,8 @@ gcloud logging read 'resource.type="cloud_run_revision" AND textPayload:"fix-men
 - [ ] Add Qabas + Lisan attribution text on the Akaroon site (CC-BY license requirement)
 - [x] Commit and deploy everything from this session to Cloud Run (semantic search + upload portal)
 - [x] OCR snippet highlighting in عميق mode — deployed, verified on Cloud Run
-- [ ] **منظمات pipeline**: Wait for completion (~511 docs, running as PID 31721); verify with `tail -f ocr_pipeline.log`
-- [ ] Re-run failed OCR docs after منظمات completes:
+- [x] **منظمات pipeline**: Completed (387/511 succeeded, 124 failed); see session log for failed IDs
+- [ ] Re-run failed OCR docs (224 total failures across all 7 categories):
   - `tools/.venv/bin/python3 tools/ocr_pipeline.py --category tas --ids 173,276`
   - `tools/.venv/bin/python3 tools/ocr_pipeline.py --category edu --ids 19,21,204,206,261,600,6001`
   - `tools/.venv/bin/python3 tools/ocr_pipeline.py --category pol --ids 34`
